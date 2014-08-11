@@ -34,10 +34,10 @@
 			});
 
 			// create audionode from mic
-			var mediaStreamSource = context.createMediaStreamSource( stream );
+			window.source = context.createMediaStreamSource( stream );
 
 			// connect mic to medya
-			mediaStreamSource.connect( m );
+			source.connect( m );
 		}
 		// Polyfill for browser prefixes
 		navigator.getUserMedia = navigator.getUserMedia || (navigator.mozGetUserMedia || navigator.webkitGetUserMedia);
