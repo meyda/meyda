@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Meyda</title>
+	<script type="text/javascript" src="main.js"></script>
+</head>
+<body>
+	<h1>Meyda</h1>
+	<p>Meyda is a feature extractor for the web audio API</p>
+	<div id="feedback"></div>
+	<script id="template" type="text/ractive">
+	<p>Hello {{name}}</p>
+	</script>
+	<script src='http://cdn.ractivejs.org/latest/ractive.js'></script>
+	<script>
+		var ractive = new Ractive({
+			el: 'feedback',
+			template: '#template',
+			data: { name: 'world' }
+		});
+	</script>
+</body>
+</html>
