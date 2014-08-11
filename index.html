@@ -3,20 +3,64 @@
 <head>
 	<title>Meyda</title>
 	<script type="text/javascript" src="main.js"></script>
+	<meta charset="UTF-8">
 </head>
 <body>
 	<h1>Meyda</h1>
 	<p>Meyda is a feature extractor for the web audio API</p>
 	<div id="feedback"></div>
 	<script id="template" type="text/ractive">
-	<p>Hello {{name}}</p>
+	<p>RMS: {{rms}}</p>
 	</script>
 	<script src='http://cdn.ractivejs.org/latest/ractive.js'></script>
 	<script>
+
+		// Meyda Javascript DSP library
+		// copied to index because I'm tired and debugging is hard
+		var Medya = function(audioContext,callback,bufferSize=256){
+			var node = audioContext.createScriptProcessor(bufferSize, 1, 1);
+			node.onaudioprocess = function(e) {
+				var input = e.inputBuffer.getChannelData(0);
+				var output = e.outputBuffer.getChannelData(0);
+				var tally = 0;
+				for (var x = 0; x < input.length; x++){
+					tally+=Math.pow(input[x],2);
+				}
+				callback(Math.sqrt(1/bufferSize*tally))
+			}
+			return node;
+		}
+
+		// using ractive to display things
 		var ractive = new Ractive({
 			el: 'feedback',
 			template: '#template',
-			data: { name: 'world' }
+			data: {}
+		});
+
+		// callback for mic position
+		function gotStream(stream) {
+			// polyfill
+			window.AudioContext = window.AudioContext || window.webkitAudioContext;
+			var context = new AudioContext();
+
+			// instantiate new medya
+			var m = new Medya(context,function(d){
+				// update view in callback
+				ractive.set({rms:d});
+			});
+
+			// create audionode from mic
+			var mediaStreamSource = context.createMediaStreamSource( stream );
+
+			// connect mic to medya
+			mediaStreamSource.connect( m );
+		}
+		// Polyfill for browser prefixes
+		navigator.getUserMedia = navigator.getUserMedia || (navigator.mozGetUserMedia || navigator.webkitGetUserMedia);
+		// Ask for mic permission
+		navigator.getUserMedia( {audio:true}, gotStream, function(){
+			console.log("error: getUserMedia Failed");
 		});
 	</script>
 </body>
