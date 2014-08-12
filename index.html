@@ -3,14 +3,29 @@
 <head>
 	<title>Meyda</title>
 	<script type="text/javascript" src="main.js"></script>
+	<!-- loading things from CDN over http for now because I'm not using
+	a webserver for development. I think we should all use Docker,
+	comments please. -->
+	<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	<meta charset="UTF-8">
 </head>
 <body>
-	<h1>Meyda</h1>
-	<p>Meyda is a feature extractor for the web audio API</p>
-	<div id="feedback"></div>
+	<div class="container">
+		<div class="col-xs-12">
+			<div class="page-header">
+				<h1>Meyda</h1>
+			</div>
+			<p>Meyda is a feature extractor for the web audio API</p>
+			<div id="feedback"></div>
+		</div>
+	</div>
 	<script id="template" type="text/ractive">
 	<p>RMS: {{rms}}</p>
+	<div class="progress">
+		<div class="progress-bar" role="progressbar" aria-valuenow="{{rms*10000}}" aria-valuemin="0" aria-valuemax="100" style="width: {{rms*10000}}%;">
+			<span class="sr-only">{{rms*10000}}% Complete</span>
+		</div>
+	</div>
 	</script>
 	<script src='http://cdn.ractivejs.org/latest/ractive.js'></script>
 	<script>
