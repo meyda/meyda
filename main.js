@@ -1,5 +1,5 @@
 // Meyda Javascript DSP library 
-var Medya = function(audioContext,callback,bufferSize=256){
+var Meyda = function(audioContext,callback,bufferSize=256){
 	var node = audioContext.createScriptProcessor(bufferSize, 1, 1);
 	node.onaudioprocess = function(e) {
 		// type float32Array
