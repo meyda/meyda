@@ -46,7 +46,7 @@
 			var m = new Meyda(context,function(d){
 				// update view in callback
 				ractive.set({rms:d});
-			});
+			},"rms");
 
 			// create audionode from mic
 			window.source = context.createMediaStreamSource( stream );
