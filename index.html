@@ -19,6 +19,7 @@
 			<div id="feedback"></div>
 		</div>
 	</div>
+	<audio src="test.mp3" id="tune" controls></audio>
 	<script id="template" type="text/ractive">
 	<p>RMS: {{rms}}</p>
 	
@@ -37,8 +38,15 @@
 			data: {}
 		});
 
+		var tune = document.getElementById('tune');
+		tune.oncanplaythrough = function (e) {
+			console.log("audio loaded");
+			init();
+			tune.play();
+		}
+
 		// callback for mic position
-		function gotStream(stream) {
+		function init() {
 			// polyfill
 			window.AudioContext = window.AudioContext || window.webkitAudioContext;
 			var context = new AudioContext();
@@ -47,20 +55,15 @@
 			var m = new Meyda(context,function(d){
 				// update view in callback
 				ractive.set({rms:d});
+				console.log("output:", d);
 			},"rms");
 
 			// create audionode from mic
-			window.source = context.createMediaStreamSource( stream );
+			window.source = context.createMediaElementSource( tune );
 
 			// connect mic to medya
 			source.connect( m );
 		}
-		// Polyfill for browser prefixes
-		navigator.getUserMedia = navigator.getUserMedia || (navigator.mozGetUserMedia || navigator.webkitGetUserMedia);
-		// Ask for mic permission
-		navigator.getUserMedia( {audio:true}, gotStream, function(){
-			console.log("error: getUserMedia Failed");
-		});
 	</script>
 </body>
 </html>
