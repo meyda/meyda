@@ -22,7 +22,7 @@
 	<audio src="test.mp3" id="tune" controls></audio>
 	<script id="template" type="text/ractive">
 	<p>RMS: {{rms}}</p>
-	
+
 	</script>
 	<!-- <div class="progress">
 		<div class="progress-bar" role="progressbar" aria-valuenow="{{rms*10000}}" aria-valuemin="0" aria-valuemax="100" style="width: {{rms*10000}}%;">
@@ -55,8 +55,8 @@
 			var m = new Meyda(context,function(d){
 				// update view in callback
 				ractive.set({rms:d});
-				console.log("output:", d);
-			},"rms");
+				//console.log("output:", d);
+			},"energy",256);
 
 			// create audionode from mic
 			window.source = context.createMediaElementSource( tune );
