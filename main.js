@@ -4,6 +4,11 @@ var featureExtractors = {
 		return Math.sqrt(input.reduce(function(last,current){
 			return Math.pow(current,2);
 		},0)/bufferSize)
+	},
+	"energy": function(input, bufferSize) {
+		return input.reduce(function(prev, cur) {
+			return prev + Math.pow(Math.abs(cur),2);
+		}, 0);
 	}
 }
 
