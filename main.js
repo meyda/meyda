@@ -15,7 +15,17 @@ var Meyda = function(audioContext,callback,feature,bufferSize=256){
 
 		// Convert from float32Array to Array
 		input = Array.prototype.slice.call(input);
-		callback(featureExtractors[feature](input,bufferSize));
+		if(typeof feature === "object"){
+			for (var x = 0; x < feature.length; x++){
+				callback(featureExtractors[feature[x]](input,bufferSize));
+			}
+		}
+		else if (typeof feature === "string"){
+			callback(featureExtractors[feature](input,bufferSize));
+		}
+		else{
+			throw "Invalid Feature Format";
+		}
 	}
 	return node;
 }
