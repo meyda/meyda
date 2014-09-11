@@ -7,7 +7,7 @@ var featureExtractors = {
 	}
 }
 
-var Meyda = function(audioContext,callback,feature,bufferSize=256){
+var Meyda = function(audioContext,callback,feature,bufferSize){
 	var node = audioContext.createScriptProcessor(bufferSize, 1, 1);
 	node.onaudioprocess = function(e) {
 		// type float32Array
