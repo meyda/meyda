@@ -2,56 +2,47 @@
 var featureExtractors = {
 	"rms": function(bufferSize, _analyser){
 		var timeData = new Float32Array(bufferSize);
+		var rms = 0;
 		_analyser.getFloatTimeDomainData(timeData);
-		return Math.sqrt(timeData.reduce(function(last,current){
-			return Math.pow(current,2);
-		},0)/bufferSize)
+		for(var i = 0 ; i < timeData.length ; i++){
+			rms += Math.pow(timeData[i],2);
+		}
+		rms = Math.sqrt(rms);
+		return rms;
 	},
 	"energy": function(bufferSize, _analyser) {
 		var timeData = new Float32Array(bufferSize);
+		var energy = 0;
 		_analyser.getFloatTimeDomainData(timeData);
-		return timeData.reduce(function(prev, cur) {
-			return prev + Math.pow(Math.abs(cur),2);
-		}, 0);
+		for(var i = 0 ; i < timeData.length ; i++){
+			energy += Math.pow(Math.abs(timeData[i]),2);
+		}
+		return energy;
 	},
 	"spectrum": function(bufferSize, _analyser) {
-		var s = new Uint8Array(bufferSize);
-		_analyser.getByteFrequencyData(s);
+		var s = new Float32Array(bufferSize);
+		_analyser.getFloatFrequencyData(s);
 		return s;
 	},
 	"spectralSlope": function(bufferSize, _analyser) {
 		//get spectrum
-
-		var s = new Uint8Array(bufferSize);
-		_analyser.getByteFrequencyData(s);
+		var s = new Float32Array(bufferSize);
+		_analyser.getFloatFrequencyData(s);
 		//linear regression
-		var x, y, xy, x2;
-
-		// y = s.meanValue();
-		x = s.length/2;
-
-		xy = 0.0;
-
+		var x = 0.0, y = 0.0, xy = 0.0, x2 = 0.0;
 		for (var i = 0; i < s.length; i++) {
-
-			y+=s[i];
+			y += s[i];
 			xy += s[i] * i;
+			x2 += i*i;
 		};
 
+		x = s.length/2;
 		y /= s.length;
 		xy /= s.length;
-
-		x2 = 0.0;
-		for(var i = 0; i < s.length; i++){
-			x2 += i*i;
-		}
-
 		x2 /= s.length;
 
 		return (x*y - xy)/(x*x - x2);
-
 	}
-
 }
 
 var Meyda = function(audioContext,source,bufferSize){
@@ -72,9 +63,11 @@ var Meyda = function(audioContext,source,bufferSize){
 
 	this.get = function(feature) {
 		if(typeof feature === "object"){
+			var results = new Array();
 			for (var x = 0; x < feature.length; x++){
-				return featureExtractors[feature[x]](bufferSize, analyser);
+				results.push(featureExtractors[feature[x]](bufferSize, analyser));
 			}
+			return results;
 		}
 		else if (typeof feature === "string"){
 			return featureExtractors[feature](bufferSize, analyser);
@@ -83,33 +76,6 @@ var Meyda = function(audioContext,source,bufferSize){
 			throw "Invalid Feature Format";
 		}
 	}
-
-	/*this.getSpectrum = function(){
-		var s = new Uint8Array(bufferSize);
-		analyser.getByteFrequencyData(s);
-		console.log(s);
-		return s;
-	}*/
-
-	//business
-	/*processor.onaudioprocess = function(e) {
-		// type float32Array
-		var input = e.inputBuffer.getChannelData(0);
-		// Convert from float32Array to Array
-		input = Array.prototype.slice.call(input);
-
-		if(typeof feature === "object"){
-			for (var x = 0; x < feature.length; x++){
-				callback(featureExtractors[feature[x]](input, bufferSize, analyser));
-			}
-		}
-		else if (typeof feature === "string"){
-			callback(featureExtractors[feature](input, bufferSize, analyser));
-		}
-		else{
-			throw "Invalid Feature Format";
-		}
-	}*/
 	source.connect(analyser);
 	return this;
 }
