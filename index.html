@@ -22,19 +22,23 @@
 			// polyfill
 			window.AudioContext = window.AudioContext || window.webkitAudioContext;
 			var context = new AudioContext();
-
 			// instantiate new medya
-			var m = new Meyda(context,function(d){
-				// update view in callback
-				// ractive.set({rms:d});
-				console.log("output:", d);
-			},"rms", 4096);
 
 			// create audionode from mic
 			window.source = context.createMediaElementSource( tune );
 
+			var m = new Meyda(context,source,function(d){
+				// update view in callback
+				// ractive.set({rms:d});
+				// console.log("output:", d);
+			},"spectrum",256);
+			document.body.onkeydown = function(){
+				m.getSpectrum();
+			}
+
+			
+
 			// connect mic to medya
-			source.connect( m );
 			// m.connect(context.destination);
 		}
 	</script>
