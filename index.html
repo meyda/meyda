@@ -6,10 +6,9 @@
 	<meta charset="UTF-8">
 </head>
 <body>
-	<div class="container">
-		<audio src="test.mp3" id="tune" controls></audio>
-	</div>
+	<audio src="test.mp3" id="tune" controls></audio>
 	<script>
+
 		var tune = document.getElementById('tune');
 		tune.oncanplaythrough = function (e) {
 			console.log("audio loaded");
@@ -22,24 +21,17 @@
 			// polyfill
 			window.AudioContext = window.AudioContext || window.webkitAudioContext;
 			var context = new AudioContext();
-			// instantiate new medya
 
 			// create audionode from mic
 			window.source = context.createMediaElementSource( tune );
 
-			var m = new Meyda(context,source,function(d){
-				// update view in callback
-				// ractive.set({rms:d});
-				// console.log("output:", d);
-			},"spectrum",256);
-			document.body.onkeydown = function(){
-				m.getSpectrum();
+			// instantiate new medya
+			var m = new Meyda(context,source,256);
+
+			document.body.onkeydown = function() {
+				console.log(m.get("rms"));
 			}
 
-			
-
-			// connect mic to medya
-			// m.connect(context.destination);
 		}
 	</script>
 </body>
