@@ -68,7 +68,7 @@ var Meyda = function(audioContext,source,callback,feature,bufferSize){
 	analyser.fftSize = bufferSize;
 
 	this.getSpectrum = function(){
-		var s = new Uint8Array;
+		var s = new Uint8Array(bufferSize);
 		analyser.getByteFrequencyData(s);
 		console.log(s);
 		return s;
