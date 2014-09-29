@@ -3,63 +3,35 @@
 <head>
 	<title>Meyda</title>
 	<script type="text/javascript" src="main.js"></script>
-	<!-- loading things from CDN over http for now because I'm not using
-	a webserver for development. I think we should all use Docker,
-	comments please. -->
-	<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	<meta charset="UTF-8">
 </head>
 <body>
-	<div class="container">
-		<div class="col-xs-12">
-			<div class="page-header">
-				<h1>Meyda</h1>
-			</div>
-			<p>Meyda is a feature extractor for the web audio API</p>
-			<div id="feedback"></div>
-		</div>
-	</div>
-	<script id="template" type="text/ractive">
-	<p>RMS: {{rms}}</p>
-	<div class="progress">
-		<div class="progress-bar" role="progressbar" aria-valuenow="{{rms*10000}}" aria-valuemin="0" aria-valuemax="100" style="width: {{rms*10000}}%;">
-			<span class="sr-only">{{rms*10000}}% Complete</span>
-		</div>
-	</div>
-	</script>
-	<script src='http://cdn.ractivejs.org/latest/ractive.js'></script>
+	<audio src="test.mp3" id="tune" controls></audio>
 	<script>
-		// using ractive to display things
-		var ractive = new Ractive({
-			el: 'feedback',
-			template: '#template',
-			data: {}
-		});
+
+		var tune = document.getElementById('tune');
+		tune.oncanplaythrough = function (e) {
+			console.log("audio loaded");
+			init();
+			tune.play();
+		}
 
 		// callback for mic position
-		function gotStream(stream) {
+		function init() {
 			// polyfill
 			window.AudioContext = window.AudioContext || window.webkitAudioContext;
 			var context = new AudioContext();
 
-			// instantiate new medya
-			var m = new Meyda(context,function(d){
-				// update view in callback
-				ractive.set({rms:d});
-			},"rms");
-
 			// create audionode from mic
-			window.source = context.createMediaStreamSource( stream );
+			window.source = context.createMediaElementSource( tune );
 
-			// connect mic to medya
-			source.connect( m );
+			// instantiate new medya
+			var m = new Meyda(context,source,256);
+
+			document.body.onkeydown = function() {
+				console.log(m.get(["spectrum","rms"]));
+			}
 		}
-		// Polyfill for browser prefixes
-		navigator.getUserMedia = navigator.getUserMedia || (navigator.mozGetUserMedia || navigator.webkitGetUserMedia);
-		// Ask for mic permission
-		navigator.getUserMedia( {audio:true}, gotStream, function(){
-			console.log("error: getUserMedia Failed");
-		});
 	</script>
 </body>
 </html>
