@@ -42,6 +42,9 @@ var featureExtractors = {
 		x2 /= s.length;
 
 		return (x*y - xy)/(x*x - x2);
+	},
+	"spectralFlux": function(bufferSize,_analyser){
+		
 	}
 }
 
