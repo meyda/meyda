@@ -26,15 +26,16 @@
 			// instantiate new medya
 			var m = new Meyda(context,function(d){
 				// update view in callback
-				ractive.set({rms:d});
+				// ractive.set({rms:d});
 				console.log("output:", d);
-			},"rms");
+			},"rms", 4096);
 
 			// create audionode from mic
 			window.source = context.createMediaElementSource( tune );
 
 			// connect mic to medya
 			source.connect( m );
+			// m.connect(context.destination);
 		}
 	</script>
 </body>
