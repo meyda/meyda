@@ -47,7 +47,7 @@ var Meyda = function(audioContext,callback,feature,bufferSize){
 	//add some utilities to array prototype
 	Float32Array.prototype.meanValue = function() {
 		var sum = 0;
-		for(var i = 0; i < this.length; i++;){
+		for(var i = 0; i < this.length; i++){
 		    sum += parseInt(this[i], 10);
 		}
 
@@ -58,19 +58,23 @@ var Meyda = function(audioContext,callback,feature,bufferSize){
 	var processor = audioContext.createScriptProcessor(bufferSize, 1, 1);
 	var analyser = audioContext.createAnalyser();
 	analyser.fftSize = bufferSize;
+
+	console.log("hello");
 	//business
 	processor.onaudioprocess = function(e) {
 		// type float32Array
 		var input = e.inputBuffer.getChannelData(0);
-
 		// Convert from float32Array to Array
 		input = Array.prototype.slice.call(input);
+
 		if(typeof feature === "object"){
 			for (var x = 0; x < feature.length; x++){
+				
 				callback(featureExtractors[feature[x]](input, bufferSize, analyser));
 			}
 		}
 		else if (typeof feature === "string"){
+			console.log("hello");
 			callback(featureExtractors[feature](input, bufferSize, analyser));
 		}
 		else{
