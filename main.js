@@ -1,33 +1,33 @@
 // Meyda Javascript DSP library
 var featureExtractors = {
-	"rms": function(bufferSize, _analyser){
+	"rms": function(bufferSize, m){
 		var timeData = new Float32Array(bufferSize);
 		var rms = 0;
-		_analyser.getFloatTimeDomainData(timeData);
+		m.analyzer.getFloatTimeDomainData(timeData);
 		for(var i = 0 ; i < timeData.length ; i++){
 			rms += Math.pow(timeData[i],2);
 		}
 		rms = Math.sqrt(rms);
 		return rms;
 	},
-	"energy": function(bufferSize, _analyser) {
+	"energy": function(bufferSize, m) {
 		var timeData = new Float32Array(bufferSize);
 		var energy = 0;
-		_analyser.getFloatTimeDomainData(timeData);
+		m.analyzer.getFloatTimeDomainData(timeData);
 		for(var i = 0 ; i < timeData.length ; i++){
 			energy += Math.pow(Math.abs(timeData[i]),2);
 		}
 		return energy;
 	},
-	"spectrum": function(bufferSize, _analyser) {
+	"spectrum": function(bufferSize, m) {
 		var s = new Float32Array(bufferSize);
-		_analyser.getFloatFrequencyData(s);
+		m.analyzer.getFloatFrequencyData(s);
 		return s;
 	},
-	"spectralSlope": function(bufferSize, _analyser) {
+	"spectralSlope": function(bufferSize, m) {
 		//get spectrum
 		var s = new Float32Array(bufferSize);
-		_analyser.getFloatFrequencyData(s);
+		m.analyzer.getFloatFrequencyData(s);
 		//linear regression
 		var x = 0.0, y = 0.0, xy = 0.0, x2 = 0.0;
 		for (var i = 0; i < s.length; i++) {
@@ -58,24 +58,24 @@ var Meyda = function(audioContext,source,bufferSize){
 
 
 	//create nodes
-	var analyser = audioContext.createAnalyser();
-	analyser.fftSize = bufferSize;
+	this.analyser = audioContext.createAnalyser();
+	this.analyser.fftSize = bufferSize;
 
 	this.get = function(feature) {
 		if(typeof feature === "object"){
 			var results = new Array();
 			for (var x = 0; x < feature.length; x++){
-				results.push(featureExtractors[feature[x]](bufferSize, analyser));
+				results.push(featureExtractors[feature[x]](bufferSize, this));
 			}
 			return results;
 		}
 		else if (typeof feature === "string"){
-			return featureExtractors[feature](bufferSize, analyser);
+			return featureExtractors[feature](bufferSize, this);
 		}
 		else{
 			throw "Invalid Feature Format";
 		}
 	}
-	source.connect(analyser);
+	source.connect(this.analyser);
 	return this;
 }
