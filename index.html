@@ -3,10 +3,6 @@
 <head>
 	<title>Meyda</title>
 	<script type="text/javascript" src="main.js"></script>
-	<!-- loading things from CDN over http for now because I'm not using
-	a webserver for development. I think we should all use Docker,
-	comments please. -->
-	<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	<meta charset="UTF-8">
 </head>
 <body>
@@ -20,24 +16,7 @@
 			<div id="feedback"></div>
 		</div>
 	</div>
-	<script id="template" type="text/ractive">
-	<p>RMS: {{rms}}</p>
-	
-	</script>
-	<!-- <div class="progress">
-		<div class="progress-bar" role="progressbar" aria-valuenow="{{rms*10000}}" aria-valuemin="0" aria-valuemax="100" style="width: {{rms*10000}}%;">
-			<span class="sr-only">{{rms*10000}}% Complete</span>
-		</div>
-	</div> -->
-	<script src='http://cdn.ractivejs.org/latest/ractive.js'></script>
 	<script>
-		// using ractive to display things
-		var ractive = new Ractive({
-			el: 'feedback',
-			template: '#template',
-			data: {}
-		});
-
 		var tune = document.getElementById('tune');
 		tune.oncanplaythrough = function (e) {
 			console.log("audio loaded");
