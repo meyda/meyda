@@ -29,9 +29,8 @@
 			var m = new Meyda(context,source,256);
 
 			document.body.onkeydown = function() {
-				console.log(m.get("rms"));
+				console.log(m.get(["spectrum","rms"]));
 			}
-
 		}
 	</script>
 </body>
