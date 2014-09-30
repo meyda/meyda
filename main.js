@@ -1,5 +1,19 @@
 // Meyda Javascript DSP library
-var featureExtractors = {
+
+var Meyda = function(audioContext,source,bufferSize){
+	//add some utilities to array prototype
+	Float32Array.prototype.meanValue = function() {
+		var sum = 0;
+		for(var i = 0; i < this.length; i++){
+		    sum += parseInt(this[i], 10);
+		}
+
+		return sum/this.length;
+	};
+
+	var self = this;
+
+	self.featureExtractors = {
 	"rms": function(bufferSize, m){
 		var timeData = new Float32Array(bufferSize);
 		var rms = 0;
@@ -48,19 +62,6 @@ var featureExtractors = {
 	}
 }
 
-var Meyda = function(audioContext,source,bufferSize){
-	//add some utilities to array prototype
-	Float32Array.prototype.meanValue = function() {
-		var sum = 0;
-		for(var i = 0; i < this.length; i++){
-		    sum += parseInt(this[i], 10);
-		}
-
-		return sum/this.length;
-	};
-
-	var self = this;
-
 	//create nodes
 	self.analyser = audioContext.createAnalyser();
 	self.analyser.fftSize = bufferSize;
@@ -69,12 +70,12 @@ var Meyda = function(audioContext,source,bufferSize){
 		if(typeof feature === "object"){
 			var results = new Array();
 			for (var x = 0; x < feature.length; x++){
-				results.push(featureExtractors[feature[x]](bufferSize, self));
+				results.push(self.featureExtractors[feature[x]](bufferSize, self));
 			}
 			return results;
 		}
 		else if (typeof feature === "string"){
-			return featureExtractors[feature](bufferSize, self);
+			return self.featureExtractors[feature](bufferSize, self);
 		}
 		else{
 			throw "Invalid Feature Format";
