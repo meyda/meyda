@@ -57,8 +57,14 @@ var Meyda = function(audioContext,source,bufferSize){
 
 		return (x*y - xy)/(x*x - x2);
 	},
-	"spectralFlux": function(bufferSize,_analyser){
-		
+	"normalisedSpectrum": function(bufferSize, m){
+		var spectrum = m.get("spectrum");
+		var ampRatioSpectrum = new Float32Array(bufferSize);
+		for (var i = 0; i < spectrum.length; i++) {
+			ampRatioSpectrum[i] =  Math.pow(10,(spectrum[i]/20));
+
+		}
+		return ampRatioSpectrum;
 	}
 }
 
