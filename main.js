@@ -34,7 +34,6 @@ var Meyda = function(audioContext,source,bufferSize){
 		return energy;
 	},
 	"spectrum": function(bufferSize, m, spectrum) {
-		console.log("spec", spectrum);
 		return spectrum;
 	},
 	"spectralSlope": function(bufferSize, m, spectrum) {
@@ -59,11 +58,6 @@ var Meyda = function(audioContext,source,bufferSize){
 			ampRatioSpectrum[i] =  Math.pow(10,spectrum[i]/20);
 
 		}
-<<<<<<< HEAD
-		console.log("normSpec", spectrum, ampRatioSpectrum);
-=======
-		console.log("spec compare", spectrum, ampRatioSpectrum);
->>>>>>> FETCH_HEAD
 		return ampRatioSpectrum;
 	}
 }
