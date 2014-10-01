@@ -56,6 +56,16 @@ var Meyda = function(audioContext,source,bufferSize){
 		x2 /= s.length;
 
 		return (x*y - xy)/(x*x - x2);
+	},
+	"normalisedSpectrum": function(bufferSize, m){
+		var spectrum = m.get("spectrum");
+		var ampRatioSpectrum = new Float32Array(bufferSize);
+		for (var i = 0; i < spectrum.length; i++) {
+			ampRatioSpectrum[i] =  Math.pow(10,spectrum[i]/20);
+
+		}
+		console.log("spec compare", spectrum, ampRatioSpectrum);
+		return ampRatioSpectrum;
 	}
 }
 
