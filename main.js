@@ -52,7 +52,7 @@ var Meyda = function(audioContext,source,bufferSize){
 
 		return (x*y - xy)/(x*x - x2);
 	},
-	"normalisedSpectrum": function(bufferSize, m, spectrum){
+	"amplitudeSpectrum": function(bufferSize, m, spectrum){
 		var ampRatioSpectrum = new Float32Array(bufferSize);
 		for (var i = 0; i < spectrum.length; i++) {
 			ampRatioSpectrum[i] =  Math.pow(10,spectrum[i]/20);
