@@ -33,29 +33,32 @@ var Meyda = function(audioContext,source,bufferSize){
 		}
 		return energy;
 	},
-	"spectrum": function(bufferSize, m) {
-		var s = new Float32Array(bufferSize);
-		m.analyser.getFloatFrequencyData(s);
-		return s;
+	"spectrum": function(bufferSize, m, spectrum) {
+		return spectrum;
 	},
-	"spectralSlope": function(bufferSize, m) {
-		//get spectrum
-		var s = new Float32Array(bufferSize);
-		m.analyser.getFloatFrequencyData(s);
+	"spectralSlope": function(bufferSize, m, spectrum) {
 		//linear regression
 		var x = 0.0, y = 0.0, xy = 0.0, x2 = 0.0;
-		for (var i = 0; i < s.length; i++) {
-			y += s[i];
-			xy += s[i] * i;
+		for (var i = 0; i < spectrum.length; i++) {
+			y += spectrum[i];
+			xy += spectrum[i] * i;
 			x2 += i*i;
 		};
 
-		x = s.length/2;
-		y /= s.length;
-		xy /= s.length;
-		x2 /= s.length;
+		x = spectrum.length/2;
+		y /= spectrum.length;
+		xy /= spectrum.length;
+		x2 /= spectrum.length;
 
 		return (x*y - xy)/(x*x - x2);
+	},
+	"normalisedSpectrum": function(bufferSize, m, spectrum){
+		var ampRatioSpectrum = new Float32Array(bufferSize);
+		for (var i = 0; i < spectrum.length; i++) {
+			ampRatioSpectrum[i] =  Math.pow(10,spectrum[i]/20);
+
+		}
+		return ampRatioSpectrum;
 	}
 }
 
@@ -64,15 +67,19 @@ var Meyda = function(audioContext,source,bufferSize){
 	self.analyser.fftSize = bufferSize;
 
 	self.get = function(feature) {
+
+		var spectrum = new Float32Array(bufferSize);
+		self.analyser.getFloatFrequencyData(spectrum);
+
 		if(typeof feature === "object"){
 			var results = new Array();
 			for (var x = 0; x < feature.length; x++){
-				results.push(self.featureExtractors[feature[x]](bufferSize, self));
+				results.push(self.featureExtractors[feature[x]](bufferSize, self, spectrum));
 			}
 			return results;
 		}
 		else if (typeof feature === "string"){
-			return self.featureExtractors[feature](bufferSize, self);
+			return self.featureExtractors[feature](bufferSize, self, spectrum);
 		}
 		else{
 			throw "Invalid Feature Format";
