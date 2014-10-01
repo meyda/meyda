@@ -92,6 +92,28 @@ var Meyda = function(audioContext,source,bufferSize){
 			output[i] = Math.pow(sum,0.23);
 		}
 		return output;
+	},
+	"perceptualSpread": function(bufferSize, m, spectrum) {
+		var loudness = m.featureExtractors["loudness"](bufferSize, m, spectrum);
+		var output = new Float32Array(loudness.length);
+		var begin = 0;
+
+		for (var i=0; i<loudness.length; i++) {
+			var max = 0;
+			for (var j=begin; j<loudness.length; j++) {
+				if (loudness[i] > max) {
+					max = loudness[i];
+				}
+			}
+
+			begin++;
+
+			var spread = 1-max;
+			spread *= spread;
+			output[i] = spread;
+		}
+
+		return output;
 	}
 }
 
