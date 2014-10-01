@@ -29,7 +29,9 @@
 			var m = new Meyda(context,source,256);
 
 			document.body.onkeydown = function() {
-				console.log(m.get(["spectrum","rms"]));
+				tune.play();
+				m.get(["normalisedSpectrum", "spectrum"]);
+				console.log(m.get(["spectrum","normalisedSpectrum"]));
 			}
 		}
 	</script>
