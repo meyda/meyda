@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 </head>
 <body>
-	<audio src="test.mp3" id="tune" controls></audio>
+	<audio src="noise1.wav" id="tune" controls></audio>
 	<script>
 
 		var tune = document.getElementById('tune');
@@ -30,8 +30,7 @@
 
 			document.body.onkeydown = function() {
 				tune.play();
-				m.get(["amplitudeSpectrum", "spectrum"]);
-				console.log(m.get(["spectrum","amplitudeSpectrum"]));
+				console.log(m.get("spectralFlatness"));
 			}
 		}
 	</script>

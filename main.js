@@ -52,6 +52,17 @@ var Meyda = function(audioContext,source,bufferSize){
 
 		return (x*y - xy)/(x*x - x2);
 	},
+	"spectralFlatness": function(bufferSize, m, spectrum){
+		var powspec = m.featureExtractors.powerSpectrum(bufferSize, m, spectrum);
+		// console.log(powspec);
+		var numerator = 0;
+		var denominator = 0;
+		for(var i = 0; i < powspec.length-1;i++){
+			numerator += Math.log(powspec[i]);
+			denominator += powspec[i];
+		}
+		return Math.exp((1/powspec.length)*numerator)/((1/powspec.length)*denominator);
+	},
 	"amplitudeSpectrum": function(bufferSize, m, spectrum){
 		var ampRatioSpectrum = new Float32Array(bufferSize);
 		for (var i = 0; i < spectrum.length; i++) {
@@ -59,6 +70,14 @@ var Meyda = function(audioContext,source,bufferSize){
 
 		}
 		return ampRatioSpectrum;
+	},
+	"powerSpectrum": function(bufferSize, m, spectrum){
+		var powerRatioSpectrum = new Float32Array(bufferSize);
+		for (var i = 0; i < spectrum.length; i++) {
+			powerRatioSpectrum[i] =  Math.pow(10,spectrum[i]/10);
+
+		}
+		return powerRatioSpectrum;
 	}
 }
 
