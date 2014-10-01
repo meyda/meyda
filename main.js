@@ -59,6 +59,16 @@ var Meyda = function(audioContext,source,bufferSize){
 
 		}
 		return ampRatioSpectrum;
+	},
+	"loudness": function(bufferSize, m, normalisedSpectrum){
+		var loudness = 0.0;
+		for(var i = 0; i < normalisedSpectrum.length; i++){
+			var squaredAmplitude = Math.pow(normalisedSpectrum[i],2);
+			loudness = Math.pow(12200,2)*Math.pow(squaredAmplitude,2);
+			loudness /= (squaredAmplitude + Math.pow(20.6,2));
+			loudness /= Math.sqrt((squaredAmplitude + Math.pow(107.7,2)) * (squaredAmplitude + Math.pow(787.9,2)));
+			loudness /= (squaredAmplitude + Math.pow(12200,2));
+		}
 	}
 }
 
