@@ -60,21 +60,45 @@ var Meyda = function(audioContext,source,bufferSize){
 		}
 		return ampRatioSpectrum;
 	},
-	"loudness": function(bufferSize, m, normalisedSpectrum){
-		var loudness = 0.0;
-		for(var i = 0; i < normalisedSpectrum.length; i++){
-			var squaredAmplitude = Math.pow(normalisedSpectrum[i],2);
-			loudness = Math.pow(12200,2)*Math.pow(squaredAmplitude,2);
-			loudness /= (squaredAmplitude + Math.pow(20.6,2));
-			loudness /= Math.sqrt((squaredAmplitude + Math.pow(107.7,2)) * (squaredAmplitude + Math.pow(787.9,2)));
-			loudness /= (squaredAmplitude + Math.pow(12200,2));
+	"loudness": function(bufferSize, m, spectrum){
+
+		var barkScale = Float32Array(bufferSize);
+		var NUM_BARK_BANDS = 24;
+		var output = Float32Array(NUM_BARK_BANDS);
+		var normalisedSpectrum = m.featureExtractors["normalisedSpectrum"](bufferSize, m, spectrum);
+
+		for(var i = 0; i < barkScale.length; i++){
+			barkScale[i] = i*m.audioContext.sampleRate/bufferSize;
+			barkScale[i] = 13*Math.atan(barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow(barkScale[i]/7518,2));
 		}
+
+		// console.log("bark: ", barkScale);
+		var bbLimits = [0];
+		var currentBandEnd = barkScale[bufferSize-1]/NUM_BARK_BANDS;
+		var currentBand = 1;
+		for(var i = 0; i<bufferSize; i++){
+			while(barkScale[i] > currentBandEnd){
+				bbLimits[currentBand++] = i;
+				currentBandEnd = (currentBand*barkScale[bufferSize-1])/NUM_BARK_BANDS;
+			}
+		}
+		bbLimits[NUM_BARK_BANDS] = bufferSize-1;
+		for (var i = 0; i < NUM_BARK_BANDS; i++){
+			var sum = 0;
+			for (var j = bbLimits[i] ; j < bbLimits[i+1] ; j++) {
+				// console.log("spec",normalisedSpectrum[j]);
+				sum += normalisedSpectrum[j];
+			}
+			output[i] = Math.pow(sum,0.23);
+		}
+		return output;
 	}
 }
 
 	//create nodes
 	self.analyser = audioContext.createAnalyser();
 	self.analyser.fftSize = bufferSize;
+	self.audioContext = audioContext;
 
 	self.get = function(feature) {
 
