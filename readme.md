@@ -1,6 +1,6 @@
 #meyda
 
-is an audio feature extraction library designed for and implemented in the [Web Audio API](https://github.com/WebAudio/web-audio-api "Web Audio API").
+is a javascript audio feature extraction library designed for and implemented in the [Web Audio API](https://github.com/WebAudio/web-audio-api "Web Audio API").
 
 Founding fathers: [hughrawlinson](https://github.com/hughrawlinson "Hugh Rawlinson") | [nevosegal](https://github.com/nevosegal "Nevo Segal") | [jakubfiala](https://github.com/jakubfiala "Jakub Fiala")
 
