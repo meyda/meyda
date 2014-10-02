@@ -27,7 +27,7 @@ In your javascript, initialize Meyda with the desired buffer size as follows:
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
 
-// create souce node (this could be any kind of Media source or a Web Audio Buffer source)
+// create source node (this could be any kind of Media source or a Web Audio Buffer source)
 window.source = context.createMediaElementSource( tune );
 
 // instantiate new meyda with buffer size of 256
