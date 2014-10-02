@@ -53,7 +53,7 @@ var Meyda = function(audioContext,source,bufferSize){
 		return (x*y - xy)/(x*x - x2);
 	},
 	"normalisedSpectrum": function(bufferSize, m, spectrum){
-		var ampRatioSpectrum = new Float32Array(bufferSize);
+		var ampRatioSpectrum = new Float32Array(bufferSize/2);
 		for (var i = 0; i < spectrum.length; i++) {
 			ampRatioSpectrum[i] =  Math.pow(10,spectrum[i]/20);
 
@@ -63,12 +63,12 @@ var Meyda = function(audioContext,source,bufferSize){
 	"loudness": function(bufferSize, m, spectrum){
 
 		var barkScale = Float32Array(bufferSize);
-		var NUM_BARK_BANDS = 24;
+		var NUM_BARK_BANDS = 20;
 		var output = Float32Array(NUM_BARK_BANDS);
 		var normalisedSpectrum = m.featureExtractors["normalisedSpectrum"](bufferSize, m, spectrum);
 
 		for(var i = 0; i < barkScale.length; i++){
-			barkScale[i] = i*m.audioContext.sampleRate/bufferSize;
+			barkScale[i] = i*m.audioContext.sampleRate/(bufferSize);
 			barkScale[i] = 13*Math.atan(barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow(barkScale[i]/7518,2));
 		}
 
@@ -78,18 +78,25 @@ var Meyda = function(audioContext,source,bufferSize){
 		var currentBand = 1;
 		for(var i = 0; i<bufferSize; i++){
 			while(barkScale[i] > currentBandEnd){
-				bbLimits[currentBand++] = i;
+				bbLimits[currentBand] = i;
+				currentBand++;
 				currentBandEnd = (currentBand*barkScale[bufferSize-1])/NUM_BARK_BANDS;
 			}
 		}
+		// console.log("bbLimits", bbLimits);
 		bbLimits[NUM_BARK_BANDS] = bufferSize-1;
-		for (var i = 0; i < NUM_BARK_BANDS; i++){
+		
+		for (var i = 1; i <= NUM_BARK_BANDS; i++){
 			var sum = 0;
-			for (var j = bbLimits[i] ; j < bbLimits[i+1] ; j++) {
-				// console.log("spec",normalisedSpectrum[j]);
+			for (var j = bbLimits[i-1] ; j < bbLimits[i] ; j++) {
+				if (i=19){
+					console.log("spec",normalisedSpectrum[j]);
+				}
+				
 				sum += normalisedSpectrum[j];
 			}
-			output[i] = Math.pow(sum,0.23);
+			// console.log("end bblimit",bbLimits[i]);
+			output[i-1] = Math.pow(sum,0.23);
 		}
 		return output;
 	}
@@ -102,7 +109,7 @@ var Meyda = function(audioContext,source,bufferSize){
 
 	self.get = function(feature) {
 
-		var spectrum = new Float32Array(bufferSize);
+		var spectrum = new Float32Array(bufferSize/2);
 		self.analyser.getFloatFrequencyData(spectrum);
 
 		if(typeof feature === "object"){
