@@ -30,7 +30,12 @@
 
 			document.body.onkeydown = function() {
 				tune.play();
+<<<<<<< HEAD
 				console.log(m.get("perceptualSharpness"));
+=======
+				m.get(["amplitudeSpectrum", "spectrum"]);
+				console.log(m.get(["spectrum","amplitudeSpectrum"]));
+>>>>>>> master
 			}
 		}
 	</script>
