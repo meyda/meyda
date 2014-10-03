@@ -53,7 +53,7 @@ var Meyda = function(audioContext,source,bufferSize){
 			return (x*y - xy)/(x*x - x2);
 		},
 		"spectralCentroid": function(bufferSize, m, spectrum){
-			var magspec = m.featureExtractors.ampRatioSpectrum(bufferSize, m, spectrum);
+			var magspec = m.featureExtractors.amplitudeSpectrum(bufferSize, m, spectrum);
 			var numerator = 0;
 			var denominator = 0;
 			for(var i = 0; i < bufferSize-1; i++){
@@ -61,6 +61,20 @@ var Meyda = function(audioContext,source,bufferSize){
 				denominator += i*audioContext.sampleRate/bufferSize
 			}
 			return numerator/denominator;
+		},
+		"spectralRolloff": function(bufferSize, m, spectrum){
+			var magspec = m.featureExtractors.amplitudeSpectrum(bufferSize, m, spectrum);
+			var ec = 0;
+			for(var i = 0; i < magspec.length; i++){
+				ec += magspec[i];
+			}
+			var threshold = 0.99 * ec;
+			var n = magspec.length - 1; 
+			while(ec > threshold && n >= 0){
+				ec -= magspec[n];
+            	n--;
+			}
+			return ec;
 		},
 		"amplitudeSpectrum": function(bufferSize, m, spectrum){
 			var ampRatioSpectrum = new Float32Array(bufferSize);
