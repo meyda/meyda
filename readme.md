@@ -16,6 +16,7 @@ Founding fathers: [hughrawlinson](https://github.com/hughrawlinson "Hugh Rawlins
 + spectral centroid
 + spectral flatness
 + spectral slope
++ spectral rolloff
 
 ###Setup
 
