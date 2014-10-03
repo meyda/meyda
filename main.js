@@ -65,7 +65,7 @@ var Meyda = function(audioContext,source,bufferSize){
 				ec += magspec[i];
 			}
 			var threshold = 0.99 * ec;
-			var n = magspec.length - 1; 
+			var n = magspec.length - 1;
 			while(ec > threshold && n >= 0){
 				ec -= magspec[n];
             	n--;

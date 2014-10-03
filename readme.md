@@ -10,7 +10,8 @@ is a javascript audio feature extraction library designed for and implemented in
 + rms
 + energy
 + zcr
-+ magnitudeSpectrum
++ spectrum
++ powerSpectrum
 + amplitudeSpectrum
 + spectralCentroid
 + spectralFlatness
