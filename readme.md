@@ -16,6 +16,7 @@ is a javascript audio feature extraction library designed for and implemented in
 + spectralCentroid
 + spectralFlatness
 + spectralSlope
++ spectralRolloff
 + loudness
 	- specific
 	- total
