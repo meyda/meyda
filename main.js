@@ -90,9 +90,6 @@ var Meyda = function(audioContext,source,bufferSize){
 		for (var i = 1; i <= NUM_BARK_BANDS; i++){
 			var sum = 0;
 			for (var j = bbLimits[i-1] ; j < bbLimits[i] ; j++) {
-				if (i=19){
-					console.log("spec",normalisedSpectrum[j]);
-				}
 
 				sum += normalisedSpectrum[j];
 			}
@@ -122,6 +119,23 @@ var Meyda = function(audioContext,source,bufferSize){
 		var spread = Math.pow((loudness.total - max)/loudness.total, 2);
 
 		return spread;
+	},
+	"perceptualSharpness": function(bufferSize,m,spectrum) {
+		var loudness = m.featureExtractors["loudness"](bufferSize, m, spectrum);
+		var spec = loudness.specific;
+		var output = 0;
+
+		for (var i = 0; i < spec.length; i++) {
+			if (i < 15) {
+				output += (i+1) * spec[i+1];
+			}
+			else {
+				output += 0.066 * Math.exp(0.171 * (i+1));
+			}
+		};
+		output *= 0.11/loudness.total;
+
+		return output;
 	}
 }
 
