@@ -2,11 +2,12 @@
 
 is a javascript audio feature extraction library designed for and implemented in the [Web Audio API](https://github.com/WebAudio/web-audio-api "Web Audio API").
 
-Founding fathers: [hughrawlinson](https://github.com/hughrawlinson "Hugh Rawlinson") | [nevosegal](https://github.com/nevosegal "Nevo Segal") | [jakubfiala](https://github.com/jakubfiala "Jakub Fiala")
+[hughrawlinson](https://github.com/hughrawlinson "Hugh Rawlinson") | [nevosegal](https://github.com/nevosegal "Nevo Segal") | [jakubfiala](https://github.com/jakubfiala "Jakub Fiala")
 
 ###Currently supported features
 #####(inspired by the [yaafe](http://yaafe.sourceforge.net "yaafe") library)
 
+<<<<<<< HEAD
 + rms
 + energy
 + magnitudeSpectrum
