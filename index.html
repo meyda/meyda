@@ -30,8 +30,7 @@
 
 			document.body.onkeydown = function() {
 				tune.play();
-
-				m.get(["amplitudeSpectrum", "spectrum"]);
+				console.log(m.get(["spectralRolloff"]));
 			}
 		}
 	</script>
