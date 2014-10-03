@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 </head>
 <body>
-	<audio src="test.mp3" id="tune" controls></audio>
+	<audio src="test2.mp3" id="tune" controls></audio>
 	<script>
 
 		var tune = document.getElementById('tune');
@@ -26,7 +26,7 @@
 			window.source = context.createMediaElementSource( tune );
 
 			// instantiate new medya
-			var m = new Meyda(context,source,256);
+			var m = new Meyda(context,source,512);
 
 			document.body.onkeydown = function() {
 				tune.play();
