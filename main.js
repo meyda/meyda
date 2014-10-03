@@ -63,8 +63,9 @@ var Meyda = function(audioContext,source,bufferSize){
 	"loudness": function(bufferSize, m, spectrum){
 
 		var barkScale = Float32Array(bufferSize);
-		var NUM_BARK_BANDS = 20;
-		var output = Float32Array(NUM_BARK_BANDS);
+		var NUM_BARK_BANDS = 24;
+		var spec = Float32Array(NUM_BARK_BANDS);
+		var tot = 0;
 		var normalisedSpectrum = m.featureExtractors["normalisedSpectrum"](bufferSize, m, spectrum);
 
 		for(var i = 0; i < barkScale.length; i++){
@@ -85,20 +86,42 @@ var Meyda = function(audioContext,source,bufferSize){
 		}
 		// console.log("bbLimits", bbLimits);
 		bbLimits[NUM_BARK_BANDS] = bufferSize-1;
-		
+
 		for (var i = 1; i <= NUM_BARK_BANDS; i++){
 			var sum = 0;
 			for (var j = bbLimits[i-1] ; j < bbLimits[i] ; j++) {
 				if (i=19){
 					console.log("spec",normalisedSpectrum[j]);
 				}
-				
+
 				sum += normalisedSpectrum[j];
 			}
-			// console.log("end bblimit",bbLimits[i]);
-			output[i-1] = Math.pow(sum,0.23);
+			spec[i] = Math.pow(sum,0.23);
 		}
-		return output;
+
+		for (var i = 0; i < spec.length; i++){
+			tot += spec[i];
+		}
+
+
+		return {
+			specific: spec,
+			total: tot
+		};
+	},
+	"perceptualSpread": function(bufferSize, m, spectrum) {
+		var loudness = m.featureExtractors["loudness"](bufferSize, m, spectrum);
+
+		var max = 0;
+		for (var i=0; i<loudness.specific.length; i++) {
+			if (loudness.specific[i] > max) {
+				max = loudness.specific[i];
+			}
+		}
+
+		var spread = Math.pow((loudness.total - max)/loudness.total, 2);
+
+		return spread;
 	}
 }
 
