@@ -7,17 +7,19 @@ is a javascript audio feature extraction library designed for and implemented in
 ###Currently supported features
 #####(inspired by the [yaafe](http://yaafe.sourceforge.net "yaafe") library)
 
-<<<<<<< HEAD
 + rms
 + energy
++ zcr
 + magnitudeSpectrum
 + amplitudeSpectrum
++ spectralCentroid
++ spectralFlatness
++ spectralSlope
 + loudness
-+ perceptual spread
-+ spectral centroid
-+ spectral flatness
-+ spectral slope
-+ spectral rolloff
+	- specific
+	- total
++ perceptualSpread
++ perceptualSharpness
 
 ###Setup
 
