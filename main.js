@@ -72,6 +72,17 @@ var Meyda = function(audioContext,source,bufferSize){
 			}
 			return ec;
 		},
+		"spectralFlatness": function(bufferSize, m, spectrum){
+			var powspec = m.featureExtractors.powerSpectrum(bufferSize, m, spectrum);
+			// console.log(powspec);
+			var numerator = 0;
+			var denominator = 0;
+			for(var i = 0; i < powspec.length-1;i++){
+				numerator += Math.log(powspec[i]);
+				denominator += powspec[i];
+			}
+			return Math.exp((1/powspec.length)*numerator)/((1/powspec.length)*denominator);
+		},
 		"amplitudeSpectrum": function(bufferSize, m, spectrum){
 			var ampRatioSpectrum = new Float32Array(bufferSize);
 			for (var i = 0; i < spectrum.length; i++) {
