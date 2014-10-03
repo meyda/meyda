@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 </head>
 <body>
-	<audio src="test2.mp3" id="tune" controls></audio>
+	<audio src="test.mp3" id="tune" controls></audio>
 	<script>
 
 		var tune = document.getElementById('tune');
@@ -30,7 +30,7 @@
 
 			document.body.onkeydown = function() {
 				tune.play();
-				console.log(m.get(["spectralRolloff"]));
+				console.log(m.get("spectralFlatness"));
 			}
 		}
 	</script>

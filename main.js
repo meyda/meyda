@@ -89,6 +89,14 @@ var Meyda = function(audioContext,source,bufferSize){
 			}
 			return zcr;
 		},
+		"powerSpectrum": function(bufferSize, m, spectrum){
+			var powerRatioSpectrum = new Float32Array(bufferSize);
+			for (var i = 0; i < spectrum.length; i++) {
+				powerRatioSpectrum[i] =  Math.pow(10,spectrum[i]/10);
+
+			}
+			return powerRatioSpectrum;
+		}
 		"loudness": function(bufferSize, m, spectrum){
 
 			var barkScale = Float32Array(bufferSize);
@@ -167,7 +175,6 @@ var Meyda = function(audioContext,source,bufferSize){
 			return output;
 		}
 	}
-
 	//create nodes
 	self.analyser = audioContext.createAnalyser();
 	self.analyser.fftSize = bufferSize;
