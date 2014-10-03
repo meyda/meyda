@@ -84,15 +84,93 @@ var Meyda = function(audioContext,source,bufferSize){
 			}
 			return ampRatioSpectrum;
 		}
-	}
+		},
+		"loudness": function(bufferSize, m, spectrum){
+
+			var barkScale = Float32Array(bufferSize);
+			var NUM_BARK_BANDS = 24;
+			var spec = Float32Array(NUM_BARK_BANDS);
+			var tot = 0;
+			var normalisedSpectrum = m.featureExtractors["normalisedSpectrum"](bufferSize, m, spectrum);
+
+			for(var i = 0; i < barkScale.length; i++){
+				barkScale[i] = i*m.audioContext.sampleRate/(bufferSize);
+				barkScale[i] = 13*Math.atan(barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow(barkScale[i]/7518,2));
+			}
+
+			// console.log("bark: ", barkScale);
+			var bbLimits = [0];
+			var currentBandEnd = barkScale[bufferSize-1]/NUM_BARK_BANDS;
+			var currentBand = 1;
+			for(var i = 0; i<bufferSize; i++){
+				while(barkScale[i] > currentBandEnd){
+					bbLimits[currentBand] = i;
+					currentBand++;
+					currentBandEnd = (currentBand*barkScale[bufferSize-1])/NUM_BARK_BANDS;
+				}
+			}
+			// console.log("bbLimits", bbLimits);
+			bbLimits[NUM_BARK_BANDS] = bufferSize-1;
+
+			for (var i = 1; i <= NUM_BARK_BANDS; i++){
+				var sum = 0;
+				for (var j = bbLimits[i-1] ; j < bbLimits[i] ; j++) {
+
+					sum += normalisedSpectrum[j];
+				}
+				spec[i] = Math.pow(sum,0.23);
+			}
+
+			for (var i = 0; i < spec.length; i++){
+				tot += spec[i];
+			}
+
+
+			return {
+				specific: spec,
+				total: tot
+			};
+		},
+		"perceptualSpread": function(bufferSize, m, spectrum) {
+			var loudness = m.featureExtractors["loudness"](bufferSize, m, spectrum);
+
+			var max = 0;
+			for (var i=0; i<loudness.specific.length; i++) {
+				if (loudness.specific[i] > max) {
+					max = loudness.specific[i];
+				}
+			}
+
+			var spread = Math.pow((loudness.total - max)/loudness.total, 2);
+
+			return spread;
+		},
+		"perceptualSharpness": function(bufferSize,m,spectrum) {
+			var loudness = m.featureExtractors["loudness"](bufferSize, m, spectrum);
+			var spec = loudness.specific;
+			var output = 0;
+
+			for (var i = 0; i < spec.length; i++) {
+				if (i < 15) {
+					output += (i+1) * spec[i+1];
+				}
+				else {
+					output += 0.066 * Math.exp(0.171 * (i+1));
+				}
+			};
+			output *= 0.11/loudness.total;
+
+			return output;
+		}
 
 	//create nodes
 	self.analyser = audioContext.createAnalyser();
 	self.analyser.fftSize = bufferSize;
+	self.audioContext = audioContext;
 
 	self.get = function(feature) {
 
-		var spectrum = new Float32Array(bufferSize);
+		var spectrum = new Float32Array(bufferSize/2);
 		self.analyser.getFloatFrequencyData(spectrum);
 
 		if(typeof feature === "object"){
