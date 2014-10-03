@@ -7,7 +7,6 @@ is a javascript audio feature extraction library designed for and implemented in
 ###Currently supported features
 #####(inspired by the [yaafe](http://yaafe.sourceforge.net "yaafe") library)
 
-
 + rms
 + energy
 + zcr
