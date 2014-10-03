@@ -14,22 +14,18 @@ var Meyda = function(audioContext,source,bufferSize){
 	var self = this;
 
 	self.featureExtractors = {
-	"rms": function(bufferSize, m){
-		var timeData = new Float32Array(bufferSize);
+	"rms": function(bufferSize, m, spectrum, signal){
 		var rms = 0;
-		m.analyser.getFloatTimeDomainData(timeData);
-		for(var i = 0 ; i < timeData.length ; i++){
-			rms += Math.pow(timeData[i],2);
+		for(var i = 0 ; i < signal.length ; i++){
+			rms += Math.pow(signal[i],2);
 		}
 		rms = Math.sqrt(rms);
 		return rms;
 	},
-	"energy": function(bufferSize, m) {
-		var timeData = new Float32Array(bufferSize);
+	"energy": function(bufferSize, m, spectrum, signal) {
 		var energy = 0;
-		m.analyser.getFloatTimeDomainData(timeData);
-		for(var i = 0 ; i < timeData.length ; i++){
-			energy += Math.pow(Math.abs(timeData[i]),2);
+		for(var i = 0 ; i < signal.length ; i++){
+			energy += Math.pow(Math.abs(signal[i]),2);
 		}
 		return energy;
 	},
@@ -59,6 +55,15 @@ var Meyda = function(audioContext,source,bufferSize){
 
 		}
 		return ampRatioSpectrum;
+	},
+	"zcr": function(bufferSize, m, spectrum, signal){
+		var zcr = 0;
+		for(var i = 0; i < signal.length; i++){
+			if((signal[i] >= 0 && signal[i+1] < 0) || (signal[i] < 0 && signal[i+1] >= 0)){
+				zcr++;
+			}
+		}
+		return zcr;
 	}
 }
 
@@ -71,15 +76,18 @@ var Meyda = function(audioContext,source,bufferSize){
 		var spectrum = new Float32Array(bufferSize);
 		self.analyser.getFloatFrequencyData(spectrum);
 
+		var signal = new Float32Array(bufferSize);
+		self.analyser.getFloatTimeDomainData(signal);
+
 		if(typeof feature === "object"){
 			var results = new Array();
 			for (var x = 0; x < feature.length; x++){
-				results.push(self.featureExtractors[feature[x]](bufferSize, self, spectrum));
+				results.push(self.featureExtractors[feature[x]](bufferSize, self, spectrum, signal));
 			}
 			return results;
 		}
 		else if (typeof feature === "string"){
-			return self.featureExtractors[feature](bufferSize, self, spectrum);
+			return self.featureExtractors[feature](bufferSize, self, spectrum, signal);
 		}
 		else{
 			throw "Invalid Feature Format";
