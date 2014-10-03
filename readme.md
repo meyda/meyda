@@ -40,7 +40,7 @@ var rootMeanSquare = m.get("rms");
 ```
 You can also pass an array of strings to get multiple features at a time
 ```js
-var myFeatures = m.get(["rms", "loudness", "spectral centroid"]);
+var myFeatures = m.get(["rms", "loudness", "spectralCentroid"]);
 ```
 
 
