@@ -184,17 +184,22 @@ var Meyda = function(audioContext,source,bufferSize){
 			return output;
 		},
 		"mfcc": function(bufferSize, m, spectrum){
-			var numFilters = 26; //26 filters is standard
-			var melFilterBank = Float32Array(numFilters);
-			var lowerLimitFreq = 50;
-			var upperLimitFreq = audioContext.sampleRate/2;
 			var freqToMel = function(freqValue){
 				var melValue = 1125*Math.log(1+(freqValue/700));
 				return melValue
 			};
-
+			var melToFreq = function(melValue){
+				var freqValue = 700*(Math.exp(melValue/1125)-1);
+				return freqValue;
+			};
+			var numFilters = 26; //26 filters is standard
+			var melFilterBank = Float32Array(numFilters);
+			var melFilterBankInFreq = Float32Array(numFilters);
+			var lowerLimitFreq = 50;
+			var upperLimitFreq = audioContext.sampleRate/2;
 			var lowerLimitMel = freqToMel(lowerLimitFreq);
 			var upperLimitMel = freqToMel(upperLimitFreq);
+
 			melFilterBank[0] = lowerLimitMel;
 			melFilterBank[melFilterBank.length-1] = upperLimitMel;
 
@@ -204,7 +209,11 @@ var Meyda = function(audioContext,source,bufferSize){
 			for(var i = 1; i < melFilterBank.length-1; i++){
 				melFilterBank[i] = i*valueToAdd;
 			}
-			return melFilterBank;
+			for (var i = 0; i < melFilterBank.length; i++) {
+				melFilterBankInFreq[i] = melToFreq(melFilterBank[i]);
+			};
+
+			return melFilterBankInFreq;
 		}
 	}
 	//create nodes
