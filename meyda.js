@@ -208,22 +208,17 @@ var Meyda = function(audioContext,source,bufferSize){
 			var range = upperLimitMel-lowerLimitMel;
 			var valueToAdd = range/(numFilters-2);
 
-			for(var i = 1; i < melValues.length-1; i++){
-				melValues[i] = i*valueToAdd;
-			}
-
 			var fftBinsOfFreq = Array(numFilters);
 			for (var i = 0; i < melValues.length; i++) {
+				melValues[i] = i*valueToAdd;
 				melValuesInFreq[i] = melToFreq(melValues[i]);
 				fftBinsOfFreq[i] = Math.floor((bufferSize+1)*melValuesInFreq[i]/audioContext.sampleRate);
 			};
 
 			var filterBank = Array(numFilters);
-			for (var i = 0; i < filterBank.length; i++) {
+			for (var j = 0; j < filterBank.length; j++) {
 				//creating a two dimensional array of size numFiltes * (buffersize/2)+1 and pre-filling the arrays with 0s.
-				filterBank[i] = Array.apply(null, new Array((bufferSize/2)+1)).map(Number.prototype.valueOf,0); 
-			}
-			for (var j = 0; j < numFilters; j++) {
+				filterBank[j] = Array.apply(null, new Array((bufferSize/2)+1)).map(Number.prototype.valueOf,0); 
 				for (var i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j+1]; i++) {
 					filterBank[j][i] = (i - fftBinsOfFreq[j])/(fftBinsOfFreq[j+1]-fftBinsOfFreq[j]);
 				}
