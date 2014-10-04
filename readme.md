@@ -29,9 +29,9 @@ is a javascript audio feature extraction library designed for and implemented in
 
 ###Setup
 
-_**Meyda is under active development and is *not yet ready for production**_
+_Meyda is under active development and is **not yet ready for production**_
 
-Download [meyda.js](https://github.com/hughrawlinson/meyda/blob/master/main.js "meyda.js") and include it within the `<head>` tag your HTML.
+Download [mgeyda.js](https://github.com/hughrawlinson/meyda/blob/master/main.js "meyda.js") and include it within the `<head>` tag your HTML.
 
 In your javascript, initialize Meyda with the desired buffer size as follows:
 ```js
