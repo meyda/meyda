@@ -17,11 +17,15 @@ is a javascript audio feature extraction library designed for and implemented in
 + spectralFlatness
 + spectralSlope
 + spectralRolloff
++ spectralSpread
++ spectralSkewness
++ spectralKurtosis
 + loudness
 	- specific
 	- total
 + perceptualSpread
 + perceptualSharpness
++ mfcc
 
 ###Setup
 
