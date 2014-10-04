@@ -182,6 +182,29 @@ var Meyda = function(audioContext,source,bufferSize){
 			output *= 0.11/loudness.total;
 
 			return output;
+		},
+		"mfcc": function(bufferSize, m, spectrum){
+			var numFilters = 26; //26 filters is standard
+			var melFilterBank = Float32Array(numFilters);
+			var lowerLimitFreq = 50;
+			var upperLimitFreq = audioContext.sampleRate/2;
+			var freqToMel = function(freqValue){
+				var melValue = 1125*Math.log(1+(freqValue/700));
+				return melValue
+			};
+
+			var lowerLimitMel = freqToMel(lowerLimitFreq);
+			var upperLimitMel = freqToMel(upperLimitFreq);
+			melFilterBank[0] = lowerLimitMel;
+			melFilterBank[melFilterBank.length-1] = upperLimitMel;
+
+			var range = upperLimitMel-lowerLimitMel;
+			var valueToAdd = range/(numFilters-2);
+
+			for(var i = 1; i < melFilterBank.length-1; i++){
+				melFilterBank[i] = i*valueToAdd;
+			}
+			return melFilterBank;
 		}
 	}
 	//create nodes
