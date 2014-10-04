@@ -227,9 +227,6 @@ var Meyda = function(audioContext,source,bufferSize){
 			var lowerLimitMel = freqToMel(lowerLimitFreq);
 			var upperLimitMel = freqToMel(upperLimitFreq);
 
-			melValues[0] = lowerLimitMel;
-			melValues[melValues.length-1] = upperLimitMel;
-
 			var range = upperLimitMel-lowerLimitMel;
 			var valueToAdd = range/(numFilters-1);
 
