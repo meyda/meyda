@@ -81,10 +81,11 @@ var Meyda = function(audioContext,source,bufferSize){
 				numerator += Math.log(powspec[i]);
 				denominator += powspec[i];
 			}
+			console.log("spec", powspec);
 			return Math.exp((1/powspec.length)*numerator)/((1/powspec.length)*denominator);
 		},
 		"amplitudeSpectrum": function(bufferSize, m, spectrum){
-			var ampRatioSpectrum = new Float32Array(bufferSize);
+			var ampRatioSpectrum = new Float32Array(spectrum.length);
 			for (var i = 0; i < spectrum.length; i++) {
 				ampRatioSpectrum[i] =  Math.pow(10,spectrum[i]/20);
 
@@ -101,7 +102,7 @@ var Meyda = function(audioContext,source,bufferSize){
 			return zcr;
 		},
 		"powerSpectrum": function(bufferSize, m, spectrum){
-			var powerRatioSpectrum = new Float32Array(bufferSize);
+			var powerRatioSpectrum = new Float32Array(spectrum.length);
 			for (var i = 0; i < spectrum.length; i++) {
 				powerRatioSpectrum[i] =  Math.pow(10,spectrum[i]/10);
 
