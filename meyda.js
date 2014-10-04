@@ -207,6 +207,68 @@ var Meyda = function(audioContext,source,bufferSize){
 			output *= 0.11/loudness.total;
 
 			return output;
+		},
+		"mfcc": function(bufferSize, m, spectrum){
+			//used tutorial from http://practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/
+			var powSpec = m.featureExtractors["powerSpectrum"](bufferSize, m, spectrum);
+			var freqToMel = function(freqValue){
+				var melValue = 1125*Math.log(1+(freqValue/700));
+				return melValue
+			};
+			var melToFreq = function(melValue){
+				var freqValue = 700*(Math.exp(melValue/1125)-1);
+				return freqValue;
+			};
+			var numFilters = 26; //26 filters is standard
+			var melValues = Float32Array(numFilters);
+			var melValuesInFreq = Float32Array(numFilters);
+			var lowerLimitFreq = 0;
+			var upperLimitFreq = audioContext.sampleRate/2;
+			var lowerLimitMel = freqToMel(lowerLimitFreq);
+			var upperLimitMel = freqToMel(upperLimitFreq);
+
+			melValues[0] = lowerLimitMel;
+			melValues[melValues.length-1] = upperLimitMel;
+
+			var range = upperLimitMel-lowerLimitMel;
+			var valueToAdd = range/(numFilters-1);
+
+			var fftBinsOfFreq = Array(numFilters);
+			for (var i = 0; i < melValues.length; i++) {
+				melValues[i] = i*valueToAdd;
+				melValuesInFreq[i] = melToFreq(melValues[i]);
+				fftBinsOfFreq[i] = Math.floor((bufferSize+1)*melValuesInFreq[i]/audioContext.sampleRate);
+			};
+
+			var filterBank = Array(numFilters);
+			for (var j = 0; j < filterBank.length; j++) {
+				//creating a two dimensional array of size numFiltes * (buffersize/2)+1 and pre-populating the arrays with 0s.
+				filterBank[j] = Array.apply(null, new Array((bufferSize/2)+1)).map(Number.prototype.valueOf,0); 
+				for (var i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j+1]; i++) {
+					filterBank[j][i] = (i - fftBinsOfFreq[j])/(fftBinsOfFreq[j+1]-fftBinsOfFreq[j]);
+				}
+				for (var i = fftBinsOfFreq[j+1]; i < fftBinsOfFreq[j+2]; i++) {
+					filterBank[j][i] = (fftBinsOfFreq[j+2]-i)/(fftBinsOfFreq[j+2]-fftBinsOfFreq[j+1]) 
+				}
+			}
+
+			var mfcc = Array.apply(null, new Array(numFilters)).map(Number.prototype.valueOf,0);
+			for (var i = 0; i < mfcc.length; i++) {
+				for (var j = 0; j < ((bufferSize/2)+1); j++) {
+					filterBank[i][j] = filterBank[i][j]*powSpec[i];
+					mfcc[i] += filterBank[i][j];
+				}
+				mfcc[i] = Math.log(mfcc[i]); 
+			}
+
+			for (var k = 0; k < mfcc.length; k++) {
+				var v = 0;
+				for (var n = 0; n < mfcc.length-1; n++) {
+					v += mfcc[n]*Math.cos(Math.PI*k*(2*n+1)/(2*mfcc.length));
+				}
+				mfcc[k] = v;
+			}
+			return mfcc;
 		}
 	}
 	//create nodes
