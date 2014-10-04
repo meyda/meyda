@@ -193,27 +193,30 @@ var Meyda = function(audioContext,source,bufferSize){
 				return freqValue;
 			};
 			var numFilters = 26; //26 filters is standard
-			var melFilterBank = Float32Array(numFilters);
-			var melFilterBankInFreq = Float32Array(numFilters);
+			var melValues = Float32Array(numFilters);
+			var melValuesInFreq = Float32Array(numFilters);
 			var lowerLimitFreq = 50;
 			var upperLimitFreq = audioContext.sampleRate/2;
 			var lowerLimitMel = freqToMel(lowerLimitFreq);
 			var upperLimitMel = freqToMel(upperLimitFreq);
 
-			melFilterBank[0] = lowerLimitMel;
-			melFilterBank[melFilterBank.length-1] = upperLimitMel;
+			melValues[0] = lowerLimitMel;
+			melValues[melValues.length-1] = upperLimitMel;
 
 			var range = upperLimitMel-lowerLimitMel;
 			var valueToAdd = range/(numFilters-2);
 
-			for(var i = 1; i < melFilterBank.length-1; i++){
-				melFilterBank[i] = i*valueToAdd;
+			for(var i = 1; i < melValues.length-1; i++){
+				melValues[i] = i*valueToAdd;
 			}
-			for (var i = 0; i < melFilterBank.length; i++) {
-				melFilterBankInFreq[i] = melToFreq(melFilterBank[i]);
+
+			var fftBinsOfFreq = Array(numFilters);
+			for (var i = 0; i < melValues.length; i++) {
+				melValuesInFreq[i] = melToFreq(melValues[i]);
+				fftBinsOfFreq[i] = Math.floor((bufferSize+1)*melValuesInFreq[i]/audioContext.sampleRate);
 			};
 
-			return melFilterBankInFreq;
+			return fftBinsOfFreq;
 		}
 	}
 	//create nodes
