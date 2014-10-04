@@ -30,7 +30,7 @@
 
 			document.body.onkeydown = function() {
 				tune.play();
-				console.log(m.get("spectralFlatness"));
+				console.log(m.get(["spectralCentroid","spectralSpread","spectralSkewness","spectralKurtosis"]));
 			}
 		}
 	</script>
