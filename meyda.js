@@ -74,14 +74,12 @@ var Meyda = function(audioContext,source,bufferSize){
 		},
 		"spectralFlatness": function(bufferSize, m, spectrum){
 			var powspec = m.featureExtractors.powerSpectrum(bufferSize, m, spectrum);
-			// console.log(powspec);
 			var numerator = 0;
 			var denominator = 0;
 			for(var i = 0; i < powspec.length-1;i++){
 				numerator += Math.log(powspec[i]);
 				denominator += powspec[i];
 			}
-			console.log("spec", powspec);
 			return Math.exp((1/powspec.length)*numerator)/((1/powspec.length)*denominator);
 		},
 		"amplitudeSpectrum": function(bufferSize, m, spectrum){
@@ -122,7 +120,6 @@ var Meyda = function(audioContext,source,bufferSize){
 				barkScale[i] = 13*Math.atan(barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow(barkScale[i]/7518,2));
 			}
 
-			// console.log("bark: ", barkScale);
 			var bbLimits = [0];
 			var currentBandEnd = barkScale[bufferSize-1]/NUM_BARK_BANDS;
 			var currentBand = 1;
@@ -133,7 +130,7 @@ var Meyda = function(audioContext,source,bufferSize){
 					currentBandEnd = (currentBand*barkScale[bufferSize-1])/NUM_BARK_BANDS;
 				}
 			}
-			// console.log("bbLimits", bbLimits);
+
 			bbLimits[NUM_BARK_BANDS] = bufferSize-1;
 
 			for (var i = 1; i <= NUM_BARK_BANDS; i++){
