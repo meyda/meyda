@@ -107,7 +107,7 @@ var Meyda = function(audioContext,source,bufferSize){
 
 			}
 			return powerRatioSpectrum;
-		}
+		},
 		"loudness": function(bufferSize, m, spectrum){
 
 			var barkScale = Float32Array(bufferSize);
