@@ -206,7 +206,7 @@ var Meyda = function(audioContext,source,bufferSize){
 			melValues[melValues.length-1] = upperLimitMel;
 
 			var range = upperLimitMel-lowerLimitMel;
-			var valueToAdd = range/(numFilters-2);
+			var valueToAdd = range/(numFilters-1);
 
 			var fftBinsOfFreq = Array(numFilters);
 			for (var i = 0; i < melValues.length; i++) {
@@ -217,7 +217,7 @@ var Meyda = function(audioContext,source,bufferSize){
 
 			var filterBank = Array(numFilters);
 			for (var j = 0; j < filterBank.length; j++) {
-				//creating a two dimensional array of size numFiltes * (buffersize/2)+1 and pre-filling the arrays with 0s.
+				//creating a two dimensional array of size numFiltes * (buffersize/2)+1 and pre-populating the arrays with 0s.
 				filterBank[j] = Array.apply(null, new Array((bufferSize/2)+1)).map(Number.prototype.valueOf,0); 
 				for (var i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j+1]; i++) {
 					filterBank[j][i] = (i - fftBinsOfFreq[j])/(fftBinsOfFreq[j+1]-fftBinsOfFreq[j]);
@@ -233,10 +233,15 @@ var Meyda = function(audioContext,source,bufferSize){
 					filterBank[i][j] = filterBank[i][j]*powSpec[i];
 					mfcc[i] += filterBank[i][j];
 				}
+				mfcc[i] = Math.log(mfcc[i]); 
 			}
 
-			for (var i = 0; i < mfcc.length; i++) {
-				mfcc[i] = Math.log(mfcc[i]);
+			for (var k = 0; k < mfcc.length; k++) {
+				var v = 0;
+				for (var n = 0; n < mfcc.length-1; n++) {
+					v += mfcc[n]*Math.cos(Math.PI*k*(2*n+1)/(2*mfcc.length));
+				}
+				mfcc[k] = v;
 			}
 			return mfcc;
 		}
