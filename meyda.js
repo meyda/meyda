@@ -24,6 +24,9 @@ var Meyda = function(audioContext,source,bufferSize){
 	}
 
 	self.featureExtractors = {
+		"buffer" : function(bufferSize,m,spectrum, signal){
+			return signal;
+		},
 		"rms": function(bufferSize, m, spectrum, signal){
 			var rms = 0;
 			for(var i = 0 ; i < signal.length ; i++){
@@ -138,7 +141,7 @@ var Meyda = function(audioContext,source,bufferSize){
 			var NUM_BARK_BANDS = 24;
 			var spec = Float32Array(NUM_BARK_BANDS);
 			var tot = 0;
-			var normalisedSpectrum = m.featureExtractors["normalisedSpectrum"](bufferSize, m, spectrum);
+			var normalisedSpectrum = m.featureExtractors["amplitudeSpectrum"](bufferSize, m, spectrum);
 
 			for(var i = 0; i < barkScale.length; i++){
 				barkScale[i] = i*m.audioContext.sampleRate/(bufferSize);
@@ -282,10 +285,10 @@ var Meyda = function(audioContext,source,bufferSize){
 		self.analyser.getFloatTimeDomainData(signal);
 
 		if(typeof feature === "object"){
-			var results = new Array();
+			var results = {};
 			for (var x = 0; x < feature.length; x++){
 				try{
-					results.push(self.featureExtractors[feature[x]](bufferSize, self, spectrum, signal));
+					results[feature[x]] = (self.featureExtractors[feature[x]](bufferSize, self, spectrum, signal));
 				} catch (e){
 					console.error(e);
 				}

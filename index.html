@@ -29,9 +29,9 @@
 			var m = new Meyda(context,source,512);
 
 			document.body.onkeydown = function() {
-				tune.play();
-				console.log(m.get("mfcc"));
-			}
+			tune.play();
+			console.log(JSON.stringify(m.get(["buffer","rms", "energy", "spectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
+		}
 		}
 	</script>
 </body>
