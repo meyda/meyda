@@ -2,15 +2,16 @@
 <html>
 <head>
 	<title>Meyda</title>
-	<script type="text/javascript" src="main.js"></script>
+	<script type="text/javascript" src="meyda.js"></script>
 	<meta charset="UTF-8">
 </head>
 <body>
-	<audio src="test.mp3" id="tune" controls></audio>
+	<audio src="audio/test.mp3" id="tune" controls></audio>
 	<script>
-
+		var m;
 		var tune = document.getElementById('tune');
 		tune.oncanplaythrough = function (e) {
+			tune.volume = 1.0;
 			console.log("audio loaded");
 			init();
 			tune.play();
@@ -23,16 +24,17 @@
 			var context = new AudioContext();
 
 			// create audionode from mic
-			window.source = context.createMediaElementSource( tune );
 
+			window.source = context.createMediaElementSource( tune );
+			console.log(window.source);
 			// instantiate new medya
-			var m = new Meyda(context,source,256);
+			m = new Meyda(context,source,512);
 
 			document.body.onkeydown = function() {
-				tune.play();
-				m.get(["amplitudeSpectrum", "spectrum"]);
-				console.log(m.get(["spectrum","amplitudeSpectrum"]));
-			}
+			// tune.play();
+			console.log(m.get('spectrum'));
+			// console.log(JSON.stringify(m.get(["buffer","rms", "energy", "spectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
+		}
 		}
 	</script>
 </body>
