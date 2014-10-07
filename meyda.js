@@ -282,6 +282,12 @@ var Meyda = function(audioContext,source,bufferSize){
 	//create nodes
 	self.spn = audioContext.createScriptProcessorNode();
 
+	scriptNode.onaudioprocess = function(audioProcessingEvent) {
+		self.signal = audioProcessingEvent.inputBuffer;
+
+		// self=spectrum = fftjsmagic;
+	}
+
 	self.audioContext = audioContext;
 
 	// console.log(self.analyser);
@@ -305,7 +311,7 @@ var Meyda = function(audioContext,source,bufferSize){
 			throw "Invalid Feature Format";
 		}
 	}
-	source.connect(self.analyser, 0, 0);
+	source.connect(self.spn, 0, 0);
 	return self;
 }
 
