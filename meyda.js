@@ -28,6 +28,7 @@ var Meyda = function(audioContext,source,bufferSize){
 			return signal;
 		},
 		"rms": function(bufferSize, m, spectrum, signal){
+
 			var rms = 0;
 			for(var i = 0 ; i < signal.length ; i++){
 				rms += Math.pow(signal[i],2);
@@ -71,7 +72,7 @@ var Meyda = function(audioContext,source,bufferSize){
 			for(var i = 0; i < magspec.length; i++){
 				ec += magspec[i];
 			}
-			var threshold = 0.99 * ec;
+			var threshold = 0.85 * ec;
 			var n = magspec.length - 1;
 			while(ec > threshold && n >= 0){
 				ec -= magspec[n];
@@ -214,7 +215,7 @@ var Meyda = function(audioContext,source,bufferSize){
 		},
 		"mfcc": function(bufferSize, m, spectrum){
 			//used tutorial from http://practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/
-			var powSpec = m.featureExtractors["powerSpectrum"](bufferSize, m, spectrum);
+			var powSpec = m.featureExtractors["amplitudeSpectrum"](bufferSize, m, spectrum);
 			var freqToMel = function(freqValue){
 				var melValue = 1125*Math.log(1+(freqValue/700));
 				return melValue
@@ -240,6 +241,9 @@ var Meyda = function(audioContext,source,bufferSize){
 				melValuesInFreq[i] = melToFreq(melValues[i]);
 				fftBinsOfFreq[i] = Math.floor((bufferSize+1)*melValuesInFreq[i]/audioContext.sampleRate);
 			};
+			// console.log('mel', melValues);
+			// console.log('melInFreq', melValuesInFreq);
+			// console.log('fftBinsOfFreq', fftBinsOfFreq);
 
 			var filterBank = Array(numFilters);
 			for (var j = 0; j < filterBank.length; j++) {
@@ -252,6 +256,7 @@ var Meyda = function(audioContext,source,bufferSize){
 					filterBank[j][i] = (fftBinsOfFreq[j+2]-i)/(fftBinsOfFreq[j+2]-fftBinsOfFreq[j+1]) 
 				}
 			}
+			// console.log('fb',filterBank);
 
 			var mfcc = Array.apply(null, new Array(numFilters)).map(Number.prototype.valueOf,0);
 			for (var i = 0; i < mfcc.length; i++) {
@@ -259,8 +264,10 @@ var Meyda = function(audioContext,source,bufferSize){
 					filterBank[i][j] = filterBank[i][j]*powSpec[i];
 					mfcc[i] += filterBank[i][j];
 				}
+				console.log(mfcc[i]);
 				mfcc[i] = Math.log(mfcc[i]); 
 			}
+			// console.log('mfcc', mfcc);
 
 			for (var k = 0; k < mfcc.length; k++) {
 				var v = 0;
@@ -274,8 +281,14 @@ var Meyda = function(audioContext,source,bufferSize){
 	}
 	//create nodes
 	self.analyser = audioContext.createAnalyser();
+	self.analyser.context = audioContext;
 	self.analyser.fftSize = bufferSize;
+	self.analyser.smoothingTimeConstant = 0;
+	self.analyser.minDecibels = -120;
+	self.analyser.maxDecibels = 0;
 	self.audioContext = audioContext;
+
+	// console.log(self.analyser);
 
 	self.get = function(feature) {
 
@@ -284,6 +297,7 @@ var Meyda = function(audioContext,source,bufferSize){
 
 		var signal = new Float32Array(bufferSize);
 		self.analyser.getFloatTimeDomainData(signal);
+		// console.log(signal);
 
 		if(typeof feature === "object"){
 			var results = {};
@@ -303,7 +317,7 @@ var Meyda = function(audioContext,source,bufferSize){
 			throw "Invalid Feature Format";
 		}
 	}
-	source.connect(self.analyser);
+	source.connect(self.analyser, 0, 0);
 	return self;
 }
 
