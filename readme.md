@@ -10,9 +10,9 @@ is a javascript audio feature extraction library designed for and implemented in
 + rms
 + energy
 + zcr
-+ spectrum
-+ powerSpectrum
++ complexSpectrum
 + amplitudeSpectrum
++ powerSpectrum
 + spectralCentroid
 + spectralFlatness
 + spectralSlope
@@ -55,5 +55,9 @@ You can also pass an array of strings to get multiple features at a time
 var myFeatures = m.get(["rms", "loudness", "spectralCentroid"]);
 ```
 
+###Acknowledgements
+
+This library is using the [jsfft](https://github.com/dntj/jsfft "jsfft") implementation by [Nick Jones](https://github.com/dntj "Nick Jones") released under the MIT License.
+The authors would like to thank [Rebecca Fiebrink](https://twitter.com/RebeccaFiebrink "Rebecca Fiebrink") for essential guidance and support.
 
 
