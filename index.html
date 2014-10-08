@@ -33,7 +33,7 @@
 
 			window.source = context.createMediaElementSource( tune );
 			// instantiate new medya
-			m = new Meyda(context,source,512);
+			m = new Meyda(context,source,256);
 			document.body.onkeydown = function() {
 				// tune.play();
 				var suite = new Benchmark.Suite;
@@ -81,8 +81,6 @@
 				}).on('complete', function() {
 				  console.log('Fastest is ' + this.filter('fastest').pluck('name'));
 				}).run({'async':true});
-				// console.log(m.get('amplitudeSpectrum'));
-				// console.log(JSON.stringify(m.get(["buffer","rms", "energy", "complexSpectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
 			}
 		}
 	</script>
