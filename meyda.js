@@ -126,12 +126,11 @@ var Meyda = function(audioContext,source,bufferSize){
 			return zcr;
 		},
 		"powerSpectrum": function(bufferSize, m){
-			var powerRatioSpectrum = new Float32Array(m.ampSpectrum.length);
-			for (var i = 0; i < m.ampSpectrum.length; i++) {
-				powerRatioSpectrum[i] =  Math.pow(10,m.ampSpectrum[i]/10);
-
+			var powerSpectrum = new Float32Array(m.ampSpectrum.length);
+			for (var i = 0; i < powerSpectrum.length; i++) {
+				powerSpectrum[i] =  Math.pow(m.ampSpectrum[i],2);
 			}
-			return powerRatioSpectrum;
+			return powerSpectrum;
 		},
 		"loudness": function(bufferSize, m){
 			var barkScale = Float32Array(bufferSize);
