@@ -2,12 +2,22 @@
 <html>
 <head>
 	<title>Meyda</title>
+	<script type="text/javascript" src= "//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+	<script type="text/javascript" src= "//cdnjs.cloudflare.com/ajax/libs/platform/1.2.0/platform.js"></script>
+	<script type="text/javascript" src= "//cdnjs.cloudflare.com/ajax/libs/benchmark/1.0.0/benchmark.js"></script>
 	<script type="text/javascript" src="meyda.js"></script>
+	<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
+	<script type="text/javascript" src="lib/jsfft/fft.js"></script>
 	<meta charset="UTF-8">
 </head>
 <body>
+	<applet code="nano" archive="../nano.jar"></applet>
 	<audio src="audio/test.mp3" id="tune" controls></audio>
 	<script>
+		var suite = new Benchmark.Suite;
+		suite.add('yes', function(){
+			return true;
+		}).run({'async':true});
 		var m;
 		var tune = document.getElementById('tune');
 		tune.oncanplaythrough = function (e) {
@@ -32,9 +42,9 @@
 
 			document.body.onkeydown = function() {
 			// tune.play();
-			console.log(m.get('spectrum'));
-			// console.log(JSON.stringify(m.get(["buffer","rms", "energy", "spectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
-		}
+			// console.log(m.get('amplitudeSpectrum'));
+			console.log(JSON.stringify(m.get(["buffer","rms", "energy", "complexSpectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
+			}
 		}
 	</script>
 </body>
