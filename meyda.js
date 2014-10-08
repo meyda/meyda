@@ -240,12 +240,12 @@ var Meyda = function(audioContext,source,bufferSize){
 			var filterBank = Array(numFilters);
 			for (var j = 0; j < filterBank.length; j++) {
 				//creating a two dimensional array of size numFiltes * (buffersize/2)+1 and pre-populating the arrays with 0s.
-				filterBank[j] = Array.apply(null, new Array((bufferSize/2)+1)).map(Number.prototype.valueOf,0); 
+				filterBank[j] = Array.apply(null, new Array((bufferSize/2)+1)).map(Number.prototype.valueOf,0);
 				for (var i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j+1]; i++) {
 					filterBank[j][i] = (i - fftBinsOfFreq[j])/(fftBinsOfFreq[j+1]-fftBinsOfFreq[j]);
 				}
 				for (var i = fftBinsOfFreq[j+1]; i < fftBinsOfFreq[j+2]; i++) {
-					filterBank[j][i] = (fftBinsOfFreq[j+2]-i)/(fftBinsOfFreq[j+2]-fftBinsOfFreq[j+1]) 
+					filterBank[j][i] = (fftBinsOfFreq[j+2]-i)/(fftBinsOfFreq[j+2]-fftBinsOfFreq[j+1])
 				}
 			}
 
@@ -255,7 +255,7 @@ var Meyda = function(audioContext,source,bufferSize){
 					filterBank[i][j] = filterBank[i][j]*powSpec[i];
 					mfcc[i] += filterBank[i][j];
 				}
-				mfcc[i] = Math.log(mfcc[i]); 
+				mfcc[i] = Math.log(mfcc[i]);
 			}
 
 			for (var k = 0; k < mfcc.length; k++) {
@@ -272,26 +272,27 @@ var Meyda = function(audioContext,source,bufferSize){
 	self.spn = audioContext.createScriptProcessor(bufferSize,1,0);
 
 	self.spn.onaudioprocess = function(e) {
-		
-		var inputData = e.inputBuffer.getChannelData(0); 
+		//this is to obtain the current amplitude spectrum
+		var inputData = e.inputBuffer.getChannelData(0);
 		self.signal = inputData;
 
-		// self=spectrum = fftjsmagic;
+		//create complexarray to hold the spectrum
 		var data = new complex_array.ComplexArray(bufferSize);
-		
+		//map time domain
 		data.map(function(value, i, n) {
 			value.real = inputData[i];
 		});
+		//transform
 		var spec = data.FFT();
-
+		//assign to meyda
 		self.complexSpectrum = spec;
 		self.ampSpectrum = new Float32Array(bufferSize/2);
-
+		//calculate amplitude
 		for (var i = 0; i < bufferSize/2; i++) {
 			self.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i],2) + Math.pow(spec.imag[i],2));
 
-		}	
-		
+		}
+
 	}
 
 	self.audioContext = audioContext;
