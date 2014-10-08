@@ -3,6 +3,8 @@
 <head>
 	<title>Meyda</title>
 	<script type="text/javascript" src="meyda.js"></script>
+	<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
+	<script type="text/javascript" src="lib/jsfft/fft.js"></script>
 	<meta charset="UTF-8">
 </head>
 <body>
@@ -32,9 +34,9 @@
 
 			document.body.onkeydown = function() {
 			// tune.play();
-			console.log(m.get('spectrum'));
-			// console.log(JSON.stringify(m.get(["buffer","rms", "energy", "spectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
-		}
+			// console.log(m.get('amplitudeSpectrum'));
+			console.log(JSON.stringify(m.get(["buffer","rms", "energy", "complexSpectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
+			}
 		}
 	</script>
 </body>
