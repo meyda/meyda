@@ -44,30 +44,30 @@ var Meyda = function(audioContext,source,bufferSize){
 			}
 			return energy;
 		},
-		"spectrum": function(bufferSize, m) {
-			return mspectrum;
+		"complexSpectrum": function(bufferSize, m) {
+			return m.complexSpectrum;
 		},
 		"spectralSlope": function(bufferSize, m) {
 			//linear regression
 			var x = 0.0, y = 0.0, xy = 0.0, x2 = 0.0;
-			for (var i = 0; i < m.spectrum.length; i++) {
-				y += m.spectrum[i];
-				xy += m.spectrum[i] * i;
+			for (var i = 0; i < m.ampSpectrum.length; i++) {
+				y += m.ampSpectrum[i];
+				xy += m.ampSpectrum[i] * i;
 				x2 += i*i;
 			};
 
-			x = m.spectrum.length/2;
-			y /= m.spectrum.length;
-			xy /= m.spectrum.length;
-			x2 /= m.spectrum.length;
+			x = m.ampSpectrum.length/2;
+			y /= m.ampSpectrum.length;
+			xy /= m.ampSpectrum.length;
+			x2 /= m.ampSpectrum.length;
 
 			return (x*y - xy)/(x*x - x2);
 		},
 		"spectralCentroid": function(bufferSize, m){
-			return µ(1,m.featureExtractors.amplitudeSpectrum(bufferSize,m.spectrum));
+			return µ(1,m.ampSpectrum);
 		},
 		"spectralRolloff": function(bufferSize, m){
-			var magspec = m.featureExtractors.amplitudeSpectrum(bufferSize, m);
+			var magspec = m.ampSpectrum;
 			var ec = 0;
 			for(var i = 0; i < magspec.length; i++){
 				ec += magspec[i];
@@ -91,11 +91,11 @@ var Meyda = function(audioContext,source,bufferSize){
 			return Math.exp((1/powspec.length)*numerator)/((1/powspec.length)*denominator);
 		},
 		"spectralSpread": function(bufferSize, m){
-			var magspec = m.featureExtractors.amplitudeSpectrum(bufferSize, m);
+			var magspec = m.ampSpectrum;
 			return Math.sqrt(µ(2,magspec)-Math.pow(µ(1,magspec),2));
 		},
 		"spectralSkewness": function(bufferSize, m, spectrum){
-			var magspec = m.featureExtractors.amplitudeSpectrum(bufferSize, m);
+			var magspec = m.ampSpectrum;
 			var µ1 = µ(1,magspec);
 			var µ2 = µ(2,magspec);
 			var µ3 = µ(3,magspec);
@@ -104,7 +104,7 @@ var Meyda = function(audioContext,source,bufferSize){
 			return numerator/denominator;
 		},
 		"spectralKurtosis": function(bufferSize, m){
-			var magspec = m.featureExtractors.amplitudeSpectrum(bufferSize, m);
+			var magspec = m.ampSpectrum;
 			var µ1 = µ(1,magspec);
 			var µ2 = µ(2,magspec);
 			var µ3 = µ(3,magspec);
@@ -114,12 +114,7 @@ var Meyda = function(audioContext,source,bufferSize){
 			return numerator/denominator;
 		},
 		"amplitudeSpectrum": function(bufferSize, m){
-			var ampRatioSpectrum = new Float32Array(m.spectrum.length);
-			for (var i = 0; i < m.spectrum.length; i++) {
-				ampRatioSpectrum[i] =  Math.pow(10,m.spectrum[i]/20);
-
-			}
-			return ampRatioSpectrum;
+			return m.ampSpectrum;
 		},
 		"zcr": function(bufferSize, ml){
 			var zcr = 0;
@@ -131,9 +126,9 @@ var Meyda = function(audioContext,source,bufferSize){
 			return zcr;
 		},
 		"powerSpectrum": function(bufferSize, m){
-			var powerRatioSpectrum = new Float32Array(m.spectrum.length);
-			for (var i = 0; i < m.spectrum.length; i++) {
-				powerRatioSpectrum[i] =  Math.pow(10,m.spectrum[i]/10);
+			var powerRatioSpectrum = new Float32Array(m.ampSpectrum.length);
+			for (var i = 0; i < m.ampSpectrum.length; i++) {
+				powerRatioSpectrum[i] =  Math.pow(10,m.ampSpectrum[i]/10);
 
 			}
 			return powerRatioSpectrum;
@@ -143,7 +138,7 @@ var Meyda = function(audioContext,source,bufferSize){
 			var NUM_BARK_BANDS = 24;
 			var spec = Float32Array(NUM_BARK_BANDS);
 			var tot = 0;
-			var normalisedSpectrum = m.featureExtractors["amplitudeSpectrum"](bufferSize, m);
+			var normalisedSpectrum = m.ampSpectrum;
 
 			for(var i = 0; i < barkScale.length; i++){
 				barkScale[i] = i*m.audioContext.sampleRate/(bufferSize);
@@ -215,7 +210,7 @@ var Meyda = function(audioContext,source,bufferSize){
 		},
 		"mfcc": function(bufferSize, m){
 			//used tutorial from http://practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/
-			var powSpec = m.featureExtractors["amplitudeSpectrum"](bufferSize, m);
+			var powSpec = m.ampSpectrum; //TBD: change to power spectrum!
 			var freqToMel = function(freqValue){
 				var melValue = 1125*Math.log(1+(freqValue/700));
 				return melValue
@@ -241,9 +236,6 @@ var Meyda = function(audioContext,source,bufferSize){
 				melValuesInFreq[i] = melToFreq(melValues[i]);
 				fftBinsOfFreq[i] = Math.floor((bufferSize+1)*melValuesInFreq[i]/audioContext.sampleRate);
 			};
-			// console.log('mel', melValues);
-			// console.log('melInFreq', melValuesInFreq);
-			// console.log('fftBinsOfFreq', fftBinsOfFreq);
 
 			var filterBank = Array(numFilters);
 			for (var j = 0; j < filterBank.length; j++) {
@@ -256,7 +248,6 @@ var Meyda = function(audioContext,source,bufferSize){
 					filterBank[j][i] = (fftBinsOfFreq[j+2]-i)/(fftBinsOfFreq[j+2]-fftBinsOfFreq[j+1]) 
 				}
 			}
-			// console.log('fb',filterBank);
 
 			var mfcc = Array.apply(null, new Array(numFilters)).map(Number.prototype.valueOf,0);
 			for (var i = 0; i < mfcc.length; i++) {
@@ -264,10 +255,8 @@ var Meyda = function(audioContext,source,bufferSize){
 					filterBank[i][j] = filterBank[i][j]*powSpec[i];
 					mfcc[i] += filterBank[i][j];
 				}
-				console.log(mfcc[i]);
 				mfcc[i] = Math.log(mfcc[i]); 
 			}
-			// console.log('mfcc', mfcc);
 
 			for (var k = 0; k < mfcc.length; k++) {
 				var v = 0;
@@ -280,17 +269,32 @@ var Meyda = function(audioContext,source,bufferSize){
 		}
 	}
 	//create nodes
-	self.spn = audioContext.createScriptProcessorNode();
+	self.spn = audioContext.createScriptProcessor(bufferSize,1,0);
 
-	scriptNode.onaudioprocess = function(audioProcessingEvent) {
-		self.signal = audioProcessingEvent.inputBuffer;
+	self.spn.onaudioprocess = function(e) {
+		
+		var inputData = e.inputBuffer.getChannelData(0); 
+		self.signal = inputData;
 
 		// self=spectrum = fftjsmagic;
+		var data = new complex_array.ComplexArray(bufferSize);
+		
+		data.map(function(value, i, n) {
+			value.real = inputData[i];
+		});
+		var spec = data.FFT();
+
+		self.complexSpectrum = spec;
+		self.ampSpectrum = new Float32Array(bufferSize/2);
+
+		for (var i = 0; i < bufferSize/2; i++) {
+			self.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i],2) + Math.pow(spec.imag[i],2));
+
+		}	
+		
 	}
 
 	self.audioContext = audioContext;
-
-	// console.log(self.analyser);
 
 	self.get = function(feature) {
 		if(typeof feature === "object"){
@@ -314,4 +318,5 @@ var Meyda = function(audioContext,source,bufferSize){
 	source.connect(self.spn, 0, 0);
 	return self;
 }
+
 
