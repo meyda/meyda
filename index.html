@@ -2,12 +2,16 @@
 <html>
 <head>
 	<title>Meyda</title>
+	<script type="text/javascript" src= "//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+	<script type="text/javascript" src= "//cdnjs.cloudflare.com/ajax/libs/platform/1.2.0/platform.js"></script>
+	<script type="text/javascript" src= "//cdnjs.cloudflare.com/ajax/libs/benchmark/1.0.0/benchmark.js"></script>
 	<script type="text/javascript" src="meyda.js"></script>
 	<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
 	<script type="text/javascript" src="lib/jsfft/fft.js"></script>
 	<meta charset="UTF-8">
 </head>
 <body>
+	<applet code="nano" codebase="benchmarking/"archive="benchmarking/nano.jar"></applet>
 	<audio src="audio/test.mp3" id="tune" controls></audio>
 	<script>
 		var m;
@@ -28,14 +32,57 @@
 			// create audionode from mic
 
 			window.source = context.createMediaElementSource( tune );
-			console.log(window.source);
 			// instantiate new medya
 			m = new Meyda(context,source,512);
-
 			document.body.onkeydown = function() {
-			// tune.play();
-			// console.log(m.get('amplitudeSpectrum'));
-			console.log(JSON.stringify(m.get(["buffer","rms", "energy", "complexSpectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
+				// tune.play();
+				var suite = new Benchmark.Suite;
+			
+				suite.add('All Features', function(){
+					m.get(["buffer","rms", "energy", "complexSpectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"]);
+				}).add('Buffer', function(){
+					m.get('buffer');
+				}).add('RMS', function(){
+					m.get('rms');
+				}).add('Energy', function(){
+					m.get('energy');
+				}).add('MFCC', function(){
+					m.get('mfcc');
+				}).add('Complex Spectrum', function(){
+					m.get('complexSpectrum');
+				}).add('Spectral Slope', function(){
+					m.get('spectralSlope');
+				}).add('Spectral Centroid', function(){
+					m.get('spectralCentroid');
+				}).add('Spectral Rolloff', function(){
+					m.get('spectralRolloff');
+				}).add('Spectral Flatness', function(){
+					m.get('spectralFlatness');
+				}).add('Spectral Spread', function(){
+					m.get('spectralSpread');
+				}).add('Spectral Skewness', function(){
+					m.get('spectralSkewness');
+				}).add('Spectral Kurtosis', function(){
+					m.get('spectralKurtosis');
+				}).add('Amplitude Spectrum', function(){
+					m.get('amplitudeSpectrum');
+				}).add('ZCR', function(){
+					m.get('zcr');
+				}).add('Power Spectrum', function(){
+					m.get('powerSpectrum');
+				}).add('Loudness', function(){
+					m.get('loudness');
+				}).add('Perceptual Spread', function(){
+					m.get('perceptualSpread');
+				}).add('Perceptual Sharpness', function(){
+					m.get('perceptualSharpness');
+				}).on('cycle', function(event) {
+				  console.log(String(event.target));
+				}).on('complete', function() {
+				  console.log('Fastest is ' + this.filter('fastest').pluck('name'));
+				}).run({'async':true});
+				// console.log(m.get('amplitudeSpectrum'));
+				// console.log(JSON.stringify(m.get(["buffer","rms", "energy", "complexSpectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
 			}
 		}
 	</script>
