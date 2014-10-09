@@ -5,12 +5,19 @@
 	<script type="text/javascript" src="meyda.js"></script>
 	<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
 	<script type="text/javascript" src="lib/jsfft/fft.js"></script>
+	<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css">
 	<meta charset="UTF-8">
 </head>
 <body>
+	<h2>meyda</h2>
+	<h3>audio feature extraction library for the Web</h3>
 	<audio src="audio/test.mp3" id="tune" controls></audio>
+	<form id="featuresForm">
+
+	</form>
 	<script>
-		var m;
+		var meyda;
 		var tune = document.getElementById('tune');
 		tune.oncanplaythrough = function (e) {
 			tune.volume = 1.0;
@@ -30,12 +37,15 @@
 			window.source = context.createMediaElementSource( tune );
 			console.log(window.source);
 			// instantiate new medya
-			m = new Meyda(context,source,512);
+			meyda = new Meyda(context,source,512);
+
+			$.each(meyda.featureExtractors, function(v, i) {
+				$("#featuresForm").append('<input type="checkbox" id="' + v + '" name="' + v + '">' + v + '<br>');
+			});
 
 			document.body.onkeydown = function() {
-			// tune.play();
-			// console.log(m.get('amplitudeSpectrum'));
-			console.log(JSON.stringify(m.get(["buffer","rms", "energy", "complexSpectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
+
+
 			}
 		}
 	</script>

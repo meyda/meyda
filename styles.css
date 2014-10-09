@@ -1,0 +1,17 @@
+body {
+	font-family: verdana;
+	font-weight: normal;
+	font-size: 12px;
+}
+
+h2 {
+	font-size: 50px;
+	font-family: verdana;
+	font-weight: normal;
+	letter-spacing: -3px;
+}
+
+h3 {
+	font-weight: normal;
+	font-size: 20px;
+}
