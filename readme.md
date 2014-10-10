@@ -40,6 +40,7 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
 
 // create source node (this could be any kind of Media source or a Web Audio Buffer source)
+var tune = new Audio('audio/guitar.mp3');
 window.source = context.createMediaElementSource( tune );
 
 // instantiate new meyda with buffer size of 256

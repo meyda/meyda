@@ -5,49 +5,82 @@
 	<script type="text/javascript" src="meyda.js"></script>
 	<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
 	<script type="text/javascript" src="lib/jsfft/fft.js"></script>
-	<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<meta charset="UTF-8">
 </head>
 <body>
-	<h2>meyda</h2>
-	<h3>audio feature extraction library for the Web</h3>
-	<audio src="audio/test.mp3" id="tune" controls></audio>
+	<h3>meyda</h3>
+	<h4>audio feature extraction library for the Web</h4>
 	<form id="featuresForm">
 
 	</form>
+	<div id="extraction">
+		<audio src="audio/test.mp3" id="tune" controls></audio><br><br>
+	</div>
 	<script>
 		var meyda;
+		var featuresToExtract = [];
+		var extractionInterval;
+
 		var tune = document.getElementById('tune');
 		tune.oncanplaythrough = function (e) {
 			tune.volume = 1.0;
 			console.log("audio loaded");
 			init();
-			tune.play();
 		}
 
 		// callback for mic position
 		function init() {
+
+
 			// polyfill
 			window.AudioContext = window.AudioContext || window.webkitAudioContext;
 			var context = new AudioContext();
 
 			// create audionode from mic
-
 			window.source = context.createMediaElementSource( tune );
-			console.log(window.source);
+
 			// instantiate new medya
 			meyda = new Meyda(context,source,512);
 
 			$.each(meyda.featureExtractors, function(v, i) {
-				$("#featuresForm").append('<input type="checkbox" id="' + v + '" name="' + v + '">' + v + '<br>');
+				$("#featuresForm").append('<input class="featureCheckbox" type="checkbox" id="' + v + '" name="' + v + '">' + v + '<br>');
 			});
 
-			document.body.onkeydown = function() {
+			$("#featuresForm").append('<br><button type="button" id="submitFeatures">Extract Features</button>');
 
+			$(".featureCheckbox").each(function(){
 
+				$(this).change(function(){
+					if(this.checked) {
+						featuresToExtract.push($(this).attr("id"));
+						$("#extraction").append($(this).attr("id") + ': <span id="' + $(this).attr("id") + 'Display"><br><br>');
+					}
+				})
+			})
+
+			$("#submitFeatures").click(function(){
+				$("#featuresForm").fadeOut(100, function() {
+					$("#extraction").fadeIn();
+					tune.play();
+				});
+			});
+
+			tune.onplay = function() {
+				extractionInterval = setInterval(function() {
+					var f = meyda.get(featuresToExtract);
+					$.each(featuresToExtract, function(v, i) {
+						$("#" + i + "Display").html(f[i] + "<br><br>");
+					});
+				}, 50);
+			};
+
+			tune.onpause = function() {
+				clearInterval(extractionInterval);
 			}
 		}
+
 	</script>
 </body>
 </html>
