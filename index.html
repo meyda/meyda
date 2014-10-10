@@ -16,7 +16,7 @@
 
 	</form>
 	<div id="extraction">
-		<audio src="audio/test.mp3" id="tune" controls></audio><br><br>
+		<audio src="audio/speech.mp3" id="tune" controls></audio><br><br>
 	</div>
 	<script>
 		var meyda;
@@ -50,17 +50,14 @@
 
 			$("#featuresForm").append('<br><button type="button" id="submitFeatures">Extract Features</button>');
 
-			$(".featureCheckbox").each(function(){
-
-				$(this).change(function(){
-					if(this.checked) {
-						featuresToExtract.push($(this).attr("id"));
-						$("#extraction").append($(this).attr("id") + ': <span id="' + $(this).attr("id") + 'Display"><br><br>');
-					}
-				})
-			})
 
 			$("#submitFeatures").click(function(){
+				$(".featureCheckbox").each(function(){
+					if(this.checked) {
+						featuresToExtract.push($(this).attr("id"));
+						$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <span id="' + $(this).attr("id") + 'Display"><br><br>');
+					}
+				});
 				$("#featuresForm").fadeOut(100, function() {
 					$("#extraction").fadeIn();
 					tune.play();
@@ -68,16 +65,31 @@
 			});
 
 			tune.onplay = function() {
+				tune.play();
+				console.log("playing");
 				extractionInterval = setInterval(function() {
 					var f = meyda.get(featuresToExtract);
-					$.each(featuresToExtract, function(v, i) {
-						$("#" + i + "Display").html(f[i] + "<br><br>");
+					$.each(featuresToExtract, function(i, v) {
+						if (typeof f[v] == "object") {
+							$("#" + v + "Display").empty();
+							$.each(f[v], function(ind, val){
+								$("#" + v + "Display").append(f[v][ind] + " ");
+							});
+							$("#" + v + "Display").append("<br><br>");
+						}
+						else {
+							$("#" + v + "Display").html(f[v] + "<br><br>");
+						}
 					});
 				}, 50);
 			};
 
 			tune.onpause = function() {
 				clearInterval(extractionInterval);
+			}
+
+			document.onkeydown = function() {
+				tune.play();
 			}
 		}
 
