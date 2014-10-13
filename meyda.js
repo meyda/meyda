@@ -23,7 +23,7 @@ var Meyda = function(audioContext,source,bufferSize){
 	var hanning = function(sig){
 		var hann = Float32Array(sig.length);
 		var hanned = Float32Array(sig.length);
-		for (var i = 0; i < sig.length+1; i++) {
+		for (var i = 0; i < sig.length; i++) {
 			//According to the R documentation http://rgm.ogalab.net/RGM/R_rdfile?f=GENEAread/man/hanning.window.Rd&d=R_CC
 			hann[i] = 0.5 - 0.5*Math.cos(2*Math.PI*i/(sig.length-1));
 			hanned[i] = sig[i]*hann[i];
