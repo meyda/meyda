@@ -33,7 +33,7 @@
 
 			window.source = context.createMediaElementSource( tune );
 			// instantiate new medya
-			m = new Meyda(context,source,256);
+			m = new Meyda(context,source,512);
 			document.body.onkeydown = function() {
 				// tune.play();
 				var suite = new Benchmark.Suite;
@@ -80,7 +80,7 @@
 				  console.log(String(event.target));
 				}).on('complete', function() {
 				  console.log('Fastest is ' + this.filter('fastest').pluck('name'));
-				}).run({'async':true});
+				}).run();
 			}
 		}
 	</script>
