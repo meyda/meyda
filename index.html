@@ -35,6 +35,7 @@
 			// instantiate new medya
 			m = new Meyda(context,source,512);
 			document.body.onkeydown = function() {
+<<<<<<< HEAD
 				// tune.play();
 				var suite = new Benchmark.Suite;
 			
@@ -81,6 +82,11 @@
 				}).on('complete', function() {
 				  console.log('Fastest is ' + this.filter('fastest').pluck('name'));
 				}).run();
+=======
+			// tune.play();
+			console.log(m.get('complexSpectrum'));
+			// console.log(JSON.stringify(m.get(["buffer","rms", "energy", "complexSpectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
+>>>>>>> master
 			}
 		}
 	</script>
