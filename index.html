@@ -16,7 +16,7 @@
 
 	</form>
 	<div id="extraction">
-		<audio src="audio/speech.mp3" id="tune" controls></audio><br><br>
+		<audio src="audio/guitar.mp3" id="tune" controls></audio><br><br>
 	</div>
 	<script>
 		var meyda;
@@ -40,6 +40,7 @@
 
 			// create audionode from mic
 			window.source = context.createMediaElementSource( tune );
+			source.connect(context.destination);
 
 			// instantiate new medya
 			meyda = new Meyda(context,source,512);
@@ -55,7 +56,16 @@
 				$(".featureCheckbox").each(function(){
 					if(this.checked) {
 						featuresToExtract.push($(this).attr("id"));
-						$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <span id="' + $(this).attr("id") + 'Display"><br><br>');
+						if (meyda.featureInfo[$(this).attr("id")]["type"] == "number") {
+							$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <span id="' + $(this).attr("id") + 'Display"><br><br>');
+						}
+						else if (meyda.featureInfo[$(this).attr("id")]["type"] == "array") {
+							$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <canvas id="' + $(this).attr("id") + 'Display" class="graph"></canvas><br><br>');
+						}
+						else {
+							$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["1"] + 'Display" class="graph"></canvas>  <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["2"] + 'Display" class="graph"></canvas><br><br>');
+						}
+
 					}
 				});
 				$("#featuresForm").fadeOut(100, function() {
@@ -66,22 +76,23 @@
 
 			tune.onplay = function() {
 				tune.play();
-				console.log("playing");
 				extractionInterval = setInterval(function() {
 					var f = meyda.get(featuresToExtract);
 					$.each(featuresToExtract, function(i, v) {
-						if (typeof f[v] == "object") {
-							$("#" + v + "Display").empty();
-							$.each(f[v], function(ind, val){
-								$("#" + v + "Display").append(f[v][ind] + " ");
-							});
-							$("#" + v + "Display").append("<br><br>");
+						//check what type we're displaying
+						if (meyda.featureInfo[v]["type"] == "array") {
+							console.log(f);
+							renderArray($("#" + v + "Display")[0], f[v]);
+
+						}
+						else if (meyda.featureInfo[v]["type"] == "twoArrays") {
+
 						}
 						else {
 							$("#" + v + "Display").html(f[v] + "<br><br>");
 						}
 					});
-				}, 50);
+				}, 10);
 			};
 
 			tune.onpause = function() {
@@ -90,6 +101,20 @@
 
 			document.onkeydown = function() {
 				tune.play();
+			}
+
+			function renderArray(canvas, a) {
+				var c = canvas.getContext('2d');
+				c.fillStyle = "#000";
+				c.fillRect(0,0,canvas.width,canvas.height);
+
+				c.fillStyle = "#fff";
+				$.each(a, function(i, v) {
+					var mapped = (v) * ( 150) / ( 7.7534);
+					c.fillRect(i,canvas.height-mapped,2,mapped);
+
+				})
+
 			}
 		}
 

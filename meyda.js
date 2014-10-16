@@ -23,6 +23,67 @@ var Meyda = function(audioContext,source,bufferSize){
 	var self = this;
 
 	if (isPowerOfTwo(bufferSize)) {
+			self.featureInfo = {
+				"buffer": {
+					"type": "array"
+				},
+				"rms": {
+					"type": "number"
+				},
+				"energy": {
+					"type": "number"
+				},
+				"zcr": {
+					"type": "number"
+				},
+				"complexSpectrum": {
+					"type": "twoArrays",
+					"1": "real",
+					"2": "imag"
+				},
+				"amplitudeSpectrum": {
+					"type": "array"
+				},
+				"powerSpectrum": {
+					"type": "array"
+				},
+				"spectralCentroid": {
+					"type": "number"
+				},
+				"spectralFlatness": {
+					"type": "number"
+				},
+				"spectralSlope": {
+					"type": "number"
+				},
+				"spectralRolloff": {
+					"type": "number"
+				},
+				"spectralSpread": {
+					"type": "number"
+				},
+				"spectralSkewness": {
+					"type": "number"
+				},
+				"spectralKurtosis": {
+					"type": "number"
+				},
+				"loudness": {
+					"type": "twoArrays",
+					"1": "total",
+					"2": "specific"
+				},
+				"perceptualSpread": {
+					"type": "number"
+				},
+				"perceptualSharpness": {
+					"type": "number"
+				},
+				"mfcc": {
+					"type": "array"
+				}
+			}
+
 			self.featureExtractors = {
 				"buffer" : function(bufferSize,m){
 					return m.signal;
@@ -268,9 +329,9 @@ var Meyda = function(audioContext,source,bufferSize){
 				}
 			}
 			//create nodes
-			self.spn = audioContext.createScriptProcessor(bufferSize,1,0);
+			window.spn = audioContext.createScriptProcessor(bufferSize,1,0);
 
-			self.spn.onaudioprocess = function(e) {
+			window.spn.onaudioprocess = function(e) {
 				//this is to obtain the current amplitude spectrum
 				var inputData = e.inputBuffer.getChannelData(0);
 				self.signal = inputData;
@@ -315,7 +376,7 @@ var Meyda = function(audioContext,source,bufferSize){
 					throw "Invalid Feature Format";
 				}
 			}
-			source.connect(self.spn, 0, 0);
+			source.connect(window.spn, 0, 0);
 			return self;
 	}
 	else {
