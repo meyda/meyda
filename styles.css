@@ -29,3 +29,8 @@ h4 {
 .featuresCheckbox {
 	width: 100px;
 }
+
+.graph {
+	width: 300px;
+	height: 200px;
+}
