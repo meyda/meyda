@@ -16,7 +16,7 @@
 
 	</form>
 	<div id="extraction">
-		<audio src="audio/guitar.mp3" id="tune" controls></audio><br><br>
+		<audio src="audio/speech.wav" id="tune" controls></audio><br><br>
 	</div>
 	<script>
 		var meyda;
@@ -81,18 +81,19 @@
 					$.each(featuresToExtract, function(i, v) {
 						//check what type we're displaying
 						if (meyda.featureInfo[v]["type"] == "array") {
-							console.log(f);
 							renderArray($("#" + v + "Display")[0], f[v]);
 
 						}
 						else if (meyda.featureInfo[v]["type"] == "twoArrays") {
-
+							renderArray($("#" + v + meyda.featureInfo[v]["1"] + "Display")[0], f[v][meyda.featureInfo[v]["1"]]);
+							renderArray($("#" + v + meyda.featureInfo[v]["1"] + "Display")[0], f[v][meyda.featureInfo[v]["2"]]);
 						}
 						else {
 							$("#" + v + "Display").html(f[v] + "<br><br>");
+							console.log(f[v]);
 						}
 					});
-				}, 10);
+				}, 50);
 			};
 
 			tune.onpause = function() {
@@ -100,18 +101,21 @@
 			}
 
 			document.onkeydown = function() {
-				tune.play();
+				//tune.play();
+				console.log(meyda.get("loudness"));
 			}
 
 			function renderArray(canvas, a) {
+
 				var c = canvas.getContext('2d');
 				c.fillStyle = "#000";
 				c.fillRect(0,0,canvas.width,canvas.height);
 
 				c.fillStyle = "#fff";
 				$.each(a, function(i, v) {
-					var mapped = (v) * ( 150) / ( 7.7534);
-					c.fillRect(i,canvas.height-mapped,2,mapped);
+					var ysize = (v) * ( canvas.height) / ( 7.7534);
+					var xsize = i * canvas.width / a.length;
+					c.fillRect(i,canvas.height-ysize,2,ysize);
 
 				})
 
