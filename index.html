@@ -6,6 +6,7 @@
 	<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
 	<script type="text/javascript" src="lib/jsfft/fft.js"></script>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<meta charset="UTF-8">
 </head>
@@ -22,6 +23,9 @@
 		var meyda;
 		var featuresToExtract = [];
 		var extractionInterval;
+		var myBarChart = [];
+		var data = [];
+		var ctx = [];
 
 		var tune = document.getElementById('tune');
 		tune.oncanplaythrough = function (e) {
@@ -65,11 +69,34 @@
 						else {
 							$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["1"] + 'Display" class="graph"></canvas>  <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["2"] + 'Display" class="graph"></canvas><br><br>');
 						}
-
 					}
 				});
+
+
 				$("#featuresForm").fadeOut(100, function() {
 					$("#extraction").fadeIn();
+					var f = meyda.get(featuresToExtract);
+					$.each(featuresToExtract, function(i, v) {
+						// console.log();
+						// if (typeof f[v] == "object") {
+							// $("#" + v + "Display").empty();
+							data[i] = {
+							    labels: [v],
+							    datasets: [
+							        {
+							            // label: "My First dataset",
+							            fillColor: "rgba(220,220,220,0.5)",
+							            strokeColor: "rgba(220,220,220,0.8)",
+							            highlightFill: "rgba(220,220,220,0.75)",
+							            highlightStroke: "rgba(220,220,220,1)",
+							            data: [0]
+							        },
+							    ]
+							};
+
+						 	ctx[i] = document.getElementById(v+"Display").getContext("2d");
+							myBarChart[i] = new Chart(ctx[i]).Bar(data[i]);
+						});
 					tune.play();
 				});
 			});
@@ -92,6 +119,7 @@
 							$("#" + v + "Display").html(f[v] + "<br><br>");
 							console.log(f[v]);
 						}
+
 					});
 				}, 50);
 			};
