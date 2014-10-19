@@ -27,6 +27,17 @@ var Meyda = function(audioContext,source,bufSize,callback){
 		return (num == 1);
 	}
 
+	var hanning = function(sig){
+		var hann = Float32Array(sig.length);
+		var hanned = Float32Array(sig.length);
+		for (var i = 0; i < sig.length; i++) {
+			//According to the R documentation http://rgm.ogalab.net/RGM/R_rdfile?f=GENEAread/man/hanning.window.Rd&d=R_CC
+			hann[i] = 0.5 - 0.5*Math.cos(2*Math.PI*i/(sig.length-1));
+			hanned[i] = sig[i]*hann[i];
+		};
+		return hanned;
+	}
+
 	var self = this;
 
 	if (isPowerOfTwo(bufferSize) && audioContext) {
@@ -391,12 +402,13 @@ var Meyda = function(audioContext,source,bufSize,callback){
 				//this is to obtain the current amplitude spectrum
 				var inputData = e.inputBuffer.getChannelData(0);
 				self.signal = inputData;
+				var hannedSignal = hanning(self.signal);
 
 				//create complexarray to hold the spectrum
 				var data = new complex_array.ComplexArray(bufferSize);
 				//map time domain
 				data.map(function(value, i, n) {
-					value.real = inputData[i];
+					value.real = hannedSignal[i];
 				});
 				//transform
 				var spec = data.FFT();
