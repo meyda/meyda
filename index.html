@@ -2,8 +2,10 @@
 <html>
 <head>
 	<title>Meyda</title>
-	<script type="text/javascript" src="meyda.min.js"></script>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="complex_array.js"></script>
+	<script type="text/javascript" src="fft.js"></script>
+	<script type="text/javascript" src="meyda.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<meta charset="UTF-8">
 </head>
@@ -108,7 +110,7 @@
 				tune.play();
 
 				//IMMEDIATE
-				extractionInterval = setTimeout(function() {
+				extractionInterval = setInterval(function() {
 					var f = meyda.get(featuresToExtract);
 					$.each(featuresToExtract, function(i, v) {
 						//check what type we're displaying
