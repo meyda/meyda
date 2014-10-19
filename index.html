@@ -57,7 +57,6 @@
 						count++;
 					}
 					else if (count == 400) {
-						console.log(JSON.stringify(output));
 						count++;
 					}
 					//check what type we're displaying
@@ -143,11 +142,10 @@
 			}
 
 			document.onkeydown = function() {
-				console.log(meyda.get("loudness"));
+
 			}
 
 			function renderArray(canvas, a) {
-				console.log(JSON.stringify(a));
 				var c = canvas.getContext('2d');
 				c.fillStyle = "#000";
 				c.fillRect(0,0,canvas.width,canvas.height);
