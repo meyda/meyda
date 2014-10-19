@@ -1,6 +1,13 @@
 // Meyda Javascript DSP library
 
-var Meyda = function(audioContext,source,bufferSize){
+var Meyda = function(audioContext,source,bufSize,callback){
+
+	//default buffer size
+	var bufferSize = bufSize ? bufSize : 256;
+
+	//callback controllers
+	var EXTRACTION_STARTED = false;
+	var _featuresToExtract;
 
 	//utilities
 	var µ = function(i, amplitudeSpect){
@@ -22,7 +29,7 @@ var Meyda = function(audioContext,source,bufferSize){
 
 	var self = this;
 
-	if (isPowerOfTwo(bufferSize)) {
+	if (isPowerOfTwo(bufferSize) && audioContext) {
 			self.featureInfo = {
 				"buffer": {
 					"type": "array"
@@ -37,9 +44,11 @@ var Meyda = function(audioContext,source,bufferSize){
 					"type": "number"
 				},
 				"complexSpectrum": {
-					"type": "twoArrays",
-					"1": "real",
-					"2": "imag"
+					"type": "multipleArrays",
+					"arrayNames": {
+						"1": "real",
+						"2": "imag"
+					}
 				},
 				"amplitudeSpectrum": {
 					"type": "array"
@@ -69,9 +78,11 @@ var Meyda = function(audioContext,source,bufferSize){
 					"type": "number"
 				},
 				"loudness": {
-					"type": "twoArrays",
-					"1": "total",
-					"2": "specific"
+					"type": "multipleArrays",
+					"arrayNames": {
+						"1": "total",
+						"2": "specific"
+					}
 				},
 				"perceptualSpread": {
 					"type": "number"
@@ -239,7 +250,7 @@ var Meyda = function(audioContext,source,bufferSize){
 					}
 
 
-					//get relative loudness
+					//get relative loudness (TBD/TBI)
 					/*for (var i = 0; i < specific.length; i++){
 						tot += specific[i];
 					}*/
@@ -339,7 +350,8 @@ var Meyda = function(audioContext,source,bufferSize){
 						mfcc[i] = Math.log(mfcc[i]);
 					}
 
-					//create DCT plan
+					//create DCT plan (possible alternative implementation, TBD)
+
 					/*var dct = [];
 					for (var i = 0; i < powSpec.length; i++) {
 						dct.push(new Float32Array(powSpec.length));
@@ -371,6 +383,7 @@ var Meyda = function(audioContext,source,bufferSize){
 					return mfcc;
 				}
 			}
+
 			//create nodes
 			window.spn = audioContext.createScriptProcessor(bufferSize,1,0);
 
@@ -395,7 +408,20 @@ var Meyda = function(audioContext,source,bufferSize){
 					self.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i],2) + Math.pow(spec.imag[i],2));
 
 				}
+				//call callback if applicable
+				if (typeof callback === "function" && EXTRACTION_STARTED) {
+					callback(self.get(_featuresToExtract));
+				}
 
+			}
+
+			self.start = function(features) {
+				_featuresToExtract = features;
+				EXTRACTION_STARTED = true;
+			}
+
+			self.stop = function() {
+				EXTRACTION_STARTED = false;
 			}
 
 			self.audioContext = audioContext;
@@ -423,7 +449,13 @@ var Meyda = function(audioContext,source,bufferSize){
 			return self;
 	}
 	else {
-		throw "Buffer size is not a power of two: Meyda will not run."
+		//handle errors
+		if (typeof audioContext == "undefined") {
+			throw "AudioContext wasn't specified: Meyda will not run."
+		}
+		else {
+			throw "Buffer size is not a power of two: Meyda will not run."
+		}
 	}
 
 
