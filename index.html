@@ -2,9 +2,7 @@
 <html>
 <head>
 	<title>Meyda</title>
-	<script type="text/javascript" src="meyda.js"></script>
-	<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
-	<script type="text/javascript" src="lib/jsfft/fft.js"></script>
+	<script type="text/javascript" src="meyda.min.js"></script>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<meta charset="UTF-8">
@@ -16,12 +14,14 @@
 
 	</form>
 	<div id="extraction">
-		<audio src="audio/speech.mp3" id="tune" controls></audio><br><br>
+		<audio src="audio/noise.mp3" id="tune" controls></audio><br><br>
 	</div>
 	<script>
 		var meyda;
 		var featuresToExtract = [];
 		var extractionInterval;
+		var output = [];
+		var count = 0;
 
 		var tune = document.getElementById('tune');
 		tune.oncanplaythrough = function (e) {
@@ -50,6 +50,14 @@
 			//SYNCHRONIZED
 			/*meyda = new Meyda(context,source,512, function(f){
 				$.each(featuresToExtract, function(i, v) {
+					if (count < 400) {
+						output.push(f);
+						count++;
+					}
+					else if (count == 400) {
+						console.log(JSON.stringify(output));
+						count++;
+					}
 					//check what type we're displaying
 					if (meyda.featureInfo[v]["type"] == "array") {
 						renderArray($("#" + v + "Display")[0], f[v]);
@@ -61,7 +69,6 @@
 					}
 					else {
 						$("#" + v + "Display").html(f[v] + "<br><br>");
-						console.log(f[v]);
 					}
 
 				});
@@ -101,7 +108,7 @@
 				tune.play();
 
 				//IMMEDIATE
-				extractionInterval = setInterval(function() {
+				extractionInterval = setTimeout(function() {
 					var f = meyda.get(featuresToExtract);
 					$.each(featuresToExtract, function(i, v) {
 						//check what type we're displaying
@@ -115,7 +122,6 @@
 						}
 						else {
 							$("#" + v + "Display").html(f[v] + "<br><br>");
-							console.log(f[v]);
 						}
 
 					});
@@ -135,12 +141,11 @@
 			}
 
 			document.onkeydown = function() {
-				//tune.play();
 				console.log(meyda.get("loudness"));
 			}
 
 			function renderArray(canvas, a) {
-
+				console.log(JSON.stringify(a));
 				var c = canvas.getContext('2d');
 				c.fillStyle = "#000";
 				c.fillRect(0,0,canvas.width,canvas.height);

@@ -272,7 +272,7 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						tot += specific[i];
 					}
 
-					console.log("spdf", specific);
+					//console.log("spdf", specific);
 
 					return {
 						"specific": specific,
