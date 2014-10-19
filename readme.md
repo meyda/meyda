@@ -31,7 +31,7 @@ is a javascript audio feature extraction library designed for and implemented in
 
 _Meyda is under active development and is **not yet ready for production**_
 
-Download [meyda.js](https://github.com/hughrawlinson/meyda/blob/master/main.js "meyda.js") and include it within the `<head>` tag your HTML.
+Download [meyda.min.js](https://github.com/hughrawlinson/meyda/blob/master/meyda.min.js "meyda.js") and include it within the `<head>` tag your HTML.
 
 In your javascript, initialize Meyda with the desired buffer size as follows:
 ```js
@@ -40,20 +40,64 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
 
 // create source node (this could be any kind of Media source or a Web Audio Buffer source)
+var tune = new Audio('audio/guitar.mp3');
 window.source = context.createMediaElementSource( tune );
 
-// instantiate new meyda with buffer size of 256
-var m = new Meyda(context,source,256);
+// instantiate new meyda with buffer size of 512 (default is 256)
+var meyda = new Meyda(context,source,512);
 ```
 
 Use the `get` function to extract a desired feature in real time
 ```js
-var rootMeanSquare = m.get("rms");
+var rootMeanSquare = meyda.get("rms");
 ```
 You can also pass an array of strings to get multiple features at a time
 ```js
-var myFeatures = m.get(["rms", "loudness", "spectralCentroid"]);
+var myFeatures = meyda.get(["rms", "loudness", "spectralCentroid"]);
 ```
+
+Alternatively, you can use snychronized buffer-by-buffer extraction by specifying a callback when constructing Meyda
+```js
+//instantiate new meyda with callback
+var meyda = new Meyda(context, source, 512, function(output){
+	myFeatures = output;
+});
+
+//commence extraction with specified features
+meyda.start(["zcr", "spectralSlope"]);
+
+//stop extraction whenever we want (e.g. after 3 seconds)
+setTimeout(function() {
+	meyda.stop();
+}, 3000);
+
+```
+
+You can obtain information about the extractors' output by querying the `featureInfo` object
+```js
+//check output type
+if (meyda.featureInfo[featureToExtract].type == "array") {
+	//output is a single array
+
+	//do something
+}
+else if (meyda.featureInfo[featureToExtract].type == "multipleArrays") {
+	//get array names (e.g. 'total' and 'specific' for loudness)
+	var arrayNames = meyda.featureInfo[featureToExtract].arrayNames;
+
+	var array1 = myFeature[arrayNames["1"]];
+	var array2 = myFeature[arrayNames["2"]];
+
+	//do something
+
+}
+else {
+	//output is a number
+
+	//do something
+}
+```
+
 
 ###Acknowledgements
 

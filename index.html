@@ -5,39 +5,158 @@
 	<script type="text/javascript" src="meyda.js"></script>
 	<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
 	<script type="text/javascript" src="lib/jsfft/fft.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css">
 	<meta charset="UTF-8">
 </head>
 <body>
-	<audio src="audio/test.mp3" id="tune" controls></audio>
+	<h3>meyda</h3>
+	<h4>audio feature extraction library for the Web</h4>
+	<form id="featuresForm">
+
+	</form>
+	<div id="extraction">
+		<audio src="audio/speech.mp3" id="tune" controls></audio><br><br>
+	</div>
 	<script>
-		var m;
+		var meyda;
+		var featuresToExtract = [];
+		var extractionInterval;
+
 		var tune = document.getElementById('tune');
 		tune.oncanplaythrough = function (e) {
 			tune.volume = 1.0;
 			console.log("audio loaded");
 			init();
-			tune.play();
 		}
 
 		// callback for mic position
 		function init() {
+
+
 			// polyfill
 			window.AudioContext = window.AudioContext || window.webkitAudioContext;
 			var context = new AudioContext();
 
 			// create audionode from mic
-
 			window.source = context.createMediaElementSource( tune );
-			console.log(window.source);
-			// instantiate new medya
-			m = new Meyda(context,source,512);
+			source.connect(context.destination);
 
-			document.body.onkeydown = function() {
-			// tune.play();
-			console.log(m.get('complexSpectrum'));
-			// console.log(JSON.stringify(m.get(["buffer","rms", "energy", "complexSpectrum", "spectralSlope", "spectralCentroid","spectralRolloff", "spectralFlatness", "spectralSpread", "spectralSkewness", "spectralKurtosis", "amplitudeSpectrum", "zcr", "powerSpectrum", "loudness", "perceptualSpread", "perceptualSharpness", "mfcc"])));
+			// instantiate new medya
+
+			//IMMEDIATE
+			meyda = new Meyda(context,source,512);
+
+			//SYNCHRONIZED
+			/*meyda = new Meyda(context,source,512, function(f){
+				$.each(featuresToExtract, function(i, v) {
+					//check what type we're displaying
+					if (meyda.featureInfo[v]["type"] == "array") {
+						renderArray($("#" + v + "Display")[0], f[v]);
+
+					}
+					else if (meyda.featureInfo[v]["type"] == "multipleArrays") {
+						renderArray($("#" + v + meyda.featureInfo[v].arrayNames["1"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["1"]]);
+						renderArray($("#" + v + meyda.featureInfo[v].arrayNames["2"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["2"]]);
+					}
+					else {
+						$("#" + v + "Display").html(f[v] + "<br><br>");
+						console.log(f[v]);
+					}
+
+				});
+			});*/
+
+			$.each(meyda.featureExtractors, function(v, i) {
+				$("#featuresForm").append('<input class="featureCheckbox" type="checkbox" id="' + v + '" name="' + v + '">' + v + '<br>');
+			});
+
+			$("#featuresForm").append('<br><button type="button" id="submitFeatures">Extract Features</button>');
+
+
+			$("#submitFeatures").click(function(){
+				$(".featureCheckbox").each(function(){
+					if(this.checked) {
+						featuresToExtract.push($(this).attr("id"));
+						if (meyda.featureInfo[$(this).attr("id")]["type"] == "number") {
+							$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <span id="' + $(this).attr("id") + 'Display"><br><br>');
+						}
+						else if (meyda.featureInfo[$(this).attr("id")]["type"] == "array") {
+							$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <canvas id="' + $(this).attr("id") + 'Display" class="graph"></canvas><br><br>');
+						}
+						else {
+							$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["1"] + 'Display" class="graph"></canvas>  <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["2"] + 'Display" class="graph"></canvas><br><br>');
+						}
+					}
+				});
+
+
+				$("#featuresForm").fadeOut(100, function() {
+					$("#extraction").fadeIn();
+					tune.play();
+				});
+			});
+
+			tune.onplay = function() {
+				tune.play();
+
+				//IMMEDIATE
+				extractionInterval = setInterval(function() {
+					var f = meyda.get(featuresToExtract);
+					$.each(featuresToExtract, function(i, v) {
+						//check what type we're displaying
+						if (meyda.featureInfo[v]["type"] == "array") {
+							renderArray($("#" + v + "Display")[0], f[v]);
+
+						}
+						else if (meyda.featureInfo[v]["type"] == "multipleArrays") {
+							renderArray($("#" + v + meyda.featureInfo[v].arrayNames["1"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["1"]]);
+							renderArray($("#" + v + meyda.featureInfo[v].arrayNames["2"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["2"]]);
+						}
+						else {
+							$("#" + v + "Display").html(f[v] + "<br><br>");
+							console.log(f[v]);
+						}
+
+					});
+				}, 50);
+
+				//SYNCHRONIZED
+				//meyda.start(featuresToExtract);
+			};
+
+			tune.onpause = function() {
+				//IMMEDIATE
+				clearInterval(extractionInterval);
+
+				//SYNCHRONIZED
+				//meyda.stop();
+
+			}
+
+			document.onkeydown = function() {
+				//tune.play();
+				console.log(meyda.get("loudness"));
+			}
+
+			function renderArray(canvas, a) {
+
+				var c = canvas.getContext('2d');
+				c.fillStyle = "#000";
+				c.fillRect(0,0,canvas.width,canvas.height);
+
+				c.fillStyle = "#fff";
+				$.each(a, function(i, v) {
+					var ysize = (v) * ( canvas.height) / ( 7.7534);
+					var xsize = i * canvas.width / a.length;
+					c.fillRect(i,canvas.height-ysize,2,ysize);
+
+				})
+
+
 			}
 		}
+
 	</script>
 </body>
 </html>
