@@ -3,11 +3,13 @@
 <head>
 	<title>Meyda</title>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-	<script type="text/javascript" src="meyda.min.js"></script>
+	<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
+	<script type="text/javascript" src="lib/jsfft/fft.js"></script>
+	<script type="text/javascript" src="meyda.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<meta charset="UTF-8">
 </head>
-<body>
+<body onLoad="init()">
 	<h3>meyda</h3>
 	<h4>audio feature extraction library for the Web</h4>
 	<form id="featuresForm">
@@ -27,7 +29,7 @@
 		tune.oncanplaythrough = function (e) {
 			tune.volume = 1.0;
 			console.log("audio loaded");
-			init();
+			// init();
 		}
 
 		// callback for mic position
