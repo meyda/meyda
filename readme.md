@@ -27,6 +27,8 @@ is a javascript audio feature extraction library designed for and implemented in
 + perceptualSharpness
 + mfcc
 
+For a detailed description of the above features, see the [features.md](https://github.com/hughrawlinson/meyda/blob/master/features.md "features.md") file.
+
 ###Setup
 
 _Meyda is under active development and is **not yet ready for production**_
