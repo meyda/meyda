@@ -27,11 +27,13 @@ is a javascript audio feature extraction library designed for and implemented in
 + perceptualSharpness
 + mfcc
 
+For a detailed description of the above features, see the [features.md](https://github.com/hughrawlinson/meyda/blob/master/features.md "features.md") file.
+
 ###Setup
 
 _Meyda is under active development and is **not yet ready for production**_
 
-Download [meyda.min.js](https://github.com/hughrawlinson/meyda/blob/master/meyda.min.js "meyda.js") and include it within the `<head>` tag your HTML.
+Download [meyda.min.js](https://github.com/hughrawlinson/meyda/blob/master/meyda.min.js "meyda.min.js") and include it within the `<head>` tag your HTML.
 
 In your javascript, initialize Meyda with the desired buffer size as follows:
 ```js
