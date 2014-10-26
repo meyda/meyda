@@ -297,7 +297,6 @@ var Meyda = function(audioContext,source,bufSize,callback){
 					return output;
 				},
 				"mfcc": function(bufferSize, m){
-					//used tutorial from http://practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/
 					var powSpec = m.featureExtractors["powerSpectrum"](bufferSize,m);
 					var freqToMel = function(freqValue){
 						var melValue = 1125*Math.log(1+(freqValue/700));
