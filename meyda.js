@@ -210,7 +210,7 @@ var Meyda = function(audioContext,source,bufSize,callback){
 							zcr++;
 						}
 					}
-					return zcr;
+					return zcr/bufferSize;
 				},
 				"powerSpectrum": function(bufferSize, m){
 					var powerSpectrum = new Float32Array(m.ampSpectrum.length);
