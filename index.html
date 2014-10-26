@@ -16,7 +16,7 @@
 
 	</form>
 	<div id="extraction">
-		<audio src="audio/noise.mp3" id="tune" controls></audio><br><br>
+		<audio src="audio/noise.wav" id="tune" controls></audio><br><br>
 	</div>
 	<script>
 		var meyda;
@@ -29,12 +29,10 @@
 		tune.oncanplaythrough = function (e) {
 			tune.volume = 1.0;
 			console.log("audio loaded");
-			// init();
 		}
 
 		// callback for mic position
 		function init() {
-
 
 			// polyfill
 			window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -126,7 +124,7 @@
 						}
 
 					});
-				}, 50);
+				}, 20);
 
 				//SYNCHRONIZED
 				//meyda.start(featuresToExtract);
