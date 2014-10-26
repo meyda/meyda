@@ -1,0 +1,36 @@
+body {
+	font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+	font-weight: normal;
+	font-size: 12px;
+	background-color: #000;
+	color: #fff;
+}
+
+h3 {
+	font-size: 50px;
+	font-weight: normal;
+	letter-spacing: -3px;
+}
+
+h4 {
+	font-weight: normal;
+	font-size: 20px;
+}
+
+#featuresForm {
+	height: 300px;
+	-webkit-column-count: 3;
+}
+
+#extraction {
+	display: none;
+}
+
+.featuresCheckbox {
+	width: 100px;
+}
+
+.graph {
+	width: 300px;
+	height: 200px;
+}
