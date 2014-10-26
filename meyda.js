@@ -1,7 +1,6 @@
 // Meyda Javascript DSP library
 
 var Meyda = function(audioContext,source,bufSize,callback){
-
 	//default buffer size
 	var bufferSize = bufSize ? bufSize : 256;
 
@@ -111,13 +110,14 @@ var Meyda = function(audioContext,source,bufSize,callback){
 					return m.signal;
 				},
 				"rms": function(bufferSize, m){
-
+					
 					var rms = 0;
 					for(var i = 0 ; i < m.signal.length ; i++){
 						rms += Math.pow(m.signal[i],2);
 					}
 					rms = rms / m.signal.length;
 					rms = Math.sqrt(rms);
+
 					return rms;
 				},
 				"energy": function(bufferSize, m) {
@@ -146,13 +146,10 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						freqSum += curFreq;
 						ampFreqSum += curFreq*m.ampSpectrum[i];
 					};
-
-
-
 					return (m.ampSpectrum.length*ampFreqSum - freqSum*ampSum)/(ampSum*(powFreqSum - Math.pow(freqSum,2)));
 				},
 				"spectralCentroid": function(bufferSize, m){
-					return µ(1,m.ampSpectrum) + " " + m.ampSpectrum.length;
+					return µ(1,m.ampSpectrum);
 				},
 				"spectralRolloff": function(bufferSize, m){
 					var ampspec = m.ampSpectrum;
@@ -248,7 +245,6 @@ var Meyda = function(audioContext,source,bufSize,callback){
 
 					bbLimits[NUM_BARK_BANDS] = m.ampSpectrum.length-1;
 
-
 					//process
 
 					for (var i = 0; i < NUM_BARK_BANDS; i++){
@@ -260,20 +256,10 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						specific[i] = Math.pow(sum,0.23);
 					}
 
-
-					//get relative loudness (TBD/TBI)
-					/*for (var i = 0; i < specific.length; i++){
-						tot += specific[i];
-					}*/
-
-
 					//get total loudness
 					for (var i = 0; i < specific.length; i++){
 						tot += specific[i];
 					}
-
-					//console.log("spdf", specific);
-
 					return {
 						"specific": specific,
 						"total": tot
@@ -346,7 +332,6 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						fftBinsOfFreq[i] = Math.floor((bufferSize+1)*melValuesInFreq[i]/audioContext.sampleRate);
 					};
 
-					// console.log("mel", melValuesInFreq);
 					var filterBank = Array(numFilters);
 					for (var j = 0; j < filterBank.length; j++) {
 						//creating a two dimensional array of size numFiltes * (buffersize/2)+1 and pre-populating the arrays with 0s.
@@ -360,9 +345,6 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						}
 					}
 
-					// console.log(JSON.stringify(filterBank));
-
-					// var mfcc = Array.apply(null, new Array(numFilters)).map(Number.prototype.valueOf,0);
 					var mfcc_result = new Float32Array(numFilters);
 					for (var i = 0; i < mfcc_result.length; i++) {
 						mfcc_result[i] = 0;
@@ -377,36 +359,16 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						mfcc_result[i] = Math.log(mfcc_result[i]);
 					}
 
-					console.log("mfcc_result", mfcc_result);
-					//create DCT plan (possible alternative implementation, TBD)
 
-					/*var dct = [];
-					for (var i = 0; i < powSpec.length; i++) {
-						dct.push(new Float32Array(powSpec.length));
-					}
-					//handle first item of plan
-					for (var j=0; j<powSpec.length; j++) dct[0][j] = 1/Math.sqrt(powSpec.length);
-					//other items
-					for (var i=1; i < powSpec.length; i++)
-						for (var j=0; j<powSpec.length; j++)
-							dct[i][j] = Math.sqrt(2/powSpec.length) * Math.cos(Math.PI * (j + 0.5) * i / powSpec.length);
-
-
-					//apply dct plan to logged mfcc
-
-					for (var q=0; q<powSpec.length; q++) {
-
-					}*/
 					//dct
-					// for (var k = 0; k < mfcc.length; k++) {
-					// 	var v = 0;
-					// 	for (var n = 0; n < mfcc.length-1; n++) {
-					// 		v += mfcc[n]*Math.cos(Math.PI*k*(2*n+1)/(2*mfcc.length));
-					// 	}
-					// 	mfcc[k] = v;
-					// }
+					for (var k = 0; k < mfcc.length; k++) {
+						var v = 0;
+						for (var n = 0; n < mfcc.length-1; n++) {
+							v += mfcc[n]*Math.cos(Math.PI*k*(2*n+1)/(2*mfcc.length));
+						}
+						mfcc[k] = v;
+					}
 
-					// console.log("mfcc", mfcc);
 					return mfcc_result;
 				}
 			}
