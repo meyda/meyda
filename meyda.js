@@ -110,7 +110,7 @@ var Meyda = function(audioContext,source,bufSize,callback){
 					return m.signal;
 				},
 				"rms": function(bufferSize, m){
-					
+
 					var rms = 0;
 					for(var i = 0 ; i < m.signal.length ; i++){
 						rms += Math.pow(m.signal[i],2);
@@ -349,7 +349,7 @@ var Meyda = function(audioContext,source,bufSize,callback){
 					for (var i = 0; i < mfcc_result.length; i++) {
 						mfcc_result[i] = 0;
 						for (var j = 0; j < (bufferSize/2); j++) {
-							//point multiplication between power spectrum and filterbanks. 
+							//point multiplication between power spectrum and filterbanks.
 							filterBank[i][j] = filterBank[i][j]*powSpec[j];
 
 							//summing up all of the coefficients into one array
@@ -405,6 +405,7 @@ var Meyda = function(audioContext,source,bufSize,callback){
 
 			}
 
+			//synchronized extraction start/stop
 			self.start = function(features) {
 				_featuresToExtract = features;
 				EXTRACTION_STARTED = true;
@@ -416,7 +417,10 @@ var Meyda = function(audioContext,source,bufSize,callback){
 
 			self.audioContext = audioContext;
 
+
+			//immediate extraction
 			self.get = function(feature) {
+
 				if(typeof feature === "object"){
 					var results = {};
 					for (var x = 0; x < feature.length; x++){
