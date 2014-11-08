@@ -34,7 +34,13 @@ For a detailed description of the above features, see the [features.md](https://
 _Meyda is under active development and is **not yet ready for production.**_
 _Demo page (index.html) was developed and tested on Firefox v. 32 – other browsers are not supported at the moment._
 
-Download [meyda.min.js](https://github.com/hughrawlinson/meyda/blob/master/meyda.min.js "meyda.min.js") and include it within the `<head>` tag your HTML.
+Download [meyda.min.js](https://github.com/hughrawlinson/meyda/blob/master/meyda.min.js "meyda.min.js") and include it, along with Meyda's dependencies within the `<head>` tag your HTML.
+
+```html
+<script type="text/javascript" src="meyda.js"></script>
+<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
+<script type="text/javascript" src="lib/jsfft/fft.js"></script>
+```
 
 In your javascript, initialize Meyda with the desired buffer size as follows:
 ```js
