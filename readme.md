@@ -32,7 +32,7 @@ For a detailed description of the above features, see the [features.md](https://
 ###Setup
 
 _Meyda is under active development and is **not yet ready for production**_
-_Developped and tested on Firefox v. 32 – other browsers are not supported at the moment_
+_Demo page (index.html) was developped and tested on Firefox v. 32 – other browsers are not supported at the moment. This does not apply to Meyda itself, which is working in any modern browser_
 
 Download [meyda.min.js](https://github.com/hughrawlinson/meyda/blob/master/meyda.min.js "meyda.min.js") and include it within the `<head>` tag your HTML.
 
