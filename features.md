@@ -94,7 +94,7 @@ with their descriptions and output types. Sources are indicated where applicable
 + *source:* yaafe
 + *returns:* Number
 
-###"perceptualSpread"
+###"perceptualSharpness"
 + *description:* Perceived sharpness of the loudness Bark coefficients.
 + *source:* yaafe
 + *returns:* Number
