@@ -27,8 +27,8 @@ var Meyda = function(audioContext,source,bufSize,callback){
 	}
 
 	var hanning = function(sig){
-		var hann = Float32Array(sig.length);
-		var hanned = Float32Array(sig.length);
+		var hann = new Float32Array(sig.length);
+		var hanned = new Float32Array(sig.length);
 		for (var i = 0; i < sig.length; i++) {
 			//According to the R documentation http://rgm.ogalab.net/RGM/R_rdfile?f=GENEAread/man/hanning.window.Rd&d=R_CC
 			hann[i] = 0.5 - 0.5*Math.cos(2*Math.PI*i/(sig.length-1));
@@ -374,7 +374,8 @@ var Meyda = function(audioContext,source,bufSize,callback){
 			}
 
 			//create nodes
-			window.spn = audioContext.createScriptProcessor(bufferSize,1,0);
+			window.spn = audioContext.createScriptProcessor(bufferSize,1,1);
+			spn.connect(audioContext.destination);
 
 			window.spn.onaudioprocess = function(e) {
 				//this is to obtain the current amplitude spectrum
