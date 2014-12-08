@@ -114,7 +114,6 @@
 						//check what type we're displaying
 						if (meyda.featureInfo[v]["type"] == "array") {
 							renderArray($("#" + v + "Display")[0], f[v]);
-
 						}
 						else if (meyda.featureInfo[v]["type"] == "multipleArrays") {
 							renderArray($("#" + v + meyda.featureInfo[v].arrayNames["1"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["1"]]);

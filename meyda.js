@@ -345,31 +345,52 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						}
 					}
 
-					var mfcc_result = new Float32Array(numFilters);
-					for (var i = 0; i < mfcc_result.length; i++) {
-						mfcc_result[i] = 0;
+					var loggedMelBands = new Float32Array(numFilters);
+					for (var i = 0; i < loggedMelBands.length; i++) {
+						loggedMelBands[i] = 0;
 						for (var j = 0; j < (bufferSize/2); j++) {
 							//point multiplication between power spectrum and filterbanks. 
 							filterBank[i][j] = filterBank[i][j]*powSpec[j];
 
 							//summing up all of the coefficients into one array
-							mfcc_result[i] += filterBank[i][j];
+							loggedMelBands[i] += filterBank[i][j];
 						}
 						//log each coefficient
-						mfcc_result[i] = Math.log(mfcc_result[i]);
+						loggedMelBands[i] = Math.log(loggedMelBands[i]);
 					}
 
 
 					//dct
-					for (var k = 0; k < mfcc.length; k++) {
-						var v = 0;
-						for (var n = 0; n < mfcc.length-1; n++) {
-							v += mfcc[n]*Math.cos(Math.PI*k*(2*n+1)/(2*mfcc.length));
+					var k = Math.PI/numFilters;
+					var w1 = 1.0/Math.sqrt(numFilters);
+					var w2 = Math.sqrt(2.0/numFilters);
+					var numCoeffs = 13;
+					var dctMatrix = new Float32Array(numCoeffs*numFilters);
+
+					for(var i = 0; i < numCoeffs; i++){
+						for (var j = 0; j < numFilters; j++) {
+							var idx = i + (j*numCoeffs);
+							if(i == 0){
+								dctMatrix[idx] = w1 * Math.cos(k * (i+1) * (j+0.5));
+							}
+							else{
+								dctMatrix[idx] = w2 * Math.cos(k * (i+1) * (j+0.5));	
+							}
 						}
-						mfcc[k] = v;
 					}
 
-					return mfcc_result;
+					var mfccs = new Float32Array(numCoeffs);
+					for (var k = 0; k < numCoeffs; k++) {
+						var v = 0;
+						for (var n = 0; n < numFilters; n++) {
+							var idx = k + (n*numCoeffs);
+							v += (dctMatrix[idx] * loggedMelBands[n]);
+						}
+						mfccs[k] = v/numCoeffs;
+					}
+					console.log(mfccs);
+
+					return mfccs;
 				}
 			}
 
