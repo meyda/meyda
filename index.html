@@ -150,9 +150,9 @@
 
 				c.fillStyle = "#fff";
 				$.each(a, function(i, v) {
-					var ysize = (v) * ( canvas.height) / ( 7.7534);
+					var ysize = (v) * ( canvas.height) / (4);
 					var xsize = i * canvas.width / a.length;
-					c.fillRect(i,canvas.height-ysize,2,ysize);
+					c.fillRect(xsize,canvas.height-ysize,canvas.width/a.length,ysize);
 
 				})
 
