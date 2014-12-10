@@ -220,9 +220,9 @@ var Meyda = function(audioContext,source,bufSize,callback){
 					return powerSpectrum;
 				},
 				"loudness": function(bufferSize, m){
-					var barkScale = Float32Array(m.ampSpectrum.length);
+					var barkScale = new Float32Array(m.ampSpectrum.length);
 					var NUM_BARK_BANDS = 24;
-					var specific = Float32Array(NUM_BARK_BANDS);
+					var specific = new Float32Array(NUM_BARK_BANDS);
 					var tot = 0;
 					var normalisedSpectrum = m.ampSpectrum;
 					var bbLimits = new Int32Array(NUM_BARK_BANDS+1);
@@ -308,8 +308,8 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						return freqValue;
 					};
 					var numFilters = 26; //26 filters is standard
-					var melValues = Float32Array(numFilters+2); //the +2 is the upper and lower limits
-					var melValuesInFreq = Float32Array(numFilters+2);
+					var melValues = new Float32Array(numFilters+2); //the +2 is the upper and lower limits
+					var melValuesInFreq = new Float32Array(numFilters+2);
 					//Generate limits in Hz - from 0 to the nyquist.
 					var lowerLimitFreq = 0;
 					var upperLimitFreq = audioContext.sampleRate/2;
@@ -359,12 +359,11 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						loggedMelBands[i] = Math.log(loggedMelBands[i]);
 					}
 
-
 					//dct
 					var k = Math.PI/numFilters;
 					var w1 = 1.0/Math.sqrt(numFilters);
 					var w2 = Math.sqrt(2.0/numFilters);
-					var numCoeffs = 13;
+					var numCoeffs = 13; 
 					var dctMatrix = new Float32Array(numCoeffs*numFilters);
 
 					for(var i = 0; i < numCoeffs; i++){
@@ -388,8 +387,6 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						}
 						mfccs[k] = v/numCoeffs;
 					}
-					console.log(mfccs);
-
 					return mfccs;
 				}
 			}
@@ -469,8 +466,4 @@ var Meyda = function(audioContext,source,bufSize,callback){
 			throw "Buffer size is not a power of two: Meyda will not run."
 		}
 	}
-
-
 }
-
-
