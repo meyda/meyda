@@ -32,7 +32,7 @@ For a detailed description of the above features, see the [features.md](https://
 ###Setup
 
 _Meyda is under active development and is **not yet ready for production.**_
-_Demo page (index.html) was developed and tested on Firefox v. 32 – Chrome and Opera work, other browsers are not supported._
+_Supported Browsers: Chrome, Firefox, Opera. Safari works, unless you're using a MediaElementSource._
 
 Download [meyda.min.js](https://github.com/hughrawlinson/meyda/blob/master/meyda.min.js "meyda.min.js") and include it within the `<head>` tag your HTML.
 
@@ -46,9 +46,9 @@ In your javascript, initialize Meyda with the desired buffer size as follows:
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
 
-// create source node (this could be any kind of Media source or a Web Audio Buffer source)
+// create source node (this could be any kind of Web Audio Buffer source or a Media Element/Media Stream source)
 var tune = new Audio('audio/guitar.mp3');
-window.source = context.createMediaElementSource( tune );
+window.source = context.createMediaElementSource();
 
 // instantiate new meyda with buffer size of 512 (default is 256)
 var meyda = new Meyda(context,source,512);
