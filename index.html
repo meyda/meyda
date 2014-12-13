@@ -3,21 +3,41 @@
 <head>
 	<title>Meyda</title>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-	<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
-	<script type="text/javascript" src="lib/jsfft/fft.js"></script>
-	<script type="text/javascript" src="meyda.js"></script>
+	<script type="text/javascript" src="lib/bufferLoader.js"></script>
+	<script type="text/javascript" src="meyda.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="UTF-8">
 </head>
 <body onLoad="init()">
 	<h3>meyda</h3>
 	<h4>audio feature extraction library for the Web</h4>
+	<a href="http://github.com/hughrawlinson/meyda/">&gt;&gt;github repository&lt;&lt;</a><br><br>
+	<form id="audioOptions">
+		<select id="selectAudioOptions">
+			<option value="default" selected="selected">Choose audio input</option>
+			<option value="localSound">Load Sound &hellip;</option>
+			<option value="presetSound">Preset Sounds</option>
+		</select>
+		<input type="file" id="filesInput" name="files[]"/>
+	</form><br>
 	<form id="featuresForm">
 
 	</form>
 	<div id="extraction">
-		<audio src="audio/noise.wav" id="tune" controls></audio><br><br>
+		<a id="resetButton">&lt;&lt;RESET</a><br><br>
+		<button id="play">Play</button>
+		<button id="pause">Pause</button><br><br>
+		<div id="presetFilesPlayer">
+			Vowels
+			<button class="playPreset" id="1">Play</button>
+			<button class="pausePreset">Pause</button><br><br>
+			White Noise
+			<button class="playPreset" id="2">Play</button>
+			<button class="pausePreset">Pause</button><br><br>
+			Sine Sweep
+			<button class="playPreset" id="3">Play</button>
+			<button class="pausePreset">Pause</button><br><br>
+		</div>
 	</div>
 	<script>
 		var meyda;
@@ -25,55 +45,153 @@
 		var extractionInterval;
 		var output = [];
 		var count = 0;
-
-		var tune = document.getElementById('tune');
-		tune.oncanplaythrough = function (e) {
-			tune.volume = 1.0;
-			console.log("audio loaded");
-		}
+		var inputType = "loadSound";
+		var presetSounds = [];
 
 		// callback for mic position
 		function init() {
 
 			// polyfill
 			window.AudioContext = window.AudioContext || window.webkitAudioContext;
+			navigator.getUserMedia = ( navigator.getUserMedia ||
+                       navigator.webkitGetUserMedia ||
+                       navigator.mozGetUserMedia ||
+                       navigator.msGetUserMedia);
+
+
 			var context = new AudioContext();
 
-			// create audionode from mic
-			window.source = context.createMediaElementSource( tune );
+			window.source = context.createBufferSource();
 			source.connect(context.destination);
 
-			// instantiate new medya
 
-			//IMMEDIATE
-			meyda = new Meyda(context,source,512);
+			if (navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.getUserMedia) {
+				$("#selectAudioOptions").append('<option value="mic">Microphone Input</option>');
+			}
 
-			//SYNCHRONIZED
-			/*meyda = new Meyda(context,source,512, function(f){
-				$.each(featuresToExtract, function(i, v) {
-					if (count < 400) {
-						output.push(f);
-						count++;
-					}
-					else if (count == 400) {
-						count++;
-					}
-					//check what type we're displaying
-					if (meyda.featureInfo[v]["type"] == "array") {
-						renderArray($("#" + v + "Display")[0], f[v]);
+			$("#selectAudioOptions").change(function(){
+				$("select option:selected").each(function(){
+					inputType = $(this).val();
+					if (inputType == "mic") {
+						console.log("using mic");
+
+						$("#filesInput").hide();
+
+						$("#play, #pause, #presetFilesPlayer").hide();
+
+						navigator.getUserMedia(
+							//constraints
+							{
+								video: false, audio: true
+							},
+							//success
+							function(mediaStream) {
+								window.source = context.createMediaStreamSource(mediaStream);
+
+								//instantiate new meyda
+								meyda = new Meyda(context,source,512);
+								$("#featuresForm").empty();
+								extractionSetup();
+								startExtraction();
+							},
+							//error
+							function(err) {
+								alert("There has been an error accessing the microphone.");
+							}
+						)
 
 					}
-					else if (meyda.featureInfo[v]["type"] == "multipleArrays") {
-						renderArray($("#" + v + meyda.featureInfo[v].arrayNames["1"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["1"]]);
-						renderArray($("#" + v + meyda.featureInfo[v].arrayNames["2"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["2"]]);
-					}
-					else {
-						$("#" + v + "Display").html(f[v] + "<br><br>");
-					}
+					else if (inputType == "localSound") {
+						console.log("using local file");
+						$("#presetFilesPlayer").hide();
 
-				});
-			});*/
+						$("#filesInput").show();
 
+						$("#filesInput").change(function(e){
+							var file = e.target.files[0];
+
+							var fileReader = new FileReader();
+
+							fileReader.onload = function(e) {
+								var arrayBuffer = e.target.result;
+								window.source = context.createBufferSource();
+								context.decodeAudioData(arrayBuffer, function(audioBuffer){
+									source.buffer = audioBuffer;
+									source.loop = true;
+									source.connect(context.destination);
+
+									//instantiate new meyda
+									meyda = new Meyda(context,source,512);
+									$("#featuresForm").empty();
+									extractionSetup();
+
+
+
+								});
+							}
+
+							fileReader.readAsArrayBuffer(file);
+
+						});
+
+
+					}
+					else if (inputType == "presetSound"){
+						window.source = context.createBufferSource();
+						source.connect(context.destination);
+
+						$("#play, #pause").hide();
+
+						$("#filesInput").hide();
+
+						var bufferLoader = new BufferLoader(
+							context,
+							[
+								"audio/sound1.wav",
+								"audio/sound2.wav",
+								"audio/sound3.wav"
+							],
+							function(bufferList) {
+								console.log("loaded");
+								presetSounds = bufferList;
+								meyda = new Meyda(context,source,512);
+								$("#featuresForm").empty();
+								extractionSetup();
+							}
+						);
+
+						bufferLoader.load();
+					}
+				})
+			});
+
+			$("#play").click(startExtraction);
+
+
+			$("#pause, .pausePreset").click(function(){
+				window.source.stop(0);
+				clearInterval(extractionInterval);
+			})
+
+			$(".playPreset").each(function(){
+				$(this).click(function(){
+					if (window.source.buffer) window.source.stop(0);
+					window.source = context.createBufferSource();
+					window.source.buffer = presetSounds[parseInt($(this).attr("id")-1, 10)];
+					window.source.loop = true;
+					window.source.connect(context.destination);
+					meyda.setSource(window.source);
+					startExtraction();
+				})
+			});
+
+			$("#resetButton").click(function(){
+				location.reload();
+			})
+
+		}
+
+		function extractionSetup() {
 			$.each(meyda.featureExtractors, function(v, i) {
 				$("#featuresForm").append('<input class="featureCheckbox" type="checkbox" id="' + v + '" name="' + v + '">' + v + '<br>');
 			});
@@ -99,65 +217,96 @@
 
 
 				$("#featuresForm").fadeOut(100, function() {
+					$("#audioOptions").hide();
+					$("#resetButton").show();
 					$("#extraction").fadeIn();
-					tune.play();
 				});
 			});
 
-			tune.onplay = function() {
-				tune.play();
+		}
 
-				//IMMEDIATE
-				extractionInterval = setInterval(function() {
-					var f = meyda.get(featuresToExtract);
-					$.each(featuresToExtract, function(i, v) {
-						//check what type we're displaying
-						if (meyda.featureInfo[v]["type"] == "array") {
-							renderArray($("#" + v + "Display")[0], f[v]);
-						}
-						else if (meyda.featureInfo[v]["type"] == "multipleArrays") {
-							renderArray($("#" + v + meyda.featureInfo[v].arrayNames["1"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["1"]]);
-							renderArray($("#" + v + meyda.featureInfo[v].arrayNames["2"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["2"]]);
+
+		function startExtraction() {
+			if (inputType != "mic") window.source.start(0);
+
+			window.extractionInterval = setInterval(function() {
+				var f = meyda.get(featuresToExtract);
+
+				var centroid = 0;
+
+				$.each(featuresToExtract, function(i, v) {
+
+
+					//check what type we're displaying
+					if (meyda.featureInfo[v]["type"] == "array") {
+						if (v == "buffer") {
+							f[v] = meyda.windowing(f[v], "hamming");
+							renderBuffer($("#" + v + "Display")[0], f[v]);
 						}
 						else {
-							$("#" + v + "Display").html(f[v] + "<br><br>");
+							renderArray($("#" + v + "Display")[0], f[v]);
 						}
 
-					});
-				}, 20);
+					}
+					else if (meyda.featureInfo[v]["type"] == "multipleArrays") {
+						renderArray($("#" + v + meyda.featureInfo[v].arrayNames["1"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["1"]]);
+						renderArray($("#" + v + meyda.featureInfo[v].arrayNames["2"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["2"]]);
+					}
+					else {
+						$("#" + v + "Display").html(f[v] + "<br><br>");
+					}
 
-				//SYNCHRONIZED
-				//meyda.start(featuresToExtract);
-			};
+					//quick centroid display for MHD London 2014
+					if (v == "spectralCentroid" && $("#amplitudeSpectrumDisplay")) {
+						//map centroid onto canvas display
+						centroid = f[v] * ( $("#amplitudeSpectrumDisplay")[0].width ) / (256);
+					}
+				});
 
-			tune.onpause = function() {
-				//IMMEDIATE
-				clearInterval(extractionInterval);
+				if (centroid && $("#amplitudeSpectrumDisplay")) {
+					var asContext = $("#amplitudeSpectrumDisplay")[0].getContext('2d');
 
-				//SYNCHRONIZED
-				//meyda.stop();
+					asContext.fillStyle = "#f00";
+					asContext.fillRect(centroid,0,1,$("#amplitudeSpectrumDisplay")[0].height);
+				}
 
-			}
+			}, 20);
+		}
 
-			document.onkeydown = function() {
+		function renderArray(canvas, a) {
+			canvas.width = 700;
+			var c = canvas.getContext('2d');
 
-			}
+			c.fillStyle = "#000";
+			c.fillRect(0,0,canvas.width,canvas.height);
 
-			function renderArray(canvas, a) {
-				var c = canvas.getContext('2d');
-				c.fillStyle = "#000";
-				c.fillRect(0,0,canvas.width,canvas.height);
+			c.fillStyle = "#fff";
+			$.each(a, function(i, v) {
+				var ysize = (v) * ( canvas.height) / ( 5.0);
+				var xsize = i * canvas.width / a.length;
+				c.fillRect(xsize,canvas.height-ysize,2,ysize);
 
-				c.fillStyle = "#fff";
-				$.each(a, function(i, v) {
-					var ysize = (v) * ( canvas.height) / (4);
-					var xsize = i * canvas.width / a.length;
-					c.fillRect(xsize,canvas.height-ysize,canvas.width/a.length,ysize);
-
-				})
+			})
 
 
-			}
+		}
+
+		function renderBuffer(canvas, a) {
+			canvas.width = 700;
+			var c = canvas.getContext('2d');
+
+			c.fillStyle = "#000";
+			c.fillRect(0,0,canvas.width,canvas.height);
+
+			c.fillStyle = "#fff";
+			$.each(a, function(i, v) {
+				var ysize = (v) * ( canvas.height) / ( 5.0);
+				var xsize = i * canvas.width / a.length;
+				c.fillRect(xsize,canvas.height/2-ysize,4,ysize);
+
+			})
+
+
 		}
 
 	</script>
