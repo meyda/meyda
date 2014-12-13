@@ -27,13 +27,18 @@ is a javascript audio feature extraction library designed for and implemented in
 + perceptualSharpness
 + mfcc
 
-For a detailed description of the above features, see the [features.md](https://github.com/hughrawlinson/meyda/blob/master/features.md "features.md") file.
+For a detailed description of the above features (and other functions in Meyda), see the [docs.md](https://github.com/hughrawlinson/meyda/blob/master/docs.md "docs.md") file.
 
 ###Setup
 
-_Meyda is under active development and is **not yet ready for production**_
+_Meyda is under active development and is **not yet ready for production.**_
+_Supported Browsers: Chrome, Firefox, Opera. Safari works, unless you're using a MediaElementSource._
 
 Download [meyda.min.js](https://github.com/hughrawlinson/meyda/blob/master/meyda.min.js "meyda.min.js") and include it within the `<head>` tag your HTML.
+
+```html
+<script type="text/javascript" src="meyda.min.js"></script>
+```
 
 In your javascript, initialize Meyda with the desired buffer size as follows:
 ```js
@@ -41,9 +46,10 @@ In your javascript, initialize Meyda with the desired buffer size as follows:
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
 
-// create source node (this could be any kind of Media source or a Web Audio Buffer source)
+// create source node (this could be any kind of Web Audio Buffer source or a Media Element/Media Stream source)
+// in Safari, use a buffer source instead
 var tune = new Audio('audio/guitar.mp3');
-window.source = context.createMediaElementSource( tune );
+window.source = context.createMediaElementSource();
 
 // instantiate new meyda with buffer size of 512 (default is 256)
 var meyda = new Meyda(context,source,512);
@@ -76,30 +82,8 @@ setTimeout(function() {
 ```
 
 You can obtain information about the extractors' output by querying the `featureInfo` object
-```js
-//check output type
-if (meyda.featureInfo[featureToExtract].type == "array") {
-	//output is a single array
-
-	//do something
-}
-else if (meyda.featureInfo[featureToExtract].type == "multipleArrays") {
-	//get array names (e.g. 'total' and 'specific' for loudness)
-	var arrayNames = meyda.featureInfo[featureToExtract].arrayNames;
-
-	var array1 = myFeature[arrayNames["1"]];
-	var array2 = myFeature[arrayNames["2"]];
-
-	//do something
-
-}
-else {
-	//output is a number
-
-	//do something
-}
-```
-
+`meyda.featureInfo['zcr'].type;`
+The return type of features can be either 'Number', 'Array', or 'multipleArrays', and the object definition can be found in `meyda.js`.
 
 ###Acknowledgements
 
