@@ -37,29 +37,29 @@ var Meyda = function(audioContext,src,bufSize,callback){
 	self.windowingFunction = "hanning";
 
 	//create windows
-	var hanning = new Float32Array(bufSize);
+	self.hanning = new Float32Array(bufSize);
 	for (var i = 0; i < bufSize; i++) {
 		//According to the R documentation http://rgm.ogalab.net/RGM/R_rdfile?f=GENEAread/man/hanning.window.Rd&d=R_CC
-		hanning[i] = 0.5 - 0.5*Math.cos(2*Math.PI*i/(bufSize-1));
+		self.hanning[i] = 0.5 - 0.5*Math.cos(2*Math.PI*i/(bufSize-1));
 	}
 
-	var hamming = new Float32Array(bufSize);
+	self.hamming = new Float32Array(bufSize);
 	for (var i = 0; i < bufSize; i++) {
 		//According to http://uk.mathworks.com/help/signal/ref/hamming.html
-		hamming[i] = 0.54 - 0.46*Math.cos(2*Math.PI*(i/bufSize-1));
+		self.hamming[i] = 0.54 - 0.46*Math.cos(2*Math.PI*(i/bufSize-1));
 	}
 
 	//UNFINISHED - blackman window implementation
 
-	/*var blackman = new Float32Array(bufSize);
+	/*self.blackman = new Float32Array(bufSize);
 	//According to http://uk.mathworks.com/help/signal/ref/blackman.html
 	//first half of the window
 	for (var i = 0; i < (bufSize % 2) ? (bufSize+1)/2 : bufSize/2; i++) {
-		blackman[i] = 0.42 - 0.5*Math.cos(2*Math.PI*i/(bufSize-1)) + 0.08*Math.cos(4*Math.PI*i/(bufSize-1));
+		self.blackman[i] = 0.42 - 0.5*Math.cos(2*Math.PI*i/(bufSize-1)) + 0.08*Math.cos(4*Math.PI*i/(bufSize-1));
 	}
 	//second half of the window
 	for (var i = bufSize/2; i > 0; i--) {
-		blackman[bufSize - i] = blackman[i];
+		self.blackman[bufSize - i] = self.blackman[i];
 	}*/
 
 	self.windowing = function(sig, type){
@@ -67,17 +67,17 @@ var Meyda = function(audioContext,src,bufSize,callback){
 
 		if (type == "hanning") {
 			for (var i = 0; i < sig.length; i++) {
-				windowed[i] = sig[i]*hanning[i];
+				windowed[i] = sig[i]*self.hanning[i];
 			};
 		}
 		else if (type == "hamming") {
 			for (var i = 0; i < sig.length; i++) {
-				windowed[i] = sig[i]*hamming[i];
+				windowed[i] = sig[i]*self.hamming[i];
 			};
 		}
 		else if (type == "blackman") {
 			for (var i = 0; i < sig.length; i++) {
-				windowed[i] = sig[i]*blackman[i];
+				windowed[i] = sig[i]*self.blackman[i];
 			};
 		}
 
@@ -452,7 +452,7 @@ var Meyda = function(audioContext,src,bufSize,callback){
 				//this is to obtain the current amplitude spectrum
 				var inputData = e.inputBuffer.getChannelData(0);
 				self.signal = inputData;
-				var windowedSignal = self.windowing(self.signal, selectedWindow);
+				var windowedSignal = self.windowing(self.signal, self.windowingFunction);
 
 				//create complexarray to hold the spectrum
 				var data = new complex_array.ComplexArray(bufferSize);

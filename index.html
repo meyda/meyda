@@ -118,7 +118,6 @@
 								context.decodeAudioData(arrayBuffer, function(audioBuffer){
 									source.buffer = audioBuffer;
 									source.loop = true;
-									console.log(audioBuffer);
 									source.connect(context.destination);
 
 									//instantiate new meyda
@@ -267,7 +266,7 @@
 				if (centroid && $("#amplitudeSpectrumDisplay")) {
 					var asContext = $("#amplitudeSpectrumDisplay")[0].getContext('2d');
 
-					asContext.fillStyle = "#fff";
+					asContext.fillStyle = "#f00";
 					asContext.fillRect(centroid,0,1,$("#amplitudeSpectrumDisplay")[0].height);
 				}
 
