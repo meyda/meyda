@@ -1,4 +1,15 @@
 #meyda
+
+Here's some additional information on how to use Meyda.
+
+###Windowing
+
+You can change the internal windowing function by setting `meyda.windowingFunction`.
+You can also use the windowing functions externally by calling e.g. `meyda.hamming(array)` on a `Float32Array`.
+Currently supported windows are:
++ `hanning`
++ `hamming`
+
 ###Feature Extractors List and Description
 
 Following is the comprehensive list of all feature extraction functions available in Meyda,

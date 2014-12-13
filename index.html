@@ -2,11 +2,9 @@
 <html>
 <head>
 	<title>Meyda</title>
-	<script type="text/javascript" src="lib/jquery.min.js"></script>
-	<script type="text/javascript" src="lib/jsfft/complex_array.js"></script>
-	<script type="text/javascript" src="lib/jsfft/fft.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 	<script type="text/javascript" src="lib/bufferLoader.js"></script>
-	<script type="text/javascript" src="meyda.js"></script>
+	<script type="text/javascript" src="meyda.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<meta charset="UTF-8">
 </head>
@@ -243,7 +241,7 @@
 					//check what type we're displaying
 					if (meyda.featureInfo[v]["type"] == "array") {
 						if (v == "buffer") {
-							f[v] = meyda.windowing.hanning(f[v]);
+							f[v] = meyda.windowing(f[v], "hamming");
 							renderBuffer($("#" + v + "Display")[0], f[v]);
 						}
 						else {
@@ -269,7 +267,7 @@
 				if (centroid && $("#amplitudeSpectrumDisplay")) {
 					var asContext = $("#amplitudeSpectrumDisplay")[0].getContext('2d');
 
-					asContext.fillStyle = "#ff0000";
+					asContext.fillStyle = "#fff";
 					asContext.fillRect(centroid,0,1,$("#amplitudeSpectrumDisplay")[0].height);
 				}
 
@@ -305,7 +303,7 @@
 			$.each(a, function(i, v) {
 				var ysize = (v) * ( canvas.height) / ( 5.0);
 				var xsize = i * canvas.width / a.length;
-				c.fillRect(xsize,canvas.height/2-ysize,2,ysize);
+				c.fillRect(xsize,canvas.height/2-ysize,4,ysize);
 
 			})
 
