@@ -78,6 +78,7 @@ with their descriptions and output types. Sources are indicated where applicable
 ###"mfcc"
 + *description:* Mel-frequency Cepstral Coefficients: A widely used metric for describing timbral characteristics based on the Mel scale.
 + *sources:*
+	- M. Grierson, “Maximilian: A cross platform c++ audio synthesis library for artists learning to program.,” in Proceedings of International Computer Music Conference, 2010
 	- Davis, S.; Mermelstein, P., "Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences," Acoustics, Speech and Signal Processing, IEEE Transactions on , vol.28, no.4, pp.357,366, Aug 1980
 	- Xuedong Huang, Alex Acero, Hsiao-Wuen Hon. 2001. Spoken Language Processing: A Guide to Theory, Algorithm, and System Development (1st ed.). Prentice Hall PTR, Upper Saddle River, NJ, USA.
 	– the [librosa](https://github.com/bmcfee/librosa "librosa") AFE library
