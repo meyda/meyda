@@ -47,6 +47,7 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
 
 // create source node (this could be any kind of Web Audio Buffer source or a Media Element/Media Stream source)
+// in Safari, use a buffer source instead
 var tune = new Audio('audio/guitar.mp3');
 window.source = context.createMediaElementSource();
 
