@@ -1,8 +1,14 @@
 // Meyda Javascript DSP library
 
-var Meyda = function(audioContext,source,bufSize,callback){
+var Meyda = function(audioContext,src,bufSize,callback){
+	//I am myself
+	var self = this;
+
 	//default buffer size
 	var bufferSize = bufSize ? bufSize : 256;
+
+	//initial source
+	var source = src;
 
 	//callback controllers
 	var EXTRACTION_STARTED = false;
@@ -26,18 +32,43 @@ var Meyda = function(audioContext,source,bufSize,callback){
 		return (num == 1);
 	}
 
-	var hanning = function(sig){
-		var hann = new Float32Array(sig.length);
+	var hann = new Float32Array(bufSize);
+	for (var i = 0; i < bufSize; i++) {
+		//According to the R documentation http://rgm.ogalab.net/RGM/R_rdfile?f=GENEAread/man/hanning.window.Rd&d=R_CC
+		hann[i] = 0.5 - 0.5*Math.cos(2*Math.PI*i/(bufSize-1));
+	}
+
+	var hamm = new Float32Array(bufSize);
+	for (var i = 0; i < bufSize; i++) {
+		//According to http://uk.mathworks.com/help/signal/ref/hamming.html
+		hamm[i] = 0.54 - 0.46*Math.cos(2*Math.PI*(i/bufSize-1));
+	}
+
+	var blackman = new Float32Array(bufSize);
+	//According to http://uk.mathworks.com/help/signal/ref/blackman.html
+	//first half of the window
+	for (var i = 0; i < (bufSize % 2) ? (bufSize+1)/2 : bufSize/2; i++) {
+		blackman[i] = 0.42 - 0.5*Math.cos(2*Math.PI*i/(bufSize-1)) + 0.08*Math.cos(4*Math.PI*i/(bufSize-1));
+	}
+	//second half of the window
+	for (var i = bufSize/2; i > 0; i--) {
+		blackman[bufSize - i] = blackman[i];
+	}
+
+	self.windowing = function(sig){
 		var hanned = new Float32Array(sig.length);
 		for (var i = 0; i < sig.length; i++) {
-			//According to the R documentation http://rgm.ogalab.net/RGM/R_rdfile?f=GENEAread/man/hanning.window.Rd&d=R_CC
-			hann[i] = 0.5 - 0.5*Math.cos(2*Math.PI*i/(sig.length-1));
 			hanned[i] = sig[i]*hann[i];
 		};
 		return hanned;
 	}
 
-	var self = this;
+	//source setter method
+	self.setSource = function(_src) {
+		source = _src;
+		source.connect(window.spn);
+	}
+
 
 	if (isPowerOfTwo(bufferSize) && audioContext) {
 			self.featureInfo = {
@@ -110,7 +141,7 @@ var Meyda = function(audioContext,source,bufSize,callback){
 					return m.signal;
 				},
 				"rms": function(bufferSize, m){
-					
+
 					var rms = 0;
 					for(var i = 0 ; i < m.signal.length ; i++){
 						rms += Math.pow(m.signal[i],2);
@@ -349,7 +380,7 @@ var Meyda = function(audioContext,source,bufSize,callback){
 					for (var i = 0; i < loggedMelBands.length; i++) {
 						loggedMelBands[i] = 0;
 						for (var j = 0; j < (bufferSize/2); j++) {
-							//point multiplication between power spectrum and filterbanks. 
+							//point multiplication between power spectrum and filterbanks.
 							filterBank[i][j] = filterBank[i][j]*powSpec[j];
 
 							//summing up all of the coefficients into one array
@@ -363,7 +394,7 @@ var Meyda = function(audioContext,source,bufSize,callback){
 					var k = Math.PI/numFilters;
 					var w1 = 1.0/Math.sqrt(numFilters);
 					var w2 = Math.sqrt(2.0/numFilters);
-					var numCoeffs = 13; 
+					var numCoeffs = 13;
 					var dctMatrix = new Float32Array(numCoeffs*numFilters);
 
 					for(var i = 0; i < numCoeffs; i++){
@@ -373,7 +404,7 @@ var Meyda = function(audioContext,source,bufSize,callback){
 								dctMatrix[idx] = w1 * Math.cos(k * (i+1) * (j+0.5));
 							}
 							else{
-								dctMatrix[idx] = w2 * Math.cos(k * (i+1) * (j+0.5));	
+								dctMatrix[idx] = w2 * Math.cos(k * (i+1) * (j+0.5));
 							}
 						}
 					}
@@ -399,13 +430,13 @@ var Meyda = function(audioContext,source,bufSize,callback){
 				//this is to obtain the current amplitude spectrum
 				var inputData = e.inputBuffer.getChannelData(0);
 				self.signal = inputData;
-				var hannedSignal = hanning(self.signal);
+				var windowedSignal = self.windowing.hanning(self.signal);
 
 				//create complexarray to hold the spectrum
 				var data = new complex_array.ComplexArray(bufferSize);
 				//map time domain
 				data.map(function(value, i, n) {
-					value.real = hannedSignal[i];
+					value.real = windowedSignal[i];
 				});
 				//transform
 				var spec = data.FFT();
