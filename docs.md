@@ -31,7 +31,7 @@ with their descriptions and output types. Sources are indicated where applicable
 + *returns:* Number
 
 ###"energy"
-+ *description:* The root mean square of the waveform calculated in the time domain to indicate its loudness.
++ *description:* The infinite integral of the squared signal.
 + *source:* B. P. Lathi. 1998. Modern Digital and Analog Communication Systems 3e Osece (3rd ed.). Oxford University Press.
 + *returns:* Number
 
