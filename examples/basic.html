@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <script type="text/javascript" src="../lib/jsfft/complex_array.js"></script>
+  <script type="text/javascript" src="../lib/jsfft/fft.js"></script>
+  <script type="text/javascript" src="../meyda.js"></script>
+ </head>
+ <body>
+   <h1>RMS: <span id="rms"></span></h1>
+   <script>
+    var audioContext = new AudioContext();
+    var osc = audioContext.createOscillator();
+    osc.type = "sine";
+    osc.frequency.value = 440;
+    osc.connect(audioContext.destination);
+    var meyda = new Meyda(audioContext,osc,512);
+    osc.start();
+    function draw() {
+     requestAnimationFrame(draw);
+     document.getElementById('rms').innerHTML = meyda.get('rms');
+    }
+    draw();
+   </script>
+ </body>
+</html>
