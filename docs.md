@@ -1,4 +1,15 @@
 #meyda
+
+Here's some additional information on how to use Meyda.
+
+###Windowing
+
+You can change the internal windowing function by setting `meyda.windowingFunction`.
+You can also use the windowing functions externally by calling e.g. `meyda.hamming(array)` on a `Float32Array`.
+Currently supported windows are:
++ `hanning`
++ `hamming`
+
 ###Feature Extractors List and Description
 
 Following is the comprehensive list of all feature extraction functions available in Meyda,
@@ -20,7 +31,7 @@ with their descriptions and output types. Sources are indicated where applicable
 + *returns:* Number
 
 ###"energy"
-+ *description:* The root mean square of the waveform calculated in the time domain to indicate its loudness.
++ *description:* The infinite integral of the squared signal.
 + *source:* B. P. Lathi. 1998. Modern Digital and Analog Communication Systems 3e Osece (3rd ed.). Oxford University Press.
 + *returns:* Number
 
@@ -78,6 +89,7 @@ with their descriptions and output types. Sources are indicated where applicable
 ###"mfcc"
 + *description:* Mel-frequency Cepstral Coefficients: A widely used metric for describing timbral characteristics based on the Mel scale.
 + *sources:*
+	- M. Grierson, “Maximilian: A cross platform c++ audio synthesis library for artists learning to program.,” in Proceedings of International Computer Music Conference, 2010
 	- Davis, S.; Mermelstein, P., "Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences," Acoustics, Speech and Signal Processing, IEEE Transactions on , vol.28, no.4, pp.357,366, Aug 1980
 	- Xuedong Huang, Alex Acero, Hsiao-Wuen Hon. 2001. Spoken Language Processing: A Guide to Theory, Algorithm, and System Development (1st ed.). Prentice Hall PTR, Upper Saddle River, NJ, USA.
 	– the [librosa](https://github.com/bmcfee/librosa "librosa") AFE library
@@ -94,7 +106,7 @@ with their descriptions and output types. Sources are indicated where applicable
 + *source:* yaafe
 + *returns:* Number
 
-###"perceptualSpread"
+###"perceptualSharpness"
 + *description:* Perceived sharpness of the loudness Bark coefficients.
 + *source:* yaafe
 + *returns:* Number

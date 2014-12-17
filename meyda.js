@@ -1,8 +1,14 @@
 // Meyda Javascript DSP library
 
-var Meyda = function(audioContext,source,bufSize,callback){
+var Meyda = function(audioContext,src,bufSize,callback){
+	//I am myself
+	var self = this;
+
 	//default buffer size
 	var bufferSize = bufSize ? bufSize : 256;
+
+	//initial source
+	var source = src;
 
 	//callback controllers
 	var EXTRACTION_STARTED = false;
@@ -26,18 +32,65 @@ var Meyda = function(audioContext,source,bufSize,callback){
 		return (num == 1);
 	}
 
-	var hanning = function(sig){
-		var hann = Float32Array(sig.length);
-		var hanned = Float32Array(sig.length);
-		for (var i = 0; i < sig.length; i++) {
-			//According to the R documentation http://rgm.ogalab.net/RGM/R_rdfile?f=GENEAread/man/hanning.window.Rd&d=R_CC
-			hann[i] = 0.5 - 0.5*Math.cos(2*Math.PI*i/(sig.length-1));
-			hanned[i] = sig[i]*hann[i];
-		};
-		return hanned;
+	//WINDOWING
+	//set default
+	self.windowingFunction = "hanning";
+
+	//create windows
+	self.hanning = new Float32Array(bufSize);
+	for (var i = 0; i < bufSize; i++) {
+		//According to the R documentation http://rgm.ogalab.net/RGM/R_rdfile?f=GENEAread/man/hanning.window.Rd&d=R_CC
+		self.hanning[i] = 0.5 - 0.5*Math.cos(2*Math.PI*i/(bufSize-1));
 	}
 
-	var self = this;
+	self.hamming = new Float32Array(bufSize);
+	for (var i = 0; i < bufSize; i++) {
+		//According to http://uk.mathworks.com/help/signal/ref/hamming.html
+		self.hamming[i] = 0.54 - 0.46*Math.cos(2*Math.PI*(i/bufSize-1));
+	}
+
+	//UNFINISHED - blackman window implementation
+
+	/*self.blackman = new Float32Array(bufSize);
+	//According to http://uk.mathworks.com/help/signal/ref/blackman.html
+	//first half of the window
+	for (var i = 0; i < (bufSize % 2) ? (bufSize+1)/2 : bufSize/2; i++) {
+		self.blackman[i] = 0.42 - 0.5*Math.cos(2*Math.PI*i/(bufSize-1)) + 0.08*Math.cos(4*Math.PI*i/(bufSize-1));
+	}
+	//second half of the window
+	for (var i = bufSize/2; i > 0; i--) {
+		self.blackman[bufSize - i] = self.blackman[i];
+	}*/
+
+	self.windowing = function(sig, type){
+		var windowed = new Float32Array(sig.length);
+
+		if (type == "hanning") {
+			for (var i = 0; i < sig.length; i++) {
+				windowed[i] = sig[i]*self.hanning[i];
+			};
+		}
+		else if (type == "hamming") {
+			for (var i = 0; i < sig.length; i++) {
+				windowed[i] = sig[i]*self.hamming[i];
+			};
+		}
+		else if (type == "blackman") {
+			for (var i = 0; i < sig.length; i++) {
+				windowed[i] = sig[i]*self.blackman[i];
+			};
+		}
+
+		return windowed;
+	}
+
+	//source setter method
+	self.setSource = function(_src) {
+		source = _src;
+		source.connect(window.spn);
+	}
+
+
 
 	if (isPowerOfTwo(bufferSize) && audioContext) {
 			self.featureInfo = {
@@ -110,7 +163,7 @@ var Meyda = function(audioContext,source,bufSize,callback){
 					return m.signal;
 				},
 				"rms": function(bufferSize, m){
-					
+
 					var rms = 0;
 					for(var i = 0 ; i < m.signal.length ; i++){
 						rms += Math.pow(m.signal[i],2);
@@ -220,9 +273,9 @@ var Meyda = function(audioContext,source,bufSize,callback){
 					return powerSpectrum;
 				},
 				"loudness": function(bufferSize, m){
-					var barkScale = Float32Array(m.ampSpectrum.length);
+					var barkScale = new Float32Array(m.ampSpectrum.length);
 					var NUM_BARK_BANDS = 24;
-					var specific = Float32Array(NUM_BARK_BANDS);
+					var specific = new Float32Array(NUM_BARK_BANDS);
 					var tot = 0;
 					var normalisedSpectrum = m.ampSpectrum;
 					var bbLimits = new Int32Array(NUM_BARK_BANDS+1);
@@ -308,8 +361,8 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						return freqValue;
 					};
 					var numFilters = 26; //26 filters is standard
-					var melValues = Float32Array(numFilters+2); //the +2 is the upper and lower limits
-					var melValuesInFreq = Float32Array(numFilters+2);
+					var melValues = new Float32Array(numFilters+2); //the +2 is the upper and lower limits
+					var melValuesInFreq = new Float32Array(numFilters+2);
 					//Generate limits in Hz - from 0 to the nyquist.
 					var lowerLimitFreq = 0;
 					var upperLimitFreq = audioContext.sampleRate/2;
@@ -345,48 +398,67 @@ var Meyda = function(audioContext,source,bufSize,callback){
 						}
 					}
 
-					var mfcc_result = new Float32Array(numFilters);
-					for (var i = 0; i < mfcc_result.length; i++) {
-						mfcc_result[i] = 0;
+					var loggedMelBands = new Float32Array(numFilters);
+					for (var i = 0; i < loggedMelBands.length; i++) {
+						loggedMelBands[i] = 0;
 						for (var j = 0; j < (bufferSize/2); j++) {
-							//point multiplication between power spectrum and filterbanks. 
+							//point multiplication between power spectrum and filterbanks.
 							filterBank[i][j] = filterBank[i][j]*powSpec[j];
 
 							//summing up all of the coefficients into one array
-							mfcc_result[i] += filterBank[i][j];
+							loggedMelBands[i] += filterBank[i][j];
 						}
 						//log each coefficient
-						mfcc_result[i] = Math.log(mfcc_result[i]);
+						loggedMelBands[i] = Math.log(loggedMelBands[i]);
 					}
-
 
 					//dct
-					for (var k = 0; k < mfcc.length; k++) {
-						var v = 0;
-						for (var n = 0; n < mfcc.length-1; n++) {
-							v += mfcc[n]*Math.cos(Math.PI*k*(2*n+1)/(2*mfcc.length));
+					var k = Math.PI/numFilters;
+					var w1 = 1.0/Math.sqrt(numFilters);
+					var w2 = Math.sqrt(2.0/numFilters);
+					var numCoeffs = 13;
+					var dctMatrix = new Float32Array(numCoeffs*numFilters);
+
+					for(var i = 0; i < numCoeffs; i++){
+						for (var j = 0; j < numFilters; j++) {
+							var idx = i + (j*numCoeffs);
+							if(i == 0){
+								dctMatrix[idx] = w1 * Math.cos(k * (i+1) * (j+0.5));
+							}
+							else{
+								dctMatrix[idx] = w2 * Math.cos(k * (i+1) * (j+0.5));
+							}
 						}
-						mfcc[k] = v;
 					}
 
-					return mfcc_result;
+					var mfccs = new Float32Array(numCoeffs);
+					for (var k = 0; k < numCoeffs; k++) {
+						var v = 0;
+						for (var n = 0; n < numFilters; n++) {
+							var idx = k + (n*numCoeffs);
+							v += (dctMatrix[idx] * loggedMelBands[n]);
+						}
+						mfccs[k] = v/numCoeffs;
+					}
+					return mfccs;
 				}
 			}
 
 			//create nodes
-			window.spn = audioContext.createScriptProcessor(bufferSize,1,0);
+			window.spn = audioContext.createScriptProcessor(bufferSize,1,1);
+			spn.connect(audioContext.destination);
 
 			window.spn.onaudioprocess = function(e) {
 				//this is to obtain the current amplitude spectrum
 				var inputData = e.inputBuffer.getChannelData(0);
 				self.signal = inputData;
-				var hannedSignal = hanning(self.signal);
+				var windowedSignal = self.windowing(self.signal, self.windowingFunction);
 
 				//create complexarray to hold the spectrum
 				var data = new complex_array.ComplexArray(bufferSize);
 				//map time domain
 				data.map(function(value, i, n) {
-					value.real = hannedSignal[i];
+					value.real = windowedSignal[i];
 				});
 				//transform
 				var spec = data.FFT();
@@ -447,8 +519,4 @@ var Meyda = function(audioContext,source,bufSize,callback){
 			throw "Buffer size is not a power of two: Meyda will not run."
 		}
 	}
-
-
 }
-
-
