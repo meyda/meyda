@@ -22,6 +22,9 @@ h4 {
 a {
 	color: white;
 	text-decoration: none;
+	padding-left: 10px;
+	padding-right: 30px;
+	cursor: pointer;
 }
 
 a:visited {
@@ -31,6 +34,17 @@ a:visited {
 a:hover {
 	color: green;
 }
+
+
+
+#aboutContent {
+	display: none;
+}
+
+#examplesContent {
+	display: none;
+}
+
 
 #featuresForm {
 	height: 300px;

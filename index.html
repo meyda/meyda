@@ -11,34 +11,72 @@
 <body onLoad="init()">
 	<h3>meyda</h3>
 	<h4>audio feature extraction library for the Web</h4>
-	<a href="http://github.com/hughrawlinson/meyda/">&gt;&gt;github repository&lt;&lt;</a><br><br>
-	<form id="audioOptions">
-		<select id="selectAudioOptions">
-			<option value="default" selected="selected">Choose audio input</option>
-			<option value="localSound">Load Sound &hellip;</option>
-			<option value="presetSound">Preset Sounds</option>
-		</select>
-		<input type="file" id="filesInput" name="files[]"/>
-	</form><br>
-	<form id="featuresForm">
+	<a class="menuitem" id="demo">&gt;&gt;demo&lt;&lt;</a>
+	<a class="menuitem" id="about">&gt;&gt;about&lt;&lt;</a>
+	<a class="menuitem" id="examples">&gt;&gt;examples&lt;&lt;</a>
+	<a href="http://github.com/hughrawlinson/meyda/">&gt;&gt;github repository&lt;&lt;</a>
+	<br><br><br><br>
+	<div id="demoContent" class="content">
+		<h4>Extraction demo</h4>
+		<form id="audioOptions">
+			<select id="selectAudioOptions">
+				<option value="default" selected="selected">Choose audio input</option>
+				<option value="localSound">Load Sound &hellip;</option>
+				<option value="presetSound">Preset Sounds</option>
+			</select>
+			<input type="file" id="filesInput" name="files[]"/>
+		</form><br>
+		<form id="featuresForm">
 
-	</form>
-	<div id="extraction">
-		<a id="resetButton">&lt;&lt;RESET</a><br><br>
-		<button id="play">Play</button>
-		<button id="pause">Pause</button><br><br>
-		<div id="presetFilesPlayer">
-			Vowels
-			<button class="playPreset" id="1">Play</button>
-			<button class="pausePreset">Pause</button><br><br>
-			White Noise
-			<button class="playPreset" id="2">Play</button>
-			<button class="pausePreset">Pause</button><br><br>
-			Sine Sweep
-			<button class="playPreset" id="3">Play</button>
-			<button class="pausePreset">Pause</button><br><br>
+		</form>
+		<div id="extraction">
+			<a id="resetButton">&lt;&lt;RESET</a><br><br>
+			<button id="play">Play</button>
+			<button id="pause">Pause</button><br><br>
+			<div id="presetFilesPlayer">
+				Vowels
+				<button class="playPreset" id="1">Play</button>
+				<button class="pausePreset">Pause</button><br><br>
+				White Noise
+				<button class="playPreset" id="2">Play</button>
+				<button class="pausePreset">Pause</button><br><br>
+				Sine Sweep
+				<button class="playPreset" id="3">Play</button>
+				<button class="pausePreset">Pause</button><br><br>
+			</div>
 		</div>
 	</div>
+	<div id="aboutContent" class="content">
+		<h4>About</h4>
+		<p style="width: 400px;">Meyda is a lightweight audio feature extraction library written in Javascript and designed to work
+		with the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_Web_Audio_API">Web Audio API.</a>
+		It implements a large set of feature extraction algorithms from various sources and allows for multiple ways of obtaining data,
+		e.g. synchronised buffer-by-buffer analysis, or instantaneous analysis triggered by the user. Custom buffer size/windowing settings are also available.</p>
+
+		Authors:<br>
+		<a href="http://hughrawlinson.me/">Hugh Rawlinson</a><br>
+		<a href="http://nevosegal.com/">Nevo Segal</a><br>
+		<a href="http://fiala.uk/">Jakub Fiala</a><br>
+
+	</div>
+	<div id="examplesContent" class="content">
+		<h4>Examples</h4>
+		Here's a few cool things people have done with Meyda:<br>
+
+
+	</div>
+
+	<!-- UI STUFF - don't worry about this -->
+	<script type="text/javascript">
+		$(".menuitem").each(function(){
+			$(this).click(function(){
+				$(".content").fadeOut();
+				$("#" + $(this).attr("id") + "Content").fadeIn();
+			})
+		})
+	</script>
+	<!-- /uistuff -->
+
 	<script>
 		var meyda;
 		var featuresToExtract = [];
@@ -216,7 +254,7 @@
 								$("#extraction").append('<b>specific loudness</b>: <canvas id="' + $(this).attr("id") + 'SpecificDisplay" class="graph"></canvas><br><br>');
 							}
 							else
-								$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["1"] + 'Display" class="graph"></canvas>  <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["2"] + 'Display" class="graph"></canvas><br><br>');
+								$("#extraction").append('<b>' + $(this).attr("id") + " " + meyda.featureInfo[$(this).attr("id")].arrayNames["1"] + '</b>' + ': <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")].arrayNames["1"] + 'Display" class="graph"></canvas><br> ' + meyda.featureInfo[$(this).attr("id")].arrayNames["2"] + ': <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")].arrayNames["2"] + 'Display" class="graph"></canvas><br><br>');
 						}
 					}
 				});
