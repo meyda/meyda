@@ -209,8 +209,14 @@
 						else if (meyda.featureInfo[$(this).attr("id")]["type"] == "array") {
 							$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <canvas id="' + $(this).attr("id") + 'Display" class="graph"></canvas><br><br>');
 						}
+						//loudness is a special case: outputs an Object with a number and an array (total and specific)
 						else {
-							$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["1"] + 'Display" class="graph"></canvas>  <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["2"] + 'Display" class="graph"></canvas><br><br>');
+							if ($(this).attr("id") == "loudness") {
+								$("#extraction").append('<b>total loudness</b>: <span id="' + $(this).attr("id") + 'TotalDisplay"><br><br>');
+								$("#extraction").append('<b>specific loudness</b>: <canvas id="' + $(this).attr("id") + 'SpecificDisplay" class="graph"></canvas><br><br>');
+							}
+							else
+								$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["1"] + 'Display" class="graph"></canvas>  <canvas id="' + $(this).attr("id") + meyda.featureInfo[$(this).attr("id")]["2"] + 'Display" class="graph"></canvas><br><br>');
 						}
 					}
 				});
@@ -249,8 +255,16 @@
 
 					}
 					else if (meyda.featureInfo[v]["type"] == "multipleArrays") {
-						renderArray($("#" + v + meyda.featureInfo[v].arrayNames["1"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["1"]]);
-						renderArray($("#" + v + meyda.featureInfo[v].arrayNames["2"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["2"]]);
+						//handle loudness (special case)
+						if (v == "loudness") {
+							$("#" + v + "TotalDisplay").html(f[v].total + "<br><br>");
+							renderArray($("#" + v + "SpecificDisplay")[0], f[v].specific);
+						}
+						else {
+							renderArray($("#" + v + meyda.featureInfo[v].arrayNames["1"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["1"]]);
+							renderArray($("#" + v + meyda.featureInfo[v].arrayNames["2"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["2"]]);
+						}
+
 					}
 					else {
 						$("#" + v + "Display").html(f[v] + "<br><br>");
