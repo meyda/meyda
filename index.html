@@ -9,13 +9,17 @@
 	<meta charset="UTF-8">
 </head>
 <body onLoad="init()">
+
 	<h3>meyda</h3>
 	<h4>audio feature extraction library for the Web</h4>
+
 	<a class="menuitem" id="demo">&gt;&gt;demo&lt;&lt;</a>
 	<a class="menuitem" id="about">&gt;&gt;about&lt;&lt;</a>
 	<a class="menuitem" id="examples">&gt;&gt;examples&lt;&lt;</a>
 	<a href="http://github.com/hughrawlinson/meyda/">&gt;&gt;github repository&lt;&lt;</a>
 	<br><br><br><br>
+
+
 	<div id="demoContent" class="content">
 		<h4>Extraction demo</h4>
 		<form id="audioOptions">
@@ -46,6 +50,8 @@
 			</div>
 		</div>
 	</div>
+
+
 	<div id="aboutContent" class="content">
 		<h4>About</h4>
 		<p style="width: 400px;">Meyda is a lightweight audio feature extraction library written in Javascript and designed to work
@@ -59,10 +65,14 @@
 		<a href="http://fiala.uk/">Jakub Fiala</a><br>
 
 	</div>
+
+
 	<div id="examplesContent" class="content">
 		<h4>Examples</h4>
-		Here's a few cool things people have done with Meyda:<br>
+		Here's an ever-expanding list of cool things people have done with Meyda:<br>
 
+		<a href="http://nevosegal.github.io/meyda3D/">3D Live Sound Visualizer by Nevo Segal</a><br>
+		<a href="https://github.com/hughrawlinson/sndpeek">sndpeek by Hugh Rawlinson</a><br>
 
 	</div>
 
@@ -78,6 +88,11 @@
 	<!-- /uistuff -->
 
 	<script>
+		//MEYDA SHOWCASE APP
+		//basically a demonstration of all of Meyda's features
+		//written by Jakub Fiala in the dark autumn of 2014
+
+		//some global vars
 		var meyda;
 		var featuresToExtract = [];
 		var extractionInterval;
@@ -99,24 +114,31 @@
 
 			var context = new AudioContext();
 
+			//create source, just in case
+			//we'll be overwriting it anyway
 			window.source = context.createBufferSource();
 			source.connect(context.destination);
 
-
+			//if we support live mic input, add the option
 			if (navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.getUserMedia) {
 				$("#selectAudioOptions").append('<option value="mic">Microphone Input</option>');
 			}
 
+			//check which audio option was selected
 			$("#selectAudioOptions").change(function(){
 				$("select option:selected").each(function(){
+
 					inputType = $(this).val();
-					if (inputType == "mic") {
+
+					if (inputType == "mic") { //we're using microphone input
 						console.log("using mic");
 
+						//hide unnecessary UI
 						$("#filesInput").hide();
 
 						$("#play, #pause, #presetFilesPlayer").hide();
 
+						//get the input
 						navigator.getUserMedia(
 							//constraints
 							{
@@ -139,21 +161,26 @@
 						)
 
 					}
-					else if (inputType == "localSound") {
+					else if (inputType == "localSound") { //using a user-defined sound
 						console.log("using local file");
+
+						//show only necessary UI
 						$("#presetFilesPlayer").hide();
 
 						$("#filesInput").show();
 
 						$("#filesInput").change(function(e){
+							//here we load a file using the FileReader API
 							var file = e.target.files[0];
 
 							var fileReader = new FileReader();
 
 							fileReader.onload = function(e) {
+								//create source from audio file
 								var arrayBuffer = e.target.result;
 								window.source = context.createBufferSource();
 								context.decodeAudioData(arrayBuffer, function(audioBuffer){
+
 									source.buffer = audioBuffer;
 									source.loop = true;
 									source.connect(context.destination);
@@ -174,14 +201,17 @@
 
 
 					}
-					else if (inputType == "presetSound"){
+					else if (inputType == "presetSound"){ //we're using the default sounds
+						//create source
 						window.source = context.createBufferSource();
 						source.connect(context.destination);
 
+						//hide unnecessary UI
 						$("#play, #pause").hide();
 
 						$("#filesInput").hide();
 
+						//load our sounds (using BufferLoader from HTML5Rocks, because it's an awesome website)
 						var bufferLoader = new BufferLoader(
 							context,
 							[
@@ -203,6 +233,7 @@
 				})
 			});
 
+			//handle button clicks
 			$("#play").click(startExtraction);
 
 
@@ -211,6 +242,7 @@
 				clearInterval(extractionInterval);
 			})
 
+			//individually for each of the preset sound's buttons
 			$(".playPreset").each(function(){
 				$(this).click(function(){
 					if (window.source.buffer) window.source.stop(0);
@@ -218,11 +250,14 @@
 					window.source.buffer = presetSounds[parseInt($(this).attr("id")-1, 10)];
 					window.source.loop = true;
 					window.source.connect(context.destination);
-					meyda.setSource(window.source);
+
+					meyda.setSource(window.source); //change meyda's source !!!
 					startExtraction();
 				})
 			});
 
+			//if we reset, we might as well reload the page to make things easier
+			//ugly programming innit
 			$("#resetButton").click(function(){
 				location.reload();
 			})
@@ -230,24 +265,28 @@
 		}
 
 		function extractionSetup() {
+			//populate the features form
 			$.each(meyda.featureExtractors, function(v, i) {
 				$("#featuresForm").append('<input class="featureCheckbox" type="checkbox" id="' + v + '" name="' + v + '">' + v + '<br>');
 			});
 
 			$("#featuresForm").append('<br><button type="button" id="submitFeatures">Extract Features</button>');
 
-
+			//handle submitting features
 			$("#submitFeatures").click(function(){
 				$(".featureCheckbox").each(function(){
+					//run through checkboxes and check if checked
 					if(this.checked) {
-						featuresToExtract.push($(this).attr("id"));
+						featuresToExtract.push($(this).attr("id")); //push to our shopping list
+
+						//append UI for each of the different feature outputs
 						if (meyda.featureInfo[$(this).attr("id")]["type"] == "number") {
 							$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <span id="' + $(this).attr("id") + 'Display"><br><br>');
 						}
 						else if (meyda.featureInfo[$(this).attr("id")]["type"] == "array") {
 							$("#extraction").append('<b>' + $(this).attr("id") + '</b>' + ': <canvas id="' + $(this).attr("id") + 'Display" class="graph"></canvas><br><br>');
 						}
-						//loudness is a special case: outputs an Object with a number and an array (total and specific)
+						//loudness is a special case: outputs an Object with a number and an array (total and specific) – this should later be automatised
 						else {
 							if ($(this).attr("id") == "loudness") {
 								$("#extraction").append('<b>total loudness</b>: <span id="' + $(this).attr("id") + 'TotalDisplay"><br><br>');
@@ -259,7 +298,7 @@
 					}
 				});
 
-
+				//hide previous UI
 				$("#featuresForm").fadeOut(100, function() {
 					$("#audioOptions").hide();
 					$("#resetButton").show();
@@ -271,12 +310,13 @@
 
 
 		function startExtraction() {
+			//mic doesn't need source starting
 			if (inputType != "mic") window.source.start(0);
 
 			window.extractionInterval = setInterval(function() {
 				var f = meyda.get(featuresToExtract);
 
-				var centroid = 0;
+				var centroid = 0; //see below why we're doing this
 
 				$.each(featuresToExtract, function(i, v) {
 
@@ -284,10 +324,11 @@
 					//check what type we're displaying
 					if (meyda.featureInfo[v]["type"] == "array") {
 						if (v == "buffer") {
+							//if we're showing the signal itself, show it as a lovely string
 							f[v] = meyda.windowing(f[v], "hamming");
 							renderBuffer($("#" + v + "Display")[0], f[v]);
 						}
-						else {
+						else { //else, just like spectrum
 							renderArray($("#" + v + "Display")[0], f[v]);
 						}
 
@@ -299,22 +340,26 @@
 							renderArray($("#" + v + "SpecificDisplay")[0], f[v].specific);
 						}
 						else {
+							//render both arrays
 							renderArray($("#" + v + meyda.featureInfo[v].arrayNames["1"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["1"]]);
 							renderArray($("#" + v + meyda.featureInfo[v].arrayNames["2"] + "Display")[0], f[v][meyda.featureInfo[v].arrayNames["2"]]);
 						}
 
 					}
-					else {
+					else { //just put the number into the html
 						$("#" + v + "Display").html(f[v] + "<br><br>");
 					}
 
 					//quick centroid display for MHD London 2014
+					//whenever we're showing amplitude spectrum, it'll have a nice red centroid line
+					//showing where the centre of mass is
 					if (v == "spectralCentroid" && $("#amplitudeSpectrumDisplay")) {
 						//map centroid onto canvas display
 						centroid = f[v] * ( $("#amplitudeSpectrumDisplay")[0].width ) / (256);
 					}
 				});
 
+				//draw the centroid
 				if (centroid && $("#amplitudeSpectrumDisplay")) {
 					var asContext = $("#amplitudeSpectrumDisplay")[0].getContext('2d');
 
