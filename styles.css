@@ -2,8 +2,8 @@ body {
 	font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
 	font-weight: normal;
 	font-size: 12px;
-	background-color: #000;
-	color: #fff;
+	background-color: #333;
+	color: #ddd;
 }
 
 h3 {
@@ -20,17 +20,31 @@ h4 {
 }
 
 a {
-	color: white;
+	color: #ddd;
 	text-decoration: none;
+	padding-left: 10px;
+	padding-right: 30px;
+	cursor: pointer;
 }
 
 a:visited {
-	color: white;
+	color: #ddd;
 }
 
 a:hover {
 	color: green;
 }
+
+
+
+#aboutContent {
+	display: none;
+}
+
+#examplesContent {
+	display: none;
+}
+
 
 #featuresForm {
 	height: 300px;
