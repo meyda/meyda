@@ -3,7 +3,7 @@ body {
 	font-weight: normal;
 	font-size: 12px;
 	background-color: #333;
-	color: #fff;
+	color: #ddd;
 }
 
 h3 {
@@ -20,7 +20,7 @@ h4 {
 }
 
 a {
-	color: white;
+	color: #ddd;
 	text-decoration: none;
 	padding-left: 10px;
 	padding-right: 30px;
@@ -28,7 +28,7 @@ a {
 }
 
 a:visited {
-	color: white;
+	color: #ddd;
 }
 
 a:hover {
