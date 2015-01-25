@@ -31,7 +31,6 @@ For a detailed description of the above features (and other functions in Meyda),
 
 ###Setup
 
-_Meyda is under active development and is **not yet ready for production.**_
 _Supported Browsers: Chrome, Firefox, Opera. Safari works, unless you're using a MediaElementSource._
 
 Download [meyda.min.js](https://github.com/hughrawlinson/meyda/blob/master/meyda.min.js "meyda.min.js") and include it within the `<head>` tag your HTML.
