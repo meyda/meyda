@@ -35,7 +35,7 @@ var Meyda = function(audioContext,src,bufSize,callback){
 	//initilize bark scale (to be used in most perceptual features).
 	self.barkScale = new Float32Array(bufSize);
 
-	for(var i = 0; i < barkScale.length; i++){
+	for(var i = 0; i < self.barkScale.length; i++){
 		self.barkScale[i] = i*audioContext.sampleRate/(bufSize);
 		self.barkScale[i] = 13*Math.atan(self.barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow((self.barkScale[i]/7518),2));
 	}
