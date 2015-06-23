@@ -1,0 +1,38 @@
+{
+  "name": "meyda",
+  "version": "1.1.0",
+  "description": "Real-time feature extraction for the web audio api",
+  "main": "lib/meyda.min.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hughrawlinson/meyda.git"
+  },
+  "keywords": [
+    "audio",
+    "feature",
+    "extraction",
+    "music",
+    "sound",
+    "information",
+    "retrieval"
+  ],
+  "author": "Hugh Rawlinson <hugh@codeoclock.net> (http://www.hughrawlinson.me/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hughrawlinson/meyda/issues"
+  },
+  "homepage": "https://github.com/hughrawlinson/meyda",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.1.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.2.0"
+  }
+}
