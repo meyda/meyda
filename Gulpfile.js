@@ -25,16 +25,13 @@ gulp.task('buildWeb',function(){
 
 gulp.task('buildNode',function(){
   return gulp.src("./src/**/*.js")
-    .pipe(sourcemaps.init())
     .pipe(babel())
-    .pipe(concat("meyda.js"))
-    .pipe(sourcemaps.write("./"))
     .pipe(gulp.dest("./dist/node/"));
 });
 
 gulp.task('minifyBuiltBrowserifyOutput',function(){
-  return gulp.src("dist/browser/meyda.js")
+  return gulp.src("dist/web/meyda.js")
     .pipe(uglify())
     .pipe(concat("meyda.min.js"))
-    .pipe(gulp.dest("./dist/browser/"))
+    .pipe(gulp.dest("./dist/web/"))
 });

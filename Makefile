@@ -1,8 +1,8 @@
-build: clean buildBrowser
+build: clean buildWeb buildNode
 
-buildBrowser:
-	@mkdir -p dist/browser
-	@./node_modules/.bin/browserify src/main.js -t babelify --outfile dist/browser/meyda.js
+buildWeb:
+	@mkdir -p dist/web
+	@./node_modules/.bin/browserify src/main.js -t babelify --outfile dist/web/meyda.js
 	@./node_modules/.bin/gulp minifyBuiltBrowserifyOutput
 
 buildNode:
