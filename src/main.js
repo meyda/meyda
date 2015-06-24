@@ -1,9 +1,9 @@
-import * as utilities from 'util';
-import featureExtractors from 'featureExtractors';
+import * as utilities from './util';
+import featureExtractors from './featureExtractors';
 
-export default class{
+class Meyda{
 	constructor(audioContext, src, bufSize, callback){
-		if (!isPowerOfTwo(bufferSize) && !audioContext) {
+		if (!utilities.isPowerOfTwo(bufferSize) && !audioContext) {
 			utilities.error("Invalid Constructor Arguments");
 		}
 
@@ -31,7 +31,7 @@ export default class{
 			//this is to obtain the current amplitude spectrum
 			var inputData = e.inputBuffer.getChannelData(0);
 			self.signal = inputData;
-			var windowedSignal = self.windowing(self.signal, self.windowingFunction);
+			var windowedSignal = (self.signal, self.windowingFunction);
 
 			//create complexarray to hold the spectrum
 			var data = new complex_array.ComplexArray(bufferSize);
@@ -90,3 +90,6 @@ export default class{
     }
   }
 }
+
+export default Meyda;
+window.Meyda = Meyda;

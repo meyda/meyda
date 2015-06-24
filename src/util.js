@@ -8,3 +8,10 @@ export function isPowerOfTwo(num) {
 export function error(message){
   throw new Error("Meyda: "+message);
 }
+
+export function pointwiseBufferMult(a,b){
+  let c = []
+  for(let i = 0; i < Math.min(a.length, b.length); i++){
+    c[i] = a[i]*b[i];
+  }
+}
