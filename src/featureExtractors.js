@@ -17,24 +17,24 @@ export default {
   "buffer" : function(bufferSize,m){
     return m.signal;
   },
-  "rms": rms,
-  "energy": energy,
+  rms,
+  energy,
   "complexSpectrum": function(bufferSize, m) {
     return m.complexSpectrum;
   },
-  "spectralSlope": spectralSlope,
-  "spectralCentroid": spectralCentroid,
-  "spectralRolloff": spectralRolloff,
-  "spectralFlatness": spectralFlatness,
-  "spectralSpread": spectralSpread,
-  "spectralSkewness": spectralSkewness,
-  "spectralKurtosis": spectralKurtosis,
+  spectralSlope,
+  spectralCentroid,
+  spectralRolloff,
+  spectralFlatness,
+  spectralSpread,
+  spectralSkewness,
+  spectralKurtosis,
   "amplitudeSpectrum": function(bufferSize, m){
     return m.ampSpectrum;
   },
-  "zcr": zcr,
-  "loudness": loudness,
-  "perceptualSpread": perceptualSpread,
-  "perceptualSharpness": perceptualSharpness,
-  "mfcc": mfcc
+  zcr,
+  loudness,
+  perceptualSpread,
+  perceptualSharpness,
+  mfcc
 }

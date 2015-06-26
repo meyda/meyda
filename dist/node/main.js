@@ -20,23 +20,28 @@ var _featureExtractors = require('./featureExtractors');
 
 var _featureExtractors2 = _interopRequireDefault(_featureExtractors);
 
+var _libJsfftFft = require('../lib/jsfft/fft');
+
+var fft = _interopRequireWildcard(_libJsfftFft);
+
+var _libJsfftComplex_array = require('../lib/jsfft/complex_array');
+
+var complex_array = _interopRequireWildcard(_libJsfftComplex_array);
+
 var Meyda = (function () {
 	function Meyda(audioContext, src, bufSize, callback) {
 		_classCallCheck(this, Meyda);
 
-		if (!utilities.isPowerOfTwo(bufferSize) && !audioContext) {
+		var self = this;
+		if (!utilities.isPowerOfTwo(bufSize) && !audioContext) {
 			utilities.error('Invalid Constructor Arguments');
 		}
 
-		var bufferSize = bufSize || 256;
+		self.bufferSize = bufSize || 256;
 
 		//callback controllers
 		var EXTRACTION_STARTED = false;
 		var _featuresToExtract;
-
-		//WINDOWING
-		//set default
-		this.windowingFunction = 'hanning';
 
 		//source setter method
 		self.setSource = function (_src) {
@@ -45,17 +50,17 @@ var Meyda = (function () {
 		};
 
 		//create nodes
-		window.spn = audioContext.createScriptProcessor(bufferSize, 1, 1);
+		window.spn = audioContext.createScriptProcessor(self.bufferSize, 1, 1);
 		spn.connect(audioContext.destination);
 
 		window.spn.onaudioprocess = function (e) {
 			//this is to obtain the current amplitude spectrum
 			var inputData = e.inputBuffer.getChannelData(0);
 			self.signal = inputData;
-			var windowedSignal = (self.signal, self.windowingFunction);
+			var windowedSignal = utilities.applyWindow(inputData, 'hanning');
 
 			//create complexarray to hold the spectrum
-			var data = new complex_array.ComplexArray(bufferSize);
+			var data = new complex_array.ComplexArray(self.bufferSize);
 			//map time domain
 			data.map(function (value, i, n) {
 				value.real = windowedSignal[i];
@@ -64,9 +69,9 @@ var Meyda = (function () {
 			var spec = data.FFT();
 			//assign to meyda
 			self.complexSpectrum = spec;
-			self.ampSpectrum = new Float32Array(bufferSize / 2);
+			self.ampSpectrum = new Float32Array(self.bufferSize / 2);
 			//calculate amplitude
-			for (var i = 0; i < bufferSize / 2; i++) {
+			for (var i = 0; i < this.bufferSize / 2; i++) {
 				self.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i], 2) + Math.pow(spec.imag[i], 2));
 			}
 			//call callback if applicable
@@ -92,18 +97,19 @@ var Meyda = (function () {
 	_createClass(Meyda, [{
 		key: 'get',
 		value: function get(feature) {
+			var self = this;
 			if (typeof feature === 'object') {
 				var results = {};
 				for (var x = 0; x < feature.length; x++) {
 					try {
-						results[feature[x]] = self.featureExtractors[feature[x]](bufferSize, self);
+						results[feature[x]] = _featureExtractors2['default'][feature[x]](self.bufferSize, self);
 					} catch (e) {
 						console.error(e);
 					}
 				}
 				return results;
 			} else if (typeof feature === 'string') {
-				return self.featureExtractors[feature](bufferSize, self);
+				return _featureExtractors2['default'][feature](self.bufferSize, self);
 			} else {
 				throw 'Invalid Feature Format';
 			}

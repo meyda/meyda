@@ -1,3 +1,7 @@
+import * as windowing from './windowing';
+
+let windows = {};
+
 export function isPowerOfTwo(num) {
   while (((num % 2) == 0) && num > 1) {
     num /= 2;
@@ -14,4 +18,12 @@ export function pointwiseBufferMult(a,b){
   for(let i = 0; i < Math.min(a.length, b.length); i++){
     c[i] = a[i]*b[i];
   }
+  return c;
+}
+
+export function applyWindow(signal, windowname){
+  if(!windows[windowname]) windows[windowname] = {};
+  if(!windows[windowname][signal.length]) windows[windowname][signal.length] = windowing.hanning(signal.length);
+
+  return pointwiseBufferMult(signal,windows[windowname][signal.length]);
 }

@@ -66,25 +66,25 @@ exports['default'] = {
   'buffer': function buffer(bufferSize, m) {
     return m.signal;
   },
-  'rms': _extractorsRms2['default'],
-  'energy': _extractorsEnergy2['default'],
+  rms: _extractorsRms2['default'],
+  energy: _extractorsEnergy2['default'],
   'complexSpectrum': function complexSpectrum(bufferSize, m) {
     return m.complexSpectrum;
   },
-  'spectralSlope': _extractorsSpectralSlope2['default'],
-  'spectralCentroid': _extractorsSpectralCentroid2['default'],
-  'spectralRolloff': _extractorsSpectralRolloff2['default'],
-  'spectralFlatness': _extractorsSpectralFlatness2['default'],
-  'spectralSpread': _extractorsSpectralSpread2['default'],
-  'spectralSkewness': _extractorsSpectralSkewness2['default'],
-  'spectralKurtosis': _extractorsSpectralKurtosis2['default'],
+  spectralSlope: _extractorsSpectralSlope2['default'],
+  spectralCentroid: _extractorsSpectralCentroid2['default'],
+  spectralRolloff: _extractorsSpectralRolloff2['default'],
+  spectralFlatness: _extractorsSpectralFlatness2['default'],
+  spectralSpread: _extractorsSpectralSpread2['default'],
+  spectralSkewness: _extractorsSpectralSkewness2['default'],
+  spectralKurtosis: _extractorsSpectralKurtosis2['default'],
   'amplitudeSpectrum': function amplitudeSpectrum(bufferSize, m) {
     return m.ampSpectrum;
   },
-  'zcr': _extractorsZcr2['default'],
-  'loudness': _extractorsLoudness2['default'],
-  'perceptualSpread': _extractorsPerceptualSpread2['default'],
-  'perceptualSharpness': _extractorsPerceptualSharpness2['default'],
-  'mfcc': _extractorsMfcc2['default']
+  zcr: _extractorsZcr2['default'],
+  loudness: _extractorsLoudness2['default'],
+  perceptualSpread: _extractorsPerceptualSpread2['default'],
+  perceptualSharpness: _extractorsPerceptualSharpness2['default'],
+  mfcc: _extractorsMfcc2['default']
 };
 module.exports = exports['default'];
