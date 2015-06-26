@@ -54,7 +54,14 @@ export default class{
 				callback(self.get(_featuresToExtract));
 			}
 
+			self.barkScale = new Float32Array(bufSize);
+
+			for(var i = 0; i < self.barkScale.length; i++){
+				self.barkScale[i] = i*audioContext.sampleRate/(bufSize);
+				self.barkScale[i] = 13*Math.atan(self.barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow((self.barkScale[i]/7518),2));
+			}
 		}
+
 
 		self.start = function(features) {
 			_featuresToExtract = features;
