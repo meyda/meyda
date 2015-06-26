@@ -1,7 +1,9 @@
 import * as utilities from 'util';
 import featureExtractors from 'featureExtractors';
+import * as fft from '../lib/jsfft/fft';
+import * as complex_array from '../lib/jsfft/complex_array'
 
-export default class{
+class Meyda{
 	constructor(options){
 		// TODO: validate options
 		self.audioContext = options.audioContext;
@@ -29,7 +31,7 @@ export default class{
 			// this is to obtain the current frame pcm data
 			var inputData = e.inputBuffer.getChannelData(0);
 			self.signal = inputData;
-			var windowedSignal = self.windowing(self.signal, self.windowingFunction);
+			var windowedSignal = utilities.applyWindow(inputData, 'hanning');
 
 			// create complexarray to hold the spectrum
 			var data = new complex_array.ComplexArray(self.bufferSize);
@@ -42,10 +44,8 @@ export default class{
 			// assign to meyda
 			self.complexSpectrum = spec;
 			self.ampSpectrum = new Float32Array(self.bufferSize/2);
-			// calculate amplitude
 			for (var i = 0; i < self.bufferSize/2; i++) {
 				self.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i],2) + Math.pow(spec.imag[i],2));
-
 			}
 			// call callback if applicable
 			if (typeof callback === "function" && EXTRACTION_STARTED) {
@@ -71,11 +71,12 @@ export default class{
 	}
 
 	get(feature) {
+		var self = this;
 		if(typeof feature === "object"){
 			var results = {};
 			for (var x = 0; x < feature.length; x++){
 				try{
-					results[feature[x]] = (self.featureExtractors[feature[x]](self.bufferSize, self));
+					results[feature[x]] = (featureExtractors[feature[x]](self.bufferSize, self));
 				} catch (e){
 					console.error(e);
 				}
@@ -83,10 +84,13 @@ export default class{
 			return results;
 		}
 		else if (typeof feature === "string"){
-			return self.featureExtractors[feature](self.bufferSize, self);
+			return featureExtractors[feature](self.bufferSize, self);
 		}
 		else{
 			throw "Invalid Feature Format";
     }
   }
 }
+
+export default Meyda;
+window.Meyda = Meyda;
