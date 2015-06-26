@@ -1,4 +1,4 @@
-import mu from 'extractorUtilities';
+import mu from './extractorUtilities';
 
 export default function(bufferSize, m, spectrum){
   var ampspec = m.ampSpectrum;
