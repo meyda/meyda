@@ -1,6 +1,6 @@
 {
   "name": "meyda",
-  "main": "lib/meyda.min.js",
+  "main": "dist/browser/meyda.min.js",
   "version": "1.1.0",
   "homepage": "https://github.com/hughrawlinson/meyda",
   "authors": [
