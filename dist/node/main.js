@@ -12,7 +12,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _util = require('./util');
+var _util = require('util');
 
 var utilities = _interopRequireWildcard(_util);
 
@@ -29,72 +29,78 @@ var _libJsfftComplex_array = require('../lib/jsfft/complex_array');
 var complex_array = _interopRequireWildcard(_libJsfftComplex_array);
 
 var Meyda = (function () {
-	function Meyda(audioContext, src, bufSize, callback) {
+	function Meyda(options) {
 		_classCallCheck(this, Meyda);
 
-		var self = this;
-		if (!utilities.isPowerOfTwo(bufSize) && !audioContext) {
-			utilities.error('Invalid Constructor Arguments');
-		}
-
-		self.bufferSize = bufSize || 256;
+		// TODO: validate options
+		self.audioContext = options.audioContext;
+		this.setSource(options.source);
+		self.bufferSize = options.bufferSize || 256;
+		self.callback = options.callback;
+		self.windowingFunction = options.windowingFunction || 'hanning';
 
 		//callback controllers
 		var EXTRACTION_STARTED = false;
 		var _featuresToExtract;
 
-		//source setter method
-		self.setSource = function (_src) {
-			source = _src;
-			source.connect(window.spn);
-		};
+		self.barkScale = new Float32Array(bufSize);
+
+		for (var i = 0; i < self.barkScale.length; i++) {
+			self.barkScale[i] = i * audioContext.sampleRate / bufSize;
+			self.barkScale[i] = 13 * Math.atan(self.barkScale[i] / 1315.8) + 3.5 * Math.atan(Math.pow(self.barkScale[i] / 7518, 2));
+		}
 
 		//create nodes
 		window.spn = audioContext.createScriptProcessor(self.bufferSize, 1, 1);
 		spn.connect(audioContext.destination);
 
 		window.spn.onaudioprocess = function (e) {
-			//this is to obtain the current amplitude spectrum
+			// this is to obtain the current frame pcm data
 			var inputData = e.inputBuffer.getChannelData(0);
 			self.signal = inputData;
 			var windowedSignal = utilities.applyWindow(inputData, 'hanning');
 
-			//create complexarray to hold the spectrum
+			// create complexarray to hold the spectrum
 			var data = new complex_array.ComplexArray(self.bufferSize);
-			//map time domain
+			// map time domain
 			data.map(function (value, i, n) {
 				value.real = windowedSignal[i];
 			});
-			//transform
+			// transform
 			var spec = data.FFT();
-			//assign to meyda
+			// assign to meyda
 			self.complexSpectrum = spec;
 			self.ampSpectrum = new Float32Array(self.bufferSize / 2);
-			//calculate amplitude
-			for (var i = 0; i < this.bufferSize / 2; i++) {
+			for (var i = 0; i < self.bufferSize / 2; i++) {
 				self.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i], 2) + Math.pow(spec.imag[i], 2));
 			}
-			//call callback if applicable
+			// call callback if applicable
 			if (typeof callback === 'function' && EXTRACTION_STARTED) {
 				callback(self.get(_featuresToExtract));
 			}
 		};
 
-		self.start = function (features) {
-			_featuresToExtract = features;
-			EXTRACTION_STARTED = true;
-		};
-
-		self.stop = function () {
-			EXTRACTION_STARTED = false;
-		};
-
-		self.audioContext = audioContext;
-
 		source.connect(window.spn, 0, 0);
 	}
 
 	_createClass(Meyda, [{
+		key: 'start',
+		value: function start(features) {
+			_featuresToExtract = features;
+			EXTRACTION_STARTED = true;
+		}
+	}, {
+		key: 'stop',
+		value: function stop() {
+			EXTRACTION_STARTED = false;
+		}
+	}, {
+		key: 'setSource',
+		value: function setSource(_src) {
+			source = _src;
+			source.connect(window.spn);
+		}
+	}, {
 		key: 'get',
 		value: function get(feature) {
 			var self = this;
