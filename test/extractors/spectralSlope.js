@@ -8,11 +8,11 @@ var spectralSlope = require("../../dist/node/extractors/spectralSlope");
 describe('spectralSlope', function(){
   it('should return the correct Spectral Slope value when passed a valid signal', function(done){
     var en = spectralSlope({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM
+      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
+      bufferSize:512
     });
 
     assert.equal(en,3.6735467237693653);
-    console.log(en);
 
     done();
   });

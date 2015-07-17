@@ -3,6 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _powerSpectrum = require("./powerSpectrum");
+
+var _powerSpectrum2 = _interopRequireDefault(_powerSpectrum);
+
 var melToFreq = function melToFreq(melValue) {
 	var freqValue = 700 * (Math.exp(melValue / 1125) - 1);
 	return freqValue;
@@ -13,18 +20,18 @@ var freqToMel = function freqToMel(freqValue) {
 	return melValue;
 };
 
-exports["default"] = function () {
-	if (typeof arguments[0].signal !== "object") {
+exports["default"] = function (args) {
+	if (typeof args.ampSpectrum !== "object") {
 		throw new TypeError();
 	}
 	//used tutorial from http://practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/
-	var powSpec = m.featureExtractors["powerSpectrum"](bufferSize, m);
+	var powSpec = (0, _powerSpectrum2["default"])(args);
 	var numFilters = 26; //26 filters is standard
 	var melValues = new Float32Array(numFilters + 2); //the +2 is the upper and lower limits
 	var melValuesInFreq = new Float32Array(numFilters + 2);
 	//Generate limits in Hz - from 0 to the nyquist.
 	var lowerLimitFreq = 0;
-	var upperLimitFreq = audioContext.sampleRate / 2;
+	var upperLimitFreq = args.sampleRate / 2;
 	//Convert the limits to Mel
 	var lowerLimitMel = freqToMel(lowerLimitFreq);
 	var upperLimitMel = freqToMel(upperLimitFreq);
@@ -41,13 +48,13 @@ exports["default"] = function () {
 		//Convert back to Hz
 		melValuesInFreq[i] = melToFreq(melValues[i]);
 		//Find the corresponding bins
-		fftBinsOfFreq[i] = Math.floor((bufferSize + 1) * melValuesInFreq[i] / audioContext.sampleRate);
+		fftBinsOfFreq[i] = Math.floor((args.bufferSize + 1) * melValuesInFreq[i] / args.sampleRate);
 	};
 
 	var filterBank = Array(numFilters);
 	for (var j = 0; j < filterBank.length; j++) {
-		//creating a two dimensional array of size numFiltes * (buffersize/2)+1 and pre-populating the arrays with 0s.
-		filterBank[j] = Array.apply(null, new Array(bufferSize / 2 + 1)).map(Number.prototype.valueOf, 0);
+		//creating a two dimensional array of size numFiltes * (args.buffersize/2)+1 and pre-populating the arrays with 0s.
+		filterBank[j] = Array.apply(null, new Array(args.bufferSize / 2 + 1)).map(Number.prototype.valueOf, 0);
 		//creating the lower and upper slopes for each bin
 		for (var i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j + 1]; i++) {
 			filterBank[j][i] = (i - fftBinsOfFreq[j]) / (fftBinsOfFreq[j + 1] - fftBinsOfFreq[j]);
@@ -60,7 +67,7 @@ exports["default"] = function () {
 	var loggedMelBands = new Float32Array(numFilters);
 	for (var i = 0; i < loggedMelBands.length; i++) {
 		loggedMelBands[i] = 0;
-		for (var j = 0; j < bufferSize / 2; j++) {
+		for (var j = 0; j < args.bufferSize / 2; j++) {
 			//point multiplication between power spectrum and filterbanks.
 			filterBank[i][j] = filterBank[i][j] * powSpec[j];
 

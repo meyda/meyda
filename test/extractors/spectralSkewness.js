@@ -12,7 +12,6 @@ describe('spectralSkewness', function(){
     });
 
     assert.equal(en,3.6735467237693653);
-    console.log(en);
 
     done();
   });

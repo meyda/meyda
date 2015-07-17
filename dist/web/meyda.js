@@ -1533,6 +1533,13 @@ module.exports = exports["default"];
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _powerSpectrum = require("./powerSpectrum");
+
+var _powerSpectrum2 = _interopRequireDefault(_powerSpectrum);
+
 var melToFreq = function melToFreq(melValue) {
 	var freqValue = 700 * (Math.exp(melValue / 1125) - 1);
 	return freqValue;
@@ -1543,18 +1550,18 @@ var freqToMel = function freqToMel(freqValue) {
 	return melValue;
 };
 
-exports["default"] = function () {
-	if (typeof arguments[0].signal !== "object") {
+exports["default"] = function (args) {
+	if (typeof args.ampSpectrum !== "object") {
 		throw new TypeError();
 	}
 	//used tutorial from http://practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/
-	var powSpec = m.featureExtractors["powerSpectrum"](bufferSize, m);
+	var powSpec = (0, _powerSpectrum2["default"])(args);
 	var numFilters = 26; //26 filters is standard
 	var melValues = new Float32Array(numFilters + 2); //the +2 is the upper and lower limits
 	var melValuesInFreq = new Float32Array(numFilters + 2);
 	//Generate limits in Hz - from 0 to the nyquist.
 	var lowerLimitFreq = 0;
-	var upperLimitFreq = audioContext.sampleRate / 2;
+	var upperLimitFreq = args.sampleRate / 2;
 	//Convert the limits to Mel
 	var lowerLimitMel = freqToMel(lowerLimitFreq);
 	var upperLimitMel = freqToMel(upperLimitFreq);
@@ -1571,13 +1578,13 @@ exports["default"] = function () {
 		//Convert back to Hz
 		melValuesInFreq[i] = melToFreq(melValues[i]);
 		//Find the corresponding bins
-		fftBinsOfFreq[i] = Math.floor((bufferSize + 1) * melValuesInFreq[i] / audioContext.sampleRate);
+		fftBinsOfFreq[i] = Math.floor((args.bufferSize + 1) * melValuesInFreq[i] / args.sampleRate);
 	};
 
 	var filterBank = Array(numFilters);
 	for (var j = 0; j < filterBank.length; j++) {
-		//creating a two dimensional array of size numFiltes * (buffersize/2)+1 and pre-populating the arrays with 0s.
-		filterBank[j] = Array.apply(null, new Array(bufferSize / 2 + 1)).map(Number.prototype.valueOf, 0);
+		//creating a two dimensional array of size numFiltes * (args.buffersize/2)+1 and pre-populating the arrays with 0s.
+		filterBank[j] = Array.apply(null, new Array(args.bufferSize / 2 + 1)).map(Number.prototype.valueOf, 0);
 		//creating the lower and upper slopes for each bin
 		for (var i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j + 1]; i++) {
 			filterBank[j][i] = (i - fftBinsOfFreq[j]) / (fftBinsOfFreq[j + 1] - fftBinsOfFreq[j]);
@@ -1590,7 +1597,7 @@ exports["default"] = function () {
 	var loggedMelBands = new Float32Array(numFilters);
 	for (var i = 0; i < loggedMelBands.length; i++) {
 		loggedMelBands[i] = 0;
-		for (var j = 0; j < bufferSize / 2; j++) {
+		for (var j = 0; j < args.bufferSize / 2; j++) {
 			//point multiplication between power spectrum and filterbanks.
 			filterBank[i][j] = filterBank[i][j] * powSpec[j];
 
@@ -1633,7 +1640,7 @@ exports["default"] = function () {
 
 module.exports = exports["default"];
 
-},{}],12:[function(require,module,exports){
+},{"./powerSpectrum":14}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1710,6 +1717,26 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports["default"] = function () {
+	if (typeof arguments[0].ampSpectrum !== "object") {
+		throw new TypeError();
+	}
+	var powerSpectrum = new Float32Array(arguments[0].ampSpectrum.length);
+	for (var i = 0; i < powerSpectrum.length; i++) {
+		powerSpectrum[i] = Math.pow(arguments[0].ampSpectrum[i], 2);
+	}
+	return powerSpectrum;
+};
+
+module.exports = exports["default"];
+
+},{}],15:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+exports["default"] = function () {
 	if (typeof arguments[0].signal !== "object") {
 		throw new TypeError();
 	}
@@ -1725,29 +1752,25 @@ exports["default"] = function () {
 
 module.exports = exports["default"];
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
-
 var _extractorUtilities = require("./extractorUtilities");
-
-var util = _interopRequireWildcard(_extractorUtilities);
 
 exports["default"] = function () {
 	if (typeof arguments[0].ampSpectrum !== "object") {
 		throw new TypeError();
 	}
-	return util.mu(1, arguments[0].ampSpectrum);
+	return (0, _extractorUtilities.mu)(1, arguments[0].ampSpectrum);
 };
 
 module.exports = exports["default"];
 
-},{"./extractorUtilities":9}],16:[function(require,module,exports){
+},{"./extractorUtilities":9}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1758,40 +1781,35 @@ exports["default"] = function () {
 	if (typeof arguments[0].ampSpectrum !== "object") {
 		throw new TypeError();
 	}
-	var ampspec = arguments[0].ampSpectrum;
 	var numerator = 0;
 	var denominator = 0;
-	for (var i = 0; i < ampspec.length; i++) {
-		numerator += Math.log(ampspec[i]);
-		denominator += ampspec[i];
+	for (var i = 0; i < arguments[0].ampSpectrum.length; i++) {
+		numerator += Math.log(arguments[0].ampSpectrum[i]);
+		denominator += arguments[0].ampSpectrum[i];
 	}
-	return Math.exp(numerator / ampspec.length) * ampspec.length / denominator;
+	return Math.exp(numerator / arguments[0].ampSpectrum.length) * arguments[0].ampSpectrum.length / denominator;
 };
 
 module.exports = exports["default"];
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
-
 var _extractorUtilities = require("./extractorUtilities");
-
-var util = _interopRequireWildcard(_extractorUtilities);
 
 exports["default"] = function () {
 	if (typeof arguments[0].ampSpectrum !== "object") {
 		throw new TypeError();
 	}
 	var ampspec = arguments[0].ampSpectrum;
-	var mu1 = util.mu(1, ampspec);
-	var mu2 = util.mu(2, ampspec);
-	var mu3 = util.mu(3, ampspec);
-	var mu4 = util.mu(4, ampspec);
+	var mu1 = (0, _extractorUtilities.mu)(1, ampspec);
+	var mu2 = (0, _extractorUtilities.mu)(2, ampspec);
+	var mu3 = (0, _extractorUtilities.mu)(3, ampspec);
+	var mu4 = (0, _extractorUtilities.mu)(4, ampspec);
 	var numerator = -3 * Math.pow(mu1, 4) + 6 * mu1 * mu2 - 4 * mu1 * mu3 + mu4;
 	var denominator = Math.pow(Math.sqrt(mu2 - Math.pow(mu1, 2)), 4);
 	return numerator / denominator;
@@ -1799,7 +1817,7 @@ exports["default"] = function () {
 
 module.exports = exports["default"];
 
-},{"./extractorUtilities":9}],18:[function(require,module,exports){
+},{"./extractorUtilities":9}],19:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1828,91 +1846,82 @@ exports["default"] = function () {
 
 module.exports = exports["default"];
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
-
 var _extractorUtilities = require("./extractorUtilities");
 
-var util = _interopRequireWildcard(_extractorUtilities);
-
-exports["default"] = function () {
-	if (typeof arguments[0].ampSpectrum !== "object") {
+exports["default"] = function (args) {
+	if (typeof args.ampSpectrum !== "object") {
 		throw new TypeError();
 	}
-	var ampspec = arguments[0].ampSpectrum;
-	var mu1 = util.mu(1, ampspec);
-	var mu2 = util.mu(2, ampspec);
-	var mu3 = util.mu(3, ampspec);
+	var mu1 = (0, _extractorUtilities.mu)(1, args.ampSpectrum);
+	var mu2 = (0, _extractorUtilities.mu)(2, args.ampSpectrum);
+	var mu3 = (0, _extractorUtilities.mu)(3, args.ampSpectrum);
 	var numerator = 2 * Math.pow(mu1, 3) - 3 * mu1 * mu2 + mu3;
 	var denominator = Math.pow(Math.sqrt(mu2 - Math.pow(mu1, 2)), 3);
+	console.log(mu1);
+	console.log(mu2);
 	return numerator / denominator;
 };
 
 module.exports = exports["default"];
 
-},{"./extractorUtilities":9}],20:[function(require,module,exports){
+},{"./extractorUtilities":9}],21:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = function () {
-  if (typeof arguments[0].ampSpectrum !== "object") {
+exports["default"] = function (args) {
+  if (typeof args.ampSpectrum !== "object") {
     throw new TypeError();
   }
 
   //linear regression
   var ampSum = 0;
   var freqSum = 0;
-  var freqs = new Float32Array(arguments[0].ampSpectrum.length);
+  var freqs = new Float32Array(args.ampSpectrum.length);
   var powFreqSum = 0;
   var ampFreqSum = 0;
 
-  for (var i = 0; i < arguments[0].ampSpectrum.length; i++) {
-    ampSum += arguments[0].ampSpectrum[i];
-    var curFreq = i * arguments[0].sampleRate / bufferSize;
+  for (var i = 0; i < args.ampSpectrum.length; i++) {
+    ampSum += args.ampSpectrum[i];
+    var curFreq = i * args.sampleRate / args.bufferSize;
     freqs[i] = curFreq;
     powFreqSum += curFreq * curFreq;
     freqSum += curFreq;
-    ampFreqSum += curFreq * arguments[0].ampSpectrum[i];
+    ampFreqSum += curFreq * args.ampSpectrum[i];
   }
-  return (arguments[0].ampSpectrum.length * ampFreqSum - freqSum * ampSum) / (ampSum * (powFreqSum - Math.pow(freqSum, 2)));
+  return (args.ampSpectrum.length * ampFreqSum - freqSum * ampSum) / (ampSum * (powFreqSum - Math.pow(freqSum, 2)));
 };
 
 module.exports = exports["default"];
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
-
 var _extractorUtilities = require("./extractorUtilities");
 
-var util = _interopRequireWildcard(_extractorUtilities);
-
-exports["default"] = function () {
-	console.log(typeof arguments[0].ampSpectrum);
-	if (typeof arguments[0].ampSpectrum !== "object") {
+exports["default"] = function (args) {
+	if (typeof args.ampSpectrum !== "object") {
 		throw new TypeError();
 	}
-	var ampspec = arguments[0].ampSpectrum;
-	return Math.sqrt(util.mu(2, ampspec) - Math.pow(util.mu(1, ampspec), 2));
+	return Math.sqrt((0, _extractorUtilities.mu)(2, args.ampSpectrum) - Math.pow((0, _extractorUtilities.mu)(1, args.ampSpectrum), 2));
 };
 
 module.exports = exports["default"];
 
-},{"./extractorUtilities":9}],22:[function(require,module,exports){
+},{"./extractorUtilities":9}],23:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1934,7 +1943,7 @@ exports["default"] = function () {
 
 module.exports = exports["default"];
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2026,7 +2035,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"./extractors/energy":8,"./extractors/loudness":10,"./extractors/mfcc":11,"./extractors/perceptualSharpness":12,"./extractors/perceptualSpread":13,"./extractors/rms":14,"./extractors/spectralCentroid":15,"./extractors/spectralFlatness":16,"./extractors/spectralKurtosis":17,"./extractors/spectralRolloff":18,"./extractors/spectralSkewness":19,"./extractors/spectralSlope":20,"./extractors/spectralSpread":21,"./extractors/zcr":22}],24:[function(require,module,exports){
+},{"./extractors/energy":8,"./extractors/loudness":10,"./extractors/mfcc":11,"./extractors/perceptualSharpness":12,"./extractors/perceptualSpread":13,"./extractors/rms":15,"./extractors/spectralCentroid":16,"./extractors/spectralFlatness":17,"./extractors/spectralKurtosis":18,"./extractors/spectralRolloff":19,"./extractors/spectralSkewness":20,"./extractors/spectralSlope":21,"./extractors/spectralSpread":22,"./extractors/zcr":23}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2159,4 +2168,4 @@ exports['default'] = Meyda;
 window.Meyda = Meyda;
 module.exports = exports['default'];
 
-},{"../lib/jsfft/complex_array":1,"../lib/jsfft/fft":2,"./featureExtractors":23,"util":7}]},{},[24]);
+},{"../lib/jsfft/complex_array":1,"../lib/jsfft/fft":2,"./featureExtractors":24,"util":7}]},{},[25]);

@@ -12,8 +12,7 @@ describe('spectralRolloff', function(){
       sampleRate:44100
     });
 
-    assert.equal(en,3.6735467237693653);
-    console.log(en);
+    assert.equal(en,21012.35294117647);
 
     done();
   });

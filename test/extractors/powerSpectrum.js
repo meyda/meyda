@@ -6,38 +6,37 @@ var TestData = require("../TestData");
 var powerSpectrum = require("../../dist/node/extractors/powerSpectrum");
 
 describe('powerSpectrum', function(){
-  it('should return the correct Power Spectrum value when passed a valid signal', function(done){
-    var en = powerSpectrum({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM
-    });
+	it('should return the correct Power Spectrum value when passed a valid signal', function(done){
+		var en = powerSpectrum({
+			ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM
+		});
 
-    assert.deepEqual(en,{});
-    console.log(en);
+		assert.deepEqual(en,TestData.EXPECTED_POWER_SPECTRUM_OUTPUT);
 
-    done();
-  });
-  
-  it('should throw an error when passed an empty object', function(done){
-    try{
-      var en = powerSpectrum({});
-    } catch(e){
-      done();
-    }
-  });
-  
-  it('should throw an error when not passed anything', function(done){
-    try{
-      var en = powerSpectrum();
-    } catch(e){
-      done();
-    }
-  });
+		done();
+	});
+	
+	it('should throw an error when passed an empty object', function(done){
+		try{
+			var en = powerSpectrum({});
+		} catch(e){
+			done();
+		}
+	});
+	
+	it('should throw an error when not passed anything', function(done){
+		try{
+			var en = powerSpectrum();
+		} catch(e){
+			done();
+		}
+	});
 
-  it('should throw an error when passed something invalid', function(done){
-    try{
-      var en = powerSpectrum({signal:"not a signal"});
-    } catch(e){
-      done();
-    }
-  });
+	it('should throw an error when passed something invalid', function(done){
+		try{
+			var en = powerSpectrum({signal:"not a signal"});
+		} catch(e){
+			done();
+		}
+	});
 });

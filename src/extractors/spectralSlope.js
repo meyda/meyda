@@ -1,22 +1,22 @@
-export default function() {
-  if(typeof arguments[0].ampSpectrum !== "object"){
+export default function(args) {
+  if(typeof args.ampSpectrum !== "object"){
     throw new TypeError;
   }
 
   //linear regression
   let ampSum =0;
   let freqSum=0;
-  let freqs = new Float32Array(arguments[0].ampSpectrum.length);
+  let freqs = new Float32Array(args.ampSpectrum.length);
   let powFreqSum=0;
   let ampFreqSum=0;
 
-  for (var i = 0; i < arguments[0].ampSpectrum.length; i++) {
-    ampSum += arguments[0].ampSpectrum[i];
-    let curFreq = i * arguments[0].sampleRate / bufferSize;
+  for (var i = 0; i < args.ampSpectrum.length; i++) {
+    ampSum += args.ampSpectrum[i];
+    let curFreq = i * args.sampleRate / args.bufferSize;
     freqs[i] = curFreq;
     powFreqSum += curFreq*curFreq;
     freqSum += curFreq;
-    ampFreqSum += curFreq*arguments[0].ampSpectrum[i];
+    ampFreqSum += curFreq*args.ampSpectrum[i];
   }
-  return (arguments[0].ampSpectrum.length*ampFreqSum - freqSum*ampSum)/(ampSum*(powFreqSum - Math.pow(freqSum,2)));
+  return (args.ampSpectrum.length*ampFreqSum - freqSum*ampSum)/(ampSum*(powFreqSum - Math.pow(freqSum,2)));
 }

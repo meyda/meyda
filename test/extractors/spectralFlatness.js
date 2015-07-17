@@ -11,8 +11,7 @@ describe('spectralFlatness', function(){
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM
     });
 
-    assert.equal(en,3.6735467237693653);
-    console.log(en);
+    assert.equal(en,0.4395908170404335);
 
     done();
   });

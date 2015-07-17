@@ -8,11 +8,26 @@ var mfcc = require("../../dist/node/extractors/mfcc");
 describe('mfcc', function(){
   it('should return the correct mfcc value when passed a valid signal', function(done){
     var en = mfcc({
-      signal:TestData.VALID_SIGNAL
+      sampleRate:44100,
+      bufferSize:512,
+      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM
     });
 
-    assert.equal(en,3.6735467237693653);
-    console.log(en);
+    assert.deepEqual(en,{
+      "0": 0.4637751877307892,
+      "1": 0.1442393958568573,
+      "2": 0.12511767446994781,
+      "3": -0.07158658653497696,
+      "4": -0.008677568286657333,
+      "5": -0.04186367616057396,
+      "6": -0.15837490558624268,
+      "7": 0.054735664278268814,
+      "8": 0.030299112200737,
+      "9": -0.10051874071359634,
+      "10": -0.008334016427397728,
+      "11": -0.050491295754909515,
+      "12": -0.062316153198480606
+    });
 
     done();
   });

@@ -11,8 +11,7 @@ describe('spectralCentroid', function(){
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM
     });
 
-    assert.equal(en,3.6735467237693653);
-    console.log(en);
+    assert.equal(en,45.12823119078897);
 
     done();
   });

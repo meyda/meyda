@@ -13,8 +13,7 @@ describe('perceptualSpread', function(){
       barkScale:TestData.VALID_BARK_SCALE
     });
 
-    assert.equal(en,3.6735467237693653);
-    console.log(en);
+    assert.equal(en,0.8947325916336791);
 
     done();
   });
