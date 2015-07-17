@@ -75,11 +75,7 @@ class Meyda{
 		if(typeof feature === "object"){
 			var results = {};
 			for (var x = 0; x < feature.length; x++){
-				try{
-					results[feature[x]] = (featureExtractors[feature[x]](self.bufferSize, self));
-				} catch (e){
-					console.error(e);
-				}
+				results[feature[x]] = (featureExtractors[feature[x]](self.bufferSize, self));
 			}
 			return results;
 		}

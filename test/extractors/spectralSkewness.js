@@ -8,10 +8,10 @@ var spectralSkewness = require("../../dist/node/extractors/spectralSkewness");
 describe('spectralSkewness', function(){
   it('should return the correct Spectral Skewness value when passed a valid signal', function(done){
     var en = spectralSkewness({
-      ampSpectrum:TestData.VALID_SIGNAL
+      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM
     });
 
-    assert.equal(en,3.6735467237693653);
+    assert.equal(en,1.6950674362270297);
 
     done();
   });

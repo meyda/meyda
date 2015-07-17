@@ -107,11 +107,7 @@ var Meyda = (function () {
 			if (typeof feature === 'object') {
 				var results = {};
 				for (var x = 0; x < feature.length; x++) {
-					try {
-						results[feature[x]] = _featureExtractors2['default'][feature[x]](self.bufferSize, self);
-					} catch (e) {
-						console.error(e);
-					}
+					results[feature[x]] = _featureExtractors2['default'][feature[x]](self.bufferSize, self);
 				}
 				return results;
 			} else if (typeof feature === 'string') {

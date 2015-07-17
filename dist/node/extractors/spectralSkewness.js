@@ -15,8 +15,6 @@ exports["default"] = function (args) {
 	var mu3 = (0, _extractorUtilities.mu)(3, args.ampSpectrum);
 	var numerator = 2 * Math.pow(mu1, 3) - 3 * mu1 * mu2 + mu3;
 	var denominator = Math.pow(Math.sqrt(mu2 - Math.pow(mu1, 2)), 3);
-	console.log(mu1);
-	console.log(mu2);
 	return numerator / denominator;
 };
 

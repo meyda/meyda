@@ -1864,8 +1864,6 @@ exports["default"] = function (args) {
 	var mu3 = (0, _extractorUtilities.mu)(3, args.ampSpectrum);
 	var numerator = 2 * Math.pow(mu1, 3) - 3 * mu1 * mu2 + mu3;
 	var denominator = Math.pow(Math.sqrt(mu2 - Math.pow(mu1, 2)), 3);
-	console.log(mu1);
-	console.log(mu2);
 	return numerator / denominator;
 };
 
@@ -2145,11 +2143,7 @@ var Meyda = (function () {
 			if (typeof feature === 'object') {
 				var results = {};
 				for (var x = 0; x < feature.length; x++) {
-					try {
-						results[feature[x]] = _featureExtractors2['default'][feature[x]](self.bufferSize, self);
-					} catch (e) {
-						console.error(e);
-					}
+					results[feature[x]] = _featureExtractors2['default'][feature[x]](self.bufferSize, self);
 				}
 				return results;
 			} else if (typeof feature === 'string') {
