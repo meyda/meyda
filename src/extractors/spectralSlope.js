@@ -1,18 +1,22 @@
-export default function(bufferSize, m) {
+export default function() {
+  if(typeof arguments[0].ampSpectrum !== "object"){
+    throw new TypeError;
+  }
+
   //linear regression
   let ampSum =0;
   let freqSum=0;
-  let freqs = new Float32Array(m.ampSpectrum.length);
+  let freqs = new Float32Array(arguments[0].ampSpectrum.length);
   let powFreqSum=0;
   let ampFreqSum=0;
 
-  for (var i = 0; i < m.ampSpectrum.length; i++) {
-    ampSum += m.ampSpectrum[i];
-    let curFreq = i * m.audioContext.sampleRate / bufferSize;
+  for (var i = 0; i < arguments[0].ampSpectrum.length; i++) {
+    ampSum += arguments[0].ampSpectrum[i];
+    let curFreq = i * arguments[0].sampleRate / bufferSize;
     freqs[i] = curFreq;
     powFreqSum += curFreq*curFreq;
     freqSum += curFreq;
-    ampFreqSum += curFreq*m.ampSpectrum[i];
+    ampFreqSum += curFreq*arguments[0].ampSpectrum[i];
   }
-  return (m.ampSpectrum.length*ampFreqSum - freqSum*ampSum)/(ampSum*(powFreqSum - Math.pow(freqSum,2)));
+  return (arguments[0].ampSpectrum.length*ampFreqSum - freqSum*ampSum)/(ampSum*(powFreqSum - Math.pow(freqSum,2)));
 }

@@ -1,14 +1,20 @@
-export default function(bufferSize, m) {
-  var loudness = m.featureExtractors["loudness"](bufferSize, m);
+import loudness from './loudness';
 
-  var max = 0;
-  for (var i=0; i<loudness.specific.length; i++) {
-    if (loudness.specific[i] > max) {
-      max = loudness.specific[i];
-    }
-  }
+export default function() {
+	if(typeof arguments[0].signal !== "object"){
+		throw new TypeError;
+	}
+	
+	var loudnessValue = loudness(arguments[0]);
 
-  var spread = Math.pow((loudness.total - max)/loudness.total, 2);
+	var max = 0;
+	for (var i=0; i<loudnessValue.specific.length; i++) {
+		if (loudnessValue.specific[i] > max) {
+			max = loudnessValue.specific[i];
+		}
+	}
 
-  return spread;
+	var spread = Math.pow((loudnessValue.total - max)/loudnessValue.total, 2);
+
+	return spread;
 }

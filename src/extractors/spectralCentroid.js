@@ -1,5 +1,8 @@
-import mu from './extractorUtilities';
+import * as util from './extractorUtilities';
 
-export default function(bufferSize, m){
-  return mu(1,m.ampSpectrum);
+export default function(){
+	if(typeof arguments[0].ampSpectrum !== "object"){
+		throw new TypeError;
+	}
+	return util.mu(1,arguments[0].ampSpectrum);
 }

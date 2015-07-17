@@ -1,7 +1,7 @@
 import * as utilities from 'util';
 import featureExtractors from './featureExtractors';
 import * as fft from '../lib/jsfft/fft';
-import * as complex_array from '../lib/jsfft/complex_array'
+import * as complex_array from '../lib/jsfft/complex_array';
 
 class Meyda{
 	constructor(options){

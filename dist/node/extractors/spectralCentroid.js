@@ -1,17 +1,20 @@
-'use strict';
+"use strict";
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
+Object.defineProperty(exports, "__esModule", {
+	value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
 
-var _extractorUtilities = require('./extractorUtilities');
+var _extractorUtilities = require("./extractorUtilities");
 
-var _extractorUtilities2 = _interopRequireDefault(_extractorUtilities);
+var util = _interopRequireWildcard(_extractorUtilities);
 
-exports['default'] = function (bufferSize, m) {
-  return (0, _extractorUtilities2['default'])(1, m.ampSpectrum);
+exports["default"] = function () {
+	if (typeof arguments[0].ampSpectrum !== "object") {
+		throw new TypeError();
+	}
+	return util.mu(1, arguments[0].ampSpectrum);
 };
 
-module.exports = exports['default'];
+module.exports = exports["default"];

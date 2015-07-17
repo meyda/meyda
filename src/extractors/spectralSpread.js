@@ -1,6 +1,10 @@
-import mu from './extractorUtilities';
+import * as util from './extractorUtilities';
 
-export default function(bufferSize, m){
-  var ampspec = m.ampSpectrum;
-  return Math.sqrt(mu(2,ampspec)-Math.pow(mu(1,ampspec),2));
+export default function(){
+	console.log(typeof arguments[0].ampSpectrum);
+	if(typeof arguments[0].ampSpectrum !== "object"){
+		throw new TypeError;
+	}
+	var ampspec = arguments[0].ampSpectrum;
+	return Math.sqrt(util.mu(2,ampspec)-Math.pow(util.mu(1,ampspec),2));
 }
