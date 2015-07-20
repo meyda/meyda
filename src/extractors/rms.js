@@ -1,11 +1,13 @@
-export default function(bufferSize, m){
+export default function(){
+	if(typeof arguments[0].signal !== "object"){
+		throw new TypeError;
+	}
+	var rms = 0;
+	for(var i = 0 ; i < arguments[0].signal.length ; i++){
+		rms += Math.pow(arguments[0].signal[i],2);
+	}
+	rms = rms / arguments[0].signal.length;
+	rms = Math.sqrt(rms);
 
-  var rms = 0;
-  for(var i = 0 ; i < m.signal.length ; i++){
-    rms += Math.pow(m.signal[i],2);
-  }
-  rms = rms / m.signal.length;
-  rms = Math.sqrt(rms);
-
-  return rms;
+	return rms;
 }

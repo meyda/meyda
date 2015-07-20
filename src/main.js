@@ -1,7 +1,7 @@
 import * as utilities from 'util';
 import featureExtractors from './featureExtractors';
 import * as fft from '../lib/jsfft/fft';
-import * as complex_array from '../lib/jsfft/complex_array'
+import * as complex_array from '../lib/jsfft/complex_array';
 
 class Meyda{
 	constructor(options){
@@ -75,11 +75,7 @@ class Meyda{
 		if(typeof feature === "object"){
 			var results = {};
 			for (var x = 0; x < feature.length; x++){
-				try{
-					results[feature[x]] = (featureExtractors[feature[x]](self.bufferSize, self));
-				} catch (e){
-					console.error(e);
-				}
+				results[feature[x]] = (featureExtractors[feature[x]](self.bufferSize, self));
 			}
 			return results;
 		}
