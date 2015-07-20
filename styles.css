@@ -1,0 +1,73 @@
+body {
+	font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+	font-weight: normal;
+	font-size: 12px;
+	background-color: #333;
+	color: #ddd;
+}
+
+h3 {
+	font-size: 110px;
+	margin: 30px 0px 30px 0px;
+	font-weight: normal;
+	letter-spacing: -3px;
+}
+
+h4 {
+	font-weight: normal;
+	font-size: 20px;
+	margin: 10px 0px 10px 0px;
+}
+
+a {
+	color: #ddd;
+	text-decoration: none;
+	padding-left: 10px;
+	padding-right: 30px;
+	cursor: pointer;
+}
+
+a:visited {
+	color: #ddd;
+}
+
+a:hover {
+	color: green;
+}
+
+
+
+#aboutContent {
+	display: none;
+}
+
+#examplesContent {
+	display: none;
+}
+
+
+#featuresForm {
+	height: 300px;
+	-webkit-column-count: 3;
+}
+
+#filesInput {
+	display: none;
+}
+
+#extraction {
+	display: none;
+}
+
+#resetButton {
+	cursor: pointer;
+}
+
+.featuresCheckbox {
+	width: 100px;
+}
+
+.graph {
+	width: 700px;
+	height: 200px;
+}

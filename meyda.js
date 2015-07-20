@@ -32,14 +32,6 @@ var Meyda = function(audioContext,src,bufSize,callback){
 		return (num == 1);
 	}
 
-	//initilize bark scale (to be used in most perceptual features).
-	self.barkScale = new Float32Array(bufSize);
-
-	for(var i = 0; i < self.barkScale.length; i++){
-		self.barkScale[i] = i*audioContext.sampleRate/(bufSize);
-		self.barkScale[i] = 13*Math.atan(self.barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow((self.barkScale[i]/7518),2));
-	}
-
 	//WINDOWING
 	//set default
 	self.windowingFunction = "hanning";
@@ -281,20 +273,26 @@ var Meyda = function(audioContext,src,bufSize,callback){
 					return powerSpectrum;
 				},
 				"loudness": function(bufferSize, m){
-
+					var barkScale = new Float32Array(m.ampSpectrum.length);
 					var NUM_BARK_BANDS = 24;
 					var specific = new Float32Array(NUM_BARK_BANDS);
 					var tot = 0;
 					var normalisedSpectrum = m.ampSpectrum;
 					var bbLimits = new Int32Array(NUM_BARK_BANDS+1);
 
+					for(var i = 0; i < barkScale.length; i++){
+						barkScale[i] = i*m.audioContext.sampleRate/(bufferSize);
+						barkScale[i] = 13*Math.atan(barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow((barkScale[i]/7518),2));
+					}
+
+
 					bbLimits[0] = 0;
-					var currentBandEnd = self.barkScale[m.ampSpectrum.length-1]/NUM_BARK_BANDS;
+					var currentBandEnd = barkScale[m.ampSpectrum.length-1]/NUM_BARK_BANDS;
 					var currentBand = 1;
 					for(var i = 0; i<m.ampSpectrum.length; i++){
-						while(self.barkScale[i] > currentBandEnd) {
+						while(barkScale[i] > currentBandEnd) {
 							bbLimits[currentBand++] = i;
-							currentBandEnd = currentBand*self.barkScale[m.ampSpectrum.length-1]/NUM_BARK_BANDS;
+							currentBandEnd = currentBand*barkScale[m.ampSpectrum.length-1]/NUM_BARK_BANDS;
 						}
 					}
 
