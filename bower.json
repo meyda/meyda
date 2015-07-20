@@ -1,0 +1,32 @@
+{
+  "name": "meyda",
+  "main": "dist/browser/meyda.min.js",
+  "version": "1.1.0",
+  "homepage": "https://github.com/hughrawlinson/meyda",
+  "authors": [
+    "Hugh Rawlinson <hugh@soundwave.com>",
+    "Nevo Segal <nevosegal@gmail.com>",
+    "Jakub Fiala"
+  ],
+  "description": "Real-time feature extraction for the web audio api",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "audio",
+    "feature",
+    "extraction",
+    "music",
+    "sound",
+    "information",
+    "retrieval"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
