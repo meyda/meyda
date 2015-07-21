@@ -36,7 +36,8 @@ gulp.task('buildNode',function(){
 });
 
 gulp.task('uglifyWeb',function(){
-	return gulp.src("dist/web/meyda.js")
+	return gulp.src("./dist/web/meyda.js")
 		.pipe(uglify())
+		.pipe(concat("meyda.min.js"))
 		.pipe(gulp.dest("./dist/web/"))
 });

@@ -1,4 +1,6 @@
-build: clean installDeps buildWeb buildNode
+default: clean installDeps buildWeb buildNode test
+
+build: buildWeb buildNode
 
 buildWeb:
 	@mkdir -p dist/web

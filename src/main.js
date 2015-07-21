@@ -1,12 +1,19 @@
-import * as utilities from 'util';
+import * as utilities from './utilities';
 import featureExtractors from './featureExtractors';
-import {complex_array} from 'jsfft';
+import * as fft from 'jsfft';
+import * as complex_array from 'jsfft/lib/complex_array';
 
 class Meyda{
 	constructor(options){
-		// TODO: validate options
+		var self = this;
 		self.audioContext = options.audioContext;
-		this.setSource(options.source);
+
+		//create nodes
+		self.spn = self.audioContext.createScriptProcessor(self.bufferSize,1,1);
+		self.spn.connect(self.audioContext.destination);
+
+		// TODO: validate options
+		self.setSource(options.source);
 		self.bufferSize = options.bufferSize || 256;
 		self.callback = options.callback;
 		self.windowingFunction = options.windowingFunction || "hanning";
@@ -15,22 +22,18 @@ class Meyda{
 		var EXTRACTION_STARTED = false;
 		var _featuresToExtract;
 
-		self.barkScale = new Float32Array(bufSize);
+		self.barkScale = new Float32Array(self.bufferSize);
 
 		for(var i = 0; i < self.barkScale.length; i++){
-			self.barkScale[i] = i*audioContext.sampleRate/(bufSize);
+			self.barkScale[i] = i*self.audioContext.sampleRate/(self.bufferSize);
 			self.barkScale[i] = 13*Math.atan(self.barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow((self.barkScale[i]/7518),2));
 		}
 
-		//create nodes
-		window.spn = audioContext.createScriptProcessor(self.bufferSize,1,1);
-		spn.connect(audioContext.destination);
-
-		window.spn.onaudioprocess = function(e) {
-			// this is to obtain the current frame pcm data
+		self.spn.onaudioprocess = function(e) {
+			// self is to obtain the current frame pcm data
 			var inputData = e.inputBuffer.getChannelData(0);
 			self.signal = inputData;
-			var windowedSignal = utilities.applyWindow(inputData, 'hanning');
+			var windowedSignal = utilities.applyWindow(inputData, self.windowingFunction);
 
 			// create complexarray to hold the spectrum
 			var data = new complex_array.ComplexArray(self.bufferSize);
@@ -52,7 +55,7 @@ class Meyda{
 			}
 		};
 
-		source.connect(window.spn, 0, 0);
+		self.setSource(source);
 	}
 
 	start(features) {
@@ -64,9 +67,8 @@ class Meyda{
 		EXTRACTION_STARTED = false;
 	}
 
-	setSource(_src) {
-		source = _src;
-		source.connect(window.spn);
+	setSource(source) {
+		source.connect(this.spn);
 	}
 
 	get(feature) {
@@ -74,12 +76,24 @@ class Meyda{
 		if(typeof feature === "object"){
 			var results = {};
 			for (var x = 0; x < feature.length; x++){
-				results[feature[x]] = (featureExtractors[feature[x]](self.bufferSize, self));
+				results[feature[x]] = (featureExtractors[feature[x]]({
+					ampSpectrum:self.ampSpectrum,
+					complexSpectrum:self.complexSpectrum,
+					signal:self.signal,
+					bufferSize:self.bufferSize,
+					sampleRate:self.audioContext.sampleRate
+				}));
 			}
 			return results;
 		}
 		else if (typeof feature === "string"){
-			return featureExtractors[feature](self.bufferSize, self);
+			return featureExtractors[feature]({
+				ampSpectrum:self.ampSpectrum,
+				complexSpectrum:self.complexSpectrum,
+				signal:self.signal,
+				bufferSize:self.bufferSize,
+				sampleRate:self.audioContext.sampleRate
+			});
 		}
 		else{
 			throw "Invalid Feature Format";

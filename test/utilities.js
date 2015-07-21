@@ -2,7 +2,7 @@ var chai = require("chai");
 var assert = chai.assert;
 
 // Setup
-var util = require("../dist/node/util");
+var util = require("../dist/node/utilities");
 
 describe('isPowerOfTwo', function(){
 	it('should validate all powers of two', function(done){
