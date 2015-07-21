@@ -2,7 +2,7 @@ import loudness from './loudness';
 
 export default function() {
   if(typeof arguments[0].signal !== "object"){
-    throw new TypeError;
+    throw new TypeError();
   }
   var loudnessValue = loudness(arguments[0]);
   var spec = loudnessValue.specific;
@@ -15,7 +15,7 @@ export default function() {
     else {
       output += 0.066 * Math.exp(0.171 * (i+1));
     }
-  };
+  }
   output *= 0.11/loudnessValue.total;
 
   return output;

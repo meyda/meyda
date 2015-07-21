@@ -62,6 +62,10 @@ var _extractorsMfcc = require('./extractors/mfcc');
 
 var _extractorsMfcc2 = _interopRequireDefault(_extractorsMfcc);
 
+var _extractorsPowerSpectrum = require('./extractors/powerSpectrum');
+
+var _extractorsPowerSpectrum2 = _interopRequireDefault(_extractorsPowerSpectrum);
+
 exports['default'] = {
   'buffer': function buffer(bufferSize, m) {
     return m.signal;
@@ -85,6 +89,7 @@ exports['default'] = {
   loudness: _extractorsLoudness2['default'],
   perceptualSpread: _extractorsPerceptualSpread2['default'],
   perceptualSharpness: _extractorsPerceptualSharpness2['default'],
+  powerSpectrum: _extractorsPowerSpectrum2['default'],
   mfcc: _extractorsMfcc2['default']
 };
 module.exports = exports['default'];

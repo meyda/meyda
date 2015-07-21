@@ -2,7 +2,7 @@ import * as assert from 'assert';
 
 export default function() {
 	if(typeof arguments[0].signal !== "object"){
-		throw new TypeError;
+		throw new TypeError();
 	}
 
 	var energy = 0;

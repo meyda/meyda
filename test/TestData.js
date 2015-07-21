@@ -1805,7 +1805,7 @@ var validFFT = {
 	0.12676763534545898
 	]),
 "length": 512
-}
+};
 
 var expectedPowerSpectrumOutput = new Float32Array([
 	0.03867155686020851,
@@ -2079,4 +2079,4 @@ module.exports = {
 	VALID_FFT:validFFT,
 	VALID_BARK_SCALE:barkScale,
 	EXPECTED_POWER_SPECTRUM_OUTPUT:expectedPowerSpectrumOutput
-}
+};

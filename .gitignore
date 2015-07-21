@@ -1,3 +1,6 @@
 meyda.sublime-project
 meyda.sublime-workspace
 node_modules
+.gitignore
+.env
+coverage

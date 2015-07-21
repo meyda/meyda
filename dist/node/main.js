@@ -20,13 +20,7 @@ var _featureExtractors = require('./featureExtractors');
 
 var _featureExtractors2 = _interopRequireDefault(_featureExtractors);
 
-var _libJsfftFft = require('../lib/jsfft/fft');
-
-var fft = _interopRequireWildcard(_libJsfftFft);
-
-var _libJsfftComplex_array = require('../lib/jsfft/complex_array');
-
-var complex_array = _interopRequireWildcard(_libJsfftComplex_array);
+var _jsfft = require('jsfft');
 
 var Meyda = (function () {
 	function Meyda(options) {
@@ -61,7 +55,7 @@ var Meyda = (function () {
 			var windowedSignal = utilities.applyWindow(inputData, 'hanning');
 
 			// create complexarray to hold the spectrum
-			var data = new complex_array.ComplexArray(self.bufferSize);
+			var data = new _jsfft.complex_array.ComplexArray(self.bufferSize);
 			// map time domain
 			data.map(function (value, i, n) {
 				value.real = windowedSignal[i];
@@ -123,5 +117,5 @@ var Meyda = (function () {
 
 exports['default'] = Meyda;
 
-window.Meyda = Meyda;
+if (typeof window !== 'undefined') window.Meyda = Meyda;
 module.exports = exports['default'];

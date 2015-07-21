@@ -2,7 +2,7 @@ import {mu} from './extractorUtilities';
 
 export default function(){
 	if(typeof arguments[0].ampSpectrum !== "object"){
-		throw new TypeError;
+		throw new TypeError();
 	}
 	var ampspec = arguments[0].ampSpectrum;
 	var mu1 = mu(1,ampspec);

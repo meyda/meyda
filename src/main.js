@@ -1,7 +1,6 @@
 import * as utilities from 'util';
 import featureExtractors from './featureExtractors';
-import * as fft from '../lib/jsfft/fft';
-import * as complex_array from '../lib/jsfft/complex_array';
+import {complex_array} from 'jsfft';
 
 class Meyda{
 	constructor(options){
@@ -51,7 +50,7 @@ class Meyda{
 			if (typeof callback === "function" && EXTRACTION_STARTED) {
 				callback(self.get(_featuresToExtract));
 			}
-		}
+		};
 
 		source.connect(window.spn, 0, 0);
 	}
@@ -89,4 +88,4 @@ class Meyda{
 }
 
 export default Meyda;
-window.Meyda = Meyda;
+if(typeof window !== 'undefined') window.Meyda = Meyda;

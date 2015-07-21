@@ -49,7 +49,7 @@ exports["default"] = function (args) {
 		melValuesInFreq[i] = melToFreq(melValues[i]);
 		//Find the corresponding bins
 		fftBinsOfFreq[i] = Math.floor((args.bufferSize + 1) * melValuesInFreq[i] / args.sampleRate);
-	};
+	}
 
 	var filterBank = Array(numFilters);
 	for (var j = 0; j < filterBank.length; j++) {
@@ -88,7 +88,7 @@ exports["default"] = function (args) {
 	for (var i = 0; i < numCoeffs; i++) {
 		for (var j = 0; j < numFilters; j++) {
 			var idx = i + j * numCoeffs;
-			if (i == 0) {
+			if (i === 0) {
 				dctMatrix[idx] = w1 * Math.cos(k * (i + 1) * (j + 0.5));
 			} else {
 				dctMatrix[idx] = w2 * Math.cos(k * (i + 1) * (j + 0.5));
@@ -97,13 +97,13 @@ exports["default"] = function (args) {
 	}
 
 	var mfccs = new Float32Array(numCoeffs);
-	for (var k = 0; k < numCoeffs; k++) {
+	for (var _k = 0; _k < numCoeffs; _k++) {
 		var v = 0;
 		for (var n = 0; n < numFilters; n++) {
-			var idx = k + n * numCoeffs;
+			var idx = _k + n * numCoeffs;
 			v += dctMatrix[idx] * loggedMelBands[n];
 		}
-		mfccs[k] = v / numCoeffs;
+		mfccs[_k] = v / numCoeffs;
 	}
 	return mfccs;
 };

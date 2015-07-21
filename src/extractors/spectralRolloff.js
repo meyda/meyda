@@ -1,6 +1,6 @@
 export default function(){
 	if(typeof arguments[0].ampSpectrum !== "object"){
-		throw new TypeError;
+		throw new TypeError();
 	}
 	var ampspec = arguments[0].ampSpectrum;
 	//calculate nyquist bin

@@ -17,10 +17,10 @@ var windowing = _interopRequireWildcard(_windowing);
 var windows = {};
 
 function isPowerOfTwo(num) {
-  while (num % 2 == 0 && num > 1) {
+  while (num % 2 === 0 && num > 1) {
     num /= 2;
   }
-  return num == 1;
+  return num === 1;
 }
 
 function error(message) {

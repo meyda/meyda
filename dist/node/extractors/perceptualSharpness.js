@@ -24,7 +24,7 @@ exports["default"] = function () {
     } else {
       output += 0.066 * Math.exp(0.171 * (i + 1));
     }
-  };
+  }
   output *= 0.11 / loudnessValue.total;
 
   return output;

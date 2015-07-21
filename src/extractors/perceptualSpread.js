@@ -2,7 +2,7 @@ import loudness from './loudness';
 
 export default function() {
 	if(typeof arguments[0].signal !== "object"){
-		throw new TypeError;
+		throw new TypeError();
 	}
 	
 	var loudnessValue = loudness(arguments[0]);

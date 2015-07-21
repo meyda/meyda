@@ -1,6 +1,6 @@
 export default function(args) {
   if(typeof args.ampSpectrum !== "object"){
-    throw new TypeError;
+    throw new TypeError();
   }
 
   //linear regression

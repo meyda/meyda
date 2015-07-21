@@ -12,6 +12,7 @@ import loudness from './extractors/loudness';
 import perceptualSpread from './extractors/perceptualSpread';
 import perceptualSharpness from './extractors/perceptualSharpness';
 import mfcc from './extractors/mfcc';
+import powerSpectrum from './extractors/powerSpectrum';
 
 export default {
   "buffer" : function(bufferSize,m){
@@ -36,5 +37,6 @@ export default {
   loudness,
   perceptualSpread,
   perceptualSharpness,
+  powerSpectrum,
   mfcc
-}
+};

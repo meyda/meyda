@@ -1,6 +1,6 @@
 export default function(){
 	if(typeof arguments[0].ampSpectrum !== "object"){
-		throw new TypeError;
+		throw new TypeError();
 	}
 	var powerSpectrum = new Float32Array(arguments[0].ampSpectrum.length);
 	for (var i = 0; i < powerSpectrum.length; i++) {

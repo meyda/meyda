@@ -21,23 +21,19 @@ var generateBlackman = function generateBlackman(size) {
 // @TODO: finish and export Blackman
 
 function hanning(size) {
-  var hanning = new Float32Array(size);
+  var hanningBuffer = new Float32Array(size);
   for (var i = 0; i < size; i++) {
     //According to the R documentation http://rgm.ogalab.net/RGM/R_rdfile?f=GENEAread/man/hanning.window.Rd&d=R_CC
-    hanning[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (size - 1));
+    hanningBuffer[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (size - 1));
   }
-  return hanning;
+  return hanningBuffer;
 }
-
-;
 
 function hamming(size) {
-  var hamming = new Float32Array(size);
+  var hammingBuffer = new Float32Array(size);
   for (var i = 0; i < size; i++) {
     //According to http://uk.mathworks.com/help/signal/ref/hamming.html
-    hamming[i] = 0.54 - 0.46 * Math.cos(2 * Math.PI * (i / size - 1));
+    hammingBuffer[i] = 0.54 - 0.46 * Math.cos(2 * Math.PI * (i / size - 1));
   }
-  return hamming;
+  return hammingBuffer;
 }
-
-;
