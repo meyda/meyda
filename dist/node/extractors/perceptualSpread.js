@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _loudness = require("./loudness");
+var _loudness = require('./loudness');
 
 var _loudness2 = _interopRequireDefault(_loudness);
 

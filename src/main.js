@@ -17,6 +17,7 @@ class Meyda{
 		self.bufferSize = options.bufferSize || 256;
 		self.callback = options.callback;
 		self.windowingFunction = options.windowingFunction || "hanning";
+		self.featureExtractors = featureExtractors;
 
 		//callback controllers
 		var EXTRACTION_STARTED = false;
@@ -81,7 +82,8 @@ class Meyda{
 					complexSpectrum:self.complexSpectrum,
 					signal:self.signal,
 					bufferSize:self.bufferSize,
-					sampleRate:self.audioContext.sampleRate
+					sampleRate:self.audioContext.sampleRate,
+					barkScale:self.barkScale
 				}));
 			}
 			return results;
@@ -92,7 +94,8 @@ class Meyda{
 				complexSpectrum:self.complexSpectrum,
 				signal:self.signal,
 				bufferSize:self.bufferSize,
-				sampleRate:self.audioContext.sampleRate
+				sampleRate:self.audioContext.sampleRate,
+				barkScale:self.barkScale
 			});
 		}
 		else{

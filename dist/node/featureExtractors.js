@@ -67,12 +67,12 @@ var _extractorsPowerSpectrum = require('./extractors/powerSpectrum');
 var _extractorsPowerSpectrum2 = _interopRequireDefault(_extractorsPowerSpectrum);
 
 exports['default'] = {
-  'buffer': function buffer(args) {
+  "buffer": function buffer(args) {
     return args.signal;
   },
   rms: _extractorsRms2['default'],
   energy: _extractorsEnergy2['default'],
-  'complexSpectrum': function complexSpectrum(args) {
+  "complexSpectrum": function complexSpectrum(args) {
     return args.complexSpectrum;
   },
   spectralSlope: _extractorsSpectralSlope2['default'],
@@ -82,7 +82,7 @@ exports['default'] = {
   spectralSpread: _extractorsSpectralSpread2['default'],
   spectralSkewness: _extractorsSpectralSkewness2['default'],
   spectralKurtosis: _extractorsSpectralKurtosis2['default'],
-  'amplitudeSpectrum': function amplitudeSpectrum(args) {
+  "amplitudeSpectrum": function amplitudeSpectrum(args) {
     return args.ampSpectrum;
   },
   zcr: _extractorsZcr2['default'],

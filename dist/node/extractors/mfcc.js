@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _powerSpectrum = require("./powerSpectrum");
+var _powerSpectrum = require('./powerSpectrum');
 
 var _powerSpectrum2 = _interopRequireDefault(_powerSpectrum);
 

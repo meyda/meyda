@@ -4,23 +4,23 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = function () {
-  if (typeof arguments[0].ampSpectrum !== "object") {
+exports["default"] = function (args) {
+  if (typeof args.ampSpectrum !== "object") {
     throw new TypeError();
   }
   var NUM_BARK_BANDS = 24;
   var specific = new Float32Array(NUM_BARK_BANDS);
   var total = 0;
-  var normalisedSpectrum = arguments[0].ampSpectrum;
+  var normalisedSpectrum = args.ampSpectrum;
   var bbLimits = new Int32Array(NUM_BARK_BANDS + 1);
 
   bbLimits[0] = 0;
-  var currentBandEnd = arguments[0].barkScale[normalisedSpectrum.length - 1] / NUM_BARK_BANDS;
+  var currentBandEnd = args.barkScale[normalisedSpectrum.length - 1] / NUM_BARK_BANDS;
   var currentBand = 1;
   for (var i = 0; i < normalisedSpectrum.length; i++) {
-    while (arguments[0].barkScale[i] > currentBandEnd) {
+    while (args.barkScale[i] > currentBandEnd) {
       bbLimits[currentBand++] = i;
-      currentBandEnd = currentBand * arguments[0].barkScale[normalisedSpectrum.length - 1] / NUM_BARK_BANDS;
+      currentBandEnd = currentBand * args.barkScale[normalisedSpectrum.length - 1] / NUM_BARK_BANDS;
     }
   }
 

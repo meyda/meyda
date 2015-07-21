@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _extractorUtilities = require("./extractorUtilities");
+var _extractorUtilities = require('./extractorUtilities');
 
 exports["default"] = function (args) {
 	if (typeof args.ampSpectrum !== "object") {

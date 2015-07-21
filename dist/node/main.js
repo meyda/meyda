@@ -43,7 +43,8 @@ var Meyda = (function () {
 		self.setSource(options.source);
 		self.bufferSize = options.bufferSize || 256;
 		self.callback = options.callback;
-		self.windowingFunction = options.windowingFunction || 'hanning';
+		self.windowingFunction = options.windowingFunction || "hanning";
+		self.featureExtractors = _featureExtractors2['default'];
 
 		//callback controllers
 		var EXTRACTION_STARTED = false;
@@ -77,7 +78,7 @@ var Meyda = (function () {
 				self.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i], 2) + Math.pow(spec.imag[i], 2));
 			}
 			// call callback if applicable
-			if (typeof callback === 'function' && EXTRACTION_STARTED) {
+			if (typeof callback === "function" && EXTRACTION_STARTED) {
 				callback(self.get(_featuresToExtract));
 			}
 		};
@@ -105,7 +106,7 @@ var Meyda = (function () {
 		key: 'get',
 		value: function get(feature) {
 			var self = this;
-			if (typeof feature === 'object') {
+			if (typeof feature === "object") {
 				var results = {};
 				for (var x = 0; x < feature.length; x++) {
 					results[feature[x]] = _featureExtractors2['default'][feature[x]]({
@@ -113,20 +114,22 @@ var Meyda = (function () {
 						complexSpectrum: self.complexSpectrum,
 						signal: self.signal,
 						bufferSize: self.bufferSize,
-						sampleRate: self.audioContext.sampleRate
+						sampleRate: self.audioContext.sampleRate,
+						barkScale: self.barkScale
 					});
 				}
 				return results;
-			} else if (typeof feature === 'string') {
+			} else if (typeof feature === "string") {
 				return _featureExtractors2['default'][feature]({
 					ampSpectrum: self.ampSpectrum,
 					complexSpectrum: self.complexSpectrum,
 					signal: self.signal,
 					bufferSize: self.bufferSize,
-					sampleRate: self.audioContext.sampleRate
+					sampleRate: self.audioContext.sampleRate,
+					barkScale: self.barkScale
 				});
 			} else {
-				throw 'Invalid Feature Format';
+				throw "Invalid Feature Format";
 			}
 		}
 	}]);
