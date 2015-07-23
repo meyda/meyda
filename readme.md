@@ -6,7 +6,7 @@ is a javascript audio feature extraction library designed for and implemented in
 [hughrawlinson](https://github.com/hughrawlinson "Hugh Rawlinson") | [nevosegal](https://github.com/nevosegal "Nevo Segal") | [jakubfiala](https://github.com/jakubfiala "Jakub Fiala")
 
 ### Usage
-Please see [the documentation](docs.md) for setup and usage instructions.
+Please see [the documentation](https://github.com/hughrawlinson/meyda/wiki/Getting-Started) for setup and usage instructions.
 
 ### Acknowledgements
 
