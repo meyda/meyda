@@ -1,0 +1,52 @@
+{
+  "name": "meyda",
+  "version": "1.1.0",
+  "description": "Real-time feature extraction for the web audio api",
+  "main": "./dist/node/main.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hughrawlinson/meyda.git"
+  },
+  "keywords": [
+    "audio",
+    "feature",
+    "extraction",
+    "music",
+    "sound",
+    "information",
+    "retrieval"
+  ],
+  "authors": [
+    "Hugh Rawlinson <hugh@soundwave.com>",
+    "Nevo Segal <nevosegal@gmail.com>",
+    "Jakub Fiala"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hughrawlinson/meyda/issues"
+  },
+  "homepage": "https://github.com/hughrawlinson/meyda",
+  "devDependencies": {
+    "babelify": "^6.1.2",
+    "browserify": "^10.2.4",
+    "chai": "^3.1.0",
+    "codeclimate-test-reporter": "^0.1.0",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.1.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.2.0",
+    "istanbul": "^0.3.17",
+    "jscoverage": "^0.5.9",
+    "jshint": "^2.8.0",
+    "mocha": "^2.2.5",
+    "mocha-lcov-reporter": "0.0.2",
+    "through2": "^2.0.0"
+  },
+  "dependencies": {
+    "jsfft": "git://github.com/dntj/jsfft.git"
+  }
+}
