@@ -55,8 +55,6 @@ class Meyda{
 				callback(self.get(_featuresToExtract));
 			}
 		};
-
-		self.setSource(source);
 	}
 
 	start(features) {
