@@ -82,8 +82,6 @@ var Meyda = (function () {
 				callback(self.get(_featuresToExtract));
 			}
 		};
-
-		self.setSource(source);
 	}
 
 	_createClass(Meyda, [{
