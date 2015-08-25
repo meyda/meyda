@@ -18,10 +18,10 @@ class Meyda{
 		self.callback = options.callback;
 		self.windowingFunction = options.windowingFunction || "hanning";
 		self.featureExtractors = featureExtractors;
+		self.EXTRACTION_STARTED = options.startImmediately || false;
 
 		//callback controllers
-		var EXTRACTION_STARTED = false;
-		var _featuresToExtract;
+		self._featuresToExtract = options.featureExtractors || [];
 
 		self.barkScale = new Float32Array(self.bufferSize);
 
@@ -51,19 +51,19 @@ class Meyda{
 				self.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i],2) + Math.pow(spec.imag[i],2));
 			}
 			// call callback if applicable
-			if (typeof callback === "function" && EXTRACTION_STARTED) {
-				callback(self.get(_featuresToExtract));
+			if (typeof self.callback === "function" && self.EXTRACTION_STARTED) {
+				self.callback(self.get(self._featuresToExtract));
 			}
 		};
 	}
 
 	start(features) {
-		_featuresToExtract = features;
-		EXTRACTION_STARTED = true;
+		self._featuresToExtract = features;
+		self.EXTRACTION_STARTED = true;
 	}
 
 	stop() {
-		EXTRACTION_STARTED = false;
+		self.EXTRACTION_STARTED = false;
 	}
 
 	setSource(source) {
@@ -103,4 +103,5 @@ class Meyda{
 }
 
 export default Meyda;
-if(typeof window !== 'undefined') window.Meyda = Meyda;
+
+if (typeof window !== "undefined") window.Meyda = Meyda;
