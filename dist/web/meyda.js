@@ -417,7 +417,9 @@ function drainQueue() {
         currentQueue = queue;
         queue = [];
         while (++queueIndex < len) {
-            currentQueue[queueIndex].run();
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
         }
         queueIndex = -1;
         len = queue.length;
@@ -469,7 +471,6 @@ process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
 
-// TODO(shtylman)
 process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
@@ -2165,9 +2166,10 @@ var Meyda = (function () {
 })();
 
 exports['default'] = Meyda;
+var extractors = _featureExtractors2['default'];
 
+exports.extractors = extractors;
 if (typeof window !== "undefined") window.Meyda = Meyda;
-module.exports = exports['default'];
 
 },{"./featureExtractors":24,"./utilities":26,"jsfft":7,"jsfft/lib/complex_array":6}],26:[function(require,module,exports){
 "use strict";

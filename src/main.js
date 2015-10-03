@@ -103,5 +103,6 @@ class Meyda{
 }
 
 export default Meyda;
+export var extractors = featureExtractors;
 
 if (typeof window !== "undefined") window.Meyda = Meyda;
