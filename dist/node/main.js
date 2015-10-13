@@ -136,6 +136,7 @@ var Meyda = (function () {
 })();
 
 exports['default'] = Meyda;
+var extractors = _featureExtractors2['default'];
 
+exports.extractors = extractors;
 if (typeof window !== "undefined") window.Meyda = Meyda;
-module.exports = exports['default'];
