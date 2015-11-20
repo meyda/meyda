@@ -1,16 +1,10 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _utilities = require('./utilities');
 
@@ -24,9 +18,17 @@ var _jsfft = require('jsfft');
 
 var fft = _interopRequireWildcard(_jsfft);
 
-var _jsfftLibComplex_array = require('jsfft/lib/complex_array');
+var _complex_array = require('jsfft/lib/complex_array');
 
-var complex_array = _interopRequireWildcard(_jsfftLibComplex_array);
+var complex_array = _interopRequireWildcard(_complex_array);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Meyda = (function () {
 	function Meyda(options) {
@@ -44,7 +46,7 @@ var Meyda = (function () {
 		self.bufferSize = options.bufferSize || 256;
 		self.callback = options.callback;
 		self.windowingFunction = options.windowingFunction || "hanning";
-		self.featureExtractors = _featureExtractors2['default'];
+		self.featureExtractors = _featureExtractors2.default;
 		self.EXTRACTION_STARTED = options.startImmediately || false;
 
 		//callback controllers
@@ -104,10 +106,10 @@ var Meyda = (function () {
 		key: 'get',
 		value: function get(feature) {
 			var self = this;
-			if (typeof feature === "object") {
+			if ((typeof feature === 'undefined' ? 'undefined' : _typeof(feature)) === "object") {
 				var results = {};
 				for (var x = 0; x < feature.length; x++) {
-					results[feature[x]] = _featureExtractors2['default'][feature[x]]({
+					results[feature[x]] = _featureExtractors2.default[feature[x]]({
 						ampSpectrum: self.ampSpectrum,
 						complexSpectrum: self.complexSpectrum,
 						signal: self.signal,
@@ -118,7 +120,7 @@ var Meyda = (function () {
 				}
 				return results;
 			} else if (typeof feature === "string") {
-				return _featureExtractors2['default'][feature]({
+				return _featureExtractors2.default[feature]({
 					ampSpectrum: self.ampSpectrum,
 					complexSpectrum: self.complexSpectrum,
 					signal: self.signal,
@@ -135,7 +137,7 @@ var Meyda = (function () {
 	return Meyda;
 })();
 
-exports['default'] = Meyda;
+exports.default = Meyda;
 
 if (typeof window !== "undefined") window.Meyda = Meyda;
 module.exports = exports['default'];

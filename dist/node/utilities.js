@@ -8,11 +8,11 @@ exports.error = error;
 exports.pointwiseBufferMult = pointwiseBufferMult;
 exports.applyWindow = applyWindow;
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
-
-var _windowing = require('./windowing');
+var _windowing = require("./windowing");
 
 var windowing = _interopRequireWildcard(_windowing);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var windows = {};
 

@@ -11,7 +11,10 @@ gulp.task('buildWeb',function(){
 	return gulp.src('./src/main.js')
 		.pipe(through2.obj(function(file,enc,next){
 			browserify(file.path,{debug: process.env.NODE_ENV === 'development'})
-				.transform(babelify)
+				.transform(babelify, {
+					presets: ["es2015"],
+					plugins: ["babel-plugin-add-module-exports"]
+				})
 				.bundle(function (err, res){
 					if(err){
 						return next(err);
@@ -31,7 +34,10 @@ gulp.task('buildWeb',function(){
 
 gulp.task('buildNode',function(){
 	return gulp.src("./src/**/*.js")
-		.pipe(babel())
+		.pipe(babel({
+            presets: ['es2015'],
+						plugins: ["babel-plugin-add-module-exports"]
+        }))
 		.pipe(gulp.dest("./dist/node/"));
 });
 

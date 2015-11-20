@@ -15,7 +15,7 @@ describe('spectralKurtosis', function(){
 
     done();
   });
-  
+
   it('should throw an error when passed an empty object', function(done){
     try{
       var en = spectralKurtosis({});
@@ -23,7 +23,7 @@ describe('spectralKurtosis', function(){
       done();
     }
   });
-  
+
   it('should throw an error when not passed anything', function(done){
     try{
       var en = spectralKurtosis();

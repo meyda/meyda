@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-exports["default"] = function () {
-	if (typeof arguments[0].signal !== "object") {
+exports.default = function () {
+	if (_typeof(arguments[0].signal) !== "object") {
 		throw new TypeError();
 	}
 	var zcr = 0;
@@ -17,4 +17,6 @@ exports["default"] = function () {
 	return zcr;
 };
 
-module.exports = exports["default"];
+function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+
+module.exports = exports['default'];

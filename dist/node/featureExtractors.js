@@ -1,95 +1,95 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var _rms = require('./extractors/rms');
 
-var _extractorsRms = require('./extractors/rms');
+var _rms2 = _interopRequireDefault(_rms);
 
-var _extractorsRms2 = _interopRequireDefault(_extractorsRms);
+var _energy = require('./extractors/energy');
 
-var _extractorsEnergy = require('./extractors/energy');
+var _energy2 = _interopRequireDefault(_energy);
 
-var _extractorsEnergy2 = _interopRequireDefault(_extractorsEnergy);
+var _spectralSlope = require('./extractors/spectralSlope');
 
-var _extractorsSpectralSlope = require('./extractors/spectralSlope');
+var _spectralSlope2 = _interopRequireDefault(_spectralSlope);
 
-var _extractorsSpectralSlope2 = _interopRequireDefault(_extractorsSpectralSlope);
+var _spectralCentroid = require('./extractors/spectralCentroid');
 
-var _extractorsSpectralCentroid = require('./extractors/spectralCentroid');
+var _spectralCentroid2 = _interopRequireDefault(_spectralCentroid);
 
-var _extractorsSpectralCentroid2 = _interopRequireDefault(_extractorsSpectralCentroid);
+var _spectralRolloff = require('./extractors/spectralRolloff');
 
-var _extractorsSpectralRolloff = require('./extractors/spectralRolloff');
+var _spectralRolloff2 = _interopRequireDefault(_spectralRolloff);
 
-var _extractorsSpectralRolloff2 = _interopRequireDefault(_extractorsSpectralRolloff);
+var _spectralFlatness = require('./extractors/spectralFlatness');
 
-var _extractorsSpectralFlatness = require('./extractors/spectralFlatness');
+var _spectralFlatness2 = _interopRequireDefault(_spectralFlatness);
 
-var _extractorsSpectralFlatness2 = _interopRequireDefault(_extractorsSpectralFlatness);
+var _spectralSpread = require('./extractors/spectralSpread');
 
-var _extractorsSpectralSpread = require('./extractors/spectralSpread');
+var _spectralSpread2 = _interopRequireDefault(_spectralSpread);
 
-var _extractorsSpectralSpread2 = _interopRequireDefault(_extractorsSpectralSpread);
+var _spectralSkewness = require('./extractors/spectralSkewness');
 
-var _extractorsSpectralSkewness = require('./extractors/spectralSkewness');
+var _spectralSkewness2 = _interopRequireDefault(_spectralSkewness);
 
-var _extractorsSpectralSkewness2 = _interopRequireDefault(_extractorsSpectralSkewness);
+var _spectralKurtosis = require('./extractors/spectralKurtosis');
 
-var _extractorsSpectralKurtosis = require('./extractors/spectralKurtosis');
+var _spectralKurtosis2 = _interopRequireDefault(_spectralKurtosis);
 
-var _extractorsSpectralKurtosis2 = _interopRequireDefault(_extractorsSpectralKurtosis);
+var _zcr = require('./extractors/zcr');
 
-var _extractorsZcr = require('./extractors/zcr');
+var _zcr2 = _interopRequireDefault(_zcr);
 
-var _extractorsZcr2 = _interopRequireDefault(_extractorsZcr);
+var _loudness = require('./extractors/loudness');
 
-var _extractorsLoudness = require('./extractors/loudness');
+var _loudness2 = _interopRequireDefault(_loudness);
 
-var _extractorsLoudness2 = _interopRequireDefault(_extractorsLoudness);
+var _perceptualSpread = require('./extractors/perceptualSpread');
 
-var _extractorsPerceptualSpread = require('./extractors/perceptualSpread');
+var _perceptualSpread2 = _interopRequireDefault(_perceptualSpread);
 
-var _extractorsPerceptualSpread2 = _interopRequireDefault(_extractorsPerceptualSpread);
+var _perceptualSharpness = require('./extractors/perceptualSharpness');
 
-var _extractorsPerceptualSharpness = require('./extractors/perceptualSharpness');
+var _perceptualSharpness2 = _interopRequireDefault(_perceptualSharpness);
 
-var _extractorsPerceptualSharpness2 = _interopRequireDefault(_extractorsPerceptualSharpness);
+var _mfcc = require('./extractors/mfcc');
 
-var _extractorsMfcc = require('./extractors/mfcc');
+var _mfcc2 = _interopRequireDefault(_mfcc);
 
-var _extractorsMfcc2 = _interopRequireDefault(_extractorsMfcc);
+var _powerSpectrum = require('./extractors/powerSpectrum');
 
-var _extractorsPowerSpectrum = require('./extractors/powerSpectrum');
+var _powerSpectrum2 = _interopRequireDefault(_powerSpectrum);
 
-var _extractorsPowerSpectrum2 = _interopRequireDefault(_extractorsPowerSpectrum);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports['default'] = {
+exports.default = {
   "buffer": function buffer(args) {
     return args.signal;
   },
-  rms: _extractorsRms2['default'],
-  energy: _extractorsEnergy2['default'],
+  rms: _rms2.default,
+  energy: _energy2.default,
   "complexSpectrum": function complexSpectrum(args) {
     return args.complexSpectrum;
   },
-  spectralSlope: _extractorsSpectralSlope2['default'],
-  spectralCentroid: _extractorsSpectralCentroid2['default'],
-  spectralRolloff: _extractorsSpectralRolloff2['default'],
-  spectralFlatness: _extractorsSpectralFlatness2['default'],
-  spectralSpread: _extractorsSpectralSpread2['default'],
-  spectralSkewness: _extractorsSpectralSkewness2['default'],
-  spectralKurtosis: _extractorsSpectralKurtosis2['default'],
+  spectralSlope: _spectralSlope2.default,
+  spectralCentroid: _spectralCentroid2.default,
+  spectralRolloff: _spectralRolloff2.default,
+  spectralFlatness: _spectralFlatness2.default,
+  spectralSpread: _spectralSpread2.default,
+  spectralSkewness: _spectralSkewness2.default,
+  spectralKurtosis: _spectralKurtosis2.default,
   "amplitudeSpectrum": function amplitudeSpectrum(args) {
     return args.ampSpectrum;
   },
-  zcr: _extractorsZcr2['default'],
-  loudness: _extractorsLoudness2['default'],
-  perceptualSpread: _extractorsPerceptualSpread2['default'],
-  perceptualSharpness: _extractorsPerceptualSharpness2['default'],
-  powerSpectrum: _extractorsPowerSpectrum2['default'],
-  mfcc: _extractorsMfcc2['default']
+  zcr: _zcr2.default,
+  loudness: _loudness2.default,
+  perceptualSpread: _perceptualSpread2.default,
+  perceptualSharpness: _perceptualSharpness2.default,
+  powerSpectrum: _powerSpectrum2.default,
+  mfcc: _mfcc2.default
 };
 module.exports = exports['default'];

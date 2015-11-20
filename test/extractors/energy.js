@@ -15,7 +15,7 @@ describe('energy', function(){
 
     done();
   });
-  
+
   it('should throw an error when passed an empty object', function(done){
     try{
       var en = energy({});
@@ -24,7 +24,7 @@ describe('energy', function(){
     }
 
   });
-  
+
   it('should throw an error when not passed anything', function(done){
     try{
       var en = energy();

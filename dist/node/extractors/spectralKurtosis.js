@@ -4,10 +4,8 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _extractorUtilities = require('./extractorUtilities');
-
-exports["default"] = function () {
-	if (typeof arguments[0].ampSpectrum !== "object") {
+exports.default = function () {
+	if (_typeof(arguments[0].ampSpectrum) !== "object") {
 		throw new TypeError();
 	}
 	var ampspec = arguments[0].ampSpectrum;
@@ -20,4 +18,8 @@ exports["default"] = function () {
 	return numerator / denominator;
 };
 
-module.exports = exports["default"];
+var _extractorUtilities = require("./extractorUtilities");
+
+function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+
+module.exports = exports['default'];
