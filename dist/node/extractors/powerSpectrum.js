@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-exports["default"] = function () {
-	if (typeof arguments[0].ampSpectrum !== "object") {
+exports.default = function () {
+	if (_typeof(arguments[0].ampSpectrum) !== "object") {
 		throw new TypeError();
 	}
 	var powerSpectrum = new Float32Array(arguments[0].ampSpectrum.length);
@@ -15,4 +15,6 @@ exports["default"] = function () {
 	return powerSpectrum;
 };
 
-module.exports = exports["default"];
+function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+
+module.exports = exports['default'];

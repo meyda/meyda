@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = function (args) {
-  if (typeof args.ampSpectrum !== "object") {
+exports.default = function (args) {
+  if (_typeof(args.ampSpectrum) !== "object") {
     throw new TypeError();
   }
   var NUM_BARK_BANDS = 24;
@@ -47,4 +47,6 @@ exports["default"] = function (args) {
   };
 };
 
-module.exports = exports["default"];
+function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+
+module.exports = exports['default'];

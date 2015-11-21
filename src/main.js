@@ -1,5 +1,5 @@
 import * as utilities from './utilities';
-import featureExtractors as extractors from './featureExtractors';
+import * as extractors from './featureExtractors';
 import * as fft from 'jsfft';
 import * as complex_array from 'jsfft/lib/complex_array';
 import * as MeydaWA from './meyda-wa';
@@ -16,15 +16,15 @@ var Meyda = {
 	_featuresToExtract: [],
 
 	createMeydaAnalyzer: (options) => {
-		return new MeydaWA(options, this)
+		return new MeydaWA(options, this);
 	},
 
-	extract: (feature, data) => {
+	extract: (feature, signal) => {
 		if (typeof this.barkScale == "undefined") {
-			this.barkScale = utilities.createBarkScale(this.bufferSize)
+			this.barkScale = utilities.createBarkScale(this.bufferSize);
 		}
 
-		this.signal = data;
+		this.signal = signal;
 		var windowedSignal = utilities.applyWindow(data, this.windowingFunction);
 
 		// create complexarray to hold the spectrum
@@ -45,7 +45,7 @@ var Meyda = {
 		if(typeof feature === "object"){
 			var results = {};
 			for (var x = 0; x < feature.length; x++){
-				results[feature[x]] = (featureExtractors[feature[x]]({
+				results[feature[x]] = (this.featureExtractors[feature[x]]({
 					ampSpectrum:this.ampSpectrum,
 					complexSpectrum:this.complexSpectrum,
 					signal:this.signal,
@@ -57,7 +57,7 @@ var Meyda = {
 			return results;
 		}
 		else if (typeof feature === "string"){
-			return featureExtractors[feature]({
+			return this.featureExtractors[feature]({
 				ampSpectrum:this.ampSpectrum,
 				complexSpectrum:this.complexSpectrum,
 				signal:this.signal,
@@ -70,7 +70,7 @@ var Meyda = {
 			throw "Invalid Feature Format";
 		}
 	}
-}
+};
 
 export default Meyda;
 

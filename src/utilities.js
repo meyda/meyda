@@ -36,5 +36,5 @@ export function createBarkScale(length) {
     barkScale[i] = 13*Math.atan(barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow((barkScale[i]/7518),2));
   }
 
-  return barkScale
+  return barkScale;
 }

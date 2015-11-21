@@ -4,28 +4,12 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-var _powerSpectrum = require('./powerSpectrum');
-
-var _powerSpectrum2 = _interopRequireDefault(_powerSpectrum);
-
-var melToFreq = function melToFreq(melValue) {
-	var freqValue = 700 * (Math.exp(melValue / 1125) - 1);
-	return freqValue;
-};
-
-var freqToMel = function freqToMel(freqValue) {
-	var melValue = 1125 * Math.log(1 + freqValue / 700);
-	return melValue;
-};
-
-exports["default"] = function (args) {
-	if (typeof args.ampSpectrum !== "object") {
+exports.default = function (args) {
+	if (_typeof(args.ampSpectrum) !== "object") {
 		throw new TypeError();
 	}
 	//used tutorial from http://practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/
-	var powSpec = (0, _powerSpectrum2["default"])(args);
+	var powSpec = (0, _powerSpectrum2.default)(args);
 	var numFilters = 26; //26 filters is standard
 	var melValues = new Float32Array(numFilters + 2); //the +2 is the upper and lower limits
 	var melValuesInFreq = new Float32Array(numFilters + 2);
@@ -108,4 +92,22 @@ exports["default"] = function (args) {
 	return mfccs;
 };
 
-module.exports = exports["default"];
+var _powerSpectrum = require("./powerSpectrum");
+
+var _powerSpectrum2 = _interopRequireDefault(_powerSpectrum);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+
+var melToFreq = function melToFreq(melValue) {
+	var freqValue = 700 * (Math.exp(melValue / 1125) - 1);
+	return freqValue;
+};
+
+var freqToMel = function freqToMel(freqValue) {
+	var melValue = 1125 * Math.log(1 + freqValue / 700);
+	return melValue;
+};
+
+module.exports = exports['default'];

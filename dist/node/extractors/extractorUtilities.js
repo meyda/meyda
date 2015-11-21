@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.mu = mu;
-
 function mu(i, amplitudeSpect) {
   var numerator = 0;
   var denominator = 0;

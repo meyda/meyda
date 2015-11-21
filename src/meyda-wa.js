@@ -1,5 +1,5 @@
 import * as utilities from './utilities';
-import featureExtractors as extractors from './featureExtractors';
+import * as featureExtractors from './featureExtractors';
 
 class MeydaWA{
 	constructor(options, self){
@@ -48,7 +48,6 @@ class MeydaWA{
 	setSource(source) {
 		source.connect(this.spn);
 	}
-  }
 }
 
-export default MeydaWA
+export default MeydaWA;
