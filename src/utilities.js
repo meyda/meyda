@@ -38,3 +38,8 @@ export function createBarkScale(length,sampleRate,bufferSize) {
 
   return barkScale;
 }
+
+export function typedToArray(t) {
+  // utility to convert typed arrays to normal arrays
+  return Array.prototype.slice.call(t)
+}
