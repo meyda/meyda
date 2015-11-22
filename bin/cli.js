@@ -3,7 +3,7 @@
 var opt = require('node-getopt').create([
         ['','o=OUTPUT_FILE','Path to output file'],
         ['', 'bs[=BUFFER_SIZE]', 'Buffer size in samples (optional, default is 512)'],
-        ['', 'w[=WINDOWING_FUNCTION]', 'Windowing function (optional, default is hanning'],
+        ['', 'w[=WINDOWING_FUNCTION]', 'Windowing function (optional, default is hanning)'],
         ['p', '', 'Disables logging and outputs data to stdout, useful for piping'],
         ['h', 'help', 'Display help'],
         ['v', 'version', 'show version']
@@ -55,13 +55,13 @@ function extractFeatures(chunk) {
   for (var j = 0; j < featuresToExtract.length; j++) {
       var feature = fset[featuresToExtract[j]]
       features[featuresToExtract[j]].push(feature);
-
       if (typeof feature == 'object') {
         for (var f = 0; f < feature.length; f++)
           output(feature[f].toString() + ', ');
       }
       else {
-        output(feature.toString() + ', ');
+        output(feature.toString());
+        output(j==featuresToExtract.length-1 ? '' : ', ');
       }
   }
   output('\n');
@@ -84,7 +84,10 @@ if (!opt.options.p) {
   //log features to extract
   featuresToExtract.forEach(function(f,i,a){
     process.stdout.write(f + ' ');
+    output(f.toString());
+    output(i == featuresToExtract.length-1 ? '': ', ');
   })
+  output('\n');
 
   process.stdout.write('\n\nStarting extraction...\n|');
 }
