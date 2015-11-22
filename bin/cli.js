@@ -120,11 +120,11 @@ var wl = new WavLoader(
       process.stdout.write('-|\nWriting to file...\n\n');
       if(outputFormat == 'json') {
         output(JSON.stringify(features, null, 4));
-      } 
+      }
       else if (outputFormat == 'csv'){
         for(var i = 0; i < featuresToExtract.length; i++){
           output(featuresToExtract[i].toString());
-          output(i == featuresToExtract.length-1 ? '' : ', ');
+          output(i == featuresToExtract.length-1 ? '' : ',');
         }
         output('\n');
         for(var i=0; i<frameCount; i++){
@@ -132,17 +132,17 @@ var wl = new WavLoader(
             var feature = features[featuresToExtract[j]];
             if(typeof feature[i] === 'object'){
               for (var f = 0; f < Object.keys(feature[i]).length; f++)
-                output(feature[i][f] + ', ');
-                output(j == featuresToExtract.length-1 ? '' : ', ');
+                output(feature[i][f] + ',');
+                output(j == featuresToExtract.length-1 ? '' : ',');
             }
             else{
               output(feature[i].toString());
-              output(j == featuresToExtract.length-1 ? '' : ', ');
+              output(j == featuresToExtract.length-1 ? '' : ',');
             }
           }
           output('\n');
         }
-          
+
       }
       //get averages
       for (var j = 0; j < featuresToExtract.length; j++) {
