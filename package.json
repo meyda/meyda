@@ -3,8 +3,11 @@
   "version": "2.0.3",
   "description": "Real-time feature extraction for the web audio api",
   "main": "./dist/node/main.js",
+  "bin": {
+    "meyda": "./bin/cli.js"
+  },
   "scripts": {
-    "pretest": "npm run lint && npm run build",
+    "pretest": "npm run lint && npm run build && npm run coverage",
     "test": "./node_modules/.bin/mocha --recursive test",
     "build": "npm run buildWeb && npm run buildNode",
     "buildWeb": "mkdir -p dist/web && ./node_modules/.bin/gulp buildWeb && ./node_modules/.bin/gulp uglifyWeb",
@@ -57,6 +60,7 @@
     "through2": "^2.0.0"
   },
   "dependencies": {
-    "jsfft": "git://github.com/dntj/jsfft.git"
+    "jsfft": "git://github.com/dntj/jsfft.git",
+    "node-getopt": "^0.2.3"
   }
 }

@@ -28,11 +28,11 @@ export function applyWindow(signal, windowname){
   return pointwiseBufferMult(signal,windows[windowname][signal.length]);
 }
 
-export function createBarkScale(length) {
+export function createBarkScale(length,sampleRate,bufferSize) {
   let barkScale = new Float32Array(length);
 
   for(var i = 0; i < barkScale.length; i++){
-    barkScale[i] = i*self.audioContext.sampleRate/(self.bufferSize);
+    barkScale[i] = i*sampleRate/(bufferSize);
     barkScale[i] = 13*Math.atan(barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow((barkScale[i]/7518),2));
   }
 

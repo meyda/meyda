@@ -31,7 +31,8 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
 var Meyda = {
 	audioContext: null,
 	spn: null,
-	bufferSize: 256,
+	bufferSize: 512,
+	sampleRate: 44100,
 	callback: null,
 	windowingFunction: "hanning",
 	featureExtractors: extractors,
@@ -39,19 +40,19 @@ var Meyda = {
 	_featuresToExtract: [],
 
 	createMeydaAnalyzer: function createMeydaAnalyzer(options) {
-		return new MeydaWA(options, undefined);
+		return new MeydaWA(options, this);
 	},
 
 	extract: function extract(feature, signal) {
-		if (typeof undefined.barkScale == "undefined") {
-			undefined.barkScale = utilities.createBarkScale(undefined.bufferSize);
+		if (typeof this.barkScale == "undefined") {
+			this.barkScale = utilities.createBarkScale(this.bufferSize, this.sampleRate, this.bufferSize);
 		}
 
-		undefined.signal = signal;
-		var windowedSignal = utilities.applyWindow(data, undefined.windowingFunction);
+		this.signal = signal;
+		var windowedSignal = utilities.applyWindow(this.signal, this.windowingFunction);
 
 		// create complexarray to hold the spectrum
-		var data = new complex_array.ComplexArray(undefined.bufferSize);
+		var data = new complex_array.ComplexArray(this.bufferSize);
 		// map time domain
 		data.map(function (value, i, n) {
 			value.real = windowedSignal[i];
@@ -59,33 +60,33 @@ var Meyda = {
 		// transform
 		var spec = data.FFT();
 		// assign to meyda
-		undefined.complexSpectrum = spec;
-		undefined.ampSpectrum = new Float32Array(undefined.bufferSize / 2);
-		for (var i = 0; i < undefined.bufferSize / 2; i++) {
-			undefined.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i], 2) + Math.pow(spec.imag[i], 2));
+		this.complexSpectrum = spec;
+		this.ampSpectrum = new Float32Array(this.bufferSize / 2);
+		for (var i = 0; i < this.bufferSize / 2; i++) {
+			this.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i], 2) + Math.pow(spec.imag[i], 2));
 		}
 
 		if ((typeof feature === 'undefined' ? 'undefined' : _typeof(feature)) === "object") {
 			var results = {};
 			for (var x = 0; x < feature.length; x++) {
-				results[feature[x]] = undefined.featureExtractors[feature[x]]({
-					ampSpectrum: undefined.ampSpectrum,
-					complexSpectrum: undefined.complexSpectrum,
-					signal: undefined.signal,
-					bufferSize: undefined.bufferSize,
-					sampleRate: undefined.audioContext.sampleRate,
-					barkScale: undefined.barkScale
+				results[feature[x]] = this.featureExtractors[feature[x]]({
+					ampSpectrum: this.ampSpectrum,
+					complexSpectrum: this.complexSpectrum,
+					signal: this.signal,
+					bufferSize: this.bufferSize,
+					sampleRate: this.sampleRate,
+					barkScale: this.barkScale
 				});
 			}
 			return results;
 		} else if (typeof feature === "string") {
-			return undefined.featureExtractors[feature]({
-				ampSpectrum: undefined.ampSpectrum,
-				complexSpectrum: undefined.complexSpectrum,
-				signal: undefined.signal,
-				bufferSize: undefined.bufferSize,
-				sampleRate: undefined.audioContext.sampleRate,
-				barkScale: undefined.barkScale
+			return this.featureExtractors[feature]({
+				ampSpectrum: this.ampSpectrum,
+				complexSpectrum: this.complexSpectrum,
+				signal: this.signal,
+				bufferSize: this.bufferSize,
+				sampleRate: this.sampleRate,
+				barkScale: this.barkScale
 			});
 		} else {
 			throw "Invalid Feature Format";

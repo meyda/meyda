@@ -8,24 +8,25 @@ import * as MeydaWA from './meyda-wa';
 var Meyda = {
 	audioContext: null,
 	spn: null,
-	bufferSize: 256,
+	bufferSize: 512,
+	sampleRate: 44100,
 	callback: null,
 	windowingFunction: "hanning",
 	featureExtractors: extractors,
 	EXTRACTION_STARTED: false,
 	_featuresToExtract: [],
 
-	createMeydaAnalyzer: (options) => {
+	createMeydaAnalyzer: function(options){
 		return new MeydaWA(options, this);
 	},
 
-	extract: (feature, signal) => {
+	extract: function(feature, signal){
 		if (typeof this.barkScale == "undefined") {
-			this.barkScale = utilities.createBarkScale(this.bufferSize);
+			this.barkScale = utilities.createBarkScale(this.bufferSize,this.sampleRate,this.bufferSize);
 		}
 
 		this.signal = signal;
-		var windowedSignal = utilities.applyWindow(data, this.windowingFunction);
+		var windowedSignal = utilities.applyWindow(this.signal, this.windowingFunction);
 
 		// create complexarray to hold the spectrum
 		var data = new complex_array.ComplexArray(this.bufferSize);
@@ -50,7 +51,7 @@ var Meyda = {
 					complexSpectrum:this.complexSpectrum,
 					signal:this.signal,
 					bufferSize:this.bufferSize,
-					sampleRate:this.audioContext.sampleRate,
+					sampleRate:this.sampleRate,
 					barkScale:this.barkScale
 				}));
 			}
@@ -62,7 +63,7 @@ var Meyda = {
 				complexSpectrum:this.complexSpectrum,
 				signal:this.signal,
 				bufferSize:this.bufferSize,
-				sampleRate:this.audioContext.sampleRate,
+				sampleRate:this.sampleRate,
 				barkScale:this.barkScale
 			});
 		}
