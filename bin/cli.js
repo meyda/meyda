@@ -4,6 +4,7 @@ var opt = require('node-getopt').create([
         ['','o=OUTPUT_FILE','Path to output file'],
         ['', 'bs[=BUFFER_SIZE]', 'Buffer size in samples (optional, default is 512)'],
         ['', 'w[=WINDOWING_FUNCTION]', 'Windowing function (optional, default is hanning)'],
+        ['', 'format[=FORMAT_TYPE]', 'Type of output file (optional, default is csv)'],
         ['p', '', 'Disables logging and outputs data to stdout, useful for piping'],
         ['h', 'help', 'Display help'],
         ['v', 'version', 'show version']
@@ -17,6 +18,8 @@ else if (opt.argv.length < 2)
   throw new Error('No features specified.')
 else if (!opt.options.p && (!opt.options.o || opt.options.o.length == 0))
   throw new Error('Output file not specified')
+// else if (outputFormat != 'json' && outputFormat != 'csv')
+//     throw new Error('Invalid output format. Please choose either json or csv.')
 
 var Meyda = require('../dist/node/main.js');
 var WavLoader = require('./wav-loader.js');
@@ -25,6 +28,8 @@ var fs = require('fs');
 var FRAME_SIZE = parseInt(opt.options.bs) || 512;
 Meyda.bufferSize = FRAME_SIZE;
 Meyda.windowingFunction = opt.options.w || 'hanning';
+var outputFormat = opt.options.format || 'csv';
+console.log(outputFormat);
 var features = {};
 var featuresToExtract = opt.argv.slice(1);
 
@@ -55,17 +60,9 @@ function extractFeatures(chunk) {
   for (var j = 0; j < featuresToExtract.length; j++) {
       var feature = fset[featuresToExtract[j]]
       features[featuresToExtract[j]].push(feature);
-      if (typeof feature == 'object') {
-        for (var f = 0; f < feature.length; f++)
-          output(feature[f].toString() + ', ');
-      }
-      else {
-        output(feature.toString());
-        output(j==featuresToExtract.length-1 ? '' : ', ');
-      }
   }
-  output('\n');
 }
+
 
 if (!opt.options.p) {
   var wstream = fs.createWriteStream(opt.options.o)
@@ -84,10 +81,7 @@ if (!opt.options.p) {
   //log features to extract
   featuresToExtract.forEach(function(f,i,a){
     process.stdout.write(f + ' ');
-    output(f.toString());
-    output(i == featuresToExtract.length-1 ? '': ', ');
   })
-  output('\n');
 
   process.stdout.write('\n\nStarting extraction...\n|');
 }
@@ -120,8 +114,35 @@ var wl = new WavLoader(
     }
 
     if (!opt.options.p) {
-      process.stdout.write('-|\nExtraction finished.\n\n')
-      console.log(frameCount + ' frames analysed.\n')
+      process.stdout.write('-|\nExtraction finished.\n\n');
+      console.log(frameCount + ' frames analysed.\n');
+
+      process.stdout.write('-|\nWriting to file...\n\n');
+      if(outputFormat == 'json') {
+        output(JSON.stringify(features, null, 4));
+      } 
+      else if (outputFormat == 'csv'){
+        for(var i = 0; i < featuresToExtract.length; i++){
+          output(featuresToExtract[i].toString());
+          output(i == featuresToExtract.length-1 ? '' : ', ');
+        }
+        output('\n');
+        for(var i=0; i<frameCount; i++){
+          for(var j=0; j<featuresToExtract.length; j++){
+            var feature = features[featuresToExtract[j]];
+            if (typeof feature == 'object') {
+              for (var f = 0; f < feature.length; f++)
+                output(feature[f].toString() + ', ');
+            }
+            else{
+              output(features[featuresToExtract[j]][i].toString());
+              output(j == featuresToExtract.length-1 ? '' : ', ');
+            }
+          }
+          output('\n');
+        }
+          
+      }
       //get averages
       for (var j = 0; j < featuresToExtract.length; j++) {
           //check if this feature returns arrays
@@ -130,7 +151,6 @@ var wl = new WavLoader(
                 return previousValue + currentValue;
             }) / features[featuresToExtract[j]].length);
       }
-
       wstream.end();
       console.log('')
 
