@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "jsfft": "git://github.com/dntj/jsfft.git",
-    "node-getopt": "^0.2.3"
+    "node-getopt": "^0.2.3",
+    "wav": "^1.0.0"
   }
 }
