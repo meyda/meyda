@@ -18,8 +18,8 @@ else if (opt.argv.length < 2)
   throw new Error('No features specified.')
 else if (!opt.options.p && (!opt.options.o || opt.options.o.length == 0))
   throw new Error('Output file not specified')
-// else if (outputFormat != 'json' && outputFormat != 'csv')
-//     throw new Error('Invalid output format. Please choose either json or csv.')
+else if (opt.options.format && opt.options.format != 'json' && opt.options.format != 'csv')
+  throw new Error('Invalid output format. Please choose either json or csv.')
 
 var Meyda = require('../dist/node/main.js');
 var WavLoader = require('./wav-loader.js');
@@ -130,12 +130,13 @@ var wl = new WavLoader(
         for(var i=0; i<frameCount; i++){
           for(var j=0; j<featuresToExtract.length; j++){
             var feature = features[featuresToExtract[j]];
-            if (typeof feature == 'object') {
-              for (var f = 0; f < feature.length; f++)
-                output(feature[f].toString() + ', ');
+            if(typeof feature[i] === 'object'){
+              for (var f = 0; f < Object.keys(feature[i]).length; f++)
+                output(feature[i][f] + ', ');
+                output(j == featuresToExtract.length-1 ? '' : ', ');
             }
             else{
-              output(features[featuresToExtract[j]][i].toString());
+              output(feature[i].toString());
               output(j == featuresToExtract.length-1 ? '' : ', ');
             }
           }
