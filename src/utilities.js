@@ -41,5 +41,5 @@ export function createBarkScale(length,sampleRate,bufferSize) {
 
 export function typedToArray(t) {
   // utility to convert typed arrays to normal arrays
-  return Array.prototype.slice.call(t)
+  return Array.prototype.slice.call(t);
 }
