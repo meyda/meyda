@@ -15,17 +15,40 @@ var Meyda = {
 	featureExtractors: extractors,
 	EXTRACTION_STARTED: false,
 	_featuresToExtract: [],
+	_errors: {
+		notPow2: new Error('Meyda: Input data length/buffer size needs to be a power of 2, e.g. 64 or 512'),
+		featureUndef: new Error('Meyda: No features defined.'),
+		invalidInput: new Error('Meyda: Invalid input.'),
+		noAC: new Error('Meyda: No AudioContext specified.'),
+		noSource: new Error('Meyda: No source node specified.')
+	},
 
 	createMeydaAnalyzer: function(options){
 		return new MeydaWA(options, this);
 	},
 
 	extract: function(feature, signal){
+		if (!signal)
+			throw this._errors.invalidInput;
+		else if (typeof signal != 'object')
+			throw this._errors.invalidInput;
+		else if (!feature)
+			throw this._errors.featureUndef;
+		else if (!utilities.isPowerOfTwo(signal.length))
+			throw this._errors.notPow2;
+
 		if (typeof this.barkScale == "undefined") {
 			this.barkScale = utilities.createBarkScale(this.bufferSize,this.sampleRate,this.bufferSize);
 		}
 
-		this.signal = signal;
+		if (typeof signal.buffer == "undefined") {
+			//signal is a normal array, convert to F32A
+			this.signal = utilities.arrayToTyped(signal);
+		}
+		else {
+			this.signal = signal;
+		}
+
 		var windowedSignal = utilities.applyWindow(this.signal, this.windowingFunction);
 
 		// create complexarray to hold the spectrum

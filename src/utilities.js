@@ -43,3 +43,29 @@ export function typedToArray(t) {
   // utility to convert typed arrays to normal arrays
   return Array.prototype.slice.call(t);
 }
+
+
+export function arrayToTyped(t) {
+  // utility to convert arrays to typed F32 arrays
+  return Float32Array.from(t);
+}
+
+export function normalize(num, range) {
+  return num/range
+}
+
+export function normalize_a(a, range) {
+  return a.map(function(n) { return n/range })
+}
+
+export function normalize_a_to_1(a) {
+  var max = 0
+  a.forEach(function(v,i,_a) {
+    if (v > max) max = v
+  })
+  return a.map(function(n) { return n/max })
+}
+
+export function mean(a) {
+  return a.reduce(function(prev,cur) {  return prev + cur;  }) / a.length;
+}

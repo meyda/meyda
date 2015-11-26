@@ -3,6 +3,13 @@ import * as featureExtractors from './featureExtractors';
 
 class MeydaWA{
 	constructor(options, self){
+		if (!options.audioContext)
+			throw self._errors.noAC;
+		else if (options.bufferSize && !utilities.isPowerOfTwo(options.bufferSize))
+			throw self._errors.notPow2;
+		else if (!options.source)
+			throw self._errors.noSource;
+
 		self.audioContext = options.audioContext;
 
 		//create nodes

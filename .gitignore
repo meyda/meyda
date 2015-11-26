@@ -6,3 +6,4 @@ audio
 .env
 coverage
 npm-debug.log
+debug_data

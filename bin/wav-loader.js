@@ -8,9 +8,15 @@ var WavManager = function(data_callback, end_callback) {
 	var _bitDepth = 16;
 	var _numBytesPerSample = 2;
 	var _endian = 'LE';
+	var _signed = false;
 	var _format = 'unknown';
-  var _channels = 1;
-  var read_fun = "readUIntBE";
+  	var _channels = 1;
+  	var read_fun = "readUIntBE";
+
+  	function int_res(signed, depth) {
+  		//if the fmt is signed int, the max absolute value is half the actual number of possible values
+  		return signed ? Math.pow(2, depth)/2 : Math.pow(2, depth);
+  	}
 
 	this.format = function() {
 		return _format;
@@ -26,22 +32,23 @@ var WavManager = function(data_callback, end_callback) {
 			reader.on('format', function(format) {
 				_bitDepth = format.bitDepth;
 				_numBytesPerSample = _bitDepth/8;
-				_endian = format.endianness;
-        _channels = format.channels;
+				//what the hell
+				_endian = format.endianness == 'LE' ? 'BE' : 'LE';
+				_signed = format.signed;
+       			_channels = format.channels;
 				_format = format;
-        read_fun = (format.signed?"readInt":"readUInt")+_endian;
-        console.log(format);
+        		read_fun = (_signed ? "readInt" : "readUInt") + _endian;
 			});
-
-
 
 			reader.on('data', function(_d) {
 				source = Buffer.concat([source, _d], source.length + _d.length);
 
 				var output = new Float32Array(_d.length/_numBytesPerSample);
 
-				for (var i = 0; i < _d.length/_numBytesPerSample; i += _numBytesPerSample) {
-					output[i] = _d[read_fun](i,_numBytesPerSample);
+				var source_pos = 0;
+				var out_pos = 0;
+				for (; source_pos < _d.length; source_pos += _numBytesPerSample, out_pos++) {
+					output[out_pos] = _d[read_fun](source_pos,_numBytesPerSample) / int_res(_signed, _bitDepth);
 				}
 
 				if (_dcb) _dcb(output);
@@ -50,8 +57,11 @@ var WavManager = function(data_callback, end_callback) {
 			reader.on('end', function() {
 				var output = new Float32Array(source.length/_numBytesPerSample);
 
-				for (var i = 0; i < source.length/_numBytesPerSample; i += _numBytesPerSample) {
-					output[i] = source[read_fun](i,_numBytesPerSample);
+				var source_pos = 0;
+				var out_pos = 0;
+				//here we discard the last byte because we don't really need this anyway and it's quicker
+				for (; source_pos < source.length-_numBytesPerSample; source_pos += _numBytesPerSample, out_pos++) {
+					output[out_pos] = source[read_fun](source_pos,_numBytesPerSample) / int_res(_signed, _bitDepth);
 				}
 
 				if (_ecb) _ecb(output);
