@@ -1,5 +1,6 @@
 import powerSpectrum from './powerSpectrum';
-import freqToMel, melToFreq from './../utilities'
+import freqToMel from './../utilities'
+import melToFreq from './../utilities'
 
 
 export default function(args){
@@ -8,18 +9,22 @@ export default function(args){
 	}
 	//used tutorial from http://practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/
 	let powSpec = powerSpectrum(args);
-	let filterBank = args.melFilterBank;
+	let numFilters = args.melFilterBank.length;
+	let filtered = Array(numFilters);
 
 	let loggedMelBands = new Float32Array(numFilters);
+
 	for (let i = 0; i < loggedMelBands.length; i++) {
+		filtered[i] = new Float32Array(args.bufferSize/2);
 		loggedMelBands[i] = 0;
 		for (let j = 0; j < (args.bufferSize/2); j++) {
 			//point-wise multiplication between power spectrum and filterbanks.
-			filterBank[i][j] = filterBank[i][j]*powSpec[j];
+			filtered[i][j] = args.melFilterBank[i][j]*powSpec[j];
 
 			//summing up all of the coefficients into one array
-			loggedMelBands[i] += filterBank[i][j];
+			loggedMelBands[i] += filtered[i][j];
 		}
+
 		//log each coefficient
 		loggedMelBands[i] = Math.log(loggedMelBands[i]);
 	}
@@ -28,7 +33,7 @@ export default function(args){
 	let k = Math.PI/numFilters;
 	let w1 = 1.0/Math.sqrt(numFilters);
 	let w2 = Math.sqrt(2.0/numFilters);
-	let numCoeffs = 13;
+	let numCoeffs = numFilters;
 	let dctMatrix = new Float32Array(numCoeffs*numFilters);
 
 	for(let i = 0; i < numCoeffs; i++){

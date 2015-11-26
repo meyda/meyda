@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (args) {
-  if (_typeof(args.ampSpectrum) !== "object") {
+  if (_typeof(args.ampSpectrum) !== "object" || _typeof(args.barkScale) !== "object") {
     throw new TypeError();
   }
   var NUM_BARK_BANDS = 24;

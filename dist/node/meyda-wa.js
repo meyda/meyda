@@ -18,34 +18,38 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var MeydaWA = (function () {
-	function MeydaWA(options, self) {
-		_classCallCheck(this, MeydaWA);
+var MeydaAnalyzer = (function () {
+	function MeydaAnalyzer(options, self) {
+		_classCallCheck(this, MeydaAnalyzer);
+
+		if (!options.audioContext) throw self._errors.noAC;else if (options.bufferSize && !utilities.isPowerOfTwo(options.bufferSize)) throw self._errors.notPow2;else if (!options.source) throw self._errors.noSource;
 
 		self.audioContext = options.audioContext;
 
-		//create nodes
-		self.spn = self.audioContext.createScriptProcessor(self.bufferSize, 1, 1);
-		self.spn.connect(self.audioContext.destination);
-
 		// TODO: validate options
 		self.setSource(options.source);
-		self.bufferSize = options.bufferSize || 256;
+		self.bufferSize = options.bufferSize || self.bufferSize || 256;
+		self.sampleRate = options.sampleRate || self.audioContext.sampleRate || 44100;
 		self.callback = options.callback;
 		self.windowingFunction = options.windowingFunction || "hanning";
 		self.featureExtractors = featureExtractors;
 		self.EXTRACTION_STARTED = options.startImmediately || false;
 
-		//callback controllers
+		//create nodes
+		self.spn = self.audioContext.createScriptProcessor(self.bufferSize, 1, 1);
+		self.spn.connect(self.audioContext.destination);
+
 		self._featuresToExtract = options.featureExtractors || [];
 
-		self.barkScale = utilities.createBarkScale(self.bufferSize);
+		//always recalculate BS and MFB when a new Meyda analyzer is created.
+		self.barkScale = utilities.createBarkScale(self.bufferSize, self.sampleRate, self.bufferSize);
+		self.melFilterBank = utilities.createMelFilterBank(self.melBands, self.sampleRate, self.bufferSize);
 
 		self.spn.onaudioprocess = function (e) {
 			// self is to obtain the current frame pcm data
 			var inputData = e.inputBuffer.getChannelData(0);
 
-			var features = self.get(self._featuresToExtract, inputData);
+			var features = self.extract(self._featuresToExtract, inputData);
 
 			// call callback if applicable
 			if (typeof self.callback === "function" && self.EXTRACTION_STARTED) {
@@ -54,7 +58,7 @@ var MeydaWA = (function () {
 		};
 	}
 
-	_createClass(MeydaWA, [{
+	_createClass(MeydaAnalyzer, [{
 		key: 'start',
 		value: function start(features) {
 			self._featuresToExtract = features;
@@ -72,8 +76,8 @@ var MeydaWA = (function () {
 		}
 	}]);
 
-	return MeydaWA;
+	return MeydaAnalyzer;
 })();
 
-exports.default = MeydaWA;
+exports.default = MeydaAnalyzer;
 module.exports = exports['default'];

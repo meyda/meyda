@@ -70,18 +70,18 @@ export function mean(a) {
   return a.reduce(function(prev,cur) {  return prev + cur;  }) / a.length;
 }
 
-function melToFreq(melValue){
+function _melToFreq(melValue){
   var freqValue = 700*(Math.exp(melValue/1125)-1);
   return freqValue;
 }
 
-function freqToMel(freqValue){
+function _freqToMel(freqValue){
   var melValue = 1125*Math.log(1+(freqValue/700));
   return melValue;
 }
 
-export melToFreq;
-export freqToMel;
+export function melToFreq(mV) { return _melToFreq(mV) }
+export function freqToMel(fV) { return _freqToMel(fV) }
 
 export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
   let melValues = new Float32Array(numFilters+2); //the +2 is the upper and lower limits
@@ -90,8 +90,8 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
   let lowerLimitFreq = 0;
   let upperLimitFreq = sampleRate/2;
   //Convert the limits to Mel
-  let lowerLimitMel = freqToMel(lowerLimitFreq);
-  let upperLimitMel = freqToMel(upperLimitFreq);
+  let lowerLimitMel = _freqToMel(lowerLimitFreq);
+  let upperLimitMel = _freqToMel(upperLimitFreq);
   //Find the range
   let range = upperLimitMel-lowerLimitMel;
   //Find the range as part of the linear interpolation
@@ -103,7 +103,7 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
     //Initialising the mel frequencies - they are just a linear interpolation between the lower and upper limits.
     melValues[i] = i*valueToAdd;
     //Convert back to Hz
-    melValuesInFreq[i] = melToFreq(melValues[i]);
+    melValuesInFreq[i] = _melToFreq(melValues[i]);
     //Find the corresponding bins
     fftBinsOfFreq[i] = Math.floor((bufferSize+1)*melValuesInFreq[i]/sampleRate);
   }

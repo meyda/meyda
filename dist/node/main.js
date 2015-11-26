@@ -22,7 +22,7 @@ var complex_array = _interopRequireWildcard(_complex_array);
 
 var _meydaWa = require('./meyda-wa');
 
-var MeydaWA = _interopRequireWildcard(_meydaWa);
+var MeydaAnalyzer = _interopRequireWildcard(_meydaWa);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -33,22 +33,43 @@ var Meyda = {
 	spn: null,
 	bufferSize: 512,
 	sampleRate: 44100,
+	melBands: 26,
 	callback: null,
 	windowingFunction: "hanning",
 	featureExtractors: extractors,
 	EXTRACTION_STARTED: false,
 	_featuresToExtract: [],
+	_errors: {
+		notPow2: new Error('Meyda: Input data length/buffer size needs to be a power of 2, e.g. 64 or 512'),
+		featureUndef: new Error('Meyda: No features defined.'),
+		invalidFeatureFmt: new Error('Meyda: Invalid feature format'),
+		invalidInput: new Error('Meyda: Invalid input.'),
+		noAC: new Error('Meyda: No AudioContext specified.'),
+		noSource: new Error('Meyda: No source node specified.')
+	},
 
 	createMeydaAnalyzer: function createMeydaAnalyzer(options) {
-		return new MeydaWA(options, this);
+		return new MeydaAnalyzer(options, this);
 	},
 
 	extract: function extract(feature, signal) {
-		if (typeof this.barkScale == "undefined") {
+		if (!signal) throw this._errors.invalidInput;else if ((typeof signal === 'undefined' ? 'undefined' : _typeof(signal)) != 'object') throw this._errors.invalidInput;else if (!feature) throw this._errors.featureUndef;else if (!utilities.isPowerOfTwo(signal.length)) throw this._errors.notPow2;
+
+		if (typeof this.barkScale == "undefined" || this.barkScale.length != this.bufferSize) {
 			this.barkScale = utilities.createBarkScale(this.bufferSize, this.sampleRate, this.bufferSize);
 		}
+		//if buffer size changed, then we need to recalculate the mel bank anyway
+		if (typeof this.melFilterBank == "undefined" || this.barkScale.length != this.bufferSize || this.melFilterBank.length != this.melBands) {
+			this.melFilterBank = utilities.createMelFilterBank(this.melBands, this.sampleRate, this.bufferSize);
+		}
 
-		this.signal = signal;
+		if (typeof signal.buffer == "undefined") {
+			//signal is a normal array, convert to F32A
+			this.signal = utilities.arrayToTyped(signal);
+		} else {
+			this.signal = signal;
+		}
+
 		var windowedSignal = utilities.applyWindow(this.signal, this.windowingFunction);
 
 		// create complexarray to hold the spectrum
@@ -75,7 +96,8 @@ var Meyda = {
 					signal: this.signal,
 					bufferSize: this.bufferSize,
 					sampleRate: this.sampleRate,
-					barkScale: this.barkScale
+					barkScale: this.barkScale,
+					melFilterBank: this.melFilterBank
 				});
 			}
 			return results;
@@ -86,10 +108,11 @@ var Meyda = {
 				signal: this.signal,
 				bufferSize: this.bufferSize,
 				sampleRate: this.sampleRate,
-				barkScale: this.barkScale
+				barkScale: this.barkScale,
+				melFilterBank: this.melFilterBank
 			});
 		} else {
-			throw "Invalid Feature Format";
+			throw this._errors.invalidFeatureFmt;
 		}
 	}
 };
