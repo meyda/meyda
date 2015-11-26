@@ -10,7 +10,7 @@ var WavManager = function(data_callback, end_callback) {
 	var _endian = 'LE';
 	var _format = 'unknown';
   var _channels = 1;
-  var readFunctionWithSignednessAndEndianness = "readUIntBE";
+  var read_fun = "readUIntBE";
 
 	this.format = function() {
 		return _format;
@@ -41,7 +41,7 @@ var WavManager = function(data_callback, end_callback) {
 				var output = new Float32Array(_d.length/_numBytesPerSample);
 
 				for (var i = 0; i < _d.length/_numBytesPerSample; i += _numBytesPerSample) {
-					output[i] = _d[readFunctionWithSignednessAndEndianness](i,_numBytesPerSample);
+					output[i] = _d[read_fun](i,_numBytesPerSample);
 				}
 
 				if (_dcb) _dcb(output);
@@ -51,7 +51,7 @@ var WavManager = function(data_callback, end_callback) {
 				var output = new Float32Array(source.length/_numBytesPerSample);
 
 				for (var i = 0; i < source.length/_numBytesPerSample; i += _numBytesPerSample) {
-					output[i] = source[readFunctionWithSignednessAndEndianness](i,_numBytesPerSample);
+					output[i] = source[read_fun](i,_numBytesPerSample);
 				}
 
 				if (_ecb) _ecb(output);

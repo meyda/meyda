@@ -5,3 +5,4 @@ audio
 .gitignore
 .env
 coverage
+npm-debug.log
