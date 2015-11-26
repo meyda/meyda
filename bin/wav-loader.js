@@ -29,7 +29,7 @@ var WavManager = function(data_callback, end_callback) {
 				_endian = format.endianness;
         _channels = format.channels;
 				_format = format;
-        readFunctionWithSignednessAndEndianness = (format.signed?"readInt":"readUInt")+_endian;
+        read_fun = (format.signed?"readInt":"readUInt")+_endian;
         console.log(format);
 			});
 
