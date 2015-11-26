@@ -1,6 +1,6 @@
 import powerSpectrum from './powerSpectrum';
-import freqToMel from './../utilities'
-import melToFreq from './../utilities'
+import freqToMel from './../utilities';
+import melToFreq from './../utilities';
 
 
 export default function(args){

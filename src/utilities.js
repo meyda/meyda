@@ -51,19 +51,21 @@ export function arrayToTyped(t) {
 }
 
 export function normalize(num, range) {
-  return num/range
+  return num/range;
 }
 
 export function normalize_a(a, range) {
-  return a.map(function(n) { return n/range })
+  return a.map(function(n) { return n/range; });
 }
 
 export function normalize_a_to_1(a) {
-  var max = 0
+  var max = 0;
   a.forEach(function(v,i,_a) {
-    if (v > max) max = v
-  })
-  return a.map(function(n) { return n/max })
+    if (v > max) max = v;
+  });
+  return a.map(function(n) {
+    return n/max;
+  });
 }
 
 export function mean(a) {
@@ -80,8 +82,8 @@ function _freqToMel(freqValue){
   return melValue;
 }
 
-export function melToFreq(mV) { return _melToFreq(mV) }
-export function freqToMel(fV) { return _freqToMel(fV) }
+export function melToFreq(mV) { return _melToFreq(mV); }
+export function freqToMel(fV) { return _freqToMel(fV); }
 
 export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
   let melValues = new Float32Array(numFilters+2); //the +2 is the upper and lower limits
