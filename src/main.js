@@ -2,7 +2,7 @@ import * as utilities from './utilities';
 import * as extractors from './featureExtractors';
 import * as fft from 'jsfft';
 import * as complex_array from 'jsfft/lib/complex_array';
-import * as MeydaWA from './meyda-wa';
+import * as MeydaAnalyzer from './meyda-wa';
 
 
 var Meyda = {
@@ -10,6 +10,7 @@ var Meyda = {
 	spn: null,
 	bufferSize: 512,
 	sampleRate: 44100,
+	melBands: 26,
 	callback: null,
 	windowingFunction: "hanning",
 	featureExtractors: extractors,
@@ -18,13 +19,14 @@ var Meyda = {
 	_errors: {
 		notPow2: new Error('Meyda: Input data length/buffer size needs to be a power of 2, e.g. 64 or 512'),
 		featureUndef: new Error('Meyda: No features defined.'),
+		invalidFeatureFmt: new Error('Meyda: Invalid feature format'),
 		invalidInput: new Error('Meyda: Invalid input.'),
 		noAC: new Error('Meyda: No AudioContext specified.'),
 		noSource: new Error('Meyda: No source node specified.')
 	},
 
 	createMeydaAnalyzer: function(options){
-		return new MeydaWA(options, this);
+		return new MeydaAnalyzer(options, this);
 	},
 
 	extract: function(feature, signal){
@@ -37,8 +39,12 @@ var Meyda = {
 		else if (!utilities.isPowerOfTwo(signal.length))
 			throw this._errors.notPow2;
 
-		if (typeof this.barkScale == "undefined") {
+		if (typeof this.barkScale == "undefined" || this.barkScale.length != this.bufferSize) {
 			this.barkScale = utilities.createBarkScale(this.bufferSize,this.sampleRate,this.bufferSize);
+		}
+		//if buffer size changed, then we need to recalculate the mel bank anyway
+		if (typeof this.melFilterBank == "undefined" || this.barkScale.length != this.bufferSize || this.melFilterBank.length != this.melBands) {
+			this.melFilterBank = utilities.createMelFilterBank(this.melBands,this.sampleRate,this.bufferSize);
 		}
 
 		if (typeof signal.buffer == "undefined") {
@@ -75,7 +81,8 @@ var Meyda = {
 					signal:this.signal,
 					bufferSize:this.bufferSize,
 					sampleRate:this.sampleRate,
-					barkScale:this.barkScale
+					barkScale:this.barkScale,
+					melFilterBank:this.melFilterBank
 				}));
 			}
 			return results;
@@ -87,11 +94,12 @@ var Meyda = {
 				signal:this.signal,
 				bufferSize:this.bufferSize,
 				sampleRate:this.sampleRate,
-				barkScale:this.barkScale
+				barkScale:this.barkScale,
+				melFilterBank:this.melFilterBank
 			});
 		}
 		else{
-			throw "Invalid Feature Format";
+			throw this._errors.invalidFeatureFmt;
 		}
 	}
 };

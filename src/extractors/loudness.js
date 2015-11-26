@@ -1,5 +1,5 @@
 export default function(args){
-  if(typeof args.ampSpectrum !== "object"){
+  if(typeof args.ampSpectrum !== "object" || typeof args.barkScale !== "object"){
     throw new TypeError();
   }
   var NUM_BARK_BANDS = 24;

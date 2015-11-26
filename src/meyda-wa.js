@@ -1,7 +1,7 @@
 import * as utilities from './utilities';
 import * as featureExtractors from './featureExtractors';
 
-class MeydaWA{
+class MeydaAnalyzer{
 	constructor(options, self){
 		if (!options.audioContext)
 			throw self._errors.noAC;
@@ -12,28 +12,30 @@ class MeydaWA{
 
 		self.audioContext = options.audioContext;
 
-		//create nodes
-		self.spn = self.audioContext.createScriptProcessor(self.bufferSize,1,1);
-		self.spn.connect(self.audioContext.destination);
-
 		// TODO: validate options
 		self.setSource(options.source);
-		self.bufferSize = options.bufferSize || 256;
+		self.bufferSize = options.bufferSize || self.bufferSize || 256;
+		self.sampleRate = options.sampleRate || self.audioContext.sampleRate || 44100;
 		self.callback = options.callback;
 		self.windowingFunction = options.windowingFunction || "hanning";
 		self.featureExtractors = featureExtractors;
 		self.EXTRACTION_STARTED = options.startImmediately || false;
 
-		//callback controllers
+		//create nodes
+		self.spn = self.audioContext.createScriptProcessor(self.bufferSize,1,1);
+		self.spn.connect(self.audioContext.destination);
+
 		self._featuresToExtract = options.featureExtractors || [];
 
-		self.barkScale = utilities.createBarkScale(self.bufferSize);
+		//always recalculate BS and MFB when a new Meyda analyzer is created.
+		self.barkScale = utilities.createBarkScale(self.bufferSize, self.sampleRate, self.bufferSize);
+		self.melFilterBank = utilities.createMelFilterBank(self.melBands, self.sampleRate, self.bufferSize);
 
 		self.spn.onaudioprocess = function(e) {
 			// self is to obtain the current frame pcm data
 			var inputData = e.inputBuffer.getChannelData(0);
 
-			var features = self.get(self._featuresToExtract, inputData);
+			var features = self.extract(self._featuresToExtract, inputData);
 
 			// call callback if applicable
 			if (typeof self.callback === "function" && self.EXTRACTION_STARTED) {
@@ -57,4 +59,4 @@ class MeydaWA{
 	}
 }
 
-export default MeydaWA;
+export default MeydaAnalyzer;
