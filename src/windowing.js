@@ -20,6 +20,12 @@ export function sine(size){
   for (let i = 0; i < size; i++){
     sineBuffer[i] = Math.sin(coeff*i);
   }
+
+  return sineBuffer;
+}
+
+export function gaussian(size, sigma){
+
 }
 
 export function hanning(size){

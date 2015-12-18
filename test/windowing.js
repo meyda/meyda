@@ -21,6 +21,8 @@ var sine512 = require("./data/sine512.json");
 var sine1024 = require("./data/sine1024.json");
 var sine2048 = require("./data/sine2048.json");
 
+console.log(windowing.sine(128));
+
 describe('windowing', function(){
 	it('should generate a correct 128 bin hanning window', function(done){
 		assert.deepEqual(hanning128,windowing.hanning(128));
@@ -73,27 +75,27 @@ describe('windowing', function(){
 	});
 
 	it('should generate a correct 128 bin sine window', function(done){
-		assert.deepEqual(hamming128,windowing.sine(128));
+		assert.deepEqual(sine128,windowing.sine(128));
 		done();
 	});
 
 	it('should generate a correct 256 bin sine window', function(done){
-		assert.deepEqual(hamming256,windowing.sine(256));
+		assert.deepEqual(sine256,windowing.sine(256));
 		done();
 	});
 
 	it('should generate a correct 512 bin sine window', function(done){
-		assert.deepEqual(hamming512,windowing.sine(512));
+		assert.deepEqual(sine512,windowing.sine(512));
 		done();
 	});
 
 	it('should generate a correct 1024 bin sine window', function(done){
-		assert.deepEqual(hamming1024,windowing.sine(1024));
+		assert.deepEqual(sine1024,windowing.sine(1024));
 		done();
 	});
 
 	it('should generate a correct 2048 bin sine window', function(done){
-		assert.deepEqual(hamming2048,windowing.sine(2048));
+		assert.deepEqual(sine2048,windowing.sine(2048));
 		done();
 	});
 });

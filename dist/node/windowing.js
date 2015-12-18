@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.sine = sine;
+exports.gaussian = gaussian;
 exports.hanning = hanning;
 exports.hamming = hamming;
 var generateBlackman = function generateBlackman(size) {
@@ -23,12 +24,16 @@ var generateBlackman = function generateBlackman(size) {
 
 function sine(size) {
   var coeff = Math.PI / (size - 1);
-  var sineBuffer = Float32Array(size);
+  var sineBuffer = new Float32Array(size);
 
-  for (var i = 0; i < size - 1; i++) {
-    sineBuffer = sin(coeff * i);
+  for (var i = 0; i < size; i++) {
+    sineBuffer[i] = Math.sin(coeff * i);
   }
+
+  return sineBuffer;
 }
+
+function gaussian(size, sigma) {}
 
 function hanning(size) {
   var hanningBuffer = new Float32Array(size);
