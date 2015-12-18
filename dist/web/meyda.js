@@ -1473,7 +1473,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (args) {
-  if (_typeof(args.ampSpectrum) !== "object") {
+  if (_typeof(args.ampSpectrum) !== "object" || _typeof(args.barkScale) !== "object") {
     throw new TypeError();
   }
   var NUM_BARK_BANDS = 24;
@@ -1520,66 +1520,34 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
 module.exports = exports['default'];
 
 },{}],11:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
 exports.default = function (args) {
-	if (_typeof(args.ampSpectrum) !== "object") {
+	if (_typeof(args.ampSpectrum) !== "object" || _typeof(args.melFilterBank) !== "object") {
 		throw new TypeError();
 	}
 	//used tutorial from http://practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/
 	var powSpec = (0, _powerSpectrum2.default)(args);
-	var numFilters = 26; //26 filters is standard
-	var melValues = new Float32Array(numFilters + 2); //the +2 is the upper and lower limits
-	var melValuesInFreq = new Float32Array(numFilters + 2);
-	//Generate limits in Hz - from 0 to the nyquist.
-	var lowerLimitFreq = 0;
-	var upperLimitFreq = args.sampleRate / 2;
-	//Convert the limits to Mel
-	var lowerLimitMel = freqToMel(lowerLimitFreq);
-	var upperLimitMel = freqToMel(upperLimitFreq);
-	//Find the range
-	var range = upperLimitMel - lowerLimitMel;
-	//Find the range as part of the linear interpolation
-	var valueToAdd = range / (numFilters + 1);
-
-	var fftBinsOfFreq = Array(numFilters + 2);
-
-	for (var i = 0; i < melValues.length; i++) {
-		//Initialising the mel frequencies - they are just a linear interpolation between the lower and upper limits.
-		melValues[i] = i * valueToAdd;
-		//Convert back to Hz
-		melValuesInFreq[i] = melToFreq(melValues[i]);
-		//Find the corresponding bins
-		fftBinsOfFreq[i] = Math.floor((args.bufferSize + 1) * melValuesInFreq[i] / args.sampleRate);
-	}
-
-	var filterBank = Array(numFilters);
-	for (var j = 0; j < filterBank.length; j++) {
-		//creating a two dimensional array of size numFiltes * (args.buffersize/2)+1 and pre-populating the arrays with 0s.
-		filterBank[j] = Array.apply(null, new Array(args.bufferSize / 2 + 1)).map(Number.prototype.valueOf, 0);
-		//creating the lower and upper slopes for each bin
-		for (var i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j + 1]; i++) {
-			filterBank[j][i] = (i - fftBinsOfFreq[j]) / (fftBinsOfFreq[j + 1] - fftBinsOfFreq[j]);
-		}
-		for (var i = fftBinsOfFreq[j + 1]; i < fftBinsOfFreq[j + 2]; i++) {
-			filterBank[j][i] = (fftBinsOfFreq[j + 2] - i) / (fftBinsOfFreq[j + 2] - fftBinsOfFreq[j + 1]);
-		}
-	}
+	var numFilters = args.melFilterBank.length;
+	var filtered = Array(numFilters);
 
 	var loggedMelBands = new Float32Array(numFilters);
+
 	for (var i = 0; i < loggedMelBands.length; i++) {
+		filtered[i] = new Float32Array(args.bufferSize / 2);
 		loggedMelBands[i] = 0;
 		for (var j = 0; j < args.bufferSize / 2; j++) {
-			//point multiplication between power spectrum and filterbanks.
-			filterBank[i][j] = filterBank[i][j] * powSpec[j];
+			//point-wise multiplication between power spectrum and filterbanks.
+			filtered[i][j] = args.melFilterBank[i][j] * powSpec[j];
 
 			//summing up all of the coefficients into one array
-			loggedMelBands[i] += filterBank[i][j];
+			loggedMelBands[i] += filtered[i][j];
 		}
+
 		//log each coefficient
 		loggedMelBands[i] = Math.log(loggedMelBands[i]);
 	}
@@ -1588,7 +1556,7 @@ exports.default = function (args) {
 	var k = Math.PI / numFilters;
 	var w1 = 1.0 / Math.sqrt(numFilters);
 	var w2 = Math.sqrt(2.0 / numFilters);
-	var numCoeffs = 13;
+	var numCoeffs = numFilters;
 	var dctMatrix = new Float32Array(numCoeffs * numFilters);
 
 	for (var i = 0; i < numCoeffs; i++) {
@@ -1614,27 +1582,21 @@ exports.default = function (args) {
 	return mfccs;
 };
 
-var _powerSpectrum = require("./powerSpectrum");
+var _powerSpectrum = require('./powerSpectrum');
 
 var _powerSpectrum2 = _interopRequireDefault(_powerSpectrum);
+
+var _utilities = require('./../utilities');
+
+var _utilities2 = _interopRequireDefault(_utilities);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
 
-var melToFreq = function melToFreq(melValue) {
-	var freqValue = 700 * (Math.exp(melValue / 1125) - 1);
-	return freqValue;
-};
-
-var freqToMel = function freqToMel(freqValue) {
-	var melValue = 1125 * Math.log(1 + freqValue / 700);
-	return melValue;
-};
-
 module.exports = exports['default'];
 
-},{"./powerSpectrum":14}],12:[function(require,module,exports){
+},{"./../utilities":27,"./powerSpectrum":14}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2081,7 +2043,7 @@ var complex_array = _interopRequireWildcard(_complex_array);
 
 var _meydaWa = require('./meyda-wa');
 
-var MeydaWA = _interopRequireWildcard(_meydaWa);
+var MeydaAnalyzer = _interopRequireWildcard(_meydaWa);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -2092,22 +2054,43 @@ var Meyda = {
 	spn: null,
 	bufferSize: 512,
 	sampleRate: 44100,
+	melBands: 26,
 	callback: null,
 	windowingFunction: "hanning",
 	featureExtractors: extractors,
 	EXTRACTION_STARTED: false,
 	_featuresToExtract: [],
+	_errors: {
+		notPow2: new Error('Meyda: Input data length/buffer size needs to be a power of 2, e.g. 64 or 512'),
+		featureUndef: new Error('Meyda: No features defined.'),
+		invalidFeatureFmt: new Error('Meyda: Invalid feature format'),
+		invalidInput: new Error('Meyda: Invalid input.'),
+		noAC: new Error('Meyda: No AudioContext specified.'),
+		noSource: new Error('Meyda: No source node specified.')
+	},
 
 	createMeydaAnalyzer: function createMeydaAnalyzer(options) {
-		return new MeydaWA(options, this);
+		return new MeydaAnalyzer(options, this);
 	},
 
 	extract: function extract(feature, signal) {
-		if (typeof this.barkScale == "undefined") {
+		if (!signal) throw this._errors.invalidInput;else if ((typeof signal === 'undefined' ? 'undefined' : _typeof(signal)) != 'object') throw this._errors.invalidInput;else if (!feature) throw this._errors.featureUndef;else if (!utilities.isPowerOfTwo(signal.length)) throw this._errors.notPow2;
+
+		if (typeof this.barkScale == "undefined" || this.barkScale.length != this.bufferSize) {
 			this.barkScale = utilities.createBarkScale(this.bufferSize, this.sampleRate, this.bufferSize);
 		}
+		//if buffer size changed, then we need to recalculate the mel bank anyway
+		if (typeof this.melFilterBank == "undefined" || this.barkScale.length != this.bufferSize || this.melFilterBank.length != this.melBands) {
+			this.melFilterBank = utilities.createMelFilterBank(this.melBands, this.sampleRate, this.bufferSize);
+		}
 
-		this.signal = signal;
+		if (typeof signal.buffer == "undefined") {
+			//signal is a normal array, convert to F32A
+			this.signal = utilities.arrayToTyped(signal);
+		} else {
+			this.signal = signal;
+		}
+
 		var windowedSignal = utilities.applyWindow(this.signal, this.windowingFunction);
 
 		// create complexarray to hold the spectrum
@@ -2134,7 +2117,8 @@ var Meyda = {
 					signal: this.signal,
 					bufferSize: this.bufferSize,
 					sampleRate: this.sampleRate,
-					barkScale: this.barkScale
+					barkScale: this.barkScale,
+					melFilterBank: this.melFilterBank
 				});
 			}
 			return results;
@@ -2145,10 +2129,11 @@ var Meyda = {
 				signal: this.signal,
 				bufferSize: this.bufferSize,
 				sampleRate: this.sampleRate,
-				barkScale: this.barkScale
+				barkScale: this.barkScale,
+				melFilterBank: this.melFilterBank
 			});
 		} else {
-			throw "Invalid Feature Format";
+			throw this._errors.invalidFeatureFmt;
 		}
 	}
 };
@@ -2179,34 +2164,38 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var MeydaWA = (function () {
-	function MeydaWA(options, self) {
-		_classCallCheck(this, MeydaWA);
+var MeydaAnalyzer = (function () {
+	function MeydaAnalyzer(options, self) {
+		_classCallCheck(this, MeydaAnalyzer);
+
+		if (!options.audioContext) throw self._errors.noAC;else if (options.bufferSize && !utilities.isPowerOfTwo(options.bufferSize)) throw self._errors.notPow2;else if (!options.source) throw self._errors.noSource;
 
 		self.audioContext = options.audioContext;
 
-		//create nodes
-		self.spn = self.audioContext.createScriptProcessor(self.bufferSize, 1, 1);
-		self.spn.connect(self.audioContext.destination);
-
 		// TODO: validate options
 		self.setSource(options.source);
-		self.bufferSize = options.bufferSize || 256;
+		self.bufferSize = options.bufferSize || self.bufferSize || 256;
+		self.sampleRate = options.sampleRate || self.audioContext.sampleRate || 44100;
 		self.callback = options.callback;
 		self.windowingFunction = options.windowingFunction || "hanning";
 		self.featureExtractors = featureExtractors;
 		self.EXTRACTION_STARTED = options.startImmediately || false;
 
-		//callback controllers
+		//create nodes
+		self.spn = self.audioContext.createScriptProcessor(self.bufferSize, 1, 1);
+		self.spn.connect(self.audioContext.destination);
+
 		self._featuresToExtract = options.featureExtractors || [];
 
-		self.barkScale = utilities.createBarkScale(self.bufferSize);
+		//always recalculate BS and MFB when a new Meyda analyzer is created.
+		self.barkScale = utilities.createBarkScale(self.bufferSize, self.sampleRate, self.bufferSize);
+		self.melFilterBank = utilities.createMelFilterBank(self.melBands, self.sampleRate, self.bufferSize);
 
 		self.spn.onaudioprocess = function (e) {
 			// self is to obtain the current frame pcm data
 			var inputData = e.inputBuffer.getChannelData(0);
 
-			var features = self.get(self._featuresToExtract, inputData);
+			var features = self.extract(self._featuresToExtract, inputData);
 
 			// call callback if applicable
 			if (typeof self.callback === "function" && self.EXTRACTION_STARTED) {
@@ -2215,7 +2204,7 @@ var MeydaWA = (function () {
 		};
 	}
 
-	_createClass(MeydaWA, [{
+	_createClass(MeydaAnalyzer, [{
 		key: 'start',
 		value: function start(features) {
 			self._featuresToExtract = features;
@@ -2233,10 +2222,10 @@ var MeydaWA = (function () {
 		}
 	}]);
 
-	return MeydaWA;
+	return MeydaAnalyzer;
 })();
 
-exports.default = MeydaWA;
+exports.default = MeydaAnalyzer;
 module.exports = exports['default'];
 
 },{"./featureExtractors":24,"./utilities":27}],27:[function(require,module,exports){
@@ -2250,6 +2239,15 @@ exports.error = error;
 exports.pointwiseBufferMult = pointwiseBufferMult;
 exports.applyWindow = applyWindow;
 exports.createBarkScale = createBarkScale;
+exports.typedToArray = typedToArray;
+exports.arrayToTyped = arrayToTyped;
+exports.normalize = normalize;
+exports.normalize_a = normalize_a;
+exports.normalize_a_to_1 = normalize_a_to_1;
+exports.mean = mean;
+exports.melToFreq = melToFreq;
+exports.freqToMel = freqToMel;
+exports.createMelFilterBank = createMelFilterBank;
 
 var _windowing = require("./windowing");
 
@@ -2296,12 +2294,107 @@ function createBarkScale(length, sampleRate, bufferSize) {
   return barkScale;
 }
 
+function typedToArray(t) {
+  // utility to convert typed arrays to normal arrays
+  return Array.prototype.slice.call(t);
+}
+
+function arrayToTyped(t) {
+  // utility to convert arrays to typed F32 arrays
+  return Float32Array.from(t);
+}
+
+function normalize(num, range) {
+  return num / range;
+}
+
+function normalize_a(a, range) {
+  return a.map(function (n) {
+    return n / range;
+  });
+}
+
+function normalize_a_to_1(a) {
+  var max = 0;
+  a.forEach(function (v, i, _a) {
+    if (v > max) max = v;
+  });
+  return a.map(function (n) {
+    return n / max;
+  });
+}
+
+function mean(a) {
+  return a.reduce(function (prev, cur) {
+    return prev + cur;
+  }) / a.length;
+}
+
+function _melToFreq(melValue) {
+  var freqValue = 700 * (Math.exp(melValue / 1125) - 1);
+  return freqValue;
+}
+
+function _freqToMel(freqValue) {
+  var melValue = 1125 * Math.log(1 + freqValue / 700);
+  return melValue;
+}
+
+function melToFreq(mV) {
+  return _melToFreq(mV);
+}
+function freqToMel(fV) {
+  return _freqToMel(fV);
+}
+
+function createMelFilterBank(numFilters, sampleRate, bufferSize) {
+  var melValues = new Float32Array(numFilters + 2); //the +2 is the upper and lower limits
+  var melValuesInFreq = new Float32Array(numFilters + 2);
+  //Generate limits in Hz - from 0 to the nyquist.
+  var lowerLimitFreq = 0;
+  var upperLimitFreq = sampleRate / 2;
+  //Convert the limits to Mel
+  var lowerLimitMel = _freqToMel(lowerLimitFreq);
+  var upperLimitMel = _freqToMel(upperLimitFreq);
+  //Find the range
+  var range = upperLimitMel - lowerLimitMel;
+  //Find the range as part of the linear interpolation
+  var valueToAdd = range / (numFilters + 1);
+
+  var fftBinsOfFreq = Array(numFilters + 2);
+
+  for (var i = 0; i < melValues.length; i++) {
+    //Initialising the mel frequencies - they are just a linear interpolation between the lower and upper limits.
+    melValues[i] = i * valueToAdd;
+    //Convert back to Hz
+    melValuesInFreq[i] = _melToFreq(melValues[i]);
+    //Find the corresponding bins
+    fftBinsOfFreq[i] = Math.floor((bufferSize + 1) * melValuesInFreq[i] / sampleRate);
+  }
+
+  var filterBank = Array(numFilters);
+  for (var j = 0; j < filterBank.length; j++) {
+    //creating a two dimensional array of size numFilters * (buffersize/2)+1 and pre-populating the arrays with 0s.
+    filterBank[j] = Array.apply(null, new Array(bufferSize / 2 + 1)).map(Number.prototype.valueOf, 0);
+    //creating the lower and upper slopes for each bin
+    for (var i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j + 1]; i++) {
+      filterBank[j][i] = (i - fftBinsOfFreq[j]) / (fftBinsOfFreq[j + 1] - fftBinsOfFreq[j]);
+    }
+    for (var i = fftBinsOfFreq[j + 1]; i < fftBinsOfFreq[j + 2]; i++) {
+      filterBank[j][i] = (fftBinsOfFreq[j + 2] - i) / (fftBinsOfFreq[j + 2] - fftBinsOfFreq[j + 1]);
+    }
+  }
+
+  return filterBank;
+}
+
 },{"./windowing":28}],28:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.sine = sine;
 exports.hanning = hanning;
 exports.hamming = hamming;
 var generateBlackman = function generateBlackman(size) {
@@ -2318,6 +2411,15 @@ var generateBlackman = function generateBlackman(size) {
 };
 
 // @TODO: finish and export Blackman
+
+function sine(size) {
+  var coeff = Math.PI / (size - 1);
+  var sineBuffer = Float32Array(size);
+
+  for (var i = 0; i < size - 1; i++) {
+    sineBuffer = sin(coeff * i);
+  }
+}
 
 function hanning(size) {
   var hanningBuffer = new Float32Array(size);

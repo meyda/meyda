@@ -13,6 +13,15 @@ let generateBlackman = function(size){
 
 // @TODO: finish and export Blackman
 
+export function sine(size){
+  let coeff = Math.PI/(size-1);
+  let sineBuffer = new Float32Array(size);
+
+  for (let i = 0; i < size; i++){
+    sineBuffer[i] = Math.sin(coeff*i);
+  }
+}
+
 export function hanning(size){
   let hanningBuffer = new Float32Array(size);
   for (let i = 0; i < size; i++) {
@@ -22,7 +31,7 @@ export function hanning(size){
   return hanningBuffer;
 }
 
-export function hamming (size){
+export function hamming(size){
   let hammingBuffer = new Float32Array(size);
   for (let i = 0; i < size; i++) {
     //According to http://uk.mathworks.com/help/signal/ref/hamming.html
