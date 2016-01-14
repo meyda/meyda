@@ -22,10 +22,21 @@ export function pointwiseBufferMult(a,b){
 }
 
 export function applyWindow(signal, windowname){
-  if(!windows[windowname]) windows[windowname] = {};
-  if(!windows[windowname][signal.length]) windows[windowname][signal.length] = windowing.hanning(signal.length);
+  if(windowname !== 'rect'){
+    if(windowname === "" || !windowname) windowname = "hanning";
+    if(!windows[windowname]) windows[windowname] = {};
 
-  return pointwiseBufferMult(signal,windows[windowname][signal.length]);
+    if(!windows[windowname][signal.length]){
+      try{
+        windows[windowname][signal.length] = windowing[windowname](signal.length);
+        signal = pointwiseBufferMult(signal,windows[windowname][signal.length]);
+      }
+      catch(e){
+        throw new Error("Invalid windowing function");
+      }
+    }
+  }
+  return signal;
 }
 
 export function createBarkScale(length,sampleRate,bufferSize) {

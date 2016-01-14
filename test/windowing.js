@@ -1,10 +1,14 @@
 var chai = require("chai");
 var assert = chai.assert;
-var TestData = require('./TestData');
 
 // Setup
 var windowing = require("../dist/node/windowing");
 
+var blackman128 = require("./data/blackman128.json");
+var blackman256 = require("./data/blackman256.json");
+var blackman512 = require("./data/blackman512.json");
+var blackman1024 = require("./data/blackman1024.json");
+var blackman2048 = require("./data/blackman2048.json");
 var hanning128 = require("./data/hanning128.json");
 var hanning256 = require("./data/hanning256.json");
 var hanning512 = require("./data/hanning512.json");
@@ -21,9 +25,32 @@ var sine512 = require("./data/sine512.json");
 var sine1024 = require("./data/sine1024.json");
 var sine2048 = require("./data/sine2048.json");
 
-console.log(windowing.sine(128));
-
 describe('windowing', function(){
+	it('should generate a correct 128 bin blackman window', function(done){
+		assert.deepEqual(blackman128,windowing.blackman(128));
+		done();
+	});
+
+	it('should generate a correct 256 bin blackman window', function(done){
+		assert.deepEqual(blackman256,windowing.blackman(256));
+		done();
+	});
+
+	it('should generate a correct 512 bin blackman window', function(done){
+		assert.deepEqual(blackman512,windowing.blackman(512));
+		done();
+	});
+
+	it('should generate a correct 1024 bin blackman window', function(done){
+		assert.deepEqual(blackman1024,windowing.blackman(1024));
+		done();
+	});
+
+	it('should generate a correct 2048 bin blackman window', function(done){
+		assert.deepEqual(blackman2048,windowing.blackman(2048));
+		done();
+	});
+
 	it('should generate a correct 128 bin hanning window', function(done){
 		assert.deepEqual(hanning128,windowing.hanning(128));
 		done();

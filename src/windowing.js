@@ -1,17 +1,21 @@
-let generateBlackman = function(size){
-  let blackman = new Float32Array(size);
+export function blackman(size){
+  let blackmanBuffer = new Float32Array(size);
+  let coeff1 = 2*Math.PI/(size-1);
+  let coeff2 = 2*coeff1;
+
   //According to http://uk.mathworks.com/help/signal/ref/blackman.html
   //first half of the window
-  for (let i = 0; i < (size % 2) ? (size+1)/2 : size/2; i++) {
-    blackman[i] = 0.42 - 0.5*Math.cos(2*Math.PI*i/(size-1)) + 0.08*Math.cos(4*Math.PI*i/(size-1));
+  for (let i = 0; i < size/2 ; i++) {
+    blackmanBuffer[i] = 0.42 - 0.5*Math.cos(i*coeff1) + 0.08*Math.cos(i*coeff2);
   }
+
   //second half of the window
   for (let i = size/2; i > 0; i--) {
-    blackman[size - i] = blackman[i];
+    blackmanBuffer[size - i] = blackmanBuffer[i-1];
   }
-};
 
-// @TODO: finish and export Blackman
+  return blackmanBuffer;
+}
 
 export function sine(size){
   let coeff = Math.PI/(size-1);
@@ -22,10 +26,6 @@ export function sine(size){
   }
 
   return sineBuffer;
-}
-
-export function gaussian(size, sigma){
-
 }
 
 export function hanning(size){

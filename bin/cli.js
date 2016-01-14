@@ -29,8 +29,8 @@
   var FRAME_SIZE = parseInt(opt.options.bs) || 512;
   Meyda.bufferSize = FRAME_SIZE;
   Meyda.windowingFunction = opt.options.w || 'hanning';
+  
   var outputFormat = opt.options.format || 'csv';
-  console.log(outputFormat);
   var features = {};
   var featuresToExtract = opt.argv.slice(1);
 

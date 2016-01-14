@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -18,7 +18,7 @@ exports.melToFreq = melToFreq;
 exports.freqToMel = freqToMel;
 exports.createMelFilterBank = createMelFilterBank;
 
-var _windowing = require("./windowing");
+var _windowing = require('./windowing');
 
 var windowing = _interopRequireWildcard(_windowing);
 
@@ -46,10 +46,20 @@ function pointwiseBufferMult(a, b) {
 }
 
 function applyWindow(signal, windowname) {
-  if (!windows[windowname]) windows[windowname] = {};
-  if (!windows[windowname][signal.length]) windows[windowname][signal.length] = windowing.hanning(signal.length);
+  if (windowname !== 'rect') {
+    if (windowname === "" || !windowname) windowname = "hanning";
+    if (!windows[windowname]) windows[windowname] = {};
 
-  return pointwiseBufferMult(signal, windows[windowname][signal.length]);
+    if (!windows[windowname][signal.length]) {
+      try {
+        windows[windowname][signal.length] = windowing[windowname](signal.length);
+        signal = pointwiseBufferMult(signal, windows[windowname][signal.length]);
+      } catch (e) {
+        throw new Error("Invalid windowing function");
+      }
+    }
+  }
+  return signal;
 }
 
 function createBarkScale(length, sampleRate, bufferSize) {
