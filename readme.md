@@ -11,6 +11,10 @@ Meyda is a javascript audio feature extraction library designed for and implemen
 ### Usage
 Please see [the documentation](https://github.com/hughrawlinson/meyda/wiki/Getting-Started) for setup and usage instructions.
 
+### Contributing
+
+Please see [our contributor guidelines](https://github.com/hughrawlinson/meyda/wiki/contributing) for guidelines about contributing, and bear in mind that we adhere to the [Contributor Covenant](https://github.com/hughrawlinson/meyda/wiki/Contributor-Covenant)
+
 ### Acknowledgements
 
 This library is using the [jsfft](https://github.com/dntj/jsfft "jsfft") implementation by [Nick Jones](https://github.com/dntj "Nick Jones") released under the MIT License.
