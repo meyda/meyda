@@ -1,106 +1,108 @@
 import * as utilities from './utilities';
-import featureExtractors from './featureExtractors';
+import * as extractors from './featureExtractors';
 import * as fft from 'jsfft';
 import * as complex_array from 'jsfft/lib/complex_array';
+import * as MeydaAnalyzer from './meyda-wa';
 
-class Meyda{
-	constructor(options){
-		var self = this;
-		self.audioContext = options.audioContext;
 
-		//create nodes
-		self.spn = self.audioContext.createScriptProcessor(self.bufferSize,1,1);
-		self.spn.connect(self.audioContext.destination);
+var Meyda = {
+	audioContext: null,
+	spn: null,
+	bufferSize: 512,
+	sampleRate: 44100,
+	melBands: 26,
+	callback: null,
+	windowingFunction: "hanning",
+	featureExtractors: extractors,
+	EXTRACTION_STARTED: false,
+	_featuresToExtract: [],
+	_errors: {
+		notPow2: new Error('Meyda: Input data length/buffer size needs to be a power of 2, e.g. 64 or 512'),
+		featureUndef: new Error('Meyda: No features defined.'),
+		invalidFeatureFmt: new Error('Meyda: Invalid feature format'),
+		invalidInput: new Error('Meyda: Invalid input.'),
+		noAC: new Error('Meyda: No AudioContext specified.'),
+		noSource: new Error('Meyda: No source node specified.')
+	},
 
-		// TODO: validate options
-		self.setSource(options.source);
-		self.bufferSize = options.bufferSize || 256;
-		self.callback = options.callback;
-		self.windowingFunction = options.windowingFunction || "hanning";
-		self.featureExtractors = featureExtractors;
-		self.EXTRACTION_STARTED = options.startImmediately || false;
+	createMeydaAnalyzer: function(options){
+		return new MeydaAnalyzer(options, this);
+	},
 
-		//callback controllers
-		self._featuresToExtract = options.featureExtractors || [];
+	extract: function(feature, signal){
+		if (!signal)
+			throw this._errors.invalidInput;
+		else if (typeof signal != 'object')
+			throw this._errors.invalidInput;
+		else if (!feature)
+			throw this._errors.featureUndef;
+		else if (!utilities.isPowerOfTwo(signal.length))
+			throw this._errors.notPow2;
 
-		self.barkScale = new Float32Array(self.bufferSize);
-
-		for(var i = 0; i < self.barkScale.length; i++){
-			self.barkScale[i] = i*self.audioContext.sampleRate/(self.bufferSize);
-			self.barkScale[i] = 13*Math.atan(self.barkScale[i]/1315.8) + 3.5* Math.atan(Math.pow((self.barkScale[i]/7518),2));
+		if (typeof this.barkScale == "undefined" || this.barkScale.length != this.bufferSize) {
+			this.barkScale = utilities.createBarkScale(this.bufferSize,this.sampleRate,this.bufferSize);
+		}
+		//if buffer size changed, then we need to recalculate the mel bank anyway
+		if (typeof this.melFilterBank == "undefined" || this.barkScale.length != this.bufferSize || this.melFilterBank.length != this.melBands) {
+			this.melFilterBank = utilities.createMelFilterBank(this.melBands,this.sampleRate,this.bufferSize);
 		}
 
-		self.spn.onaudioprocess = function(e) {
-			// self is to obtain the current frame pcm data
-			var inputData = e.inputBuffer.getChannelData(0);
-			self.signal = inputData;
-			var windowedSignal = utilities.applyWindow(inputData, self.windowingFunction);
+		if (typeof signal.buffer == "undefined") {
+			//signal is a normal array, convert to F32A
+			this.signal = utilities.arrayToTyped(signal);
+		}
+		else {
+			this.signal = signal;
+		}
 
-			// create complexarray to hold the spectrum
-			var data = new complex_array.ComplexArray(self.bufferSize);
-			// map time domain
-			data.map(function(value, i, n) {
-				value.real = windowedSignal[i];
-			});
-			// transform
-			var spec = data.FFT();
-			// assign to meyda
-			self.complexSpectrum = spec;
-			self.ampSpectrum = new Float32Array(self.bufferSize/2);
-			for (var i = 0; i < self.bufferSize/2; i++) {
-				self.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i],2) + Math.pow(spec.imag[i],2));
-			}
-			// call callback if applicable
-			if (typeof self.callback === "function" && self.EXTRACTION_STARTED) {
-				self.callback(self.get(self._featuresToExtract));
-			}
-		};
-	}
+		var windowedSignal = utilities.applyWindow(this.signal, this.windowingFunction);
 
-	start(features) {
-		self._featuresToExtract = features;
-		self.EXTRACTION_STARTED = true;
-	}
+		// create complexarray to hold the spectrum
+		var data = new complex_array.ComplexArray(this.bufferSize);
+		// map time domain
+		data.map(function(value, i, n) {
+			value.real = windowedSignal[i];
+		});
+		// transform
+		var spec = data.FFT();
+		// assign to meyda
+		this.complexSpectrum = spec;
+		this.ampSpectrum = new Float32Array(this.bufferSize/2);
+		for (var i = 0; i < this.bufferSize/2; i++) {
+			this.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i],2) + Math.pow(spec.imag[i],2));
+		}
 
-	stop() {
-		self.EXTRACTION_STARTED = false;
-	}
-
-	setSource(source) {
-		source.connect(this.spn);
-	}
-
-	get(feature) {
-		var self = this;
 		if(typeof feature === "object"){
 			var results = {};
 			for (var x = 0; x < feature.length; x++){
-				results[feature[x]] = (featureExtractors[feature[x]]({
-					ampSpectrum:self.ampSpectrum,
-					complexSpectrum:self.complexSpectrum,
-					signal:self.signal,
-					bufferSize:self.bufferSize,
-					sampleRate:self.audioContext.sampleRate,
-					barkScale:self.barkScale
+				results[feature[x]] = (this.featureExtractors[feature[x]]({
+					ampSpectrum:this.ampSpectrum,
+					complexSpectrum:this.complexSpectrum,
+					signal:this.signal,
+					bufferSize:this.bufferSize,
+					sampleRate:this.sampleRate,
+					barkScale:this.barkScale,
+					melFilterBank:this.melFilterBank
 				}));
 			}
 			return results;
 		}
 		else if (typeof feature === "string"){
-			return featureExtractors[feature]({
-				ampSpectrum:self.ampSpectrum,
-				complexSpectrum:self.complexSpectrum,
-				signal:self.signal,
-				bufferSize:self.bufferSize,
-				sampleRate:self.audioContext.sampleRate,
-				barkScale:self.barkScale
+			return this.featureExtractors[feature]({
+				ampSpectrum:this.ampSpectrum,
+				complexSpectrum:this.complexSpectrum,
+				signal:this.signal,
+				bufferSize:this.bufferSize,
+				sampleRate:this.sampleRate,
+				barkScale:this.barkScale,
+				melFilterBank:this.melFilterBank
 			});
 		}
 		else{
-			throw "Invalid Feature Format";
-    }
-  }
-}
+			throw this._errors.invalidFeatureFmt;
+		}
+	}
+};
 
 export default Meyda;
 

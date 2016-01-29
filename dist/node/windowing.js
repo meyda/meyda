@@ -3,22 +3,39 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.blackman = blackman;
+exports.sine = sine;
 exports.hanning = hanning;
 exports.hamming = hamming;
-var generateBlackman = function generateBlackman(size) {
-  var blackman = new Float32Array(size);
+function blackman(size) {
+  var blackmanBuffer = new Float32Array(size);
+  var coeff1 = 2 * Math.PI / (size - 1);
+  var coeff2 = 2 * coeff1;
+
   //According to http://uk.mathworks.com/help/signal/ref/blackman.html
   //first half of the window
-  for (var i = 0; i < size % 2 ? (size + 1) / 2 : size / 2; i++) {
-    blackman[i] = 0.42 - 0.5 * Math.cos(2 * Math.PI * i / (size - 1)) + 0.08 * Math.cos(4 * Math.PI * i / (size - 1));
+  for (var i = 0; i < size / 2; i++) {
+    blackmanBuffer[i] = 0.42 - 0.5 * Math.cos(i * coeff1) + 0.08 * Math.cos(i * coeff2);
   }
+
   //second half of the window
   for (var i = size / 2; i > 0; i--) {
-    blackman[size - i] = blackman[i];
+    blackmanBuffer[size - i] = blackmanBuffer[i - 1];
   }
-};
 
-// @TODO: finish and export Blackman
+  return blackmanBuffer;
+}
+
+function sine(size) {
+  var coeff = Math.PI / (size - 1);
+  var sineBuffer = new Float32Array(size);
+
+  for (var i = 0; i < size; i++) {
+    sineBuffer[i] = Math.sin(coeff * i);
+  }
+
+  return sineBuffer;
+}
 
 function hanning(size) {
   var hanningBuffer = new Float32Array(size);

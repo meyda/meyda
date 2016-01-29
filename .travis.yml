@@ -1,11 +1,27 @@
 language: node_js
 node_js:
-    - "0.12"
-    - "4"
-    - "5"
-
+- '0.12'
+- '4'
+- '5'
 cache:
-    directories:
-        - node_modules
-
+  directories:
+  - node_modules
 sudo: false
+script: npm run travis
+notifications:
+  slack:
+    secure: IOuozca39vvU6tjxxq1HXaf5pSVEFpTkm64eaSCJuO2ON3peK0889JXdP3Bdn3BArNbpqXHECYGrAxa/s5lEzNo/Yr27bXBpC8P16Avu+0ifd93u3laPLL9EU8A3cwk+Sl/zXyOm3rPJ6S6TKAzIR7ATTbSLwAiFszSOhziLN+s=
+addons:
+  code_climate:
+    secure: UzGiBUR3lUurZQ2Pr5w8cgIFK9GIuGYVANDa2D9he1bzxkiXcMxySYqNjsPusgH3loGdi+DGENOcrVfOYo1qEYOuIZunmof6V9hMYbemgSUeDEUG7VSTG3l2vVGsJGShIlyAoh0T2TDVaxmhsKUMRmsrU2byJp7BggBGFIWG8lY=
+before_deploy: "npm run build"
+deploy:
+  provider: npm
+  email: hugh@codeoclock.net
+  api_key:
+    secure: VSJZDjyOoQNGn4+oULoSair9NVn6RflRdUGmES1m87om04AjPV9IYsxosyR9YnSinlWYBXO8bh1aDiSWcoh/ExoHr4P5Olu+GYWRoOivE54k/81R4rAFz2AC/eftkdbsM+tE56YEQyyxNDSn1wgj9h6RM4gjFhh6BKwfRHGTEBk=
+  on:
+    tags: true
+    repo: hughrawlinson/meyda
+    branch: master
+
