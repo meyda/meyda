@@ -8,7 +8,7 @@ var through2 = require('through2');
 var babelify = require('babelify');
 
 gulp.task('buildWeb',function(){
-	return gulp.src('./src/main-wa.js')
+	return gulp.src('./src/main.js')
 		.pipe(through2.obj(function(file,enc,next){
 			browserify(file.path,{debug: process.env.NODE_ENV === 'development'})
 				.transform(babelify, {
