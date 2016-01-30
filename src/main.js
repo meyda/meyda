@@ -29,7 +29,7 @@ var Meyda = {
 		return new MeydaAnalyzer(options, this);
 	},
 
-	extract: function(feature, signal){
+	extract: function(feature, signal, previousSignal){
 		if (!signal)
 			throw this._errors.invalidInput;
 		else if (typeof signal != 'object')
@@ -38,6 +38,10 @@ var Meyda = {
 			throw this._errors.featureUndef;
 		else if (!utilities.isPowerOfTwo(signal.length))
 			throw this._errors.notPow2;
+		if(previousSignal){
+			if(!utilities.isPowerOfTwo(previousSignal.length))
+				throw this._errors.notPow2;
+		}
 
 		if (typeof this.barkScale == "undefined" || this.barkScale.length != this.bufferSize) {
 			this.barkScale = utilities.createBarkScale(this.bufferSize,this.sampleRate,this.bufferSize);
@@ -47,29 +51,18 @@ var Meyda = {
 			this.melFilterBank = utilities.createMelFilterBank(this.melBands,this.sampleRate,this.bufferSize);
 		}
 
-		if (typeof signal.buffer == "undefined") {
-			//signal is a normal array, convert to F32A
-			this.signal = utilities.arrayToTyped(signal);
-		}
-		else {
-			this.signal = signal;
-		}
+		let preparedSignal = prepareSignalWithSpectrum(signal, this.windowingFunction, this.bufferSize);
 
-		var windowedSignal = utilities.applyWindow(this.signal, this.windowingFunction);
+		this.signal = preparedSignal.windowedSignal;
+		this.complexSpectrum = preparedSignal.complexSpectrum;
+		this.ampSpectrum = preparedSignal.ampSpectrum;
 
-		// create complexarray to hold the spectrum
-		var data = new complex_array.ComplexArray(this.bufferSize);
-		// map time domain
-		data.map(function(value, i, n) {
-			value.real = windowedSignal[i];
-		});
-		// transform
-		var spec = data.FFT();
-		// assign to meyda
-		this.complexSpectrum = spec;
-		this.ampSpectrum = new Float32Array(this.bufferSize/2);
-		for (var i = 0; i < this.bufferSize/2; i++) {
-			this.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i],2) + Math.pow(spec.imag[i],2));
+		if(previousSignal){
+			let preparedSignal = prepareSignalWithSpectrum(prevousSignal, this.windowingFunction, this.bufferSize);
+
+			this.previousSignal = preparedSignal.windowedSignal;
+			this.previousComplexSpectrum = preparedSignal.complexSpectrum;
+			this.previousAmpSpectrum = preparedSignal.ampSpectrum;
 		}
 
 		if(typeof feature === "object"){
@@ -82,7 +75,10 @@ var Meyda = {
 					bufferSize:this.bufferSize,
 					sampleRate:this.sampleRate,
 					barkScale:this.barkScale,
-					melFilterBank:this.melFilterBank
+					melFilterBank:this.melFilterBank,
+					previousSignal:this.previousSignal,
+					previousAmpSpectrum:this.previousAmpSpectrum,
+					previousComplexSpectrum:this.previousComplexSpectrum
 				}));
 			}
 			return results;
@@ -95,13 +91,43 @@ var Meyda = {
 				bufferSize:this.bufferSize,
 				sampleRate:this.sampleRate,
 				barkScale:this.barkScale,
-				melFilterBank:this.melFilterBank
+				melFilterBank:this.melFilterBank,
+				previousSignal:this.previousSignal,
+				previousAmpSpectrum:this.previousAmpSpectrum,
+				previousComplexSpectrum:this.previousComplexSpectrum
 			});
 		}
 		else{
 			throw this._errors.invalidFeatureFmt;
 		}
 	}
+};
+
+var prepareSignalWithSpectrum = function(signal, windowingFunction, bufferSize){
+	var preparedSignal = {};
+
+	if (typeof signal.buffer == "undefined") {
+		//signal is a normal array, convert to F32A
+		preparedSignal.signal = utilities.arrayToTyped(signal);
+	}
+	else {
+		preparedSignal.signal = signal;
+	}
+
+	preparedSignal.windowedSignal = utilities.applyWindow(preparedSignal, windowingFunction);
+
+	// create complexarray to hold the spectrum
+	var data = new complex_array.ComplexArray(this.bufferSize);
+	// map time domain
+	data.map(function(value, i, n) {
+		value.real = windowedSignal[i];
+	});
+	preparedSignal.complexSpectrum = data.FFT();
+	preparedSignal.ampSpectrum = new Float32Array(bufferSize/2);
+	for (var i = 0; i < this.bufferSize/2; i++) {
+		preparedSignal.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i],2) + Math.pow(spec.imag[i],2));
+	}
+	return preparedSignal;
 };
 
 export default Meyda;

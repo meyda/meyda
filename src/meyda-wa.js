@@ -32,12 +32,16 @@ class MeydaAnalyzer{
 		self.melFilterBank = utilities.createMelFilterBank(self.melBands, self.sampleRate, self.bufferSize);
 
 		self.inputData = null;
+		self.previousInputData = null;
 
 		self.spn.onaudioprocess = function(e) {
+			if(self.inputData === null){
+				self.previousInputData = self.inputData;
+			}
 			// self is to obtain the current frame pcm data
 			self.inputData = e.inputBuffer.getChannelData(0);
 
-			var features = self.extract(self._featuresToExtract, self.inputData);
+			var features = self.extract(self._featuresToExtract, self.inputData, self.previousInputData);
 
 			// call callback if applicable
 			if (typeof self.callback === "function" && self.EXTRACTION_STARTED) {
