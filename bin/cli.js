@@ -4,13 +4,12 @@
   'use strict';
 
   var opt = require('node-getopt').create([
-          ['','o=OUTPUT_FILE','Path to output file'],
+          ['','o[=OUTPUT_FILE]','Path to output file (optional, if not specified prints to console'],
           ['', 'bs[=BUFFER_SIZE]', 'Buffer size in samples (optional, default is 512)'],
           ['', 'w[=WINDOWING_FUNCTION]', 'Windowing function (optional, default is hanning)'],
           ['', 'format[=FORMAT_TYPE]', 'Type of output file (optional, default is csv)'],
           ['p', '', 'Disables logging and outputs data to stdout, useful for piping'],
-          ['h', 'help', 'Display help'],
-          ['v', 'version', 'show version']
+          ['h', 'help', 'Display help']
       ])
       .bindHelp()
       .parseSystem();
@@ -19,8 +18,8 @@
     throw new Error('Input file was not specified.');
   else if (opt.argv.length < 2)
     throw new Error('No features specified.');
-  else if (!opt.options.p && (!opt.options.o || opt.options.o.length === 0))
-    throw new Error('Output file not specified');
+  else if (opt.options.p && opt.options.o)
+    throw new Error('Please choose either -p or --o.');
   else if (opt.options.format && opt.options.format != 'json' && opt.options.format != 'csv')
     throw new Error('Invalid output format. Please choose either json or csv.');
 
@@ -32,7 +31,10 @@
   Meyda.bufferSize = FRAME_SIZE;
   Meyda.windowingFunction = opt.options.w || 'hanning';
   
-  var outputFormat = opt.options.format || 'csv';
+  var outputFormat = null;
+  if (opt.options.o){
+     outputFormat = opt.options.format || 'csv';
+  }
   var features = {};
   var featuresToExtract = opt.argv.slice(1);
 
@@ -51,7 +53,7 @@
   }
 
   function output(val) {
-    if (opt.options.p) {
+    if (!opt.options.o || opt.options.p) {
       process.stdout.write(val);
     }
     else {
@@ -72,7 +74,7 @@
   }
 
 
-  if (!opt.options.p) {
+  if (opt.options.o && !opt.options.p) {
     var wstream = fs.createWriteStream(opt.options.o);
   }
 
@@ -106,7 +108,6 @@
           var frame = _chunk.splice(0, FRAME_SIZE);
           extractFeatures(frame);
           if (!opt.options.p) process.stdout.write('-');
-          //console.log(frame)
           frameCount++;
         }
       }
@@ -131,18 +132,21 @@
         frameCount++;
       }
 
-      if (!opt.options.p) {
-
+      // only print out information if piping flag is disabled.
+      if(!opt.options.p){
         process.stdout.write('-|\nExtraction finished.\n\n');
         console.log(frameCount + ' frames analysed.\n');
+      }
 
-        process.stdout.write('Writing to file...\n\n');
+      // if output to file is enabled.
+      if (opt.options.o) {
 
         if(outputFormat == 'json') {
+          process.stdout.write('Writing to ' + opt.options.o + '...\n');
           output(JSON.stringify(features, null, 4));
         }
         else if (outputFormat == 'csv'){
-
+          process.stdout.write('Writing to ' + opt.options.o + '...\n');
           for(let i = 0; i < featuresToExtract.length; i++){
             output(featuresToExtract[i].toString());
             output(i == featuresToExtract.length-1 ? '' : ',');
@@ -166,7 +170,33 @@
           }
 
         }
-        //get averages
+        console.log('Done.')
+        wstream.end();
+        console.log('');
+      }
+
+      else {
+        // if there is no output flag, print to console.
+        for(let j=0; j<featuresToExtract.length; j++){
+          output('\n*********' + featuresToExtract[j].toString() + '*********\n\n');              
+          
+          for(let i=0; i<frameCount; i++){
+            var feature = features[featuresToExtract[j]];
+            if(typeof feature[i] === 'object'){
+              for(let f = 0; f < Object.keys(feature[i]).length; f++){
+                output(feature[i][f] + '');
+                output(f == Object.keys(feature[i]).length-1 ? '\n' : ',');
+              }
+            }
+            else{
+              output(feature[i].toString());
+              output('\n');
+            }
+          }
+          output('\n');
+        }
+      }
+      //get averages
         for (let j = 0; j < featuresToExtract.length; j++) {
             //check if this feature returns arrays
             if (typeof features[featuresToExtract[j]][0] != 'object') //if not, calculate average
@@ -174,9 +204,8 @@
                   return previousValue + currentValue;
               }) / features[featuresToExtract[j]].length);
         }
-        wstream.end();
-        console.log('');
-      }
-  });
+    }
+  );
+
   wl.open(opt.argv[0]);
 })();
