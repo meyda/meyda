@@ -31,11 +31,13 @@ class MeydaAnalyzer{
 		self.barkScale = utilities.createBarkScale(self.bufferSize, self.sampleRate, self.bufferSize);
 		self.melFilterBank = utilities.createMelFilterBank(self.melBands, self.sampleRate, self.bufferSize);
 
+		self.inputData = null;
+
 		self.spn.onaudioprocess = function(e) {
 			// self is to obtain the current frame pcm data
-			var inputData = e.inputBuffer.getChannelData(0);
+			self.inputData = e.inputBuffer.getChannelData(0);
 
-			var features = self.extract(self._featuresToExtract, inputData);
+			var features = self.extract(self._featuresToExtract, self.inputData);
 
 			// call callback if applicable
 			if (typeof self.callback === "function" && self.EXTRACTION_STARTED) {
@@ -56,6 +58,14 @@ class MeydaAnalyzer{
 
 	setSource(source) {
 		source.connect(this.spn);
+	}
+
+	get(features){
+		if(self.inputData !== null){
+			return self.extract((features || self._featuresToExtract), self.inputData);
+		} else {
+			return null;
+		}
 	}
 }
 
