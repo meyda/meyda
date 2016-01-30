@@ -1,6 +1,6 @@
 {
   "name": "meyda",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Real-time feature extraction for the web audio api",
   "main": "./dist/node/main.js",
   "bin": {
