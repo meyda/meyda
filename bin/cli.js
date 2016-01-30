@@ -8,7 +8,7 @@
           ['', 'bs[=BUFFER_SIZE]', 'Buffer size in samples (optional, default is 512)'],
           ['', 'w[=WINDOWING_FUNCTION]', 'Windowing function (optional, default is hanning)'],
           ['', 'format[=FORMAT_TYPE]', 'Type of output file (optional, default is csv)'],
-          ['p', '', 'Disables logging and outputs data to stdout, useful for piping'],
+          ['p', '', 'Disables some of the logging and outputs data to stdout, useful for piping'],
           ['h', 'help', 'Display help']
       ])
       .bindHelp()
