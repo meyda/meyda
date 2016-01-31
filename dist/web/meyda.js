@@ -359,7 +359,54 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":7}],2:[function(require,module,exports){
+},{"util/":9}],2:[function(require,module,exports){
+module.exports = require('./src/dct.js');
+
+},{"./src/dct.js":3}],3:[function(require,module,exports){
+/*===========================================================================*\
+ * Discrete Cosine Transform
+ *
+ * (c) Vail Systems. Joshua Jung and Ben Bryan. 2015
+ *
+ * This code is not designed to be highly optimized but as an educational
+ * tool to understand the Mel-scale and its related coefficients used in
+ * human speech analysis.
+\*===========================================================================*/
+cosMap = null;
+
+// Builds a cosine map for the given input size. This allows multiple input sizes to be memoized automagically
+// if you want to run the DCT over and over.
+var memoizeCosines = function(N) {
+  cosMap = cosMap || {};
+  cosMap[N] = new Array(N*N);
+
+  var PI_N = Math.PI / N;
+
+  for (var k = 0; k < N; k++) {
+    for (var n = 0; n < N; n++) {
+      cosMap[N][n + (k * N)] = Math.cos(PI_N * (n + 0.5) * k);
+    }
+  }
+};
+
+function dct(signal, scale) {
+  var L = signal.length;
+  scale = scale || 2;
+
+  if (!cosMap || !cosMap[L]) memoizeCosines(L);
+
+  var coefficients = signal.map(function () {return 0;});
+
+  return coefficients.map(function (__, ix) {
+    return scale * signal.reduce(function (prev, cur, ix_, arr) {
+      return prev + (cur * cosMap[L][ix_ + (ix * L)]);
+    }, 0);
+  });
+};
+
+module.exports = dct;
+
+},{}],4:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -384,7 +431,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],3:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 !function(exports, undefined) {
@@ -502,7 +549,7 @@ if (typeof Object.create === 'function') {
   }
 }(typeof exports === 'undefined' && (this.complex_array = {}) || exports)
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 !function(exports, complex_array) {
@@ -729,7 +776,7 @@ if (typeof Object.create === 'function') {
     require('./complex_array')
 )
 
-},{"./complex_array":3}],5:[function(require,module,exports){
+},{"./complex_array":5}],7:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -822,14 +869,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1419,7 +1466,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":6,"_process":5,"inherits":2}],8:[function(require,module,exports){
+},{"./support/isBuffer":8,"_process":7,"inherits":4}],10:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1448,7 +1495,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 module.exports = exports['default'];
 
-},{"assert":1}],9:[function(require,module,exports){
+},{"assert":1}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1465,7 +1512,7 @@ function mu(i, amplitudeSpect) {
   return numerator / denominator;
 }
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1519,7 +1566,7 @@ exports.default = function (args) {
 
 module.exports = exports['default'];
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1550,37 +1597,13 @@ exports.default = function (args) {
 			loggedMelBands[i] += filtered[i][j];
 		}
 
-		//log each coefficient
-		loggedMelBands[i] = Math.log(loggedMelBands[i]);
+		//log each coefficient unless it's 0.
+		loggedMelBands[i] = loggedMelBands[i] > 0.00001 ? Math.log(loggedMelBands[i]) : 0;
 	}
 
 	//dct
-	var k = Math.PI / numFilters;
-	var w1 = 1.0 / Math.sqrt(numFilters);
-	var w2 = Math.sqrt(2.0 / numFilters);
-	var numCoeffs = numFilters;
-	var dctMatrix = new Float32Array(numCoeffs * numFilters);
+	var mfccs = dct(loggedMelBands);
 
-	for (var i = 0; i < numCoeffs; i++) {
-		for (var j = 0; j < numFilters; j++) {
-			var idx = i + j * numCoeffs;
-			if (i === 0) {
-				dctMatrix[idx] = w1 * Math.cos(k * (i + 1) * (j + 0.5));
-			} else {
-				dctMatrix[idx] = w2 * Math.cos(k * (i + 1) * (j + 0.5));
-			}
-		}
-	}
-
-	var mfccs = new Float32Array(numCoeffs);
-	for (var _k = 0; _k < numCoeffs; _k++) {
-		var v = 0;
-		for (var n = 0; n < numFilters; n++) {
-			var idx = _k + n * numCoeffs;
-			v += dctMatrix[idx] * loggedMelBands[n];
-		}
-		mfccs[_k] = v / numCoeffs;
-	}
 	return mfccs;
 };
 
@@ -1594,9 +1617,11 @@ var _utilities2 = _interopRequireDefault(_utilities);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var dct = require('dct');
+
 module.exports = exports['default'];
 
-},{"./../utilities":27,"./powerSpectrum":14}],12:[function(require,module,exports){
+},{"./../utilities":29,"./powerSpectrum":16,"dct":2}],14:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1633,7 +1658,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 module.exports = exports['default'];
 
-},{"./loudness":10}],13:[function(require,module,exports){
+},{"./loudness":12}],15:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1669,7 +1694,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 module.exports = exports['default'];
 
-},{"./loudness":10}],14:[function(require,module,exports){
+},{"./loudness":12}],16:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1691,7 +1716,7 @@ exports.default = function () {
 
 module.exports = exports['default'];
 
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1716,7 +1741,7 @@ exports.default = function (args) {
 
 module.exports = exports['default'];
 
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1736,7 +1761,7 @@ var _extractorUtilities = require("./extractorUtilities");
 
 module.exports = exports['default'];
 
-},{"./extractorUtilities":9}],17:[function(require,module,exports){
+},{"./extractorUtilities":11}],19:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1760,7 +1785,7 @@ exports.default = function () {
 
 module.exports = exports['default'];
 
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1787,7 +1812,7 @@ var _extractorUtilities = require("./extractorUtilities");
 
 module.exports = exports['default'];
 
-},{"./extractorUtilities":9}],19:[function(require,module,exports){
+},{"./extractorUtilities":11}],21:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1818,7 +1843,7 @@ exports.default = function () {
 
 module.exports = exports['default'];
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1843,7 +1868,7 @@ var _extractorUtilities = require("./extractorUtilities");
 
 module.exports = exports['default'];
 
-},{"./extractorUtilities":9}],21:[function(require,module,exports){
+},{"./extractorUtilities":11}],23:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1877,7 +1902,7 @@ exports.default = function (args) {
 
 module.exports = exports['default'];
 
-},{}],22:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1897,7 +1922,7 @@ var _extractorUtilities = require("./extractorUtilities");
 
 module.exports = exports['default'];
 
-},{"./extractorUtilities":9}],23:[function(require,module,exports){
+},{"./extractorUtilities":11}],25:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -1921,7 +1946,7 @@ exports.default = function () {
 
 module.exports = exports['default'];
 
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2018,7 +2043,7 @@ exports.default = {
 };
 module.exports = exports['default'];
 
-},{"./extractors/energy":8,"./extractors/loudness":10,"./extractors/mfcc":11,"./extractors/perceptualSharpness":12,"./extractors/perceptualSpread":13,"./extractors/powerSpectrum":14,"./extractors/rms":15,"./extractors/spectralCentroid":16,"./extractors/spectralFlatness":17,"./extractors/spectralKurtosis":18,"./extractors/spectralRolloff":19,"./extractors/spectralSkewness":20,"./extractors/spectralSlope":21,"./extractors/spectralSpread":22,"./extractors/zcr":23}],25:[function(require,module,exports){
+},{"./extractors/energy":10,"./extractors/loudness":12,"./extractors/mfcc":13,"./extractors/perceptualSharpness":14,"./extractors/perceptualSpread":15,"./extractors/powerSpectrum":16,"./extractors/rms":17,"./extractors/spectralCentroid":18,"./extractors/spectralFlatness":19,"./extractors/spectralKurtosis":20,"./extractors/spectralRolloff":21,"./extractors/spectralSkewness":22,"./extractors/spectralSlope":23,"./extractors/spectralSpread":24,"./extractors/zcr":25}],27:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -2143,7 +2168,7 @@ exports.default = Meyda;
 if (typeof window !== "undefined") window.Meyda = Meyda;
 module.exports = exports['default'];
 
-},{"./featureExtractors":24,"./meyda-wa":26,"./utilities":27,"jsfft":4,"jsfft/lib/complex_array":3}],26:[function(require,module,exports){
+},{"./featureExtractors":26,"./meyda-wa":28,"./utilities":29,"jsfft":6,"jsfft/lib/complex_array":5}],28:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2191,11 +2216,13 @@ var MeydaAnalyzer = function () {
 		self.barkScale = utilities.createBarkScale(self.bufferSize, self.sampleRate, self.bufferSize);
 		self.melFilterBank = utilities.createMelFilterBank(self.melBands, self.sampleRate, self.bufferSize);
 
+		self.inputData = null;
+
 		self.spn.onaudioprocess = function (e) {
 			// self is to obtain the current frame pcm data
-			var inputData = e.inputBuffer.getChannelData(0);
+			self.inputData = e.inputBuffer.getChannelData(0);
 
-			var features = self.extract(self._featuresToExtract, inputData);
+			var features = self.extract(self._featuresToExtract, self.inputData);
 
 			// call callback if applicable
 			if (typeof self.callback === "function" && self.EXTRACTION_STARTED) {
@@ -2220,6 +2247,15 @@ var MeydaAnalyzer = function () {
 		value: function setSource(source) {
 			source.connect(this.spn);
 		}
+	}, {
+		key: 'get',
+		value: function get(features) {
+			if (self.inputData !== null) {
+				return self.extract(features || self._featuresToExtract, self.inputData);
+			} else {
+				return null;
+			}
+		}
 	}]);
 
 	return MeydaAnalyzer;
@@ -2228,7 +2264,7 @@ var MeydaAnalyzer = function () {
 exports.default = MeydaAnalyzer;
 module.exports = exports['default'];
 
-},{"./featureExtractors":24,"./utilities":27}],27:[function(require,module,exports){
+},{"./featureExtractors":26,"./utilities":29}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2398,7 +2434,7 @@ function createMelFilterBank(numFilters, sampleRate, bufferSize) {
   return filterBank;
 }
 
-},{"./windowing":28}],28:[function(require,module,exports){
+},{"./windowing":30}],30:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2456,4 +2492,4 @@ function hamming(size) {
   return hammingBuffer;
 }
 
-},{}]},{},[25]);
+},{}]},{},[27]);

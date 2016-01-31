@@ -1,6 +1,6 @@
 {
   "name": "meyda",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Real-time feature extraction for the web audio api",
   "main": "./dist/node/main.js",
   "bin": {
@@ -17,7 +17,7 @@
     "default": "npm run clean && npm install && npm test",
     "lint": "./node_modules/.bin/jshint src test",
     "clean": "rm -rf dist node_modules src-cov coverage lib-cov",
-	"travis": "npm run default && npm run codeclimate"
+    "travis": "npm run default && npm run codeclimate"
   },
   "repository": {
     "type": "git",
@@ -62,6 +62,7 @@
     "through2": "^2.0.0"
   },
   "dependencies": {
+    "dct": "0.0.3",
     "jsfft": "git://github.com/dntj/jsfft.git",
     "node-getopt": "^0.2.3",
     "wav": "^1.0.0"

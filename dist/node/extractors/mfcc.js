@@ -28,37 +28,13 @@ exports.default = function (args) {
 			loggedMelBands[i] += filtered[i][j];
 		}
 
-		//log each coefficient
-		loggedMelBands[i] = Math.log(loggedMelBands[i]);
+		//log each coefficient unless it's 0.
+		loggedMelBands[i] = loggedMelBands[i] > 0.00001 ? Math.log(loggedMelBands[i]) : 0;
 	}
 
 	//dct
-	var k = Math.PI / numFilters;
-	var w1 = 1.0 / Math.sqrt(numFilters);
-	var w2 = Math.sqrt(2.0 / numFilters);
-	var numCoeffs = numFilters;
-	var dctMatrix = new Float32Array(numCoeffs * numFilters);
+	var mfccs = dct(loggedMelBands);
 
-	for (var i = 0; i < numCoeffs; i++) {
-		for (var j = 0; j < numFilters; j++) {
-			var idx = i + j * numCoeffs;
-			if (i === 0) {
-				dctMatrix[idx] = w1 * Math.cos(k * (i + 1) * (j + 0.5));
-			} else {
-				dctMatrix[idx] = w2 * Math.cos(k * (i + 1) * (j + 0.5));
-			}
-		}
-	}
-
-	var mfccs = new Float32Array(numCoeffs);
-	for (var _k = 0; _k < numCoeffs; _k++) {
-		var v = 0;
-		for (var n = 0; n < numFilters; n++) {
-			var idx = _k + n * numCoeffs;
-			v += dctMatrix[idx] * loggedMelBands[n];
-		}
-		mfccs[_k] = v / numCoeffs;
-	}
 	return mfccs;
 };
 
@@ -71,5 +47,7 @@ var _utilities = require('./../utilities');
 var _utilities2 = _interopRequireDefault(_utilities);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var dct = require('dct');
 
 module.exports = exports['default'];
