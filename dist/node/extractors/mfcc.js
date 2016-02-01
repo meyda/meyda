@@ -33,9 +33,11 @@ exports.default = function (args) {
 	}
 
 	//dct
-	var mfccs = dct(loggedMelBands);
+	var loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
+	var mfccs = dct(loggedMelBandsArray);
+	var mfccsArray = new Float32Array(mfccs);
 
-	return mfccs;
+	return mfccsArray;
 };
 
 var _powerSpectrum = require('./powerSpectrum');

@@ -32,7 +32,9 @@ export default function(args){
 	}
 
 	//dct
-	let mfccs = dct(loggedMelBands);
+	let loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
+	let mfccs = dct(loggedMelBandsArray);
+	let mfccsArray = new Float32Array(mfccs);
 
-	return mfccs;
+	return mfccsArray;
 }
