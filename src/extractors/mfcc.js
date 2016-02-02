@@ -2,6 +2,8 @@ import powerSpectrum from './powerSpectrum';
 import freqToMel from './../utilities';
 import melToFreq from './../utilities';
 
+var dct = require('dct');
+
 
 export default function(args){
 	if(typeof args.ampSpectrum !== "object" || typeof args.melFilterBank !== "object"){
@@ -25,37 +27,14 @@ export default function(args){
 			loggedMelBands[i] += filtered[i][j];
 		}
 
-		//log each coefficient
-		loggedMelBands[i] = Math.log(loggedMelBands[i]);
+		//log each coefficient unless it's 0.
+		loggedMelBands[i] = loggedMelBands[i] > 0.00001 ? Math.log(loggedMelBands[i]) : 0;
 	}
 
 	//dct
-	let k = Math.PI/numFilters;
-	let w1 = 1.0/Math.sqrt(numFilters);
-	let w2 = Math.sqrt(2.0/numFilters);
-	let numCoeffs = numFilters;
-	let dctMatrix = new Float32Array(numCoeffs*numFilters);
+	let loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
+	let mfccs = dct(loggedMelBandsArray);
+	let mfccsArray = new Float32Array(mfccs);
 
-	for(let i = 0; i < numCoeffs; i++){
-		for (let j = 0; j < numFilters; j++) {
-			let idx = i + (j*numCoeffs);
-			if(i === 0){
-				dctMatrix[idx] = w1 * Math.cos(k * (i+1) * (j+0.5));
-			}
-			else{
-				dctMatrix[idx] = w2 * Math.cos(k * (i+1) * (j+0.5));
-			}
-		}
-	}
-
-	let mfccs = new Float32Array(numCoeffs);
-	for (let k = 0; k < numCoeffs; k++) {
-		let v = 0;
-		for (let n = 0; n < numFilters; n++) {
-			let idx = k + (n*numCoeffs);
-			v += (dctMatrix[idx] * loggedMelBands[n]);
-		}
-		mfccs[k] = v/numCoeffs;
-	}
-	return mfccs;
+	return mfccsArray;
 }
