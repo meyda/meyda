@@ -24,8 +24,6 @@ var complex_array = _interopRequireWildcard(_complex_array);
 
 var _meydaWa = require('./meyda-wa');
 
-var MeydaAnalyzer = _interopRequireWildcard(_meydaWa);
-
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var Meyda = {
@@ -49,7 +47,7 @@ var Meyda = {
 	},
 
 	createMeydaAnalyzer: function createMeydaAnalyzer(options) {
-		return new MeydaAnalyzer(options, this);
+		return new _meydaWa.MeydaAnalyzer(options, this);
 	},
 
 	extract: function extract(feature, signal) {

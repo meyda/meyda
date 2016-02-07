@@ -2,7 +2,7 @@ import * as utilities from './utilities';
 import * as extractors from './featureExtractors';
 import * as fft from 'jsfft';
 import * as complex_array from 'jsfft/lib/complex_array';
-import * as MeydaAnalyzer from './meyda-wa';
+import {MeydaAnalyzer} from './meyda-wa';
 
 
 var Meyda = {

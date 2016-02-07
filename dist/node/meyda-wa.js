@@ -5,6 +5,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.MeydaAnalyzer = undefined;
 
 var _utilities = require('./utilities');
 
@@ -18,7 +19,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var MeydaAnalyzer = function () {
+var MeydaAnalyzer = exports.MeydaAnalyzer = function () {
 	function MeydaAnalyzer(options, self) {
 		_classCallCheck(this, MeydaAnalyzer);
 
@@ -92,6 +93,3 @@ var MeydaAnalyzer = function () {
 
 	return MeydaAnalyzer;
 }();
-
-exports.default = MeydaAnalyzer;
-module.exports = exports['default'];

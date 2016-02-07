@@ -1,7 +1,7 @@
 import * as utilities from './utilities';
 import * as featureExtractors from './featureExtractors';
 
-class MeydaAnalyzer{
+export class MeydaAnalyzer{
 	constructor(options, self){
 		this._m = self;
 		if (!options.audioContext)
@@ -71,5 +71,3 @@ class MeydaAnalyzer{
 		}
 	}
 }
-
-export default MeydaAnalyzer;
