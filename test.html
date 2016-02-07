@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Meyda Test Visualizer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r74/three.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/meyda.js"></script>
+</head>
+<body style="margin:0px;">
+  <script>
+  var context = new AudioContext();
+
+  var meyda = null;
+  navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.getUserMedia;
+  navigator.getUserMedia(
+    //constraints
+    {
+      video: false, audio: true
+    },
+    //success
+    function(mediaStream) {
+      source = context.createMediaStreamSource(mediaStream);
+      // instantiate new meyda
+      meyda = Meyda.createMeydaAnalyzer({
+      	audioContext:context,
+      	source:source,
+      	bufferSize:256
+      });
+    },
+    //error
+    function(err) {
+      alert("There has been an error accessing the microphone.");
+    }
+  )
+
+  var resolution = 720;
+  var aspectRatio = 16/10;
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera( 40, aspectRatio, 0.1, 1000 );
+
+  var initializeFFTs = function(number,pointCount){
+    var ffts = [];
+    for(var i = 0; i < number; i++){
+      ffts.push(Array.apply(null, Array(pointCount)).map(Number.prototype.valueOf,0));
+    }
+    return ffts;
+  }
+
+  var material = new THREE.LineBasicMaterial({
+    color: 0x00ff00
+  });
+
+  var ffts = initializeFFTs(20, 128);
+
+  var renderer = new THREE.WebGLRenderer();
+  renderer.setSize( resolution*aspectRatio, resolution );
+  document.body.appendChild( renderer.domElement );
+
+  var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+  scene.add( light );
+
+  var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+  directionalLight.position.set( 0, 1, 1 );
+  scene.add( directionalLight );
+
+  camera.position.z = 5;
+
+  var spectralCentroid = null;
+  function render() {
+    requestAnimationFrame( render );
+    renderer.render( scene, camera );
+    scene.children.forEach(function(object){
+      scene.remove(object);
+    });
+    if(meyda !== null){
+      ffts.pop();
+      ffts.unshift(meyda.get('amplitudeSpectrum'));
+      spectralCentroid = meyda.get('spectralCentroid');
+    }
+    for(var i = 0; i < ffts.length; i++){
+      if(ffts[i]){
+        var geometry = new THREE.Geometry();
+        for(var j = 0; j < ffts[i].length; j++){
+          geometry.vertices.push(new THREE.Vector3(-11+(22*j/ffts[i].length),-5+ffts[i][j],-15-i));
+        }
+        var line = new THREE.Line(geometry,material);
+        scene.add( line );
+        geometry.dispose();
+      }
+      if(spectralCentroid){
+        var dir = new THREE.Vector3( 0, 1, 0 );
+        var origin = new THREE.Vector3( -11+(22*spectralCentroid/ffts[i].length), -6, -15 );
+        var length = 1;
+        var hex = 0xffff00;
+
+        var arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
+        scene.add( arrowHelper );
+      }
+    }
+  }
+  render();
+  </script>
+</body>
+</html>
