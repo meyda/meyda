@@ -20,7 +20,7 @@ class MeydaAnalyzer{
 		this._m.windowingFunction = options.windowingFunction || "hanning";
 		this._m.featureExtractors = featureExtractors;
 		this._m.EXTRACTION_STARTED = options.startImmediately || false;
-		
+
 		this.setSource(options.source);
 
 		//create nodes
@@ -34,10 +34,10 @@ class MeydaAnalyzer{
 		this._m.melFilterBank = utilities.createMelFilterBank(this._m.melBands, this._m.sampleRate, this._m.bufferSize);
 
 		this._m.inputData = null;
-		
+
 		self = this;
 
-		this.spn.onaudioprocess = function(e) {=
+		this.spn.onaudioprocess = function(e){
 			self._m.inputData = e.inputBuffer.getChannelData(0);
 
 			var features = self._m.extract(self._m._featuresToExtract, self._m.inputData);
