@@ -3,67 +3,69 @@ import * as featureExtractors from './featureExtractors';
 
 class MeydaAnalyzer{
 	constructor(options, self){
+		this._m = self;
 		if (!options.audioContext)
-			throw self._errors.noAC;
+			throw this._m._errors.noAC;
 		else if (options.bufferSize && !utilities.isPowerOfTwo(options.bufferSize))
-			throw self._errors.notPow2;
+			throw this._m._errors.notPow2;
 		else if (!options.source)
-			throw self._errors.noSource;
+			throw this._m._errors.noSource;
 
-		self.audioContext = options.audioContext;
+		this._m.audioContext = options.audioContext;
 
 		// TODO: validate options
-		self.bufferSize = options.bufferSize || self.bufferSize || 256;
-		self.sampleRate = options.sampleRate || self.audioContext.sampleRate || 44100;
-		self.callback = options.callback;
-		self.windowingFunction = options.windowingFunction || "hanning";
-		self.featureExtractors = featureExtractors;
-		self.EXTRACTION_STARTED = options.startImmediately || false;
+		this._m.bufferSize = options.bufferSize || self.bufferSize || 256;
+		this._m.sampleRate = options.sampleRate || this._m.audioContext.sampleRate || 44100;
+		this._m.callback = options.callback;
+		this._m.windowingFunction = options.windowingFunction || "hanning";
+		this._m.featureExtractors = featureExtractors;
+		this._m.EXTRACTION_STARTED = options.startImmediately || false;
 		
 		this.setSource(options.source);
 
 		//create nodes
-		this.spn = self.audioContext.createScriptProcessor(self.bufferSize,1,1);
-		this.spn.connect(self.audioContext.destination);
+		this._m.spn = this._m.audioContext.createScriptProcessor(this._m.bufferSize,1,1);
+		this._m.spn.connect(this._m.audioContext.destination);
 
-		self._featuresToExtract = options.featureExtractors || [];
+		this._m._featuresToExtract = options.featureExtractors || [];
 
 		//always recalculate BS and MFB when a new Meyda analyzer is created.
-		self.barkScale = utilities.createBarkScale(self.bufferSize, self.sampleRate, self.bufferSize);
-		self.melFilterBank = utilities.createMelFilterBank(self.melBands, self.sampleRate, self.bufferSize);
+		this._m.barkScale = utilities.createBarkScale(this._m.bufferSize, this._m.sampleRate, this._m.bufferSize);
+		this._m.melFilterBank = utilities.createMelFilterBank(this._m.melBands, this._m.sampleRate, this._m.bufferSize);
 
-		self.inputData = null;
+		this._m.inputData = null;
+		
+		self = this;
 
-		this.spn.onaudioprocess = function(e) {
-			// self is to obtain the current frame pcm data
-			self.inputData = e.inputBuffer.getChannelData(0);
+		this.spn.onaudioprocess = function(e) {=
+			self._m.inputData = e.inputBuffer.getChannelData(0);
 
-			var features = self.extract(self._featuresToExtract, self.inputData);
+			var features = self._m.extract(self._m._featuresToExtract, self._m.inputData);
 
 			// call callback if applicable
-			if (typeof self.callback === "function" && self.EXTRACTION_STARTED) {
-				self.callback(features);
+			if (typeof self._m.callback === "function" && self._m.EXTRACTION_STARTED) {
+				self._m.callback(features);
 			}
 
 		};
 	}
 
 	start(features) {
-		self._featuresToExtract = features;
-		self.EXTRACTION_STARTED = true;
+		this._m._featuresToExtract = features;
+		this._m.EXTRACTION_STARTED = true;
 	}
 
 	stop() {
-		self.EXTRACTION_STARTED = false;
+		this._m.EXTRACTION_STARTED = false;
 	}
 
 	setSource(source) {
-		source.connect(this.spn);
+		source.connect(this._m.spn);
 	}
 
 	get(features){
-		if(self.inputData !== null){
-			return self.extract((features || self._featuresToExtract), self.inputData);
+		if(this._m.inputData !== null){
+			return this._m.extract((features || this._m._featuresToExtract), this._m.inputData);
 		} else {
 			return null;
 		}
