@@ -13,17 +13,18 @@ class MeydaAnalyzer{
 		self.audioContext = options.audioContext;
 
 		// TODO: validate options
-		self.setSource(options.source);
 		self.bufferSize = options.bufferSize || self.bufferSize || 256;
 		self.sampleRate = options.sampleRate || self.audioContext.sampleRate || 44100;
 		self.callback = options.callback;
 		self.windowingFunction = options.windowingFunction || "hanning";
 		self.featureExtractors = featureExtractors;
 		self.EXTRACTION_STARTED = options.startImmediately || false;
+		
+		self.setSource(options.source);
 
 		//create nodes
-		self.spn = self.audioContext.createScriptProcessor(self.bufferSize,1,1);
-		self.spn.connect(self.audioContext.destination);
+		this.spn = self.audioContext.createScriptProcessor(self.bufferSize,1,1);
+		this.spn.connect(self.audioContext.destination);
 
 		self._featuresToExtract = options.featureExtractors || [];
 
@@ -33,7 +34,7 @@ class MeydaAnalyzer{
 
 		self.inputData = null;
 
-		self.spn.onaudioprocess = function(e) {
+		this.spn.onaudioprocess = function(e) {
 			// self is to obtain the current frame pcm data
 			self.inputData = e.inputBuffer.getChannelData(0);
 
