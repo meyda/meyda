@@ -20,7 +20,7 @@ class MeydaAnalyzer{
 		self.featureExtractors = featureExtractors;
 		self.EXTRACTION_STARTED = options.startImmediately || false;
 		
-		self.setSource(options.source);
+		this.setSource(options.source);
 
 		//create nodes
 		this.spn = self.audioContext.createScriptProcessor(self.bufferSize,1,1);
