@@ -21,8 +21,6 @@ export class MeydaAnalyzer{
 		this._m.featureExtractors = featureExtractors;
 		this._m.EXTRACTION_STARTED = options.startImmediately || false;
 
-		this.setSource(options.source);
-
 		//create nodes
 		this._m.spn = this._m.audioContext.createScriptProcessor(this._m.bufferSize,1,1);
 		this._m.spn.connect(this._m.audioContext.destination);
@@ -37,7 +35,9 @@ export class MeydaAnalyzer{
 
 		self = this;
 
-		this.spn.onaudioprocess = function(e){
+		this.setSource(options.source);
+
+		this._m.spn.onaudioprocess = function(e){
 			self._m.inputData = e.inputBuffer.getChannelData(0);
 
 			var features = self._m.extract(self._m._featuresToExtract, self._m.inputData);
