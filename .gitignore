@@ -1,3 +1,9 @@
 meyda.sublime-project
 meyda.sublime-workspace
-LICENSE
+node_modules
+audio
+.gitignore
+.env
+coverage
+npm-debug.log
+debug_data
