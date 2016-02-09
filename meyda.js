@@ -2118,6 +2118,8 @@ var Meyda = {
 
 		var windowedSignal = utilities.applyWindow(this.signal, this.windowingFunction);
 
+    this.windowedSignal = windowedSignal;
+
 		// create complexarray to hold the spectrum
 		var data = new complex_array.ComplexArray(this.bufferSize);
 		// map time domain
@@ -2321,11 +2323,11 @@ function applyWindow(signal, windowname) {
     if (!windows[windowname][signal.length]) {
       try {
         windows[windowname][signal.length] = windowing[windowname](signal.length);
-        signal = pointwiseBufferMult(signal, windows[windowname][signal.length]);
       } catch (e) {
         throw new Error("Invalid windowing function");
       }
     }
+    signal = pointwiseBufferMult(signal, windows[windowname][signal.length]);
   }
   return signal;
 }
