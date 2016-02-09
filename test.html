@@ -7,35 +7,58 @@
   <script type="text/javascript" src="meyda.js"></script>
 </head>
 <body style="margin:0px;">
+  <label for="osc1Freq">Frequency:
+    <input name="osc1Freq" type="range" min="0" max="1" step="any" id="osc1Freq"></input>
+  </label>
+  <button type="button" id="switchToMicButton">Switch To Mic</button><br>
+
   <script>
   //console.log("hello")
+(function(){
   var context = new AudioContext();
 
   var meyda = null;
-  navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.getUserMedia;
-  navigator.getUserMedia(
-    //constraints
-    {
-      video: false, audio: true
-    },
-    //success
-    function(mediaStream) {
+
+  var osc1 = context.createOscillator();
+  osc1.type = "sawtooth";
+  osc1.start();
+
+  meyda = Meyda.createMeydaAnalyzer({
+  	audioContext:context,
+  	source:osc1,
+  	bufferSize:1024,
+    windowingFunction:"blackman"
+  });
+
+  document.getElementById("osc1Freq").onchange=function(e){
+    osc1.frequency.value = 110+1000*Math.pow(this.value,2);
+  };
+  document.getElementById("switchToMicButton").onclick = function(){
+    navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.getUserMedia;
+    var constraints = {video: false, audio: true};
+    var successCallback = function(mediaStream) {
       console.log("Success!")
       source = context.createMediaStreamSource(mediaStream);
-      // instantiate new meyda
-      meyda = Meyda.createMeydaAnalyzer({
-      	audioContext:context,
-      	source:source,
-      	bufferSize:256
-      });
-      render();
-    },
-    //error
-    function(err) {
+      meyda.setSource(source);
+      osc1.disconnect();
+    };
+    var errorCallback = function(err) {
       console.log("Error: ", err  );
       alert("There has been an error accessing the microphone.");
     }
-  )
+    try{
+      navigator.getUserMedia(
+        constraints,
+        successCallback,
+        errorCallback
+      );
+    }
+    catch(e){
+      var p = navigator.mediaDevices.getUserMedia(constraints);
+      p.then(successCallback);
+      p.catch(errorCallback)
+    }
+  };
 
   var resolution = 720;
   var aspectRatio = 16/10;
@@ -55,6 +78,7 @@
   });
 
   var ffts = initializeFFTs(20, 128);
+  var buffer = null;
 
   var renderer = new THREE.WebGLRenderer();
   renderer.setSize( resolution*aspectRatio, resolution );
@@ -75,13 +99,24 @@
   var length = 1;
   var hex = 0xffff00;
   var dir = new THREE.Vector3( 0, 1, 0 );
+  var rightDir = new THREE.Vector3( 1, 0, 0);
   var origin = new THREE.Vector3(1, -6, -15);
 
+  var g = new THREE.Geometry();
+  g.vertices.push(new THREE.Vector3(-11,-3,-15));
+  g.vertices.push(new THREE.Vector3( 11,-3,-15));
+
   // Variables we update
-  var arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
+  var centroidArrow = new THREE.ArrowHelper( dir, origin, length, hex );
+  var rolloffArrow = new THREE.ArrowHelper( dir, origin, length, 0x0000ff );
+  var rmsArrow = new THREE.ArrowHelper( rightDir, origin, length, 0xff00ff );
   var lines = new THREE.Group(); // Lets create a seperate group for our lines
-  scene.add( arrowHelper );
+  var bufferLine = new THREE.Line(g,material);
+  scene.add( centroidArrow );
+  scene.add( rolloffArrow );
+  scene.add( rmsArrow );
   scene.add( lines );
+  scene.add( bufferLine );
 
   function render() {
     requestAnimationFrame( render );
@@ -93,7 +128,11 @@
 
     ffts.pop(); // If we call render in the success call back then we don't need to check every frame
     ffts.unshift(meyda.get('amplitudeSpectrum'));
+    buffer = meyda._m.windowedSignal;
+
     spectralCentroid = meyda.get('spectralCentroid');
+    spectralRolloff = meyda.get('spectralRolloff');
+    rms = meyda.get('rms');
 
     for(var i = 0; i < ffts.length; i++){
       if(ffts[i]){
@@ -107,12 +146,28 @@
         lines.add( new THREE.Line(geometry, material) );
         geometry.dispose();
       }
-      if(spectralCentroid && fftslen){ // SpectralCentroid is an awesome variable name
-        arrowHelper.position.set(-11+(22*spectralCentroid/fftslen), -6, -15); // We're really just updating the x axis
+    }
+
+    if(spectralCentroid && fftslen){ // SpectralCentroid is an awesome variable name
+      centroidArrow.position.set(-11+(22*spectralCentroid/fftslen), -6, -15); // We're really just updating the x axis
+    }
+    if(spectralRolloff && fftslen){ // SpectralCentroid is an awesome variable name
+      rolloffArrow.position.set(-11+(spectralRolloff/44100*22), -6, -15); // We're really just updating the x axis
+    }
+    if(rms && fftslen){ // SpectralCentroid is an awesome variable name
+      rmsArrow.position.set(-11, -5+(10*rms), -15); // We're really just updating the x axis
+    }
+    if(buffer){
+      var geometry = new THREE.Geometry();
+      for(var i = 0; i < buffer.length; i++) {
+        geometry.vertices.push(new THREE.Vector3(-11+22*i/buffer.length,10+buffer[i]*1.5,-35))
       }
+      bufferLine.geometry = geometry;
+      geometry.dispose();
     }
   }
-
+  render();
+})();
   </script>
 </body>
 </html>
