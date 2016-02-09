@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <title>Meyda Test Visualizer</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r74/three.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/meyda.js"></script>
+  <script type="text/javascript" src="meyda.js"></script>
 </head>
 <body style="margin:0px;">
   <script>
+  //console.log("hello")
   var context = new AudioContext();
 
   var meyda = null;
@@ -19,6 +20,7 @@
     },
     //success
     function(mediaStream) {
+      console.log("Success!")
       source = context.createMediaStreamSource(mediaStream);
       // instantiate new meyda
       meyda = Meyda.createMeydaAnalyzer({
@@ -26,9 +28,11 @@
       	source:source,
       	bufferSize:256
       });
+      render();
     },
     //error
     function(err) {
+      console.log("Error: ", err  );
       alert("There has been an error accessing the microphone.");
     }
   )
@@ -65,40 +69,50 @@
 
   camera.position.z = 5;
 
+  // Unchanging variables
+  var meydaCheck = (meyda !== null); // Moved this out of render loop
   var spectralCentroid = null;
+  var length = 1;
+  var hex = 0xffff00;
+  var dir = new THREE.Vector3( 0, 1, 0 );
+  var origin = new THREE.Vector3(1, -6, -15);
+
+  // Variables we update
+  var arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
+  var lines = new THREE.Group(); // Lets create a seperate group for our lines
+  scene.add( arrowHelper );
+  scene.add( lines );
+
   function render() {
     requestAnimationFrame( render );
     renderer.render( scene, camera );
-    scene.children.forEach(function(object){
-      scene.remove(object);
-    });
-    if(meyda !== null){
-      ffts.pop();
-      ffts.unshift(meyda.get('amplitudeSpectrum'));
-      spectralCentroid = meyda.get('spectralCentroid');
+
+    for (var c = 0; c < lines.children.length; c++) { // I feel like there is a faster way to do this?
+        lines.remove(lines.children[c]); //forEach is slow
     }
+
+    ffts.pop(); // If we call render in the success call back then we don't need to check every frame
+    ffts.unshift(meyda.get('amplitudeSpectrum'));
+    spectralCentroid = meyda.get('spectralCentroid');
+
     for(var i = 0; i < ffts.length; i++){
       if(ffts[i]){
-        var geometry = new THREE.Geometry();
-        for(var j = 0; j < ffts[i].length; j++){
-          geometry.vertices.push(new THREE.Vector3(-11+(22*j/ffts[i].length),-5+ffts[i][j],-15-i));
+        var fftslen = ffts[i].length
+        var geometry = new THREE.Geometry(); // May be a way to reuse this
+        if (fftslen) {
+          for(var j = 0; j < fftslen; j++){
+            geometry.vertices.push(new THREE.Vector3(-11+(22*j/fftslen),-5+ffts[i][j],-15-i));
+          }
         }
-        var line = new THREE.Line(geometry,material);
-        scene.add( line );
+        lines.add( new THREE.Line(geometry, material) );
         geometry.dispose();
       }
-      if(spectralCentroid){
-        var dir = new THREE.Vector3( 0, 1, 0 );
-        var origin = new THREE.Vector3( -11+(22*spectralCentroid/ffts[i].length), -6, -15 );
-        var length = 1;
-        var hex = 0xffff00;
-
-        var arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
-        scene.add( arrowHelper );
+      if(spectralCentroid && fftslen){ // SpectralCentroid is an awesome variable name
+        arrowHelper.position.set(-11+(22*spectralCentroid/fftslen), -6, -15); // We're really just updating the x axis
       }
     }
   }
-  render();
+
   </script>
 </body>
 </html>
