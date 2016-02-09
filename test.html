@@ -15,6 +15,7 @@
   <script>
   //console.log("hello")
 (function(){
+  'use strict';
   var context = new AudioContext();
 
   var meyda = null;
@@ -38,7 +39,7 @@
     var constraints = {video: false, audio: true};
     var successCallback = function(mediaStream) {
       console.log("Success!")
-      source = context.createMediaStreamSource(mediaStream);
+      var source = context.createMediaStreamSource(mediaStream);
       meyda.setSource(source);
       osc1.disconnect();
     };
@@ -77,6 +78,10 @@
     color: 0x00ff00
   });
 
+  var yellowMaterial = new THREE.LineBasicMaterial({
+    color: 0x00ffff
+  });
+
   var ffts = initializeFFTs(20, 128);
   var buffer = null;
 
@@ -111,12 +116,19 @@
   var rolloffArrow = new THREE.ArrowHelper( dir, origin, length, 0x0000ff );
   var rmsArrow = new THREE.ArrowHelper( rightDir, origin, length, 0xff00ff );
   var lines = new THREE.Group(); // Lets create a seperate group for our lines
+  var loudnessLines = new THREE.Group();
   var bufferLine = new THREE.Line(g,material);
   scene.add( centroidArrow );
   scene.add( rolloffArrow );
   scene.add( rmsArrow );
   scene.add( lines );
+  scene.add( loudnessLines );
   scene.add( bufferLine );
+
+  var spectralRolloff;
+  var spectralCentroid;
+  var loudness;
+  var rms;
 
   function render() {
     requestAnimationFrame( render );
@@ -125,6 +137,9 @@
     for (var c = 0; c < lines.children.length; c++) { // I feel like there is a faster way to do this?
         lines.remove(lines.children[c]); //forEach is slow
     }
+    for (var c = 0; c < loudnessLines.children.length; c++) { // I feel like there is a faster way to do this?
+        loudnessLines.remove(loudnessLines.children[c]); //forEach is slow
+    }
 
     ffts.pop(); // If we call render in the success call back then we don't need to check every frame
     ffts.unshift(meyda.get('amplitudeSpectrum'));
@@ -132,12 +147,13 @@
 
     spectralCentroid = meyda.get('spectralCentroid');
     spectralRolloff = meyda.get('spectralRolloff');
+    loudness = meyda.get('loudness');
     rms = meyda.get('rms');
 
     for(var i = 0; i < ffts.length; i++){
       if(ffts[i]){
         var fftslen = ffts[i].length
-        var geometry = new THREE.Geometry(); // May be a way to reuse this
+        let geometry = new THREE.Geometry(); // May be a way to reuse this
         if (fftslen) {
           for(var j = 0; j < fftslen; j++){
             geometry.vertices.push(new THREE.Vector3(-11+(22*j/fftslen),-5+ffts[i][j],-15-i));
@@ -158,12 +174,29 @@
       rmsArrow.position.set(-11, -5+(10*rms), -15); // We're really just updating the x axis
     }
     if(buffer){
-      var geometry = new THREE.Geometry();
+      let geometry = new THREE.Geometry();
       for(var i = 0; i < buffer.length; i++) {
         geometry.vertices.push(new THREE.Vector3(-11+22*i/buffer.length,10+buffer[i]*1.5,-35))
       }
       bufferLine.geometry = geometry;
       geometry.dispose();
+    }
+    if(loudness && loudness.specific){
+      for(var i = 0; i < loudness.specific.length; i++){
+        let geometry = new THREE.Geometry();
+        geometry.vertices.push(new THREE.Vector3(
+          -11+22*i/loudness.specific.length,
+          -6+loudness.specific[i]*3,
+          -15
+        ));
+        geometry.vertices.push(new THREE.Vector3(
+          -11+22*i/loudness.specific.length+22/loudness.specific.length,
+          -6+loudness.specific[i]*3,
+          -15
+        ));
+        loudnessLines.add( new THREE.Line(geometry, yellowMaterial) );
+        geometry.dispose();
+      }
     }
   }
   render();
