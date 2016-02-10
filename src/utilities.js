@@ -29,12 +29,12 @@ export function applyWindow(signal, windowname){
     if(!windows[windowname][signal.length]){
       try{
         windows[windowname][signal.length] = windowing[windowname](signal.length);
-        signal = pointwiseBufferMult(signal,windows[windowname][signal.length]);
       }
       catch(e){
         throw new Error("Invalid windowing function");
       }
     }
+    signal = pointwiseBufferMult(signal,windows[windowname][signal.length]);
   }
   return signal;
 }
