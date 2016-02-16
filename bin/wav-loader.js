@@ -30,10 +30,10 @@ var WavManager = function(data_callback, end_callback) {
 			var reader = new wav.Reader();
 
 			reader.on('format', function(format) {
+				//read wav headers
 				_bitDepth = format.bitDepth;
 				_numBytesPerSample = _bitDepth/8;
-				//what the hell
-				_endian = format.endianness == 'LE' ? 'BE' : 'LE';
+				_endian = format.endianness;
 				_signed = format.signed;
        			_channels = format.channels;
 				_format = format;
