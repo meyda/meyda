@@ -269,7 +269,7 @@
 			$.each(meyda.featureExtractors, function(v, i) {
 				$("#featuresForm").append('<input class="featureCheckbox" type="checkbox" id="' + v + '" name="' + v + '">' + v + '<br>');
 			});
-
+			$("#featuresForm").append('<br><button type="button" id="checkAll" onclick="$(".featureCheckbox").prop("checked", true);">Select All</button>')
 			$("#featuresForm").append('<br><button type="button" id="submitFeatures">Extract Features</button>');
 
 			//handle submitting features
