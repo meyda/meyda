@@ -47,7 +47,7 @@ var Meyda = {
 	},
 
 	createMeydaAnalyzer: function createMeydaAnalyzer(options) {
-		return new _meydaWa.MeydaAnalyzer(options, this);
+		return new _meydaWa.MeydaAnalyzer(options, undefined);
 	},
 
 	extract: function extract(feature, signal) {

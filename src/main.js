@@ -25,7 +25,7 @@ var Meyda = {
 		noSource: new Error('Meyda: No source node specified.')
 	},
 
-	createMeydaAnalyzer: function(options){
+	createMeydaAnalyzer: (options)=>{
 		return new MeydaAnalyzer(options, this);
 	},
 

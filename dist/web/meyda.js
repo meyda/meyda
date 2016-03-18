@@ -1545,18 +1545,18 @@ exports.default = function (args) {
 
   //process
 
-  for (var i = 0; i < NUM_BARK_BANDS; i++) {
+  for (var _i = 0; _i < NUM_BARK_BANDS; _i++) {
     var sum = 0;
-    for (var j = bbLimits[i]; j < bbLimits[i + 1]; j++) {
+    for (var j = bbLimits[_i]; j < bbLimits[_i + 1]; j++) {
 
       sum += normalisedSpectrum[j];
     }
-    specific[i] = Math.pow(sum, 0.23);
+    specific[_i] = Math.pow(sum, 0.23);
   }
 
   //get total loudness
-  for (var i = 0; i < specific.length; i++) {
-    total += specific[i];
+  for (var _i2 = 0; _i2 < specific.length; _i2++) {
+    total += specific[_i2];
   }
   return {
     "specific": specific,
@@ -2095,7 +2095,7 @@ var Meyda = {
 	},
 
 	createMeydaAnalyzer: function createMeydaAnalyzer(options) {
-		return new _meydaWa.MeydaAnalyzer(options, this);
+		return new _meydaWa.MeydaAnalyzer(options, undefined);
 	},
 
 	extract: function extract(feature, signal) {
@@ -2425,11 +2425,11 @@ function createMelFilterBank(numFilters, sampleRate, bufferSize) {
     //creating a two dimensional array of size numFilters * (buffersize/2)+1 and pre-populating the arrays with 0s.
     filterBank[j] = Array.apply(null, new Array(bufferSize / 2 + 1)).map(Number.prototype.valueOf, 0);
     //creating the lower and upper slopes for each bin
-    for (var i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j + 1]; i++) {
-      filterBank[j][i] = (i - fftBinsOfFreq[j]) / (fftBinsOfFreq[j + 1] - fftBinsOfFreq[j]);
+    for (var _i = fftBinsOfFreq[j]; _i < fftBinsOfFreq[j + 1]; _i++) {
+      filterBank[j][_i] = (_i - fftBinsOfFreq[j]) / (fftBinsOfFreq[j + 1] - fftBinsOfFreq[j]);
     }
-    for (var i = fftBinsOfFreq[j + 1]; i < fftBinsOfFreq[j + 2]; i++) {
-      filterBank[j][i] = (fftBinsOfFreq[j + 2] - i) / (fftBinsOfFreq[j + 2] - fftBinsOfFreq[j + 1]);
+    for (var _i2 = fftBinsOfFreq[j + 1]; _i2 < fftBinsOfFreq[j + 2]; _i2++) {
+      filterBank[j][_i2] = (fftBinsOfFreq[j + 2] - _i2) / (fftBinsOfFreq[j + 2] - fftBinsOfFreq[j + 1]);
     }
   }
 
@@ -2458,8 +2458,8 @@ function blackman(size) {
   }
 
   //second half of the window
-  for (var i = size / 2; i > 0; i--) {
-    blackmanBuffer[size - i] = blackmanBuffer[i - 1];
+  for (var _i = size / 2; _i > 0; _i--) {
+    blackmanBuffer[size - _i] = blackmanBuffer[_i - 1];
   }
 
   return blackmanBuffer;
