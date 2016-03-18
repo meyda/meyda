@@ -30,18 +30,18 @@ exports.default = function (args) {
 
   //process
 
-  for (var i = 0; i < NUM_BARK_BANDS; i++) {
+  for (var _i = 0; _i < NUM_BARK_BANDS; _i++) {
     var sum = 0;
-    for (var j = bbLimits[i]; j < bbLimits[i + 1]; j++) {
+    for (var j = bbLimits[_i]; j < bbLimits[_i + 1]; j++) {
 
       sum += normalisedSpectrum[j];
     }
-    specific[i] = Math.pow(sum, 0.23);
+    specific[_i] = Math.pow(sum, 0.23);
   }
 
   //get total loudness
-  for (var i = 0; i < specific.length; i++) {
-    total += specific[i];
+  for (var _i2 = 0; _i2 < specific.length; _i2++) {
+    total += specific[_i2];
   }
   return {
     "specific": specific,

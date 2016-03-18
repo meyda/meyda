@@ -19,8 +19,8 @@ function blackman(size) {
   }
 
   //second half of the window
-  for (var i = size / 2; i > 0; i--) {
-    blackmanBuffer[size - i] = blackmanBuffer[i - 1];
+  for (var _i = size / 2; _i > 0; _i--) {
+    blackmanBuffer[size - _i] = blackmanBuffer[_i - 1];
   }
 
   return blackmanBuffer;
