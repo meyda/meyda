@@ -1,4 +1,4 @@
-var gulp = require("gulp");
+var gulp = rquire("gulp");
 var sourcemaps = require("gulp-sourcemaps");
 var babel = require("gulp-babel");
 var concat = require("gulp-concat");
@@ -7,23 +7,23 @@ var browserify = require('browserify');
 var through2 = require('through2');
 var babelify = require('babelify');
 
-gulp.task('buildWeb',function(){
+gulp.task('buildWeb',()=>{
 	return gulp.src('./src/main.js')
-		.pipe(through2.obj(function(file,enc,next){
+		.pipe(through2.obj((file,enc,next)=>{
 			browserify(file.path,{debug: process.env.NODE_ENV === 'development'})
 				.transform(babelify, {
 					presets: ["es2015"],
 					plugins: ["babel-plugin-add-module-exports"]
 				})
-				.bundle(function (err, res){
-					if(err){
+				.bundle( (err, res)=>{
+					if(err)=>{
 						return next(err);
 					}
 					file.contents = res;
 					next(null,file);
 				});
 		}))
-		.on('error', function(error){
+		.on('error', (error)=>{
 			console.log(error.stack);
 			this.emit('end')
 		})
@@ -32,7 +32,7 @@ gulp.task('buildWeb',function(){
 		.pipe(gulp.dest('./dist/web/'));
 })
 
-gulp.task('buildNode',function(){
+gulp.task('buildNode',()=>{
 	return gulp.src("./src/**/*.js")
 		.pipe(babel({
             presets: ['es2015'],
@@ -41,7 +41,7 @@ gulp.task('buildNode',function(){
 		.pipe(gulp.dest("./dist/node/"));
 });
 
-gulp.task('uglifyWeb',function(){
+gulp.task('uglifyWeb',()=>{
 	return gulp.src("./dist/web/meyda.js")
 		.pipe(uglify())
 		.pipe(concat("meyda.min.js"))
