@@ -35,7 +35,7 @@ class MeydaAnalyzer{
 		self.previousInputData = null;
 
 		self.spn.onaudioprocess = function(e) {
-			if(self.inputData === null){
+			if(self.inputData !== null){
 				self.previousInputData = self.inputData;
 			}
 			// self is to obtain the current frame pcm data
@@ -66,7 +66,7 @@ class MeydaAnalyzer{
 
 	get(features){
 		if(self.inputData !== null){
-			return self.extract((features || self._featuresToExtract), self.inputData);
+			return self.extract((features || self._featuresToExtract), self.inputData, self.previousInputData);
 		} else {
 			return null;
 		}
