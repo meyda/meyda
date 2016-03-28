@@ -1,43 +1,46 @@
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 exports.default = function (args) {
-	if (_typeof(args.ampSpectrum) !== "object" || _typeof(args.melFilterBank) !== "object") {
-		throw new TypeError();
-	}
-	//used tutorial from http://practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/
-	var powSpec = (0, _powerSpectrum2.default)(args);
-	var numFilters = args.melFilterBank.length;
-	var filtered = Array(numFilters);
+  if (_typeof(args.ampSpectrum) !== 'object' || _typeof(args.melFilterBank) !== 'object') {
+    throw new TypeError();
+  }
 
-	var loggedMelBands = new Float32Array(numFilters);
+  // Tutorial from:
+  // http://practicalcryptography.com/miscellaneous/machine-learning
+  // /guide-mel-frequency-cepstral-coefficients-mfccs/
+  var powSpec = (0, _powerSpectrum2.default)(args);
+  var numFilters = args.melFilterBank.length;
+  var filtered = Array(numFilters);
 
-	for (var i = 0; i < loggedMelBands.length; i++) {
-		filtered[i] = new Float32Array(args.bufferSize / 2);
-		loggedMelBands[i] = 0;
-		for (var j = 0; j < args.bufferSize / 2; j++) {
-			//point-wise multiplication between power spectrum and filterbanks.
-			filtered[i][j] = args.melFilterBank[i][j] * powSpec[j];
+  var loggedMelBands = new Float32Array(numFilters);
 
-			//summing up all of the coefficients into one array
-			loggedMelBands[i] += filtered[i][j];
-		}
+  for (var i = 0; i < loggedMelBands.length; i++) {
+    filtered[i] = new Float32Array(args.bufferSize / 2);
+    loggedMelBands[i] = 0;
+    for (var j = 0; j < args.bufferSize / 2; j++) {
+      //point-wise multiplication between power spectrum and filterbanks.
+      filtered[i][j] = args.melFilterBank[i][j] * powSpec[j];
 
-		//log each coefficient unless it's 0.
-		loggedMelBands[i] = loggedMelBands[i] > 0.00001 ? Math.log(loggedMelBands[i]) : 0;
-	}
+      //summing up all of the coefficients into one array
+      loggedMelBands[i] += filtered[i][j];
+    }
 
-	//dct
-	var loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
-	var mfccs = dct(loggedMelBandsArray);
-	var mfccsArray = new Float32Array(mfccs);
+    //log each coefficient unless it's 0.
+    loggedMelBands[i] = loggedMelBands[i] > 0.00001 ? Math.log(loggedMelBands[i]) : 0;
+  }
 
-	return mfccsArray;
+  //dct
+  var loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
+  var mfccs = dct(loggedMelBandsArray);
+  var mfccsArray = new Float32Array(mfccs);
+
+  return mfccsArray;
 };
 
 var _powerSpectrum = require('./powerSpectrum');

@@ -67,14 +67,16 @@ var _powerSpectrum2 = _interopRequireDefault(_powerSpectrum);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-  "buffer": function buffer(args) {
+  buffer: function buffer(args) {
     return args.signal;
   },
+
   rms: _rms2.default,
   energy: _energy2.default,
-  "complexSpectrum": function complexSpectrum(args) {
+  complexSpectrum: function complexSpectrum(args) {
     return args.complexSpectrum;
   },
+
   spectralSlope: _spectralSlope2.default,
   spectralCentroid: _spectralCentroid2.default,
   spectralRolloff: _spectralRolloff2.default,
@@ -82,9 +84,10 @@ exports.default = {
   spectralSpread: _spectralSpread2.default,
   spectralSkewness: _spectralSkewness2.default,
   spectralKurtosis: _spectralKurtosis2.default,
-  "amplitudeSpectrum": function amplitudeSpectrum(args) {
+  amplitudeSpectrum: function amplitudeSpectrum(args) {
     return args.ampSpectrum;
   },
+
   zcr: _zcr2.default,
   loudness: _loudness2.default,
   perceptualSpread: _perceptualSpread2.default,
