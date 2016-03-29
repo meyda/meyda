@@ -19,8 +19,8 @@ function blackman(size) {
   }
 
   //second half of the window
-  for (var i = size / 2; i > 0; i--) {
-    blackmanBuffer[size - i] = blackmanBuffer[i - 1];
+  for (var _i = size / 2; _i > 0; _i--) {
+    blackmanBuffer[size - _i] = blackmanBuffer[_i - 1];
   }
 
   return blackmanBuffer;
@@ -40,9 +40,11 @@ function sine(size) {
 function hanning(size) {
   var hanningBuffer = new Float32Array(size);
   for (var i = 0; i < size; i++) {
-    //According to the R documentation http://rgm.ogalab.net/RGM/R_rdfile?f=GENEAread/man/hanning.window.Rd&d=R_CC
+    // According to the R documentation
+    // http://ugrad.stat.ubc.ca/R/library/e1071/html/hanning.window.html
     hanningBuffer[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (size - 1));
   }
+
   return hanningBuffer;
 }
 
@@ -52,5 +54,6 @@ function hamming(size) {
     //According to http://uk.mathworks.com/help/signal/ref/hamming.html
     hammingBuffer[i] = 0.54 - 0.46 * Math.cos(2 * Math.PI * (i / size - 1));
   }
+
   return hammingBuffer;
 }

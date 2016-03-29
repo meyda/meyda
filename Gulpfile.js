@@ -25,12 +25,12 @@ gulp.task('buildWeb',function(){
 		}))
 		.on('error', function(error){
 			console.log(error.stack);
-			this.emit('end')
+			this.emit('end');
 		})
 		.pipe(concat("meyda.js"))
 		.pipe(sourcemaps.write('./'))
 		.pipe(gulp.dest('./dist/web/'));
-})
+});
 
 gulp.task('buildNode',function(){
 	return gulp.src("./src/**/*.js")
@@ -45,5 +45,5 @@ gulp.task('uglifyWeb',function(){
 	return gulp.src("./dist/web/meyda.js")
 		.pipe(uglify())
 		.pipe(concat("meyda.min.js"))
-		.pipe(gulp.dest("./dist/web/"))
+		.pipe(gulp.dest("./dist/web/"));
 });

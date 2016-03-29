@@ -1,24 +1,25 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 exports.default = function () {
-	if (_typeof(arguments[0].signal) !== "object") {
-		throw new TypeError();
-	}
+  if (_typeof(arguments[0].signal) !== 'object') {
+    throw new TypeError();
+  }
 
-	var energy = 0;
-	for (var i = 0; i < arguments[0].signal.length; i++) {
-		energy += Math.pow(Math.abs(arguments[0].signal[i]), 2);
-	}
-	return energy;
+  var energy = 0;
+  for (var i = 0; i < arguments[0].signal.length; i++) {
+    energy += Math.pow(Math.abs(arguments[0].signal[i]), 2);
+  }
+
+  return energy;
 };
 
-var _assert = require("assert");
+var _assert = require('assert');
 
 var assert = _interopRequireWildcard(_assert);
 

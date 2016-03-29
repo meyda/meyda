@@ -11,5 +11,6 @@ function mu(i, amplitudeSpect) {
     numerator += Math.pow(k, i) * Math.abs(amplitudeSpect[k]);
     denominator += amplitudeSpect[k];
   }
+
   return numerator / denominator;
 }

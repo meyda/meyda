@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -7,9 +7,10 @@ Object.defineProperty(exports, "__esModule", {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 exports.default = function (args) {
-  if (_typeof(args.ampSpectrum) !== "object" || _typeof(args.barkScale) !== "object") {
+  if (_typeof(args.ampSpectrum) !== 'object' || _typeof(args.barkScale) !== 'object') {
     throw new TypeError();
   }
+
   var NUM_BARK_BANDS = 24;
   var specific = new Float32Array(NUM_BARK_BANDS);
   var total = 0;
@@ -30,22 +31,24 @@ exports.default = function (args) {
 
   //process
 
-  for (var i = 0; i < NUM_BARK_BANDS; i++) {
+  for (var _i = 0; _i < NUM_BARK_BANDS; _i++) {
     var sum = 0;
-    for (var j = bbLimits[i]; j < bbLimits[i + 1]; j++) {
+    for (var j = bbLimits[_i]; j < bbLimits[_i + 1]; j++) {
 
       sum += normalisedSpectrum[j];
     }
-    specific[i] = Math.pow(sum, 0.23);
+
+    specific[_i] = Math.pow(sum, 0.23);
   }
 
   //get total loudness
-  for (var i = 0; i < specific.length; i++) {
-    total += specific[i];
+  for (var _i2 = 0; _i2 < specific.length; _i2++) {
+    total += specific[_i2];
   }
+
   return {
-    "specific": specific,
-    "total": total
+    specific: specific,
+    total: total
   };
 };
 

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 exports.default = function (args) {
-  if (_typeof(args.ampSpectrum) !== "object") {
+  if (_typeof(args.ampSpectrum) !== 'object') {
     throw new TypeError();
   }
 
@@ -26,6 +26,7 @@ exports.default = function (args) {
     freqSum += curFreq;
     ampFreqSum += curFreq * args.ampSpectrum[i];
   }
+
   return (args.ampSpectrum.length * ampFreqSum - freqSum * ampSum) / (ampSum * (powFreqSum - Math.pow(freqSum, 2)));
 };
 

@@ -1,42 +1,42 @@
-var chai = require("chai");
+var chai = require('chai');
 var assert = chai.assert;
-var TestData = require("../TestData");
+var TestData = require('../TestData');
 
 // Setup
-var energy = require("../../dist/node/extractors/energy");
+var energy = require('../../dist/node/extractors/energy');
 
-describe('energy', function(){
-  it('should return the correct energy value when passed a valid signal', function(done){
+describe('energy', function () {
+  it('should return the correct value given a valid signal', function (done) {
     var en = energy({
-      signal:TestData.VALID_SIGNAL
+      signal:TestData.VALID_SIGNAL,
     });
 
-    assert.equal(en,3.6735467237693653);
+    assert.equal(en, 3.6735467237693653);
 
     done();
   });
 
-  it('should throw an error when passed an empty object', function(done){
-    try{
+  it('should throw an error when passed an empty object', function (done) {
+    try {
       var en = energy({});
-    } catch(e){
+    } catch (e) {
       done();
     }
 
   });
 
-  it('should throw an error when not passed anything', function(done){
-    try{
+  it('should throw an error when not passed anything', function (done) {
+    try {
       var en = energy();
-    } catch(e){
+    } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when passed something invalid', function(done){
-    try{
-      var en = energy({signal:"not a signal"});
-    } catch(e){
+  it('should throw an error when passed something invalid', function (done) {
+    try {
+      var en = energy({ signal:'not a signal' });
+    } catch (e) {
       done();
     }
   });
