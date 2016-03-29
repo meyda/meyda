@@ -1631,7 +1631,7 @@ var dct = require('dct');
 
 module.exports = exports['default'];
 
-},{"./../utilities":29,"./powerSpectrum":16,"dct":2}],14:[function(require,module,exports){
+},{"./../utilities":30,"./powerSpectrum":16,"dct":2}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1813,6 +1813,31 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
+exports.default = function (args) {
+  if (_typeof(args.signal) !== 'object' || _typeof(args.previousSignal) != 'object') {
+    throw new TypeError();
+  }
+
+  var sf = 0;
+  for (var i = -(args.bufferSize / 2); i < signal.length / 2 - 1; i++) {
+    x = Math.abs(args.signal[i]) - Math.abs(args.previousSignal[i]);
+    sf += (x + Math.abs(x)) / 2;
+  }
+
+  return sf;
+};
+
+module.exports = exports['default'];
+
+},{}],21:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 exports.default = function () {
   if (_typeof(arguments[0].ampSpectrum) !== 'object') {
     throw new TypeError();
@@ -1832,7 +1857,7 @@ var _extractorUtilities = require('./extractorUtilities');
 
 module.exports = exports['default'];
 
-},{"./extractorUtilities":11}],21:[function(require,module,exports){
+},{"./extractorUtilities":11}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1867,7 +1892,7 @@ exports.default = function () {
 
 module.exports = exports['default'];
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1893,7 +1918,7 @@ var _extractorUtilities = require('./extractorUtilities');
 
 module.exports = exports['default'];
 
-},{"./extractorUtilities":11}],23:[function(require,module,exports){
+},{"./extractorUtilities":11}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1928,7 +1953,7 @@ exports.default = function (args) {
 
 module.exports = exports['default'];
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1949,7 +1974,7 @@ var _extractorUtilities = require('./extractorUtilities');
 
 module.exports = exports['default'];
 
-},{"./extractorUtilities":11}],25:[function(require,module,exports){
+},{"./extractorUtilities":11}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1975,7 +2000,7 @@ exports.default = function () {
 
 module.exports = exports['default'];
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2042,6 +2067,10 @@ var _powerSpectrum = require('./extractors/powerSpectrum');
 
 var _powerSpectrum2 = _interopRequireDefault(_powerSpectrum);
 
+var _spectralFlux = require('./extractors/spectralFlux');
+
+var _spectralFlux2 = _interopRequireDefault(_spectralFlux);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
@@ -2071,11 +2100,12 @@ exports.default = {
   perceptualSpread: _perceptualSpread2.default,
   perceptualSharpness: _perceptualSharpness2.default,
   powerSpectrum: _powerSpectrum2.default,
-  mfcc: _mfcc2.default
+  mfcc: _mfcc2.default,
+  spectralFlux: _spectralFlux2.default
 };
 module.exports = exports['default'];
 
-},{"./extractors/energy":10,"./extractors/loudness":12,"./extractors/mfcc":13,"./extractors/perceptualSharpness":14,"./extractors/perceptualSpread":15,"./extractors/powerSpectrum":16,"./extractors/rms":17,"./extractors/spectralCentroid":18,"./extractors/spectralFlatness":19,"./extractors/spectralKurtosis":20,"./extractors/spectralRolloff":21,"./extractors/spectralSkewness":22,"./extractors/spectralSlope":23,"./extractors/spectralSpread":24,"./extractors/zcr":25}],27:[function(require,module,exports){
+},{"./extractors/energy":10,"./extractors/loudness":12,"./extractors/mfcc":13,"./extractors/perceptualSharpness":14,"./extractors/perceptualSpread":15,"./extractors/powerSpectrum":16,"./extractors/rms":17,"./extractors/spectralCentroid":18,"./extractors/spectralFlatness":19,"./extractors/spectralFlux":20,"./extractors/spectralKurtosis":21,"./extractors/spectralRolloff":22,"./extractors/spectralSkewness":23,"./extractors/spectralSlope":24,"./extractors/spectralSpread":25,"./extractors/zcr":26}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2233,7 +2263,7 @@ exports.default = Meyda;
 if (typeof window !== 'undefined') window.Meyda = Meyda;
 module.exports = exports['default'];
 
-},{"./featureExtractors":26,"./meyda-wa":28,"./utilities":29,"jsfft":6,"jsfft/lib/complex_array":5}],28:[function(require,module,exports){
+},{"./featureExtractors":27,"./meyda-wa":29,"./utilities":30,"jsfft":6,"jsfft/lib/complex_array":5}],29:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2333,7 +2363,7 @@ var MeydaAnalyzer = function () {
   return MeydaAnalyzer;
 }();
 
-},{"./featureExtractors":26,"./utilities":29}],29:[function(require,module,exports){
+},{"./featureExtractors":27,"./utilities":30}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2517,7 +2547,7 @@ function createMelFilterBank(numFilters, sampleRate, bufferSize) {
   return filterBank;
 }
 
-},{"./windowing":30}],30:[function(require,module,exports){
+},{"./windowing":31}],31:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2578,4 +2608,4 @@ function hamming(size) {
   return hammingBuffer;
 }
 
-},{}]},{},[27]);
+},{}]},{},[28]);

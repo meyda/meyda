@@ -13,6 +13,7 @@ import perceptualSpread from './extractors/perceptualSpread';
 import perceptualSharpness from './extractors/perceptualSharpness';
 import mfcc from './extractors/mfcc';
 import powerSpectrum from './extractors/powerSpectrum';
+import spectralFlux from './extractors/spectralFlux';
 
 export default {
   buffer: function (args) {
@@ -42,4 +43,5 @@ export default {
   perceptualSharpness,
   powerSpectrum,
   mfcc,
+  spectralFlux,
 };
