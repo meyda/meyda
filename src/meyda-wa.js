@@ -1,7 +1,7 @@
 import * as utilities from './utilities';
 import * as featureExtractors from './featureExtractors';
 
-class MeydaAnalyzer{
+export class MeydaAnalyzer{
 	constructor(options, _this) {
   this._m = _this;
   if (!options.audioContext)
@@ -15,7 +15,6 @@ class MeydaAnalyzer{
   this._m.audioContext = options.audioContext;
 
   // TODO: validate options
-  this._m.setSource(options.source);
   this._m.bufferSize = options.bufferSize || this._m.bufferSize || 256;
   this._m.sampleRate = options.sampleRate
     || this._m.audioContext.sampleRate || 44100;
@@ -43,8 +42,6 @@ class MeydaAnalyzer{
 
   this._m.inputData = null;
   this._m.previousInputData = null;
-
-  _this = this;
 
   this.setSource(options.source);
 
@@ -78,15 +75,15 @@ class MeydaAnalyzer{
 	}
 
 	setSource(source) {
-  source.connect(this.spn);
+  source.connect(this._m.spn);
 	}
 
 	get(features) {
-  if (self.inputData !== null) {
-    return self.extract(
-            (features || self._featuresToExtract),
-            self.inputData,
-            self.previousInputData);
+  if (this._m.inputData) {
+    return this._m.extract(
+            (features || this._featuresToExtract),
+            this._m.inputData,
+            this._m.previousInputData);
   } else {
     return null;
   }

@@ -2145,6 +2145,7 @@ var Meyda = {
   featureExtractors: extractors,
   EXTRACTION_STARTED: false,
   _featuresToExtract: [],
+  windowing: utilities.applyWindow,
   _errors: {
     notPow2: new Error('Meyda: Buffer size must be a power of 2, e.g. 64 or 512'),
     featureUndef: new Error('Meyda: No features defined.'),
@@ -2155,10 +2156,10 @@ var Meyda = {
   },
 
   createMeydaAnalyzer: function createMeydaAnalyzer(options) {
-    return new _meydaWa.MeydaAnalyzer(options, this);
+    return new _meydaWa.MeydaAnalyzer(options, Meyda);
   },
 
-  extract: function extract(feature, signal) {
+  extract: function extract(feature, signal, previousSignal) {
     if (!signal) throw this._errors.invalidInput;else if ((typeof signal === 'undefined' ? 'undefined' : _typeof(signal)) != 'object') throw this._errors.invalidInput;else if (!feature) throw this._errors.featureUndef;else if (!utilities.isPowerOfTwo(signal.length)) throw this._errors.notPow2;
 
     if (typeof this.barkScale == 'undefined' || this.barkScale.length != this.bufferSize) {
@@ -2184,7 +2185,7 @@ var Meyda = {
     this.ampSpectrum = preparedSignal.ampSpectrum;
 
     if (previousSignal) {
-      var _preparedSignal = prepareSignalWithSpectrum(prevousSignal, this.windowingFunction, this.bufferSize);
+      var _preparedSignal = prepareSignalWithSpectrum(previousSignal, this.windowingFunction, this.bufferSize);
 
       this.previousSignal = _preparedSignal.windowedSignal;
       this.previousComplexSpectrum = _preparedSignal.complexSpectrum;
@@ -2238,20 +2239,20 @@ var prepareSignalWithSpectrum = function prepareSignalWithSpectrum(signal, windo
     preparedSignal.signal = signal;
   }
 
-  preparedSignal.windowedSignal = utilities.applyWindow(preparedSignal, windowingFunction);
+  preparedSignal.windowedSignal = utilities.applyWindow(preparedSignal.signal, windowingFunction);
 
   // create complexarray to hold the spectrum
-  var data = new complexArray.ComplexArray(this.bufferSize);
+  var data = new complexArray.ComplexArray(bufferSize);
 
   // map time domain
   data.map(function (value, i, n) {
-    value.real = windowedSignal[i];
+    value.real = preparedSignal.windowedSignal[i];
   });
 
   preparedSignal.complexSpectrum = data.FFT();
   preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
-  for (var i = 0; i < this.bufferSize / 2; i++) {
-    preparedSignal.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i], 2) + Math.pow(spec.imag[i], 2));
+  for (var i = 0; i < bufferSize / 2; i++) {
+    preparedSignal.ampSpectrum[i] = Math.sqrt(Math.pow(preparedSignal.complexSpectrum.real[i], 2) + Math.pow(preparedSignal.complexSpectrum.imag[i], 2));
   }
 
   return preparedSignal;
@@ -2265,6 +2266,11 @@ module.exports = exports['default'];
 
 },{"./featureExtractors":27,"./meyda-wa":29,"./utilities":30,"jsfft":6,"jsfft/lib/complex_array":5}],29:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MeydaAnalyzer = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -2280,7 +2286,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var MeydaAnalyzer = function () {
+var MeydaAnalyzer = exports.MeydaAnalyzer = function () {
   function MeydaAnalyzer(options, _this) {
     var _this2 = this;
 
@@ -2292,7 +2298,6 @@ var MeydaAnalyzer = function () {
     this._m.audioContext = options.audioContext;
 
     // TODO: validate options
-    this._m.setSource(options.source);
     this._m.bufferSize = options.bufferSize || this._m.bufferSize || 256;
     this._m.sampleRate = options.sampleRate || this._m.audioContext.sampleRate || 44100;
     this._m.callback = options.callback;
@@ -2312,8 +2317,6 @@ var MeydaAnalyzer = function () {
 
     this._m.inputData = null;
     this._m.previousInputData = null;
-
-    _this = this;
 
     this.setSource(options.source);
 
@@ -2347,13 +2350,13 @@ var MeydaAnalyzer = function () {
   }, {
     key: 'setSource',
     value: function setSource(source) {
-      source.connect(this.spn);
+      source.connect(this._m.spn);
     }
   }, {
     key: 'get',
     value: function get(features) {
-      if (self.inputData !== null) {
-        return self.extract(features || self._featuresToExtract, self.inputData, self.previousInputData);
+      if (this._m.inputData) {
+        return this._m.extract(features || this._featuresToExtract, this._m.inputData, this._m.previousInputData);
       } else {
         return null;
       }

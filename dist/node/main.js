@@ -37,6 +37,7 @@ var Meyda = {
   featureExtractors: extractors,
   EXTRACTION_STARTED: false,
   _featuresToExtract: [],
+  windowing: utilities.applyWindow,
   _errors: {
     notPow2: new Error('Meyda: Buffer size must be a power of 2, e.g. 64 or 512'),
     featureUndef: new Error('Meyda: No features defined.'),
@@ -47,10 +48,10 @@ var Meyda = {
   },
 
   createMeydaAnalyzer: function createMeydaAnalyzer(options) {
-    return new _meydaWa.MeydaAnalyzer(options, this);
+    return new _meydaWa.MeydaAnalyzer(options, Meyda);
   },
 
-  extract: function extract(feature, signal) {
+  extract: function extract(feature, signal, previousSignal) {
     if (!signal) throw this._errors.invalidInput;else if ((typeof signal === 'undefined' ? 'undefined' : _typeof(signal)) != 'object') throw this._errors.invalidInput;else if (!feature) throw this._errors.featureUndef;else if (!utilities.isPowerOfTwo(signal.length)) throw this._errors.notPow2;
 
     if (typeof this.barkScale == 'undefined' || this.barkScale.length != this.bufferSize) {
@@ -76,7 +77,7 @@ var Meyda = {
     this.ampSpectrum = preparedSignal.ampSpectrum;
 
     if (previousSignal) {
-      var _preparedSignal = prepareSignalWithSpectrum(prevousSignal, this.windowingFunction, this.bufferSize);
+      var _preparedSignal = prepareSignalWithSpectrum(previousSignal, this.windowingFunction, this.bufferSize);
 
       this.previousSignal = _preparedSignal.windowedSignal;
       this.previousComplexSpectrum = _preparedSignal.complexSpectrum;
@@ -130,20 +131,20 @@ var prepareSignalWithSpectrum = function prepareSignalWithSpectrum(signal, windo
     preparedSignal.signal = signal;
   }
 
-  preparedSignal.windowedSignal = utilities.applyWindow(preparedSignal, windowingFunction);
+  preparedSignal.windowedSignal = utilities.applyWindow(preparedSignal.signal, windowingFunction);
 
   // create complexarray to hold the spectrum
-  var data = new complexArray.ComplexArray(this.bufferSize);
+  var data = new complexArray.ComplexArray(bufferSize);
 
   // map time domain
   data.map(function (value, i, n) {
-    value.real = windowedSignal[i];
+    value.real = preparedSignal.windowedSignal[i];
   });
 
   preparedSignal.complexSpectrum = data.FFT();
   preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
-  for (var i = 0; i < this.bufferSize / 2; i++) {
-    preparedSignal.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i], 2) + Math.pow(spec.imag[i], 2));
+  for (var i = 0; i < bufferSize / 2; i++) {
+    preparedSignal.ampSpectrum[i] = Math.sqrt(Math.pow(preparedSignal.complexSpectrum.real[i], 2) + Math.pow(preparedSignal.complexSpectrum.imag[i], 2));
   }
 
   return preparedSignal;

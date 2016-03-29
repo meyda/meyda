@@ -15,6 +15,7 @@ var Meyda = {
   featureExtractors: extractors,
   EXTRACTION_STARTED: false,
   _featuresToExtract: [],
+  windowing: utilities.applyWindow,
   _errors: {
     notPow2: new Error(
         'Meyda: Buffer size must be a power of 2, e.g. 64 or 512'),
@@ -26,10 +27,10 @@ var Meyda = {
   },
 
   createMeydaAnalyzer: function (options) {
-    return new MeydaAnalyzer(options, this);
+    return new MeydaAnalyzer(options, Meyda);
   },
 
-  extract: function (feature, signal) {
+  extract: function (feature, signal, previousSignal) {
     if (!signal)
         throw this._errors.invalidInput;
     else if (typeof signal != 'object')
@@ -75,7 +76,7 @@ var Meyda = {
     this.ampSpectrum = preparedSignal.ampSpectrum;
 
     if (previousSignal) {
-      let preparedSignal = prepareSignalWithSpectrum(prevousSignal,
+      let preparedSignal = prepareSignalWithSpectrum(previousSignal,
               this.windowingFunction,
               this.bufferSize);
 
@@ -134,22 +135,23 @@ var prepareSignalWithSpectrum = function (signal,
   }
 
   preparedSignal.windowedSignal = utilities.applyWindow(
-    preparedSignal,
+    preparedSignal.signal,
     windowingFunction);
 
   // create complexarray to hold the spectrum
-  var data = new complexArray.ComplexArray(this.bufferSize);
+  var data = new complexArray.ComplexArray(bufferSize);
 
   // map time domain
   data.map(function (value, i, n) {
-    value.real = windowedSignal[i];
+    value.real = preparedSignal.windowedSignal[i];
   });
 
   preparedSignal.complexSpectrum = data.FFT();
   preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
-  for (var i = 0; i < this.bufferSize / 2; i++) {
-    preparedSignal.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i], 2) +
-    Math.pow(spec.imag[i], 2));
+  for (var i = 0; i < bufferSize / 2; i++) {
+    preparedSignal.ampSpectrum[i] = Math.sqrt(
+      Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
+      Math.pow(preparedSignal.complexSpectrum.imag[i], 2));
   }
 
   return preparedSignal;
