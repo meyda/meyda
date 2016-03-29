@@ -69,24 +69,18 @@ var Meyda = {
       this.signal = signal;
     }
 
-    var windowedSignal = utilities.applyWindow(this.signal, this.windowingFunction);
+    var preparedSignal = prepareSignalWithSpectrum(signal, this.windowingFunction, this.bufferSize);
 
-    // create complexarray to hold the spectrum
-    var data = new complexArray.ComplexArray(this.bufferSize);
+    this.signal = preparedSignal.windowedSignal;
+    this.complexSpectrum = preparedSignal.complexSpectrum;
+    this.ampSpectrum = preparedSignal.ampSpectrum;
 
-    // map time domain
-    data.map(function (value, i, n) {
-      value.real = windowedSignal[i];
-    });
+    if (previousSignal) {
+      var _preparedSignal = prepareSignalWithSpectrum(prevousSignal, this.windowingFunction, this.bufferSize);
 
-    // transform
-    var spec = data.FFT();
-
-    // assign to meyda
-    this.complexSpectrum = spec;
-    this.ampSpectrum = new Float32Array(this.bufferSize / 2);
-    for (var i = 0; i < this.bufferSize / 2; i++) {
-      this.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i], 2) + Math.pow(spec.imag[i], 2));
+      this.previousSignal = _preparedSignal.windowedSignal;
+      this.previousComplexSpectrum = _preparedSignal.complexSpectrum;
+      this.previousAmpSpectrum = _preparedSignal.ampSpectrum;
     }
 
     if ((typeof feature === 'undefined' ? 'undefined' : _typeof(feature)) === 'object') {
@@ -99,7 +93,10 @@ var Meyda = {
           bufferSize: this.bufferSize,
           sampleRate: this.sampleRate,
           barkScale: this.barkScale,
-          melFilterBank: this.melFilterBank
+          melFilterBank: this.melFilterBank,
+          previousSignal: this.previousSignal,
+          previousAmpSpectrum: this.previousAmpSpectrum,
+          previousComplexSpectrum: this.previousComplexSpectrum
         });
       }
 
@@ -112,12 +109,44 @@ var Meyda = {
         bufferSize: this.bufferSize,
         sampleRate: this.sampleRate,
         barkScale: this.barkScale,
-        melFilterBank: this.melFilterBank
+        melFilterBank: this.melFilterBank,
+        previousSignal: this.previousSignal,
+        previousAmpSpectrum: this.previousAmpSpectrum,
+        previousComplexSpectrum: this.previousComplexSpectrum
       });
     } else {
       throw this._errors.invalidFeatureFmt;
     }
   }
+};
+
+var prepareSignalWithSpectrum = function prepareSignalWithSpectrum(signal, windowingFunction, bufferSize) {
+  var preparedSignal = {};
+
+  if (typeof signal.buffer == 'undefined') {
+    //signal is a normal array, convert to F32A
+    preparedSignal.signal = utilities.arrayToTyped(signal);
+  } else {
+    preparedSignal.signal = signal;
+  }
+
+  preparedSignal.windowedSignal = utilities.applyWindow(preparedSignal, windowingFunction);
+
+  // create complexarray to hold the spectrum
+  var data = new complexArray.ComplexArray(this.bufferSize);
+
+  // map time domain
+  data.map(function (value, i, n) {
+    value.real = windowedSignal[i];
+  });
+
+  preparedSignal.complexSpectrum = data.FFT();
+  preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
+  for (var i = 0; i < this.bufferSize / 2; i++) {
+    preparedSignal.ampSpectrum[i] = Math.sqrt(Math.pow(spec.real[i], 2) + Math.pow(spec.imag[i], 2));
+  }
+
+  return preparedSignal;
 };
 
 exports.default = Meyda;

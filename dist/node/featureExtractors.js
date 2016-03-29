@@ -64,6 +64,10 @@ var _powerSpectrum = require('./extractors/powerSpectrum');
 
 var _powerSpectrum2 = _interopRequireDefault(_powerSpectrum);
 
+var _spectralFlux = require('./extractors/spectralFlux');
+
+var _spectralFlux2 = _interopRequireDefault(_spectralFlux);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
@@ -93,6 +97,7 @@ exports.default = {
   perceptualSpread: _perceptualSpread2.default,
   perceptualSharpness: _perceptualSharpness2.default,
   powerSpectrum: _powerSpectrum2.default,
-  mfcc: _mfcc2.default
+  mfcc: _mfcc2.default,
+  spectralFlux: _spectralFlux2.default
 };
 module.exports = exports['default'];

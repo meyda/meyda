@@ -1,4 +1,5 @@
 {
 	"preset":"airbnb",
-	"maximumLineLength":80
+	"maximumLineLength":80,
+	"esnext": true
 }
