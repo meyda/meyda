@@ -1,5 +1,10 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MeydaAnalyzer = undefined;
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _utilities = require('./utilities');
@@ -14,7 +19,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var MeydaAnalyzer = function () {
+var MeydaAnalyzer = exports.MeydaAnalyzer = function () {
   function MeydaAnalyzer(options, _this) {
     var _this2 = this;
 
@@ -26,7 +31,6 @@ var MeydaAnalyzer = function () {
     this._m.audioContext = options.audioContext;
 
     // TODO: validate options
-    this._m.setSource(options.source);
     this._m.bufferSize = options.bufferSize || this._m.bufferSize || 256;
     this._m.sampleRate = options.sampleRate || this._m.audioContext.sampleRate || 44100;
     this._m.callback = options.callback;
@@ -46,8 +50,6 @@ var MeydaAnalyzer = function () {
 
     this._m.inputData = null;
     this._m.previousInputData = null;
-
-    _this = this;
 
     this.setSource(options.source);
 
@@ -81,13 +83,13 @@ var MeydaAnalyzer = function () {
   }, {
     key: 'setSource',
     value: function setSource(source) {
-      source.connect(this.spn);
+      source.connect(this._m.spn);
     }
   }, {
     key: 'get',
     value: function get(features) {
-      if (self.inputData !== null) {
-        return self.extract(features || self._featuresToExtract, self.inputData, self.previousInputData);
+      if (this._m.inputData) {
+        return this._m.extract(features || this._featuresToExtract, this._m.inputData, this._m.previousInputData);
       } else {
         return null;
       }
