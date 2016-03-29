@@ -60,21 +60,49 @@
   g.vertices.push(new THREE.Vector3(11, -3, -15));
 
   // Variables we update
-  let centroidArrow = new THREE.ArrowHelper(dir, origin, length, hex);
-  let rolloffArrow = new THREE.ArrowHelper(dir, origin, length, 0x0000ff);
-  let rmsArrow = new THREE.ArrowHelper(rightDir, origin, length, 0xff00ff);
+  // let centroidArrow = new THREE.ArrowHelper(dir, origin, length, hex);
+  // let rolloffArrow = new THREE.ArrowHelper(dir, origin, length, 0x0000ff);
+  // let rmsArrow = new THREE.ArrowHelper(rightDir, origin, length, 0xff00ff);
   let lines = new THREE.Group(); // Lets create a seperate group for our lines
-  let loudnessLines = new THREE.Group();
-  let bufferLine = new THREE.Line(g, material);
-  scene.add(centroidArrow);
-  scene.add(rolloffArrow);
-  scene.add(rmsArrow);
+  // let loudnessLines = new THREE.Group();
+  // let bufferLine = new THREE.Line(g, material);
+  // scene.add(centroidArrow);
+  // scene.add(rolloffArrow);
+  // scene.add(rmsArrow);
+
+  // Render Spectrogram
+  for (let i = 0; i < ffts.length; i++) {
+    if (ffts[i]) {
+      let geometry = new THREE.BufferGeometry(); // May be a way to reuse this
+
+      var positions = new Float32Array(ffts[i].length * 3);
+
+      geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setDrawRange(0, ffts[i].length);
+
+      var line = new THREE.Line(geometry, material);
+      lines.add(line);
+
+      var positions = line.geometry.attributes.position.array;
+      var index = 0;
+
+      for (var j = 0; j < ffts[i].length; j++) {
+        positions[index++] = -11 + (22 * j / ffts[i].length);
+        positions[index++] = -5 + ffts[i][j];
+        positions[index++] = -15 - i;
+      }
+    }
+  }
+
   scene.add(lines);
-  scene.add(loudnessLines);
-  scene.add(bufferLine);
+
+  // scene.add(loudnessLines);
+  // scene.add(bufferLine);
+
+  let features = null;
 
   function render() {
-    const features = a.get([
+    features = a.get([
       'amplitudeSpectrum',
       'spectralCentroid',
       'spectralRolloff',
@@ -82,93 +110,82 @@
       'rms',
     ]);
     if (features) {
-      if (features) {
-        ffts.pop();
-        ffts.unshift(features.amplitudeSpectrum);
-        const windowedSignalBuffer = a.meyda._m.windowedSignal;
+      ffts.pop();
+      ffts.unshift(features.amplitudeSpectrum);
+      const windowedSignalBuffer = a.meyda._m.windowedSignal;
 
-        // Render Spectrogram
-        for (let i = 0; i < ffts.length; i++) {
-          if (ffts[i]) {
-            let fftslen = ffts[i].length;
-            let geometry = new THREE.Geometry(); // May be a way to reuse this
-            if (fftslen) {
-              for (let j = 0; j < fftslen; j++) {
-                geometry.vertices.push(new THREE.Vector3(-11 + (22 * j / fftslen),
-                -5 + ffts[i][j], -15 - i));
-              }
-            }
+      for (let i = 0; i < ffts.length; i++) {
+        var positions = lines.children[i].geometry.attributes.position.array;
+        var index = 0;
 
-            lines.add(new THREE.Line(geometry, material));
-            geometry.dispose();
-          }
+        for (var j = 0; j < lines.children[i].geometry.attributes.position.array.length * 3; j++) {
+          positions[index++] = -11 + (22 * j / ffts[i].length);
+          positions[index++] = -5 + ffts[i][j];
+          positions[index++] = -15 - i;
         }
 
-        // Render Spectral Centroid Arrow
-        if (features.spectralCentroid) {
-          // SpectralCentroid is an awesome variable name
-          // We're really just updating the x axis
-          centroidArrow.position.set(-11 +
-            (22 * features.spectralCentroid / bufferSize / 2), -6, -15);
-        }
-
-        // Render Spectral Rolloff Arrow
-        if (features.spectralRolloff) {
-          // We're really just updating the x axis
-          rolloffArrow.position.set(
-            -11 + (features.spectralRolloff / 44100 * 22), -6, -15);
-        }
-
-        // Render RMS Arrow
-        if (features.rms) {
-          // We're really just updating the x axis
-          rmsArrow.position.set(-11, -5 + (10 * features.rms), -15);
-        }
-
-        // Render windowed buffer
-        if (windowedSignalBuffer) {
-          let geometry = new THREE.Geometry();
-          for (let i = 0; i < windowedSignalBuffer.length; i++) {
-            geometry.vertices.push(new THREE.Vector3(
-              -11 + 22 * i / windowedSignalBuffer.length,
-              10 + windowedSignalBuffer[i] * 1.5, -35
-            ));
-          }
-
-          bufferLine.geometry = geometry;
-          geometry.dispose();
-        }
-
-        // Render loudness
-        if (features.loudness && features.loudness.specific) {
-          for (var i = 0; i < features.loudness.specific.length; i++) {
-            let geometry = new THREE.Geometry();
-            geometry.vertices.push(new THREE.Vector3(
-              -11 + 22 * i / features.loudness.specific.length,
-              -6 + features.loudness.specific[i] * 3,
-              -15
-            ));
-            geometry.vertices.push(new THREE.Vector3(
-              -11 + 22 * i / features.loudness.specific.length + 22 /
-              features.loudness.specific.length,
-              -6 + features.loudness.specific[i] * 3,
-              -15
-            ));
-            loudnessLines.add(new THREE.Line(geometry, yellowMaterial));
-            geometry.dispose();
-          }
-        }
+        lines.children[i].geometry.attributes.position.needsUpdate = true;
       }
 
-      // I feel like there is a faster way to do this?
-      for (let c = 0; c < lines.children.length; c++) {
-        lines.remove(lines.children[c]); //forEach is slow
-      }
+      // // Render Spectral Centroid Arrow
+      // if (features.spectralCentroid) {
+      //   // SpectralCentroid is an awesome variable name
+      //   // We're really just updating the x axis
+      //   centroidArrow.position.set(-11 +
+      //     (22 * features.spectralCentroid / bufferSize / 2), -6, -15);
+      // }
+      //
+      // // Render Spectral Rolloff Arrow
+      // if (features.spectralRolloff) {
+      //   // We're really just updating the x axis
+      //   rolloffArrow.position.set(
+      //     -11 + (features.spectralRolloff / 44100 * 22), -6, -15);
+      // }
+      //
+      // // Render RMS Arrow
+      // if (features.rms) {
+      //   // We're really just updating the x axis
+      //   rmsArrow.position.set(-11, -5 + (10 * features.rms), -15);
+      // }
+      //
+      // // Render windowed buffer
+      // if (windowedSignalBuffer) {
+      //   let geometry = new THREE.Geometry();
+      //   for (let i = 0; i < windowedSignalBuffer.length; i++) {
+      //     geometry.vertices.push(new THREE.Vector3(
+      //       -11 + 22 * i / windowedSignalBuffer.length,
+      //       10 + windowedSignalBuffer[i] * 1.5, -35
+      //     ));
+      //   }
+      //
+      //   bufferLine.geometry = geometry;
+      //   geometry.dispose();
+      // }
 
-      // I feel like there is a faster way to do this?
-      for (let c = 0; c < loudnessLines.children.length; c++) {
-        loudnessLines.remove(loudnessLines.children[c]); //forEach is slow
-      }
+      // // Render loudness
+      // if (features.loudness && features.loudness.specific) {
+      //   for (var i = 0; i < features.loudness.specific.length; i++) {
+      //     let geometry = new THREE.Geometry();
+      //     geometry.vertices.push(new THREE.Vector3(
+      //       -11 + 22 * i / features.loudness.specific.length,
+      //       -6 + features.loudness.specific[i] * 3,
+      //       -15
+      //     ));
+      //     geometry.vertices.push(new THREE.Vector3(
+      //       -11 + 22 * i / features.loudness.specific.length + 22 /
+      //       features.loudness.specific.length,
+      //       -6 + features.loudness.specific[i] * 3,
+      //       -15
+      //     ));
+      //     loudnessLines.add(new THREE.Line(geometry, yellowMaterial));
+      //     geometry.dispose();
+      //   }
+      // }
+
+      // // I feel like there is a faster way to do this?
+      // for (let c = 0; c < loudnessLines.children.length; c++) {
+      //   loudnessLines.remove(loudnessLines.children[c]); //forEach is slow
+      // }
     }
 
     requestAnimationFrame(render);
