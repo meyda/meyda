@@ -7,15 +7,17 @@
     this.synthesizer = {};
     this.synthesizer.osc1 = this.context.createOscillator();
     this.synthesizer.osc1.type = 'sawtooth';
+    this.synthesizer.out = this.context.createGain();
     this.synthesizer.osc1.start();
 
     this.meyda = Meyda.createMeydaAnalyzer({
       audioContext: this.context,
-      source: this.synthesizer.osc1,
+      source: this.synthesizer.out,
       bufferSize: bufferSize,
       windowingFunction: 'blackman',
     });
     _this = this;
+    this.initializeMicrophoneSampling();
   };
 
   Audio.prototype.setWaveformType = function (type) {
@@ -34,7 +36,7 @@
       console.log('Setting Meyda Source to Microphone');
       _this.meyda.setSource(source);
       console.log('Disconnecting synthesizer');
-      self.synthesizer.osc1.disconnect();
+      this.synthesizer.osc1.disconnect();
       console.groupEnd();
     };
 
@@ -68,7 +70,7 @@
 },{}],2:[function(require,module,exports){
 (function () {
   'use strict';
-  const bufferSize = 1024;
+    const bufferSize = 1024;
   let Audio = require('./audio');
   let a = new Audio(bufferSize);
 
@@ -102,7 +104,7 @@
     color: 0x00ffff,
   });
 
-  var ffts = initializeFFTs(20, 128);
+  var ffts = initializeFFTs(20, bufferSize);
   var buffer = null;
 
   var renderer = new THREE.WebGLRenderer();
@@ -128,15 +130,16 @@
   g.vertices.push(new THREE.Vector3(11, -3, -15));
 
   // Variables we update
-  // let centroidArrow = new THREE.ArrowHelper(dir, origin, length, hex);
-  // let rolloffArrow = new THREE.ArrowHelper(dir, origin, length, 0x0000ff);
-  // let rmsArrow = new THREE.ArrowHelper(rightDir, origin, length, 0xff00ff);
+  let centroidArrow = new THREE.ArrowHelper(dir, origin, length, hex);
+  let rolloffArrow = new THREE.ArrowHelper(dir, origin, length, 0x0000ff);
+  let rmsArrow = new THREE.ArrowHelper(rightDir, origin, length, 0xff00ff);
   let lines = new THREE.Group(); // Lets create a seperate group for our lines
   // let loudnessLines = new THREE.Group();
   // let bufferLine = new THREE.Line(g, material);
-  // scene.add(centroidArrow);
-  // scene.add(rolloffArrow);
-  // scene.add(rmsArrow);
+  scene.add(centroidArrow);
+  scene.add(rolloffArrow);
+  scene.add(rmsArrow);
+  // scene.add(bufferLine);
 
   // Render Spectrogram
   for (let i = 0; i < ffts.length; i++) {
@@ -186,7 +189,7 @@
         var positions = lines.children[i].geometry.attributes.position.array;
         var index = 0;
 
-        for (var j = 0; j < lines.children[i].geometry.attributes.position.array.length * 3; j++) {
+          for (var j = 0; j < ffts[i].length*3; j++) {
           positions[index++] = -11 + (22 * j / ffts[i].length);
           positions[index++] = -5 + ffts[i][j];
           positions[index++] = -15 - i;
@@ -195,27 +198,26 @@
         lines.children[i].geometry.attributes.position.needsUpdate = true;
       }
 
-      // // Render Spectral Centroid Arrow
-      // if (features.spectralCentroid) {
-      //   // SpectralCentroid is an awesome variable name
-      //   // We're really just updating the x axis
-      //   centroidArrow.position.set(-11 +
-      //     (22 * features.spectralCentroid / bufferSize / 2), -6, -15);
-      // }
-      //
-      // // Render Spectral Rolloff Arrow
-      // if (features.spectralRolloff) {
-      //   // We're really just updating the x axis
-      //   rolloffArrow.position.set(
-      //     -11 + (features.spectralRolloff / 44100 * 22), -6, -15);
-      // }
-      //
-      // // Render RMS Arrow
-      // if (features.rms) {
-      //   // We're really just updating the x axis
-      //   rmsArrow.position.set(-11, -5 + (10 * features.rms), -15);
-      // }
-      //
+      // Render Spectral Centroid Arrow
+      if (features.spectralCentroid) {
+        // SpectralCentroid is an awesome variable name
+        // We're really just updating the x axis
+        centroidArrow.position.set(-11 +
+          (22 * features.spectralCentroid / bufferSize / 2), -6, -15);
+      }
+
+      // Render Spectral Rolloff Arrow
+      if (features.spectralRolloff) {
+        // We're really just updating the x axis
+        rolloffArrow.position.set(
+          -11 + (features.spectralRolloff / 44100 * 22), -6, -15);
+      }
+      // Render RMS Arrow
+      if (features.rms) {
+        // We're really just updating the x axis
+        rmsArrow.position.set(-11, -5 + (10 * features.rms), -15);
+      }
+
       // // Render windowed buffer
       // if (windowedSignalBuffer) {
       //   let geometry = new THREE.Geometry();
@@ -225,9 +227,11 @@
       //       10 + windowedSignalBuffer[i] * 1.5, -35
       //     ));
       //   }
-      //
+
       //   bufferLine.geometry = geometry;
       //   geometry.dispose();
+
+      //   bufferLine.geometry.attributes.position.needsUpdate = true;
       // }
 
       // // Render loudness

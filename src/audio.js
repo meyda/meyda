@@ -6,15 +6,17 @@
     this.synthesizer = {};
     this.synthesizer.osc1 = this.context.createOscillator();
     this.synthesizer.osc1.type = 'sawtooth';
+    this.synthesizer.out = this.context.createGain();
     this.synthesizer.osc1.start();
 
     this.meyda = Meyda.createMeydaAnalyzer({
       audioContext: this.context,
-      source: this.synthesizer.osc1,
+      source: this.synthesizer.out,
       bufferSize: bufferSize,
       windowingFunction: 'blackman',
     });
     _this = this;
+    this.initializeMicrophoneSampling();
   };
 
   Audio.prototype.setWaveformType = function (type) {
@@ -33,7 +35,7 @@
       console.log('Setting Meyda Source to Microphone');
       _this.meyda.setSource(source);
       console.log('Disconnecting synthesizer');
-      self.synthesizer.osc1.disconnect();
+      this.synthesizer.osc1.disconnect();
       console.groupEnd();
     };
 
