@@ -1,0 +1,28 @@
+{
+  "name": "meyda-showcase-site",
+  "version": "1.0.0",
+  "description": "A showcase site for Meyda",
+  "main": "",
+  "dependencies": {},
+  "devDependencies": {
+    "babelify": "^7.3.0",
+    "watchify": "^3.7.0"
+  },
+  "scripts": {
+    "test": "echo 'No tests yet...'",
+    "build": "./node_modules/.bin/browserify src/main.js -o main.js -t [ babelify --presets [ es2015 ] ]",
+    "serve": "nohup ./node_modules/watchify/bin/cmd.js -v -t [ babelify --presets [ es2015 ] ] src/main.js -o main.js && python -m SimpleHTTPServer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hughrawlinson/meyda.git"
+  },
+  "keywords": [
+    "meyda"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hughrawlinson/meyda/issues"
+  },
+  "homepage": "https://meyda.surge.sh/"
+}

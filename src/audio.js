@@ -17,37 +17,44 @@
   };
 
   Audio.prototype.initializeMicrophoneSampling = function () {
-    console.groupCollapsed('Initializing Microphone Sampling');
-    navigator.getUserMedia = navigator.webkitGetUserMedia ||
-      navigator.getUserMedia;
-    var constraints = { video: false, audio: true };
-    var successCallback = function (mediaStream) {
-      console.log('User allowed microphone access.');
-      console.log('Initializing AudioNode from MediaStream');
-      var source = _this.context.createMediaStreamSource(mediaStream);
-      console.log('Setting Meyda Source to Microphone');
-      _this.meyda.setSource(source);
-      console.groupEnd();
-    };
-
     var errorCallback = function (err) {
       // We should fallback to an audio file here, but that's difficult on mobile
-      console.err('Error: ', err);
-      console.groupEnd();
+      let elvis = document.getElementById("elvisSong");
+      let stream = _this.context.createMediaElementSource(elvis);
+      stream.connect(_this.context.destination);
+      _this.meyda.setSource(stream);
     };
 
-    try {
-      console.log('Asking for permission...');
-      navigator.getUserMedia(
-        constraints,
-        successCallback,
-        errorCallback
-      );
+    try{
+      navigator.getUserMedia = navigator.webkitGetUserMedia ||
+        navigator.getUserMedia;
+      var constraints = { video: false, audio: true };
+      var successCallback = function (mediaStream) {
+        document.getElementById("audioControl").style.display = "none";
+        console.log('User allowed microphone access.');
+        console.log('Initializing AudioNode from MediaStream');
+        var source = _this.context.createMediaStreamSource(mediaStream);
+        console.log('Setting Meyda Source to Microphone');
+        _this.meyda.setSource(source);
+        console.groupEnd();
+      };
+
+      try {
+        console.log('Asking for permission...');
+        navigator.getUserMedia(
+          constraints,
+          successCallback,
+          errorCallback
+        );
+      }
+      catch (e) {
+        var p = navigator.mediaDevices.getUserMedia(constraints);
+        p.then(successCallback);
+        p.catch(errorCallback);
+      }
     }
     catch (e) {
-      var p = navigator.mediaDevices.getUserMedia(constraints);
-      p.then(successCallback);
-      p.catch(errorCallback);
+      errorCallback();
     }
   };
 
