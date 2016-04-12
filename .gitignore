@@ -1,3 +1,6 @@
 meyda.sublime-project
 meyda.sublime-workspace
 LICENSE
+coverage
+node_modules
+npm-debug.log
