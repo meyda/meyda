@@ -4,13 +4,7 @@
   let Audio = require('./audio');
   let a = new Audio(bufferSize);
 
-  document.getElementById('osc1Freq').onchange = function (e) {
-    a.synthesizer.osc1.frequency.value = 110 + 1000 * Math.pow(this.value, 2);
-  };
-
-  document.getElementById('switchToMicButton').onclick = a.initializeMicrophoneSampling;
-
-  var resolution = 720;
+  var resolution = document.querySelector('hr').offsetWidth/16*10;
   var aspectRatio = 16 / 10;
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(40, aspectRatio, 0.1, 1000);
@@ -40,7 +34,14 @@
   var renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
   renderer.setSize(resolution * aspectRatio, resolution);
-  document.body.appendChild(renderer.domElement);
+  window.addEventListener('resize', function(){
+    let canvasWidth = document.querySelector('hr').offsetWidth;
+    resolution = canvasWidth/16*10;
+    renderer.setSize(resolution * aspectRatio, resolution);
+    renderer.domElement.height = resolution;
+    renderer.domElement.width = canvasWidth;
+  });
+  document.querySelector('#showcase').appendChild(renderer.domElement);
 
   var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
   directionalLight.position.set(0, 1, 1);
