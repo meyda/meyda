@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-    const bufferSize = 1024;
+  const bufferSize = 1024;
   let Audio = require('./audio');
   let a = new Audio(bufferSize);
 
@@ -21,11 +21,11 @@
   };
 
   var material = new THREE.LineBasicMaterial({
-    color: 0x00ff00,
+    color: 0x00ff00
   });
 
   var yellowMaterial = new THREE.LineBasicMaterial({
-    color: 0x00ffff,
+    color: 0x00ffff
   });
 
   var ffts = initializeFFTs(20, bufferSize);
@@ -50,15 +50,11 @@
   camera.position.z = 5;
 
   // Unchanging variables
-  var length = 1;
-  var hex = 0xffff00;
-  var dir = new THREE.Vector3(0, 1, 0);
-  var rightDir = new THREE.Vector3(1, 0, 0);
-  var origin = new THREE.Vector3(1, -6, -15);
-
-  var g = new THREE.Geometry();
-  g.vertices.push(new THREE.Vector3(-11, -3, -15));
-  g.vertices.push(new THREE.Vector3(11, -3, -15));
+  const length = 1;
+  const hex = 0xffff00;
+  const dir = new THREE.Vector3(0, 1, 0);
+  const rightDir = new THREE.Vector3(1, 0, 0);
+  const origin = new THREE.Vector3(1, -6, -15);
 
   // Variables we update
   let centroidArrow = new THREE.ArrowHelper(dir, origin, length, hex);
@@ -66,29 +62,27 @@
   let rmsArrow = new THREE.ArrowHelper(rightDir, origin, length, 0xff00ff);
   let lines = new THREE.Group(); // Lets create a seperate group for our lines
   // let loudnessLines = new THREE.Group();
-  // let bufferLine = new THREE.Line(g, material);
   scene.add(centroidArrow);
   scene.add(rolloffArrow);
   scene.add(rmsArrow);
-  // scene.add(bufferLine);
 
   // Render Spectrogram
   for (let i = 0; i < ffts.length; i++) {
     if (ffts[i]) {
       let geometry = new THREE.BufferGeometry(); // May be a way to reuse this
 
-      var positions = new Float32Array(ffts[i].length * 3);
+      let positions = new Float32Array(ffts[i].length * 3);
 
       geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
       geometry.setDrawRange(0, ffts[i].length);
 
-      var line = new THREE.Line(geometry, material);
+      let line = new THREE.Line(geometry, material);
       lines.add(line);
 
-      var positions = line.geometry.attributes.position.array;
-      var index = 0;
+      positions = line.geometry.attributes.position.array;
+      let index = 0;
 
-      for (var j = 0; j < ffts[i].length; j++) {
+      for (let j = 0; j < ffts[i].length; j++) {
         positions[index++] = -11 + (22 * j / ffts[i].length);
         positions[index++] = -5 + ffts[i][j];
         positions[index++] = -15 - i;
@@ -96,10 +90,24 @@
     }
   }
 
+  let bufferLineGeometry = new THREE.BufferGeometry();
+  let bufferLine = new THREE.Line(bufferLineGeometry, material);
+  {
+    let positions = new Float32Array(bufferSize*3);
+    bufferLineGeometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
+    bufferLineGeometry.setDrawRange(0, bufferSize);
+    positions = bufferLine.geometry.attributes.position.array;
+    let index = 0;
+    for (let i = 0; i < bufferSize; i++){
+      positions[index++] = -11 + 22 * i / bufferSize;
+      positions[index++] = 4;
+      positions[index++] = -25;
+    }
+  }
+  scene.add(bufferLine);
   scene.add(lines);
 
   // scene.add(loudnessLines);
-  // scene.add(bufferLine);
 
   let features = null;
 
@@ -114,13 +122,13 @@
     if (features) {
       ffts.pop();
       ffts.unshift(features.amplitudeSpectrum);
-      const windowedSignalBuffer = a.meyda._m.windowedSignal;
+      const windowedSignalBuffer = a.meyda._m.signal;
 
       for (let i = 0; i < ffts.length; i++) {
         var positions = lines.children[i].geometry.attributes.position.array;
         var index = 0;
 
-          for (var j = 0; j < ffts[i].length*3; j++) {
+        for (var j = 0; j < ffts[i].length*3; j++) {
           positions[index++] = -11 + (22 * j / ffts[i].length);
           positions[index++] = -5 + ffts[i][j];
           positions[index++] = -15 - i;
@@ -149,21 +157,17 @@
         rmsArrow.position.set(-11, -5 + (10 * features.rms), -15);
       }
 
-      // // Render windowed buffer
-      // if (windowedSignalBuffer) {
-      //   let geometry = new THREE.Geometry();
-      //   for (let i = 0; i < windowedSignalBuffer.length; i++) {
-      //     geometry.vertices.push(new THREE.Vector3(
-      //       -11 + 22 * i / windowedSignalBuffer.length,
-      //       10 + windowedSignalBuffer[i] * 1.5, -35
-      //     ));
-      //   }
-
-      //   bufferLine.geometry = geometry;
-      //   geometry.dispose();
-
-      //   bufferLine.geometry.attributes.position.needsUpdate = true;
-      // }
+      if (windowedSignalBuffer) {
+        // Render Signal Buffer
+        let positions = bufferLine.geometry.attributes.position.array;
+        let index = 0;
+        for (var i = 0; i < bufferSize; i++){
+          positions[index++] = -11 + 22 * i / bufferSize;
+          positions[index++] = 4 + (windowedSignalBuffer[i] * 5);
+          positions[index++] = -25;
+        }
+        bufferLine.geometry.attributes.position.needsUpdate = true;
+      }
 
       // // Render loudness
       // if (features.loudness && features.loudness.specific) {
@@ -185,7 +189,6 @@
       //   }
       // }
 
-      // // I feel like there is a faster way to do this?
       // for (let c = 0; c < loudnessLines.children.length; c++) {
       //   loudnessLines.remove(loudnessLines.children[c]); //forEach is slow
       // }

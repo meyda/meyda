@@ -31,6 +31,7 @@
     };
 
     var errorCallback = function (err) {
+      // We should fallback to an audio file here, but that's difficult on mobile
       console.err('Error: ', err);
       console.groupEnd();
     };
