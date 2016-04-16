@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "dct": "0.0.3",
-    "jscs": "^2.11.0",
+    "jscs": "^3.0.3",
     "jsfft": "git://github.com/dntj/jsfft.git",
     "node-getopt": "^0.2.3",
     "wav": "^1.0.0"
