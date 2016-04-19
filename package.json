@@ -15,7 +15,7 @@
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- --recursive test --report lcovonly",
     "codeclimate": "cat ./coverage/lcov.info && ./node_modules/.bin/codeclimate-test-reporter < ./coverage/lcov.info",
     "default": "npm run clean && npm install && npm test",
-    "lint": "./node_modules/.bin/jscs src test",
+    "lint": "./node_modules/.bin/eslint src test",
     "clean": "rm -rf dist node_modules src-cov coverage lib-cov",
     "travis": "npm run default && npm run codeclimate"
   },
@@ -49,6 +49,7 @@
     "browserify": "^13.0.0",
     "chai": "^3.1.0",
     "codeclimate-test-reporter": "^0.3.1",
+    "eslint": "^2.8.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.0",
     "gulp-concat": "^2.6.0",
@@ -62,7 +63,6 @@
   },
   "dependencies": {
     "dct": "0.0.3",
-    "jscs": "^3.0.3",
     "jsfft": "git://github.com/dntj/jsfft.git",
     "node-getopt": "^0.2.3",
     "wav": "^1.0.0"
