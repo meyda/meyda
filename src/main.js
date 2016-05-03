@@ -2,7 +2,9 @@
   'use strict';
 
   // Redirect to https because usermedia doesn't work on insecure origins
-  if (window.location.href !== "https://meyda.surge.sh/"){
+  if (window.location.href     !== "https://meyda.surge.sh/" &&
+      // Allow local development
+      window.location.hostname !== "localhost"){
     window.location.href = "https://meyda.surge.sh/";
   }
 

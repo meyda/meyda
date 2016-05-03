@@ -1,6 +1,19 @@
 (function () {
   var _this;
   const Audio = function (bufferSize) {
+    if (window.hasOwnProperty('webkitAudioContext') &&
+        !window.hasOwnProperty('AudioContext')) {
+      window.AudioContext = webkitAudioContext;
+    }
+
+    if (navigator.hasOwnProperty('webkitGetUserMedia') &&
+        !navigator.hasOwnProperty('getUserMedia')) {
+      navigator.getUserMedia = webkitGetUserMedia;
+      if (!AudioContext.prototype.hasOwnProperty('createScriptProcessor')) {
+        AudioContext.prototype.createScriptProcessor = AudioContext.prototype.createJavaScriptNode;
+      }
+    }
+
     this.context = new AudioContext();
 
     this.synthesizer = {};
@@ -19,18 +32,18 @@
   Audio.prototype.initializeMicrophoneSampling = function () {
     var errorCallback = function (err) {
       // We should fallback to an audio file here, but that's difficult on mobile
-      let elvis = document.getElementById("elvisSong");
+      let elvis = document.getElementById('elvisSong');
       let stream = _this.context.createMediaElementSource(elvis);
       stream.connect(_this.context.destination);
       _this.meyda.setSource(stream);
     };
 
-    try{
+    try {
       navigator.getUserMedia = navigator.webkitGetUserMedia ||
         navigator.getUserMedia;
       var constraints = { video: false, audio: true };
       var successCallback = function (mediaStream) {
-        document.getElementById("audioControl").style.display = "none";
+        document.getElementById('elvisSong').style.display = 'none';
         console.log('User allowed microphone access.');
         console.log('Initializing AudioNode from MediaStream');
         var source = _this.context.createMediaStreamSource(mediaStream);
