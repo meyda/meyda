@@ -26,7 +26,7 @@ var MeydaAnalyzer = exports.MeydaAnalyzer = function () {
     _classCallCheck(this, MeydaAnalyzer);
 
     this._m = _this;
-    if (!options.audioContext) throw self._errors.noAC;else if (options.bufferSize && !utilities.isPowerOfTwo(options.bufferSize)) throw self._errors.notPow2;else if (!options.source) throw self._errors.noSource;
+    if (!options.audioContext) throw this._m.errors.noAC;else if (options.bufferSize && !utilities.isPowerOfTwo(options.bufferSize)) throw this._m._errors.notPow2;else if (!options.source) throw this._m._errors.noSource;
 
     this._m.audioContext = options.audioContext;
 
@@ -72,13 +72,13 @@ var MeydaAnalyzer = exports.MeydaAnalyzer = function () {
   _createClass(MeydaAnalyzer, [{
     key: 'start',
     value: function start(features) {
-      this._featuresToExtract = features;
-      this.EXTRACTION_STARTED = true;
+      this._m._featuresToExtract = features || this._m._featuresToExtract;
+      this._m.EXTRACTION_STARTED = true;
     }
   }, {
     key: 'stop',
     value: function stop() {
-      this.EXTRACTION_STARTED = false;
+      this._m.EXTRACTION_STARTED = false;
     }
   }, {
     key: 'setSource',
@@ -89,7 +89,7 @@ var MeydaAnalyzer = exports.MeydaAnalyzer = function () {
     key: 'get',
     value: function get(features) {
       if (this._m.inputData) {
-        return this._m.extract(features || this._featuresToExtract, this._m.inputData, this._m.previousInputData);
+        return this._m.extract(features || this._m._featuresToExtract, this._m.inputData, this._m.previousInputData);
       } else {
         return null;
       }
