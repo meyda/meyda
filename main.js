@@ -44,26 +44,17 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
 	"use strict";
-=======
-	'use strict';
->>>>>>> 1b0aedc... god damn it
 
 	(function () {
 	  'use strict';
 
 	  // Redirect to https because usermedia doesn't work on insecure origins
 
-<<<<<<< HEAD
 	  if (window.location.href !== "https://meyda.surge.sh/" &&
 	  // Allow local development
 	  window.location.hostname !== "localhost") {
 	    window.location.href = "https://meyda.surge.sh/";
-=======
-	  if (window.location.href !== 'https://meyda.surge.sh/' && window.location.hostname !== 'localhost') {
-	    window.location.href = 'https://meyda.surge.sh/';
->>>>>>> 1b0aedc... god damn it
 	  }
 
 	  var bufferSize = 1024;
@@ -105,10 +96,6 @@
 	    renderer.domElement.height = resolution;
 	    renderer.domElement.width = canvasWidth;
 	  });
-<<<<<<< HEAD
-=======
-
->>>>>>> 1b0aedc... god damn it
 	  document.querySelector('#showcase').appendChild(renderer.domElement);
 
 	  var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
@@ -265,17 +252,11 @@
 /* 1 */
 /***/ function(module, exports) {
 
-<<<<<<< HEAD
-	"use strict";
-=======
 	'use strict';
->>>>>>> 1b0aedc... god damn it
 
 	(function () {
 	  var _this;
 	  var Audio = function Audio(bufferSize) {
-<<<<<<< HEAD
-=======
 	    if (window.hasOwnProperty('webkitAudioContext') && !window.hasOwnProperty('AudioContext')) {
 	      window.AudioContext = webkitAudioContext;
 	    }
@@ -287,7 +268,6 @@
 	      }
 	    }
 
->>>>>>> 1b0aedc... god damn it
 	    this.context = new AudioContext();
 
 	    this.synthesizer = {};
@@ -306,11 +286,7 @@
 	  Audio.prototype.initializeMicrophoneSampling = function () {
 	    var errorCallback = function errorCallback(err) {
 	      // We should fallback to an audio file here, but that's difficult on mobile
-<<<<<<< HEAD
-	      var elvis = document.getElementById("elvisSong");
-=======
 	      var elvis = document.getElementById('elvisSong');
->>>>>>> 1b0aedc... god damn it
 	      var stream = _this.context.createMediaElementSource(elvis);
 	      stream.connect(_this.context.destination);
 	      _this.meyda.setSource(stream);
@@ -320,11 +296,7 @@
 	      navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.getUserMedia;
 	      var constraints = { video: false, audio: true };
 	      var successCallback = function successCallback(mediaStream) {
-<<<<<<< HEAD
-	        document.getElementById("audioControl").style.display = "none";
-=======
 	        document.getElementById('elvisSong').style.display = 'none';
->>>>>>> 1b0aedc... god damn it
 	        console.log('User allowed microphone access.');
 	        console.log('Initializing AudioNode from MediaStream');
 	        var source = _this.context.createMediaStreamSource(mediaStream);

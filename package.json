@@ -14,8 +14,8 @@
   },
   "scripts": {
     "test": "echo 'No tests yet...'",
-    "build": "./node_modules/.bin/webpack --progress --color",
-    "serve": "nohup ./node_modules/.bin/webpack --progress --color --watch & python -m SimpleHTTPServer"
+    "build": "./node_modules/webpack/bin/webpack.js --progress --color",
+    "serve": "nohup ./node_modules/webpack/bin/webpack.js --progress --color --watch & python -m SimpleHTTPServer"
   },
   "repository": {
     "type": "git",
