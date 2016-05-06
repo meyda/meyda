@@ -1,7 +1,7 @@
 {
   "name": "meyda",
   "main": "dist/web/meyda.min.js",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "homepage": "https://github.com/hughrawlinson/meyda",
   "authors": [
     "Hugh Rawlinson <hugh@spotify.com>",
