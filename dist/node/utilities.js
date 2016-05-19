@@ -10,7 +10,6 @@ exports.applyWindow = applyWindow;
 exports.createBarkScale = createBarkScale;
 exports.typedToArray = typedToArray;
 exports.arrayToTyped = arrayToTyped;
-exports._normalize = _normalize;
 exports.normalize = normalize;
 exports.normalizeToOne = normalizeToOne;
 exports.mean = mean;
@@ -26,7 +25,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 var windows = {};
 
-function isPowerOfTwo(num) {
+function isPowerOfTwo(_num) {
+  var num = _num;
   while (num % 2 === 0 && num > 1) {
     num /= 2;
   }
@@ -35,7 +35,7 @@ function isPowerOfTwo(num) {
 }
 
 function error(message) {
-  throw new Error('Meyda: ' + message);
+  throw new Error('Meyda:  ' + message);
 }
 
 function pointwiseBufferMult(a, b) {
@@ -47,7 +47,9 @@ function pointwiseBufferMult(a, b) {
   return c;
 }
 
-function applyWindow(signal, windowname) {
+function applyWindow(_signal, _windowname) {
+  var windowname = _windowname;
+  var signal = _signal;
   if (windowname !== 'rect') {
     if (windowname === '' || !windowname) windowname = 'hanning';
     if (!windows[windowname]) windows[windowname] = {};
@@ -87,22 +89,16 @@ function arrayToTyped(t) {
   return Float32Array.from(t);
 }
 
-function _normalize(num, range) {
-  return num / range;
-}
-
 function normalize(a, range) {
   return a.map(function (n) {
-    return _normalize(n, range);
+    return n / range;
   });
 }
 
 function normalizeToOne(a) {
   var max = Math.max.apply(null, a);
 
-  return a.map(function (n) {
-    return n / max;
-  });
+  return normalize(a, max);
 }
 
 function mean(a) {
@@ -111,41 +107,31 @@ function mean(a) {
   }) / a.length;
 }
 
-function _melToFreq(melValue) {
-  var freqValue = 700 * (Math.exp(melValue / 1125) - 1);
-  return freqValue;
+function melToFreq(melValue) {
+  return 700 * (Math.exp(melValue / 1125) - 1);
 }
 
-function _freqToMel(freqValue) {
-  var melValue = 1125 * Math.log(1 + freqValue / 700);
-  return melValue;
-}
-
-function melToFreq(mV) {
-  return _melToFreq(mV);
-}
-
-function freqToMel(fV) {
-  return _freqToMel(fV);
+function freqToMel(freqValue) {
+  return 1125 * Math.log(1 + freqValue / 700);
 }
 
 function createMelFilterBank(numFilters, sampleRate, bufferSize) {
-  //the +2 is the upper and lower limits
+  // the +2 is the upper and lower limits
   var melValues = new Float32Array(numFilters + 2);
   var melValuesInFreq = new Float32Array(numFilters + 2);
 
-  //Generate limits in Hz - from 0 to the nyquist.
+  // Generate limits in Hz - from 0 to the nyquist.
   var lowerLimitFreq = 0;
   var upperLimitFreq = sampleRate / 2;
 
-  //Convert the limits to Mel
-  var lowerLimitMel = _freqToMel(lowerLimitFreq);
-  var upperLimitMel = _freqToMel(upperLimitFreq);
+  // Convert the limits to Mel
+  var lowerLimitMel = freqToMel(lowerLimitFreq);
+  var upperLimitMel = freqToMel(upperLimitFreq);
 
-  //Find the range
+  // Find the range
   var range = upperLimitMel - lowerLimitMel;
 
-  //Find the range as part of the linear interpolation
+  // Find the range as part of the linear interpolation
   var valueToAdd = range / (numFilters + 1);
 
   var fftBinsOfFreq = Array(numFilters + 2);
@@ -156,7 +142,7 @@ function createMelFilterBank(numFilters, sampleRate, bufferSize) {
     melValues[i] = i * valueToAdd;
 
     // Convert back to Hz
-    melValuesInFreq[i] = _melToFreq(melValues[i]);
+    melValuesInFreq[i] = melToFreq(melValues[i]);
 
     // Find the corresponding bins
     fftBinsOfFreq[i] = Math.floor((bufferSize + 1) * melValuesInFreq[i] / sampleRate);
@@ -168,7 +154,7 @@ function createMelFilterBank(numFilters, sampleRate, bufferSize) {
     // pre-populating the arrays with 0s.
     filterBank[j] = Array.apply(null, new Array(bufferSize / 2 + 1)).map(Number.prototype.valueOf, 0);
 
-    //creating the lower and upper slopes for each bin
+    // creating the lower and upper slopes for each bin
     for (var _i = fftBinsOfFreq[j]; _i < fftBinsOfFreq[j + 1]; _i++) {
       filterBank[j][_i] = (_i - fftBinsOfFreq[j]) / (fftBinsOfFreq[j + 1] - fftBinsOfFreq[j]);
     }

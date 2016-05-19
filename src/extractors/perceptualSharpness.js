@@ -1,15 +1,15 @@
 import loudness from './loudness';
 
-export default function() {
-  if (typeof arguments[0].signal !== 'object') {
+export default function (...args) {
+  if (typeof args[0].signal !== 'object') {
     throw new TypeError();
   }
 
-  var loudnessValue = loudness(arguments[0]);
-  var spec = loudnessValue.specific;
-  var output = 0;
+  const loudnessValue = loudness(args[0]);
+  const spec = loudnessValue.specific;
+  let output = 0;
 
-  for (var i = 0; i < spec.length; i++) {
+  for (let i = 0; i < spec.length; i++) {
     if (i < 15) {
       output += (i + 1) * spec[i + 1];
     } else {

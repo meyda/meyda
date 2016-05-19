@@ -12,14 +12,14 @@ exports.default = function (args) {
   }
 
   var NUM_BARK_BANDS = 24;
-  var specific = new Float32Array(NUM_BARK_BANDS);
-  var total = 0;
   var normalisedSpectrum = args.ampSpectrum;
   var bbLimits = new Int32Array(NUM_BARK_BANDS + 1);
+  var specific = new Float32Array(NUM_BARK_BANDS);
 
   bbLimits[0] = 0;
   var currentBandEnd = args.barkScale[normalisedSpectrum.length - 1] / NUM_BARK_BANDS;
   var currentBand = 1;
+  var total = 0;
   for (var i = 0; i < normalisedSpectrum.length; i++) {
     while (args.barkScale[i] > currentBandEnd) {
       bbLimits[currentBand++] = i;
@@ -29,19 +29,18 @@ exports.default = function (args) {
 
   bbLimits[NUM_BARK_BANDS] = normalisedSpectrum.length - 1;
 
-  //process
+  // process
 
   for (var _i = 0; _i < NUM_BARK_BANDS; _i++) {
     var sum = 0;
     for (var j = bbLimits[_i]; j < bbLimits[_i + 1]; j++) {
-
       sum += normalisedSpectrum[j];
     }
 
     specific[_i] = Math.pow(sum, 0.23);
   }
 
-  //get total loudness
+  // get total loudness
   for (var _i2 = 0; _i2 < specific.length; _i2++) {
     total += specific[_i2];
   }

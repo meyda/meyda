@@ -16,16 +16,10 @@ import powerSpectrum from './extractors/powerSpectrum';
 import spectralFlux from './extractors/spectralFlux';
 
 export default {
-  buffer: function (args) {
-    return args.signal;
-  },
-
+  buffer: (args) => args.signal,
   rms,
   energy,
-  complexSpectrum: function (args) {
-    return args.complexSpectrum;
-  },
-
+  complexSpectrum: (args) => args.complexSpectrum,
   spectralSlope,
   spectralCentroid,
   spectralRolloff,
@@ -33,10 +27,7 @@ export default {
   spectralSpread,
   spectralSkewness,
   spectralKurtosis,
-  amplitudeSpectrum: function (args) {
-    return args.ampSpectrum;
-  },
-
+  amplitudeSpectrum: (args) => args.ampSpectrum,
   zcr,
   loudness,
   perceptualSpread,

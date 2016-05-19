@@ -1,6 +1,6 @@
-import {mu} from './extractorUtilities';
+import { mu } from './extractorUtilities';
 
-export default function(args) {
+export default function (args) {
   if (typeof args.ampSpectrum !== 'object') {
     throw new TypeError();
   }

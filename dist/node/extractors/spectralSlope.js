@@ -11,7 +11,7 @@ exports.default = function (args) {
     throw new TypeError();
   }
 
-  //linear regression
+  // linear regression
   var ampSum = 0;
   var freqSum = 0;
   var freqs = new Float32Array(args.ampSpectrum.length);

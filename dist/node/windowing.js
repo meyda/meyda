@@ -12,13 +12,13 @@ function blackman(size) {
   var coeff1 = 2 * Math.PI / (size - 1);
   var coeff2 = 2 * coeff1;
 
-  //According to http://uk.mathworks.com/help/signal/ref/blackman.html
-  //first half of the window
+  // According to http://uk.mathworks.com/help/signal/ref/blackman.html
+  // first half of the window
   for (var i = 0; i < size / 2; i++) {
     blackmanBuffer[i] = 0.42 - 0.5 * Math.cos(i * coeff1) + 0.08 * Math.cos(i * coeff2);
   }
 
-  //second half of the window
+  // second half of the window
   for (var _i = size / 2; _i > 0; _i--) {
     blackmanBuffer[size - _i] = blackmanBuffer[_i - 1];
   }
@@ -51,7 +51,7 @@ function hanning(size) {
 function hamming(size) {
   var hammingBuffer = new Float32Array(size);
   for (var i = 0; i < size; i++) {
-    //According to http://uk.mathworks.com/help/signal/ref/hamming.html
+    // According to http://uk.mathworks.com/help/signal/ref/hamming.html
     hammingBuffer[i] = 0.54 - 0.46 * Math.cos(2 * Math.PI * (i / size - 1));
   }
 

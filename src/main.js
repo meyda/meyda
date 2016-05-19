@@ -1,10 +1,48 @@
 import * as utilities from './utilities';
 import * as extractors from './featureExtractors';
-import * as fft from 'jsfft';
+// jsfft is required by complex_array, but doesn't export anything
+require('jsfft');
 import * as complexArray from 'jsfft/lib/complex_array';
-import {MeydaAnalyzer} from './meyda-wa';
+import { MeydaAnalyzer } from './meyda-wa';
 
-var Meyda = {
+const prepareSignalWithSpectrum = (signal, windowingFunction, bufferSize) => {
+  const preparedSignal = {};
+
+  if (typeof signal.buffer === 'undefined') {
+    // signal is a normal array, convert to F32A
+    preparedSignal.signal = utilities.arrayToTyped(signal);
+  } else {
+    preparedSignal.signal = signal;
+  }
+
+  preparedSignal.windowedSignal = utilities.applyWindow(
+    preparedSignal.signal,
+    windowingFunction);
+
+  // create complexarray to hold the spectrum
+  const data = new complexArray.ComplexArray(bufferSize);
+
+  // map time domain
+  data.map((value, i) => {
+    const v = value;
+    v.real = preparedSignal.windowedSignal[i];
+    return v;
+  });
+
+  // Functions shouldn't start with upper case chars, this trips our linter
+  data.fft = data.FFT;
+  preparedSignal.complexSpectrum = data.fft();
+  preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
+  for (let i = 0; i < bufferSize / 2; i++) {
+    preparedSignal.ampSpectrum[i] = Math.sqrt(
+      Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
+      Math.pow(preparedSignal.complexSpectrum.imag[i], 2));
+  }
+
+  return preparedSignal;
+};
+
+const Meyda = {
   audioContext: null,
   spn: null,
   bufferSize: 512,
@@ -16,7 +54,8 @@ var Meyda = {
   EXTRACTION_STARTED: false,
   _featuresToExtract: [],
   windowing: utilities.applyWindow,
-  _errors: {
+  // TODO: We're using this a dependency, we should use an import
+  errors: {
     notPow2: new Error(
         'Meyda: Buffer size must be a power of 2, e.g. 64 or 512'),
     featureUndef: new Error('Meyda: No features defined.'),
@@ -26,22 +65,21 @@ var Meyda = {
     noSource: new Error('Meyda: No source node specified.'),
   },
 
-  createMeydaAnalyzer: function (options) {
-    return new MeydaAnalyzer(options, Meyda);
-  },
+  createMeydaAnalyzer: options => new MeydaAnalyzer(options, Meyda),
 
-  extract: function (feature, signal, previousSignal) {
-    if (!signal)
-        throw this._errors.invalidInput;
-    else if (typeof signal != 'object')
-        throw this._errors.invalidInput;
-    else if (!feature)
-        throw this._errors.featureUndef;
-    else if (!utilities.isPowerOfTwo(signal.length))
-        throw this._errors.notPow2;
+  extract: (feature, signal, previousSignal) => {
+    if (!signal) {
+      throw this.errors.invalidInput;
+    } else if (typeof signal !== 'object') {
+      throw this.errors.invalidInput;
+    } else if (!feature) {
+      throw this.errors.featureUndef;
+    } else if (!utilities.isPowerOfTwo(signal.length)) {
+      throw this.errors.notPow2;
+    }
 
-    if (typeof this.barkScale == 'undefined' ||
-            this.barkScale.length != this.bufferSize) {
+    if (typeof this.barkScale === 'undefined' ||
+            this.barkScale.length !== this.bufferSize) {
       this.barkScale = utilities.createBarkScale(
           this.bufferSize,
           this.sampleRate,
@@ -50,17 +88,17 @@ var Meyda = {
     }
 
     // Recalcuate mel bank if buffer length changed
-    if (typeof this.melFilterBank == 'undefined' ||
-            this.barkScale.length != this.bufferSize ||
-            this.melFilterBank.length != this.melBands) {
+    if (typeof this.melFilterBank === 'undefined' ||
+            this.barkScale.length !== this.bufferSize ||
+            this.melFilterBank.length !== this.melBands) {
       this.melFilterBank = utilities.createMelFilterBank(
           this.melBands,
           this.sampleRate,
           this.bufferSize);
     }
 
-    if (typeof signal.buffer == 'undefined') {
-      //signal is a normal array, convert to F32A
+    if (typeof signal.buffer === 'undefined') {
+      // signal is a normal array, convert to F32A
       this.signal = utilities.arrayToTyped(signal);
     } else {
       this.signal = signal;
@@ -76,7 +114,7 @@ var Meyda = {
     this.ampSpectrum = preparedSignal.ampSpectrum;
 
     if (previousSignal) {
-      let preparedSignal = prepareSignalWithSpectrum(previousSignal,
+      preparedSignal = prepareSignalWithSpectrum(previousSignal,
               this.windowingFunction,
               this.bufferSize);
 
@@ -86,75 +124,39 @@ var Meyda = {
     }
 
     if (typeof feature === 'object') {
-      var results = {};
-      for (var x = 0; x < feature.length; x++) {
+      const results = {};
+      for (let x = 0; x < feature.length; x++) {
         results[feature[x]] = (this.featureExtractors[feature[x]]({
-          ampSpectrum:this.ampSpectrum,
-          complexSpectrum:this.complexSpectrum,
-          signal:this.signal,
-          bufferSize:this.bufferSize,
-          sampleRate:this.sampleRate,
-          barkScale:this.barkScale,
-          melFilterBank:this.melFilterBank,
-          previousSignal:this.previousSignal,
-          previousAmpSpectrum:this.previousAmpSpectrum,
-          previousComplexSpectrum:this.previousComplexSpectrum,
+          ampSpectrum: this.ampSpectrum,
+          complexSpectrum: this.complexSpectrum,
+          signal: this.signal,
+          bufferSize: this.bufferSize,
+          sampleRate: this.sampleRate,
+          barkScale: this.barkScale,
+          melFilterBank: this.melFilterBank,
+          previousSignal: this.previousSignal,
+          previousAmpSpectrum: this.previousAmpSpectrum,
+          previousComplexSpectrum: this.previousComplexSpectrum,
         }));
       }
 
       return results;
-    }    else if (typeof feature === 'string') {
+    } else if (typeof feature === 'string') {
       return this.featureExtractors[feature]({
-        ampSpectrum:this.ampSpectrum,
-        complexSpectrum:this.complexSpectrum,
-        signal:this.signal,
-        bufferSize:this.bufferSize,
-        sampleRate:this.sampleRate,
-        barkScale:this.barkScale,
-        melFilterBank:this.melFilterBank,
-        previousSignal:this.previousSignal,
-        previousAmpSpectrum:this.previousAmpSpectrum,
-        previousComplexSpectrum:this.previousComplexSpectrum,
+        ampSpectrum: this.ampSpectrum,
+        complexSpectrum: this.complexSpectrum,
+        signal: this.signal,
+        bufferSize: this.bufferSize,
+        sampleRate: this.sampleRate,
+        barkScale: this.barkScale,
+        melFilterBank: this.melFilterBank,
+        previousSignal: this.previousSignal,
+        previousAmpSpectrum: this.previousAmpSpectrum,
+        previousComplexSpectrum: this.previousComplexSpectrum,
       });
-    }    else {
-      throw this._errors.invalidFeatureFmt;
     }
+    throw this.errors.invalidFeatureFmt;
   },
-};
-
-var prepareSignalWithSpectrum = function (signal,
-  windowingFunction,
-  bufferSize) {
-  var preparedSignal = {};
-
-  if (typeof signal.buffer == 'undefined') {
-    //signal is a normal array, convert to F32A
-    preparedSignal.signal = utilities.arrayToTyped(signal);
-  }  else {
-    preparedSignal.signal = signal;
-  }
-
-  preparedSignal.windowedSignal = utilities.applyWindow(
-    preparedSignal.signal,
-    windowingFunction);
-
-  // create complexarray to hold the spectrum
-  var data = new complexArray.ComplexArray(bufferSize);
-
-  // map time domain
-  data.map(function (value, i, n) {
-    value.real = preparedSignal.windowedSignal[i];
-  });
-
-  preparedSignal.complexSpectrum = data.FFT();
-  preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
-  for (var i = 0; i < bufferSize / 2; i++) {
-    preparedSignal.ampSpectrum[i] = Math.sqrt(
-      Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
-      Math.pow(preparedSignal.complexSpectrum.imag[i], 2));
-  }
-
-  return preparedSignal;
 };
 
 export default Meyda;
