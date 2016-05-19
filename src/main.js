@@ -42,6 +42,7 @@ const prepareSignalWithSpectrum = (signal, windowingFunction, bufferSize) => {
   return preparedSignal;
 };
 
+// TODO: This should be a class
 const Meyda = {
   audioContext: null,
   spn: null,
