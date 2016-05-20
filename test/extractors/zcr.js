@@ -1,14 +1,14 @@
-var chai = require('chai');
-var assert = chai.assert;
-var TestData = require('../TestData');
+const chai = require('chai');
+const assert = chai.assert;
+const TestData = require('../TestData');
 
 // Setup
-var zcr = require('../../dist/node/extractors/zcr');
+const zcr = require('../../dist/node/extractors/zcr');
 
-describe('zcr', function () {
-  it('should return correct zcr value', function (done) {
-    var en = zcr({
-      signal:TestData.VALID_SIGNAL,
+describe('zcr', () => {
+  it('should return correct zcr value', (done) => {
+    const en = zcr({
+      signal: TestData.VALID_SIGNAL,
     });
 
     assert.equal(en, 35);
@@ -16,25 +16,25 @@ describe('zcr', function () {
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  it('should throw an error when passed an empty object', (done) => {
     try {
-      var en = zcr({});
+      zcr({});
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  it('should throw an error when not passed anything', (done) => {
     try {
-      var en = zcr();
+      zcr();
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  it('should throw an error when passed something invalid', (done) => {
     try {
-      var en = zcr({ signal:'not a signal' });
+      zcr({ signal: 'not a signal' });
     } catch (e) {
       done();
     }

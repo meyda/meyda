@@ -1,19 +1,19 @@
-var chai = require('chai');
-var assert = chai.assert;
+const chai = require('chai');
+const assert = chai.assert;
 
 // Setup
-var util = require('../dist/node/utilities');
+const util = require('../dist/node/utilities');
 
-describe('isPowerOfTwo', function () {
-  it('should validate all powers of two', function (done) {
-    for (var i = 0; i > 2000; i++) {
+describe('isPowerOfTwo', () => {
+  it('should validate all powers of two', (done) => {
+    for (let i = 0; i > 2000; i++) {
       assert.isTrue(util.isPowerOfTwo(Math.pow(2, i)));
     }
 
     done();
   });
 
-  it('should fail for non-powers of two', function (done) {
+  it('should fail for non-powers of two', (done) => {
     assert.isFalse(util.isPowerOfTwo(3));
     assert.isFalse(util.isPowerOfTwo(348));
     assert.isFalse(util.isPowerOfTwo(29384));
@@ -22,19 +22,19 @@ describe('isPowerOfTwo', function () {
   });
 });
 
-describe('error', function () {
-  it('throws an error with the correct message', function (done) {
-    var message = 'Test Error Message';
-    assert.throws(function () {
+describe('error', () => {
+  it('throws an error with the correct message', (done) => {
+    const message = 'Test Error Message';
+    assert.throws(() => {
       util.error(message);
-    }, Error, 'Meyda: ' + message);
+    }, Error, `Meyda: ${message}`);
 
     done();
   });
 });
 
-describe('pointwiseBufferMult', function () {
-  it('multiplies two arrays correctly', function (done) {
+describe('pointwiseBufferMult', () => {
+  it('multiplies two arrays correctly', (done) => {
     assert.deepEqual(
     util.pointwiseBufferMult(
     [4, 5, 6],
@@ -45,7 +45,7 @@ describe('pointwiseBufferMult', function () {
     done();
   });
 
-  it('handles differently sized arrays correctly', function (done) {
+  it('handles differently sized arrays correctly', (done) => {
     assert.deepEqual(
     util.pointwiseBufferMult(
     [4, 0.25, 0.7],
@@ -57,8 +57,8 @@ describe('pointwiseBufferMult', function () {
   });
 });
 
-describe('applyWindow', function () {
-  it('applies a windowing function to a buffer', function (done) {
+describe('applyWindow', () => {
+  it('applies a windowing function to a buffer', (done) => {
     assert.deepEqual(
     util.applyWindow(
     [1, 4, 6],

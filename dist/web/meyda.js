@@ -1062,6 +1062,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
+exports.createMeydaAnalyzer = createMeydaAnalyzer;
+exports.extract = extract;
+
 var _utilities = require('./utilities');
 
 var utilities = _interopRequireWildcard(_utilities);
@@ -1104,7 +1107,7 @@ var prepareSignalWithSpectrum = function prepareSignalWithSpectrum(signal, windo
     return v;
   });
 
-  // Functions shouldn't start with upper case chars, this trips our linter
+  // Functions shouldn't start with upper case chars, options.trips our linter
   data.fft = data.FFT;
   preparedSignal.complexSpectrum = data.fft();
   preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
@@ -1115,114 +1118,95 @@ var prepareSignalWithSpectrum = function prepareSignalWithSpectrum(signal, windo
   return preparedSignal;
 };
 
-var Meyda = {
-  audioContext: null,
-  spn: null,
+var defaults = {
   bufferSize: 512,
   sampleRate: 44100,
   melBands: 26,
-  callback: null,
   windowingFunction: 'hanning',
-  featureExtractors: extractors,
-  EXTRACTION_STARTED: false,
-  _featuresToExtract: [],
-  windowing: utilities.applyWindow,
-  // TODO: We're using this a dependency, we should use an import
-  errors: {
-    notPow2: new Error('Meyda: Buffer size must be a power of 2, e.g. 64 or 512'),
-    featureUndef: new Error('Meyda: No features defined.'),
-    invalidFeatureFmt: new Error('Meyda: Invalid feature format'),
-    invalidInput: new Error('Meyda: Invalid input.'),
-    noAC: new Error('Meyda: No AudioContext specified.'),
-    noSource: new Error('Meyda: No source node specified.')
-  },
-
-  createMeydaAnalyzer: function createMeydaAnalyzer(options) {
-    return new _meydaWa.MeydaAnalyzer(options, Meyda);
-  },
-
-  extract: function extract(feature, signal, previousSignal) {
-    if (!signal) {
-      throw undefined.errors.invalidInput;
-    } else if ((typeof signal === 'undefined' ? 'undefined' : _typeof(signal)) !== 'object') {
-      throw undefined.errors.invalidInput;
-    } else if (!feature) {
-      throw undefined.errors.featureUndef;
-    } else if (!utilities.isPowerOfTwo(signal.length)) {
-      throw undefined.errors.notPow2;
-    }
-
-    if (typeof undefined.barkScale === 'undefined' || undefined.barkScale.length !== undefined.bufferSize) {
-      undefined.barkScale = utilities.createBarkScale(undefined.bufferSize, undefined.sampleRate, undefined.bufferSize);
-    }
-
-    // Recalcuate mel bank if buffer length changed
-    if (typeof undefined.melFilterBank === 'undefined' || undefined.barkScale.length !== undefined.bufferSize || undefined.melFilterBank.length !== undefined.melBands) {
-      undefined.melFilterBank = utilities.createMelFilterBank(undefined.melBands, undefined.sampleRate, undefined.bufferSize);
-    }
-
-    if (typeof signal.buffer === 'undefined') {
-      // signal is a normal array, convert to F32A
-      undefined.signal = utilities.arrayToTyped(signal);
-    } else {
-      undefined.signal = signal;
-    }
-
-    var preparedSignal = prepareSignalWithSpectrum(signal, undefined.windowingFunction, undefined.bufferSize);
-
-    undefined.signal = preparedSignal.windowedSignal;
-    undefined.complexSpectrum = preparedSignal.complexSpectrum;
-    undefined.ampSpectrum = preparedSignal.ampSpectrum;
-
-    if (previousSignal) {
-      preparedSignal = prepareSignalWithSpectrum(previousSignal, undefined.windowingFunction, undefined.bufferSize);
-
-      undefined.previousSignal = preparedSignal.windowedSignal;
-      undefined.previousComplexSpectrum = preparedSignal.complexSpectrum;
-      undefined.previousAmpSpectrum = preparedSignal.ampSpectrum;
-    }
-
-    if ((typeof feature === 'undefined' ? 'undefined' : _typeof(feature)) === 'object') {
-      var results = {};
-      for (var x = 0; x < feature.length; x++) {
-        results[feature[x]] = undefined.featureExtractors[feature[x]]({
-          ampSpectrum: undefined.ampSpectrum,
-          complexSpectrum: undefined.complexSpectrum,
-          signal: undefined.signal,
-          bufferSize: undefined.bufferSize,
-          sampleRate: undefined.sampleRate,
-          barkScale: undefined.barkScale,
-          melFilterBank: undefined.melFilterBank,
-          previousSignal: undefined.previousSignal,
-          previousAmpSpectrum: undefined.previousAmpSpectrum,
-          previousComplexSpectrum: undefined.previousComplexSpectrum
-        });
-      }
-
-      return results;
-    } else if (typeof feature === 'string') {
-      return undefined.featureExtractors[feature]({
-        ampSpectrum: undefined.ampSpectrum,
-        complexSpectrum: undefined.complexSpectrum,
-        signal: undefined.signal,
-        bufferSize: undefined.bufferSize,
-        sampleRate: undefined.sampleRate,
-        barkScale: undefined.barkScale,
-        melFilterBank: undefined.melFilterBank,
-        previousSignal: undefined.previousSignal,
-        previousAmpSpectrum: undefined.previousAmpSpectrum,
-        previousComplexSpectrum: undefined.previousComplexSpectrum
-      });
-    }
-    throw undefined.errors.invalidFeatureFmt;
-  }
+  featureExtractors: extractors
 };
 
-exports.default = Meyda;
+function createMeydaAnalyzer(options) {
+  return new _meydaWa.MeydaAnalyzer(options);
+}
 
+// TODO: now that we're not an object, we should let users pass configs
+// which we merge with defaults
+function extract(feature, signal, previousSignal, config) {
+  var options = defaults.merge(config);
+  if (!signal) {
+    throw options.errors.invalidInput;
+  } else if ((typeof signal === 'undefined' ? 'undefined' : _typeof(signal)) !== 'object') {
+    throw options.errors.invalidInput;
+  } else if (!feature) {
+    throw options.errors.featureUndef;
+  } else if (!utilities.isPowerOfTwo(signal.length)) {
+    throw options.errors.notPow2;
+  }
 
-if (typeof window !== 'undefined') window.Meyda = Meyda;
-module.exports = exports['default'];
+  if (typeof options.barkScale === 'undefined' || options.barkScale.length !== options.bufferSize) {
+    options.barkScale = utilities.createBarkScale(options.bufferSize, options.sampleRate, options.bufferSize);
+  }
+
+  // Recalcuate mel bank if buffer length changed
+  if (typeof options.melFilterBank === 'undefined' || options.barkScale.length !== options.bufferSize || options.melFilterBank.length !== options.melBands) {
+    options.melFilterBank = utilities.createMelFilterBank(options.melBands, options.sampleRate, options.bufferSize);
+  }
+
+  if (typeof signal.buffer === 'undefined') {
+    // signal is a normal array, convert to F32A
+    options.signal = utilities.arrayToTyped(signal);
+  } else {
+    options.signal = signal;
+  }
+
+  var preparedSignal = prepareSignalWithSpectrum(signal, options.windowingFunction, options.bufferSize);
+
+  options.signal = preparedSignal.windowedSignal;
+  options.complexSpectrum = preparedSignal.complexSpectrum;
+  options.ampSpectrum = preparedSignal.ampSpectrum;
+
+  if (previousSignal) {
+    preparedSignal = prepareSignalWithSpectrum(previousSignal, options.windowingFunction, options.bufferSize);
+
+    options.previousSignal = preparedSignal.windowedSignal;
+    options.previousComplexSpectrum = preparedSignal.complexSpectrum;
+    options.previousAmpSpectrum = preparedSignal.ampSpectrum;
+  }
+
+  if ((typeof feature === 'undefined' ? 'undefined' : _typeof(feature)) === 'object') {
+    var results = {};
+    for (var x = 0; x < feature.length; x++) {
+      results[feature[x]] = options.featureExtractors[feature[x]]({
+        ampSpectrum: options.ampSpectrum,
+        complexSpectrum: options.complexSpectrum,
+        signal: options.signal,
+        bufferSize: options.bufferSize,
+        sampleRate: options.sampleRate,
+        barkScale: options.barkScale,
+        melFilterBank: options.melFilterBank,
+        previousSignal: options.previousSignal,
+        previousAmpSpectrum: options.previousAmpSpectrum,
+        previousComplexSpectrum: options.previousComplexSpectrum
+      });
+    }
+    return results;
+  } else if (typeof feature === 'string') {
+    return options.featureExtractors[feature]({
+      ampSpectrum: options.ampSpectrum,
+      complexSpectrum: options.complexSpectrum,
+      signal: options.signal,
+      bufferSize: options.bufferSize,
+      sampleRate: options.sampleRate,
+      barkScale: options.barkScale,
+      melFilterBank: options.melFilterBank,
+      previousSignal: options.previousSignal,
+      previousAmpSpectrum: options.previousAmpSpectrum,
+      previousComplexSpectrum: options.previousComplexSpectrum
+    });
+  }
+  throw options.errors.invalidFeatureFmt;
+}
 
 },{"./featureExtractors":22,"./meyda-wa":24,"./utilities":25,"jsfft":4,"jsfft/lib/complex_array":3}],24:[function(require,module,exports){
 'use strict';

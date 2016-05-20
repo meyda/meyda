@@ -1,18 +1,18 @@
-var chai = require('chai');
-var assert = chai.assert;
-var TestData = require('../TestData');
-var utilities = require('../../dist/node/utilities');
+const chai = require('chai');
+const assert = chai.assert;
+const TestData = require('../TestData');
+const utilities = require('../../dist/node/utilities');
 
 // Setup
-var mfcc = require('../../dist/node/extractors/mfcc');
+const mfcc = require('../../dist/node/extractors/mfcc');
 
-describe('mfcc', function () {
-  it('should return correct mfcc value given a valid signal', function (done) {
-    var en = mfcc({
-      sampleRate:44100,
-      bufferSize:512,
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
-      melFilterBank:utilities.createMelFilterBank(26, 44100, 512),
+describe('mfcc', () => {
+  it('should return correct mfcc value given a valid signal', (done) => {
+    const en = mfcc({
+      sampleRate: 44100,
+      bufferSize: 512,
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
+      melFilterBank: utilities.createMelFilterBank(26, 44100, 512),
     });
 
     assert.deepEqual(en, {
@@ -41,31 +41,31 @@ describe('mfcc', function () {
       22: -2.425736904144287,
       23: -2.6888346672058105,
       24: -2.661608934402466,
-      25: 4.682251453399658, }
+      25: 4.682251453399658 }
     );
 
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  it('should throw an error when passed an empty object', (done) => {
     try {
-      var en = mfcc({});
+      mfcc({});
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  it('should throw an error when not passed anything', (done) => {
     try {
-      var en = mfcc();
+      mfcc();
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  it('should throw an error when passed something invalid', (done) => {
     try {
-      var en = mfcc({ signal:'not a signal' });
+      mfcc({ signal: 'not a signal' });
     } catch (e) {
       done();
     }

@@ -1,14 +1,14 @@
-var chai = require('chai');
-var assert = chai.assert;
-var TestData = require('../TestData');
+const chai = require('chai');
+const assert = chai.assert;
+const TestData = require('../TestData');
 
 // Setup
-var spectralKurtosis = require('../../dist/node/extractors/spectralKurtosis');
+const spectralKurtosis = require('../../dist/node/extractors/spectralKurtosis');
 
-describe('spectralKurtosis', function () {
-  it('should return correct Spectral Kurtosis value', function (done) {
-    var en = spectralKurtosis({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
+describe('spectralKurtosis', () => {
+  it('should return correct Spectral Kurtosis value', (done) => {
+    const en = spectralKurtosis({
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
     assert.equal(en, 0.1511072674115075);
@@ -16,25 +16,25 @@ describe('spectralKurtosis', function () {
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  it('should throw an error when passed an empty object', (done) => {
     try {
-      var en = spectralKurtosis({});
+      spectralKurtosis({});
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  it('should throw an error when not passed anything', (done) => {
     try {
-      var en = spectralKurtosis();
+      spectralKurtosis();
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  it('should throw an error when passed something invalid', (done) => {
     try {
-      var en = spectralKurtosis({ signal:'not a signal' });
+      spectralKurtosis({ signal: 'not a signal' });
     } catch (e) {
       done();
     }
