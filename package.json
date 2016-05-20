@@ -33,7 +33,7 @@
     "retrieval"
   ],
   "authors": [
-    "Hugh Rawlinson <hugh@soundwave.com>",
+    "Hugh Rawlinson <hugh@spotify.com>",
     "Nevo Segal <nevosegal@gmail.com>",
     "Jakub Fiala"
   ],
@@ -49,7 +49,11 @@
     "browserify": "^13.0.0",
     "chai": "^3.1.0",
     "codeclimate-test-reporter": "^0.3.1",
-    "eslint": "^2.8.0",
+    "eslint": "^2.10.2",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.8.0",
+    "eslint-plugin-jsx-a11y": "^1.2.1",
+    "eslint-plugin-react": "^5.1.1",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.0",
     "gulp-concat": "^2.6.0",

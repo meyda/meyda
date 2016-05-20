@@ -1,14 +1,14 @@
-var chai = require('chai');
-var assert = chai.assert;
-var TestData = require('../TestData');
+const chai = require('chai');
+const assert = chai.assert;
+const TestData = require('../TestData');
 
 // Setup
-var spectralCentroid = require('../../dist/node/extractors/spectralCentroid');
+const spectralCentroid = require('../../dist/node/extractors/spectralCentroid');
 
-describe('spectralCentroid', function () {
-  it('should return correct Spectral Centroid value', function (done) {
-    var en = spectralCentroid({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
+describe('spectralCentroid', () => {
+  it('should return correct Spectral Centroid value', (done) => {
+    const en = spectralCentroid({
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
     assert.equal(en, 45.12823119078897);
@@ -16,25 +16,25 @@ describe('spectralCentroid', function () {
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  it('should throw an error when passed an empty object', (done) => {
     try {
-      var en = spectralCentroid({});
+      spectralCentroid({});
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  it('should throw an error when not passed anything', (done) => {
     try {
-      var en = spectralCentroid();
+      spectralCentroid();
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  it('should throw an error when passed something invalid', (done) => {
     try {
-      var en = spectralCentroid({ signal:'not a signal' });
+      spectralCentroid({ signal: 'not a signal' });
     } catch (e) {
       done();
     }

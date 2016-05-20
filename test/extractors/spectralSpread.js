@@ -1,14 +1,14 @@
-var chai = require('chai');
-var assert = chai.assert;
-var TestData = require('../TestData');
+const chai = require('chai');
+const assert = chai.assert;
+const TestData = require('../TestData');
 
 // Setup
-var spectralSpread = require('../../dist/node/extractors/spectralSpread');
+const spectralSpread = require('../../dist/node/extractors/spectralSpread');
 
-describe('spectralSpread', function () {
-  it('should return correct Spectral Spread value', function (done) {
-    var en = spectralSpread({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
+describe('spectralSpread', () => {
+  it('should return correct Spectral Spread value', (done) => {
+    const en = spectralSpread({
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
     assert.equal(en, 61.47230858577843);
@@ -16,25 +16,25 @@ describe('spectralSpread', function () {
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  it('should throw an error when passed an empty object', (done) => {
     try {
-      var en = spectralSpread({});
+      spectralSpread({});
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  it('should throw an error when not passed anything', (done) => {
     try {
-      var en = spectralSpread();
+      spectralSpread();
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  it('should throw an error when passed something invalid', (done) => {
     try {
-      var en = spectralSpread({ signal:'not a signal' });
+      spectralSpread({ signal: 'not a signal' });
     } catch (e) {
       done();
     }

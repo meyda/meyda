@@ -1,8 +1,9 @@
 import * as windowing from './windowing';
 
-let windows = {};
+const windows = {};
 
-export function isPowerOfTwo(num) {
+export function isPowerOfTwo(_num) {
+  let num = _num;
   while (((num % 2) === 0) && num > 1) {
     num /= 2;
   }
@@ -11,11 +12,11 @@ export function isPowerOfTwo(num) {
 }
 
 export function error(message) {
-  throw new Error('Meyda: ' + message);
+  throw new Error(`Meyda:  ${message}`);
 }
 
 export function pointwiseBufferMult(a, b) {
-  let c = [];
+  const c = [];
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
     c[i] = a[i] * b[i];
   }
@@ -23,7 +24,9 @@ export function pointwiseBufferMult(a, b) {
   return c;
 }
 
-export function applyWindow(signal, windowname) {
+export function applyWindow(_signal, _windowname) {
+  let windowname = _windowname;
+  let signal = _signal;
   if (windowname !== 'rect') {
     if (windowname === '' || !windowname) windowname = 'hanning';
     if (!windows[windowname]) windows[windowname] = {};
@@ -33,8 +36,7 @@ export function applyWindow(signal, windowname) {
         windows[windowname][signal.length] = windowing[windowname](
                     signal.length
                 );
-      }
-      catch (e) {
+      } catch (e) {
         throw new Error('Invalid windowing function');
       }
     }
@@ -46,9 +48,9 @@ export function applyWindow(signal, windowname) {
 }
 
 export function createBarkScale(length, sampleRate, bufferSize) {
-  let barkScale = new Float32Array(length);
+  const barkScale = new Float32Array(length);
 
-  for (var i = 0; i < barkScale.length; i++) {
+  for (let i = 0; i < barkScale.length; i++) {
     barkScale[i] = i * sampleRate / (bufferSize);
     barkScale[i] = 13 * Math.atan(barkScale[i] / 1315.8) +
             3.5 * Math.atan(Math.pow((barkScale[i] / 7518), 2));
@@ -67,60 +69,48 @@ export function arrayToTyped(t) {
   return Float32Array.from(t);
 }
 
-export function _normalize(num, range) {
-  return num / range;
-}
-
 export function normalize(a, range) {
-  return a.map(function (n) { return _normalize(n, range); });
+  return a.map(n => n / range);
 }
 
 export function normalizeToOne(a) {
-  var max = Math.max.apply(null, a);
+  const max = Math.max.apply(null, a);
 
-  return a.map(function (n) {
-    return n / max;
-  });
+  return normalize(a, max);
 }
 
 export function mean(a) {
-  return a.reduce(function (prev, cur) {  return prev + cur;  }) / a.length;
+  return a.reduce((prev, cur) => prev + cur) / a.length;
 }
 
-function _melToFreq(melValue) {
-  var freqValue = 700 * (Math.exp(melValue / 1125) - 1);
-  return freqValue;
+export function melToFreq(melValue) {
+  return 700 * (Math.exp(melValue / 1125) - 1);
 }
 
-function _freqToMel(freqValue) {
-  var melValue = 1125 * Math.log(1 + (freqValue / 700));
-  return melValue;
+export function freqToMel(freqValue) {
+  return 1125 * Math.log(1 + (freqValue / 700));
 }
-
-export function melToFreq(mV) { return _melToFreq(mV); }
-
-export function freqToMel(fV) { return _freqToMel(fV); }
 
 export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
-  //the +2 is the upper and lower limits
-  let melValues = new Float32Array(numFilters + 2);
-  let melValuesInFreq = new Float32Array(numFilters + 2);
+  // the +2 is the upper and lower limits
+  const melValues = new Float32Array(numFilters + 2);
+  const melValuesInFreq = new Float32Array(numFilters + 2);
 
-  //Generate limits in Hz - from 0 to the nyquist.
-  let lowerLimitFreq = 0;
-  let upperLimitFreq = sampleRate / 2;
+  // Generate limits in Hz - from 0 to the nyquist.
+  const lowerLimitFreq = 0;
+  const upperLimitFreq = sampleRate / 2;
 
-  //Convert the limits to Mel
-  let lowerLimitMel = _freqToMel(lowerLimitFreq);
-  let upperLimitMel = _freqToMel(upperLimitFreq);
+  // Convert the limits to Mel
+  const lowerLimitMel = freqToMel(lowerLimitFreq);
+  const upperLimitMel = freqToMel(upperLimitFreq);
 
-  //Find the range
-  let range = upperLimitMel - lowerLimitMel;
+  // Find the range
+  const range = upperLimitMel - lowerLimitMel;
 
-  //Find the range as part of the linear interpolation
-  let valueToAdd = range / (numFilters + 1);
+  // Find the range as part of the linear interpolation
+  const valueToAdd = range / (numFilters + 1);
 
-  let fftBinsOfFreq = Array(numFilters + 2);
+  const fftBinsOfFreq = Array(numFilters + 2);
 
   for (let i = 0; i < melValues.length; i++) {
     // Initialising the mel frequencies
@@ -128,14 +118,14 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
     melValues[i] = i * valueToAdd;
 
     // Convert back to Hz
-    melValuesInFreq[i] = _melToFreq(melValues[i]);
+    melValuesInFreq[i] = melToFreq(melValues[i]);
 
     // Find the corresponding bins
     fftBinsOfFreq[i] = Math.floor((bufferSize + 1) *
                            melValuesInFreq[i] / sampleRate);
   }
 
-  var filterBank = Array(numFilters);
+  const filterBank = Array(numFilters);
   for (let j = 0; j < filterBank.length; j++) {
     // Create a two dimensional array of size numFilters * (buffersize/2)+1
     // pre-populating the arrays with 0s.
@@ -143,7 +133,7 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
             null,
 						new Array((bufferSize / 2) + 1)).map(Number.prototype.valueOf, 0);
 
-    //creating the lower and upper slopes for each bin
+    // creating the lower and upper slopes for each bin
     for (let i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j + 1]; i++) {
       filterBank[j][i] = (i - fftBinsOfFreq[j]) /
                 (fftBinsOfFreq[j + 1] - fftBinsOfFreq[j]);

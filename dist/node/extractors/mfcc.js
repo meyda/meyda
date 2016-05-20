@@ -24,18 +24,18 @@ exports.default = function (args) {
     filtered[i] = new Float32Array(args.bufferSize / 2);
     loggedMelBands[i] = 0;
     for (var j = 0; j < args.bufferSize / 2; j++) {
-      //point-wise multiplication between power spectrum and filterbanks.
+      // point-wise multiplication between power spectrum and filter banks.
       filtered[i][j] = args.melFilterBank[i][j] * powSpec[j];
 
-      //summing up all of the coefficients into one array
+      // summing up all of the coefficients into one array
       loggedMelBands[i] += filtered[i][j];
     }
 
-    //log each coefficient unless it's 0.
+    // log each coefficient unless it's 0.
     loggedMelBands[i] = loggedMelBands[i] > 0.00001 ? Math.log(loggedMelBands[i]) : 0;
   }
 
-  //dct
+  // dct
   var loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
   var mfccs = dct(loggedMelBandsArray);
   var mfccsArray = new Float32Array(mfccs);
@@ -46,10 +46,6 @@ exports.default = function (args) {
 var _powerSpectrum = require('./powerSpectrum');
 
 var _powerSpectrum2 = _interopRequireDefault(_powerSpectrum);
-
-var _utilities = require('./../utilities');
-
-var _utilities2 = _interopRequireDefault(_utilities);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

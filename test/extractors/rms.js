@@ -1,14 +1,14 @@
-var chai = require('chai');
-var assert = chai.assert;
-var TestData = require('../TestData');
+const chai = require('chai');
+const assert = chai.assert;
+const TestData = require('../TestData');
 
 // Setup
-var rms = require('../../dist/node/extractors/rms');
+const rms = require('../../dist/node/extractors/rms');
 
-describe('rms', function () {
-  it('should return correct rms value given a valid signal', function (done) {
-    var en = rms({
-      signal:TestData.VALID_SIGNAL,
+describe('rms', () => {
+  it('should return correct rms value given a valid signal', (done) => {
+    const en = rms({
+      signal: TestData.VALID_SIGNAL,
     });
 
     assert.equal(en, 0.08470475751020153);
@@ -16,25 +16,25 @@ describe('rms', function () {
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  it('should throw an error when passed an empty object', (done) => {
     try {
-      var en = rms({});
+      rms({});
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  it('should throw an error when not passed anything', (done) => {
     try {
-      var en = rms();
+      rms();
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  it('should throw an error when passed something invalid', (done) => {
     try {
-      var en = rms({ signal:'not a signal' });
+      rms({ signal: 'not a signal' });
     } catch (e) {
       done();
     }

@@ -74,13 +74,11 @@ exports.default = {
   buffer: function buffer(args) {
     return args.signal;
   },
-
   rms: _rms2.default,
   energy: _energy2.default,
   complexSpectrum: function complexSpectrum(args) {
     return args.complexSpectrum;
   },
-
   spectralSlope: _spectralSlope2.default,
   spectralCentroid: _spectralCentroid2.default,
   spectralRolloff: _spectralRolloff2.default,
@@ -91,7 +89,6 @@ exports.default = {
   amplitudeSpectrum: function amplitudeSpectrum(args) {
     return args.ampSpectrum;
   },
-
   zcr: _zcr2.default,
   loudness: _loudness2.default,
   perceptualSpread: _perceptualSpread2.default,

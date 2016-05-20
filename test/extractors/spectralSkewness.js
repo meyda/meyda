@@ -1,14 +1,14 @@
-var chai = require('chai');
-var assert = chai.assert;
-var TestData = require('../TestData');
+const chai = require('chai');
+const assert = chai.assert;
+const TestData = require('../TestData');
 
 // Setup
-var spectralSkewness = require('../../dist/node/extractors/spectralSkewness');
+const spectralSkewness = require('../../dist/node/extractors/spectralSkewness');
 
-describe('spectralSkewness', function () {
-  it('should return correct Spectral Skewness value', function (done) {
-    var en = spectralSkewness({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
+describe('spectralSkewness', () => {
+  it('should return correct Spectral Skewness value', (done) => {
+    const en = spectralSkewness({
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
     assert.equal(en, 1.6950674362270297);
@@ -16,25 +16,25 @@ describe('spectralSkewness', function () {
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  it('should throw an error when passed an empty object', (done) => {
     try {
-      var en = spectralSkewness({});
+      spectralSkewness({});
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  it('should throw an error when not passed anything', (done) => {
     try {
-      var en = spectralSkewness();
+      spectralSkewness();
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  it('should throw an error when passed something invalid', (done) => {
     try {
-      var en = spectralSkewness({ signal:'not a signal' });
+      spectralSkewness({ signal: 'not a signal' });
     } catch (e) {
       done();
     }

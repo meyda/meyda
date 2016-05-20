@@ -1,15 +1,15 @@
-export default function() {
-  if (typeof arguments[0].ampSpectrum !== 'object') {
+export default function (...args) {
+  if (typeof args[0].ampSpectrum !== 'object') {
     throw new TypeError();
   }
 
-  var numerator = 0;
-  var denominator = 0;
-  for (var i = 0; i < arguments[0].ampSpectrum.length; i++) {
-    numerator += Math.log(arguments[0].ampSpectrum[i]);
-    denominator += arguments[0].ampSpectrum[i];
+  let numerator = 0;
+  let denominator = 0;
+  for (let i = 0; i < args[0].ampSpectrum.length; i++) {
+    numerator += Math.log(args[0].ampSpectrum[i]);
+    denominator += args[0].ampSpectrum[i];
   }
 
-  return Math.exp(numerator / arguments[0].ampSpectrum.length) *
-      arguments[0].ampSpectrum.length / denominator;
+  return Math.exp(numerator / args[0].ampSpectrum.length) *
+      args[0].ampSpectrum.length / denominator;
 }

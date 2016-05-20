@@ -1,14 +1,14 @@
-var chai = require('chai');
-var assert = chai.assert;
-var TestData = require('../TestData');
+const chai = require('chai');
+const assert = chai.assert;
+const TestData = require('../TestData');
 
 // Setup
-var powerSpectrum = require('../../dist/node/extractors/powerSpectrum');
+const powerSpectrum = require('../../dist/node/extractors/powerSpectrum');
 
-describe('powerSpectrum', function () {
-  it('should return correct Power Spectrum value', function (done) {
-    var en = powerSpectrum({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
+describe('powerSpectrum', () => {
+  it('should return correct Power Spectrum value', (done) => {
+    const en = powerSpectrum({
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
     assert.deepEqual(en, TestData.EXPECTED_POWER_SPECTRUM_OUTPUT);
@@ -16,25 +16,25 @@ describe('powerSpectrum', function () {
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  it('should throw an error when passed an empty object', (done) => {
     try {
-      var en = powerSpectrum({});
+      powerSpectrum({});
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  it('should throw an error when not passed anything', (done) => {
     try {
-      var en = powerSpectrum();
+      powerSpectrum();
     } catch (e) {
       done();
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  it('should throw an error when passed something invalid', (done) => {
     try {
-      var en = powerSpectrum({ signal:'not a signal' });
+      powerSpectrum({ signal: 'not a signal' });
     } catch (e) {
       done();
     }

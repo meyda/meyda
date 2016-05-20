@@ -7,11 +7,15 @@ Object.defineProperty(exports, "__esModule", {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 exports.default = function () {
-  if (_typeof(arguments[0].signal) !== 'object') {
+  for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  if (_typeof(args[0].signal) !== 'object') {
     throw new TypeError();
   }
 
-  var loudnessValue = (0, _loudness2.default)(arguments[0]);
+  var loudnessValue = (0, _loudness2.default)(args[0]);
 
   var max = 0;
   for (var i = 0; i < loudnessValue.specific.length; i++) {
@@ -20,9 +24,7 @@ exports.default = function () {
     }
   }
 
-  var spread = Math.pow((loudnessValue.total - max) / loudnessValue.total, 2);
-
-  return spread;
+  return Math.pow((loudnessValue.total - max) / loudnessValue.total, 2);
 };
 
 var _loudness = require('./loudness');
