@@ -32,15 +32,15 @@ exports.default = function (args) {
     }
 
     //log each coefficient unless it's 0.
-    loggedMelBands[i] = loggedMelBands[i] > 0.00001 ? Math.log(loggedMelBands[i]) : 0;
+    loggedMelBands[i] = Math.log(loggedMelBands[i] + 1);
   }
 
   //dct
   var loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
-  var mfccs = dct(loggedMelBandsArray);
-  var mfccsArray = new Float32Array(mfccs);
+  var mfccs = dct(loggedMelBandsArray).slice(0, 13);
+  // let mfccsArray = new Float32Array(mfccs);
 
-  return mfccsArray;
+  return mfccs;
 };
 
 var _powerSpectrum = require('./powerSpectrum');
