@@ -1,13 +1,6 @@
 (function () {
   'use strict';
 
-  // Redirect to https because usermedia doesn't work on insecure origins
-  if (window.location.href     !== "https://meyda.surge.sh/" &&
-      // Allow local development
-      window.location.hostname !== "localhost"){
-    window.location.href = "https://meyda.surge.sh/";
-  }
-
   const bufferSize = 1024;
   let Audio = require('./audio');
   let a = new Audio(bufferSize);
