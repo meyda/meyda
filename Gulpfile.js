@@ -9,6 +9,7 @@ var babelify = require('babelify');
 
 gulp.task('buildWeb',function(){
 	return gulp.src('./src/main.js')
+		.pipe(sourcemaps.init())
 		.pipe(through2.obj(function(file,enc,next){
 			browserify(file.path,{debug: process.env.NODE_ENV === 'development'})
 				.transform(babelify, {
@@ -28,8 +29,11 @@ gulp.task('buildWeb',function(){
 			this.emit('end');
 		})
 		.pipe(concat("meyda.js"))
-		.pipe(sourcemaps.write('./'))
-		.pipe(gulp.dest('./dist/web/'));
+		.pipe(gulp.dest('./dist/web/'))
+		.pipe(uglify())
+		.pipe(concat("meyda.min.js"))
+		.pipe(sourcemaps.write('.'))
+		.pipe(gulp.dest("./dist/web"));;
 });
 
 gulp.task('buildNode',function(){
@@ -41,9 +45,5 @@ gulp.task('buildNode',function(){
 		.pipe(gulp.dest("./dist/node/"));
 });
 
-gulp.task('uglifyWeb',function(){
-	return gulp.src("./dist/web/meyda.js")
-		.pipe(uglify())
-		.pipe(concat("meyda.min.js"))
-		.pipe(gulp.dest("./dist/web/"));
-});
+gulp.task('build', ['buildNode', 'buildWeb']);
+
