@@ -31,14 +31,13 @@ exports.default = function (args) {
       loggedMelBands[i] += filtered[i][j];
     }
 
-    //log each coefficient unless it's 0.
+    //log each coefficient.
     loggedMelBands[i] = Math.log(loggedMelBands[i] + 1);
   }
 
   //dct
   var loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
   var mfccs = dct(loggedMelBandsArray).slice(0, 13);
-  // let mfccsArray = new Float32Array(mfccs);
 
   return mfccs;
 };
