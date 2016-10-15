@@ -30,7 +30,7 @@ export default function(args) {
       loggedMelBands[i] += filtered[i][j];
     }
 
-    //log each coefficient unless it's 0.
+    //log each coefficient.
     loggedMelBands[i] = Math.log(loggedMelBands[i] + 1);
   }
 
