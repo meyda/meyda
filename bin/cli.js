@@ -178,14 +178,15 @@
       else {
         // if there is no output flag, print to console.
         for(let j=0; j<featuresToExtract.length; j++){
-          output('\n*********' + featuresToExtract[j].toString() + '*********\n\n');              
-          
+          output('\n*********' + featuresToExtract[j].toString() + '*********\n\n');
+
           for(let i=0; i<frameCount; i++){
             var feature = features[featuresToExtract[j]];
             if(typeof feature[i] === 'object'){
-              for(let f = 0; f < Object.keys(feature[i]).length; f++){
-                output(feature[i][f] + '');
-                output(f == Object.keys(feature[i]).length-1 ? '\n' : ',');
+              var keys = Object.keys(feature[i]);
+              for(let f = 0; f < keys.length; f++){
+                output(feature[i][keys[f]] + '');
+                output(f == keys.length-1 ? '\n' : ',');
               }
             }
             else{
