@@ -5,7 +5,7 @@ engines:
     #	Rubocop/Metrics/ClassLength:
     #  	enabled: false
   brakeman:
-   	enabled: false
+   enabled: false
     #exclude_fingerprints:
     #- 08c185b3f764f262539a1f76997d3a89
   eslint:
@@ -13,10 +13,9 @@ engines:
   csslint:
     enabled: false
   duplication:
-  	enabled: true
+    enabled: true
     config:
-    	languages:
-      	#mass_threshold: 30
+      languages:
       - javascript
 ratings:
   paths:
