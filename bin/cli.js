@@ -170,7 +170,7 @@
           }
 
         }
-        console.log('Done.')
+        console.log('Done.');
         wstream.end();
         console.log('');
       }
