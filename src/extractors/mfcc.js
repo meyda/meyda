@@ -30,15 +30,13 @@ export default function(args) {
       loggedMelBands[i] += filtered[i][j];
     }
 
-    //log each coefficient unless it's 0.
-    loggedMelBands[i] = loggedMelBands[i] > 0.00001 ?
-        Math.log(loggedMelBands[i]) : 0;
+    //log each coefficient.
+    loggedMelBands[i] = Math.log(loggedMelBands[i] + 1);
   }
 
   //dct
   let loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
-  let mfccs = dct(loggedMelBandsArray);
-  let mfccsArray = new Float32Array(mfccs);
+  let mfccs = dct(loggedMelBandsArray).slice(0,13);
 
-  return mfccsArray;
+  return mfccs;
 }
