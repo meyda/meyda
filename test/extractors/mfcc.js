@@ -32,7 +32,7 @@ describe('mfcc', function () {
     ];
     
     for (let index in expectedValues) {
-      assert.approximately(en[index], expectedValues[index], 0.0000000000000001
+      assert.approximately(en[index], expectedValues[index], 0.0000000000000001);
     }
 
     done();
