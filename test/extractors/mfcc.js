@@ -15,7 +15,7 @@ describe('mfcc', function () {
       melFilterBank:utilities.createMelFilterBank(26, 44100, 512),
     });
 
-    assert.deepEqual(en, [
+    const expectedValues = [
       3.0764786549843848,
       2.5565860160012903,
       1.864506100880325,
@@ -29,8 +29,11 @@ describe('mfcc', function () {
       -0.5572731218776171,
       -0.5245475651926765,
       -0.6215721667512493
-    ]
-    );
+    ];
+    
+    for (var index in expectedValues) {
+      assert.approximately(en[index], expectedValues[index], 1e-15);
+    }
 
     done();
   });

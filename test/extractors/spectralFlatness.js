@@ -11,7 +11,9 @@ describe('spectralFlatness', function () {
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
-    assert.equal(en, 0.4395908170404335);
+    // Node 7 adds precision to Math.exp, we use Chai's approximate assertion
+    // to account for the extra precision.
+    assert.approximately(en, 0.4395908170404335, 1e-16);
 
     done();
   });
