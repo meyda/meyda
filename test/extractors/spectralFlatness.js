@@ -13,7 +13,7 @@ describe('spectralFlatness', function () {
 
     // Node 7 adds precision to Math.exp, we use Chai's approximate assertion
     // to account for the extra precision.
-    assert.approximately(en, 0.4395908170404335,0.0000000000000001);
+    assert.approximately(en, 0.4395908170404335, 1e-16);
 
     done();
   });
