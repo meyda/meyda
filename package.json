@@ -66,7 +66,7 @@
   "dependencies": {
     "dct": "0.0.3",
     "gulp": "^3.9.0",
-    "jsfft": "git://github.com/dntj/jsfft.git",
+    "jsfft": "^0.0.2",
     "node-getopt": "^0.2.3",
     "through2": "^2.0.1",
     "wav": "^1.0.0"
