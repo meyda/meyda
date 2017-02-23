@@ -1,11 +1,8 @@
 var gulp = require('gulp');
 var babel = require('gulp-babel');
-var concat = require('gulp-concat');
-var pump = require('pump');
 var webpack = require('webpack');
 
 gulp.task('webpack', function(callback) {
-	// run webpack
 	webpack(require('./webpack.config.js').default,
 		function(err, stats) {
 			if(err) throw new Error("webpack", err);
@@ -15,7 +12,6 @@ gulp.task('webpack', function(callback) {
 });
 
 gulp.task('webpack-minify', ['webpack'], function(callback) {
-	// run webpack
 	webpack(require('./webpack.config.js').min,
 		function(err, stats) {
 			if(err) throw new Error("webpack", err);
