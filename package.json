@@ -11,7 +11,7 @@
   "scripts": {
     "pretest": "npm run lint && npm run build && npm run coverage",
     "test": "./node_modules/.bin/mocha -C --recursive test",
-    "build": "mkdir -p node && ./node_modules/.bin/gulp build",
+    "build": "./node_modules/.bin/gulp build",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- --recursive test --report lcovonly",
     "codeclimate": "cat ./coverage/lcov.info && ./node_modules/.bin/codeclimate-test-reporter < ./coverage/lcov.info",
     "default": "npm run clean && npm install && npm test && npm run lint",
@@ -46,8 +46,10 @@
   },
   "homepage": "https://github.com/hughrawlinson/meyda",
   "devDependencies": {
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
     "babel-plugin-add-module-exports": "^0.2.0",
-    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-es2015": "^6.24.0",
     "babelify": "^7.3.0",
     "browserify": "^14.1.0",
     "chai": "^3.1.0",
@@ -61,7 +63,9 @@
     "istanbul": "^0.4.0",
     "jscoverage": "^0.6.0",
     "mocha": "^3.0.2",
-    "mocha-lcov-reporter": "^1.3.0"
+    "mocha-lcov-reporter": "^1.3.0",
+    "webpack": "^2.3.3",
+    "webpack-stream": "^3.2.0"
   },
   "dependencies": {
     "dct": "0.0.3",
@@ -72,6 +76,6 @@
     "wav": "^1.0.0"
   },
   "engines": {
-    "node" : ">=4.0.0"
+    "node": ">=4.0.0"
   }
 }
