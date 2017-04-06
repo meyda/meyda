@@ -24,7 +24,7 @@ gulp.task('buildNode',function(){
 	return gulp.src("./src/**/*.js")
 		.pipe(babel({
             presets: ['es2015'],
-						plugins: ["babel-plugin-add-module-exports"]
+			plugins: ["babel-plugin-add-module-exports"]
         }))
 		.pipe(gulp.dest("./dist/node/"));
 });
