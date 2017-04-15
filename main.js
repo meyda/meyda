@@ -53,7 +53,7 @@
 	  var Audio = __webpack_require__(1);
 	  var a = new Audio(bufferSize);
 
-	  var resolution = document.querySelector('.container').offsetWidth / 16 * 10;
+	  var resolution = document.querySelector('.col').offsetWidth / 16 * 10;
 	  var aspectRatio = 16 / 10;
 	  var scene = new THREE.Scene();
 	  var camera = new THREE.PerspectiveCamera(40, aspectRatio, 0.1, 1000);
@@ -82,9 +82,9 @@
 	  renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
 	  renderer.setSize(resolution * aspectRatio, resolution);
 	  renderer.domElement.style.height = resolution + 'px';
-	  renderer.domElement.style.width = document.querySelector('.container').offsetWidth + 'px';
+	  renderer.domElement.style.width = document.querySelector('.col').offsetWidth + 'px';
 	  window.addEventListener('resize', function () {
-	    var canvasWidth = document.querySelector('.container').offsetWidth;
+	    var canvasWidth = document.querySelector('.col').offsetWidth;
 	    resolution = canvasWidth / 16 * 10;
 	    renderer.setSize(resolution * aspectRatio, resolution);
 	    renderer.domElement.height = resolution * window.devicePixelRatio;
