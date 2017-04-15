@@ -42,20 +42,12 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	(function () {
 	  'use strict';
-
-	  // Redirect to https because usermedia doesn't work on insecure origins
-
-	  if (window.location.href !== "https://meyda.surge.sh/" &&
-	  // Allow local development
-	  window.location.hostname !== "localhost") {
-	    window.location.href = "https://meyda.surge.sh/";
-	  }
 
 	  var bufferSize = 1024;
 	  var Audio = __webpack_require__(1);
@@ -248,9 +240,9 @@
 	  render();
 	})();
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -325,5 +317,5 @@
 	  module.exports = Audio;
 	})();
 
-/***/ }
+/***/ })
 /******/ ]);
