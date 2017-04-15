@@ -1,7 +1,7 @@
 import * as utilities from './utilities';
 import * as extractors from './featureExtractors';
-import * as fft from 'jsfft';
-import {ComplexArray} from 'jsfft';
+import * as fft from 'jsfft-for-meyda';
+import {ComplexArray} from 'jsfft-for-meyda';
 import {MeydaAnalyzer} from './meyda-wa';
 
 var Meyda = {
