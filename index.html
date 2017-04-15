@@ -1,40 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Meyda</title>
-	<link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css" crossorigin="anonymous">
-	<script type="text/javascript" src="https://npmcdn.com/meyda@3.1.0/dist/web/meyda.min.js"></script>
+  <title>Meyda</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <script type="text/javascript" src="https://npmcdn.com/meyda@4.0.2/dist/web/meyda.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r74/three.js" charset="utf-8"></script>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
+<style>
+body {
+  padding: 5rem 0;
+}
+</style>
 </head>
-<body style="padding-top: 5rem;">
-	<nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
-		<h1 class="navbar-brand">Meyda</h1>
-    <ul class="nav navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" href="https://github.com/hughrawlinson/meyda/">GitHub</a>
-      </li>
-    </ul>
-	</nav>
-	<div class="container">
-		<div class="row">
-			<div class="col-xs-12">
-				<h1>Meyda</h1>
-				<p class="lead">Meyda is an audio feature extraction library for Javascript.</p>
-				<hr>
-			</div>
-		</div>
-		<div class="row">
-			<div id="showcase" class="col-xs-12">
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <h1 class="display-1">Meyda</h1>
+        <p class="lead">Meyda is an audio feature extraction library for Javascript.</p>
+        <hr>
+      </div>
+    </div>
+    <div class="row">
+      <div id="showcase" class="col-xs-12">
         <div id="audioControl">
           <p>Allow microphone access or play this audio file to see a demo.</p>
           <audio id="elvisSong" controls src="/ripitup.mp3"></audio>
         </div>
-			</div>
-			<hr>
-		</div>
+      </div>
+      <hr>
+    </div>
     <div class="row">
       <div class="col-xs-12">
         <hr>
@@ -66,16 +63,16 @@
         </div>
       </div>
     </div>
-		<div class="row">
-			<div class="col-xs-12">
-				<footer class="blog-footer">
-					<hr>
-			    <p>Showcase site built by the Meyda core team. You can <a href="https://github.com/hughrawlinson/meyda/wiki/contributing">contribute</a> too you know!</p>
-			    <p><a href="#">Back to top</a></p>
-			  </footer>
-			</div>
-		</div>
-	</div>
+    <div class="row">
+      <div class="col-xs-12">
+        <footer class="blog-footer">
+          <hr>
+          <p>Showcase site built by the Meyda core team. You can <a href="https://github.com/hughrawlinson/meyda/wiki/contributing">contribute</a> too you know!</p>
+          <p><a href="#">Back to top</a></p>
+        </footer>
+      </div>
+    </div>
+  </div>
   <script src="main.js"></script>
 </body>
 </html>
