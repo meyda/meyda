@@ -1,79 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>Meyda</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-  <script type="text/javascript" src="https://npmcdn.com/meyda/dist/web/meyda.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r74/three.js" charset="utf-8"></script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-<style>
+  <head>
+    <title>Meyda</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script type="text/javascript" src="https://npmcdn.com/meyda/dist/web/meyda.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r74/three.js" charset="utf-8"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <style>
 body {
   padding: 5rem 0;
 }
-</style>
-</head>
-<body>
-  <div class="container">
-    <div class="row">
-      <div class="col-xs-12">
-        <h1 class="display-1">Meyda</h1>
-        <p class="lead">Meyda is an audio feature extraction library for Javascript.</p>
-        <hr>
-      </div>
-    </div>
-    <div class="row">
-      <div id="showcase" class="col-xs-12">
-        <div id="audioControl">
-          <p>Allow microphone access or play this audio file to see a demo.</p>
-          <audio id="elvisSong" controls src="/ripitup.mp3"></audio>
-        </div>
-      </div>
-      <hr>
-    </div>
-    <div class="row">
-      <div class="col-xs-12">
-        <hr>
-        <h2>What is Meyda?</h2>
-        <p>Meyda is a Javascript audio feature extraction library. It works with the Web Audio API (or plain old Javascript arrays) to expose information about the timbre and percieved qualities of sound. Meyda supports both offline feature extraction as well as real-time feature extraction using the <a href="https://github.com/WebAudio/web-audio-api">Web Audio API</a>. We wrote a paper about it, which is available <a href="http://doc.gold.ac.uk/%7Emu202hr/publications/RawlinsonSegalFiala_WAC2015.pdf">here</a>.</p>
-        <hr>
-        <h2>Documentation & How-To</h2>
-        <p>Documentation can be found in it's most up to date form <a href="https://github.com/hughrawlinson/meyda/wiki/getting-started">on our GitHub powered wiki</a>.</p>
-        <p>Information about our audio features is available <a href="https://github.com/hughrawlinson/meyda/wiki/getting-started">at our wiki</a></p>
-        <p>If you have further questions, we encourage you to get in contact either through our GitHub based <a href="https://github.com/hughrawlinson/meyda/issues">Issue Tracker</a>, or via Twitter.</p>
-        <hr>
-        <div class="col-xs-4">
-          <dl>
-            <dt>Hugh Rawlinson</dt>
-            <dd><a href="http://twitter.com/hughrawlinson">@hughrawlinson</a></dd>
-          </dl>
-        </div>
-        <div class="col-xs-4">
-          <dl>
-            <dt>Nevo Segal</dt>
-            <dd><a href="http://twitter.com/nevosegal">@nevosegal</a></dd>
-          </dl>
-        </div>
-        <div class="col-xs-4">
-          <dl>
-            <dt>Jakub Fiala</dt>
-            <dd><a href="http://twitter.com/fiala__">@fiala</a></dd>
-          </dl>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12">
-        <footer class="blog-footer">
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <h1 class="display-1">Meyda</h1>
+          <p class="lead">Meyda is an audio feature extraction library for Javascript.</p>
           <hr>
-          <p>Showcase site built by the Meyda core team. You can <a href="https://github.com/hughrawlinson/meyda/wiki/contributing">contribute</a> too you know!</p>
-          <p><a href="#">Back to top</a></p>
-        </footer>
+        </div>
+      </div>
+      <div class="row">
+        <div id="showcase" class="col-xs-12">
+          <div id="audioControl">
+            <p>Allow microphone access or play this audio file to see a demo.</p>
+            <audio id="elvisSong" controls src="/ripitup.mp3"></audio>
+          </div>
+        </div>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <hr>
+          <h2>What is Meyda?</h2>
+          <p>Meyda is a Javascript audio feature extraction library. It works with the Web Audio API (or plain old Javascript arrays) to expose information about the timbre and percieved qualities of sound. Meyda supports both offline feature extraction as well as real-time feature extraction using the <a href="https://github.com/WebAudio/web-audio-api">Web Audio API</a>. We wrote a paper about it, which is available <a href="http://doc.gold.ac.uk/%7Emu202hr/publications/RawlinsonSegalFiala_WAC2015.pdf">here</a>.</p>
+          <hr>
+          <h2>Documentation & How-To</h2>
+          <p>Documentation can be found in it's most up to date form <a href="https://github.com/hughrawlinson/meyda/wiki/getting-started">on our GitHub powered wiki</a>.</p>
+          <p>Information about our audio features is available <a href="https://github.com/hughrawlinson/meyda/wiki/getting-started">at our wiki</a></p>
+          <p>If you have further questions, we encourage you to get in contact either through our GitHub based <a href="https://github.com/hughrawlinson/meyda/issues">Issue Tracker</a>, or via Twitter.</p>
+          <hr>
+          <div class="row">
+            <div class="col-xs-3">
+              <dl>
+                <dt>Hugh Rawlinson</dt>
+                <dd><a href="http://twitter.com/hughrawlinson">@hughrawlinson</a></dd>
+              </dl>
+            </div>
+            <div class="col-xs-3">
+              <dl>
+                <dt>Nevo Segal</dt>
+                <dd><a href="http://twitter.com/nevosegal">@nevosegal</a></dd>
+              </dl>
+            </div>
+            <div class="col-xs-3">
+              <dl>
+                <dt>Jakub Fiala</dt>
+                <dd><a href="http://twitter.com/fiala__">@fiala</a></dd>
+              </dl>
+            </div>
+            <div class="col-xs-3">
+              <dl>
+                <dt>Sam Wray</dt>
+                <dd><a href="https://twitter.com/_2xaa">@_2xaa</a></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <footer class="blog-footer">
+            <hr>
+            <p>Showcase site built by the Meyda core team. You can <a href="https://github.com/hughrawlinson/meyda/wiki/contributing">contribute</a> too you know!</p>
+            <p><a href="#">Back to top</a></p>
+          </footer>
+        </div>
       </div>
     </div>
-  </div>
-  <script src="main.js"></script>
-  <a href="https://github.com/hughrawlinson/meyda"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-</body>
+    <script src="main.js"></script>
+    <a href="https://github.com/hughrawlinson/meyda"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+  </body>
 </html>
