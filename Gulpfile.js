@@ -9,24 +9,24 @@ var babelify = require('babelify');
 var webpack = require('webpack-stream');
 
 gulp.task('buildWeb:regular', function() {
-	return gulp.src('./src/main.js')
-		.pipe(webpack(require('./webpack.config.js').regular, require('webpack'))) // pass webpack for webpack2
-		.pipe(gulp.dest('./dist/web'));
+  return gulp.src('./src/main.js')
+    .pipe(webpack(require('./webpack.config.js').regular, require('webpack'))) // pass webpack for webpack2
+    .pipe(gulp.dest('./dist/web'));
 });
 
 gulp.task('buildWeb:minified', function() {
-	return gulp.src('./src/main.js')
-		.pipe(webpack(require('./webpack.config.js').minified, require('webpack'))) // pass webpack for webpack2
-		.pipe(gulp.dest('./dist/web'));
+  return gulp.src('./src/main.js')
+    .pipe(webpack(require('./webpack.config.js').minified, require('webpack'))) // pass webpack for webpack2
+    .pipe(gulp.dest('./dist/web'));
 });
 
 gulp.task('buildNode',function(){
-	return gulp.src("./src/**/*.js")
-		.pipe(babel({
-            presets: ['es2015'],
-			plugins: ["babel-plugin-add-module-exports"]
-        }))
-		.pipe(gulp.dest("./dist/node/"));
+  return gulp.src('./src/**/*.js')
+    .pipe(babel({
+      presets: ['es2015'],
+      plugins: ['babel-plugin-add-module-exports']
+    }))
+    .pipe(gulp.dest('./dist/node/'));
 });
 
 gulp.task('build', ['buildNode', 'buildWeb']);
