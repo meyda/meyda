@@ -5,16 +5,21 @@ module.exports = {
   regular: {
     devtool: 'source-map',
     output: {
-     filename: 'meyda.js'
+     filename: 'meyda.js',
+     library: 'Meyda',
+     libraryTarget: 'var'
     },
     module: {
       rules: [
         {
           test: /\.js$/,
-          //exclude: /node_modules/, <-- include node_modules because of jsfft's ES6 push to npm 😡
+          exclude: /node_modules/,
           loader: 'babel-loader',
           options: {
-            presets: [[ 'es2015', { modules: false } ]]
+            presets: ['es2015'],
+            plugins: [
+              'add-module-exports'
+            ]
           }
         }
       ]
@@ -24,16 +29,21 @@ module.exports = {
     devtool: 'source-map',
     output: {
      filename: 'meyda.min.js',
-     sourceMapFilename: 'meyda.min.map'
+     sourceMapFilename: 'meyda.min.map',
+     library: 'Meyda',
+     libraryTarget: 'var'
     },
     module: {
       rules: [
         {
           test: /\.js$/,
-          //exclude: /node_modules/, <-- include node_modules because of jsfft's ES6 push to npm 😡
+          exclude: /node_modules/,
           loader: 'babel-loader',
           options: {
-            presets: [[ 'es2015', { modules: false } ]]
+            presets: ['es2015'],
+            plugins: [
+              'add-module-exports'
+            ]
           }
         }
       ]
