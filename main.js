@@ -129,13 +129,6 @@
 	      lines.add(line);
 
 	      positions = line.geometry.attributes.position.array;
-	      var index = 0;
-
-	      for (var j = 0; j < ffts[i].length; j++) {
-	        positions[index++] = -11 + 22 * j / ffts[i].length;
-	        positions[index++] = -5 + ffts[i][j];
-	        positions[index++] = -15 - i;
-	      }
 	    }
 	  }
 
@@ -145,13 +138,8 @@
 	    var _positions = new Float32Array(bufferSize * 3);
 	    bufferLineGeometry.addAttribute('position', new THREE.BufferAttribute(_positions, 3));
 	    bufferLineGeometry.setDrawRange(0, bufferSize);
+
 	    _positions = bufferLine.geometry.attributes.position.array;
-	    var _index = 0;
-	    for (var _i = 0; _i < bufferSize; _i++) {
-	      _positions[_index++] = -11 + 22 * _i / bufferSize;
-	      _positions[_index++] = 4;
-	      _positions[_index++] = -25;
-	    }
 	  }
 	  scene.add(bufferLine);
 	  scene.add(lines);
@@ -167,45 +155,46 @@
 	      ffts.unshift(features.amplitudeSpectrum);
 	      var windowedSignalBuffer = a.meyda._m.signal;
 
-	      for (var _i2 = 0; _i2 < ffts.length; _i2++) {
-	        var positions = lines.children[_i2].geometry.attributes.position.array;
+	      for (var _i = 0; _i < ffts.length; _i++) {
+	        var positions = lines.children[_i].geometry.attributes.position.array;
 	        var index = 0;
 
-	        for (var j = 0; j < ffts[_i2].length * 3; j++) {
-	          positions[index++] = -11 + 22 * j / ffts[_i2].length;
-	          positions[index++] = -5 + ffts[_i2][j];
-	          positions[index++] = -15 - _i2;
+	        for (var j = 0; j < ffts[_i].length * 3; j++) {
+	          positions[index++] = 10.7 + 8 * Math.log10(j / ffts[_i].length);
+	          positions[index++] = -5 + 2 * ffts[_i][j];
+	          positions[index++] = -15 - _i;
 	        }
 
-	        lines.children[_i2].geometry.attributes.position.needsUpdate = true;
+	        lines.children[_i].geometry.attributes.position.needsUpdate = true;
 	      }
 
 	      // Render Spectral Centroid Arrow
 	      if (features.spectralCentroid) {
 	        // SpectralCentroid is an awesome variable name
 	        // We're really just updating the x axis
-	        centroidArrow.position.set(-11 + 22 * features.spectralCentroid / bufferSize / 2, -6, -15);
+	        centroidArrow.position.set(10.7 + 8 * Math.log10(features.spectralCentroid / (bufferSize / 2)), -6, -15);
 	      }
 
 	      // Render Spectral Rolloff Arrow
 	      if (features.spectralRolloff) {
 	        // We're really just updating the x axis
-	        rolloffArrow.position.set(-11 + features.spectralRolloff / 44100 * 22, -6, -15);
+	        var rolloff = features.spectralRolloff / 22050;
+	        rolloffArrow.position.set(10.7 + 8 * Math.log10(rolloff), -6, -15);
 	      }
 	      // Render RMS Arrow
 	      if (features.rms) {
-	        // We're really just updating the x axis
+	        // We're really just updating the y axis
 	        rmsArrow.position.set(-11, -5 + 10 * features.rms, -15);
 	      }
 
 	      if (windowedSignalBuffer) {
 	        // Render Signal Buffer
 	        var _positions2 = bufferLine.geometry.attributes.position.array;
-	        var _index2 = 0;
+	        var _index = 0;
 	        for (var i = 0; i < bufferSize; i++) {
-	          _positions2[_index2++] = -11 + 22 * i / bufferSize;
-	          _positions2[_index2++] = 4 + windowedSignalBuffer[i] * 5;
-	          _positions2[_index2++] = -25;
+	          _positions2[_index++] = -11 + 22 * i / bufferSize;
+	          _positions2[_index++] = 4 + windowedSignalBuffer[i] * 5;
+	          _positions2[_index++] = -25;
 	        }
 	        bufferLine.geometry.attributes.position.needsUpdate = true;
 	      }
