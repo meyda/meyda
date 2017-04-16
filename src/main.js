@@ -83,29 +83,17 @@
       lines.add(line);
 
       positions = line.geometry.attributes.position.array;
-      let index = 0;
-
-      for (let j = 0; j < ffts[i].length; j++) {
-        positions[index++] = -11 + (22 * j / ffts[i].length);
-        positions[index++] = -5 + ffts[i][j];
-        positions[index++] = -15 - i;
-      }
     }
   }
 
   let bufferLineGeometry = new THREE.BufferGeometry();
   let bufferLine = new THREE.Line(bufferLineGeometry, material);
   {
-    let positions = new Float32Array(bufferSize*3);
+    let positions = new Float32Array(bufferSize * 3);
     bufferLineGeometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
     bufferLineGeometry.setDrawRange(0, bufferSize);
+    
     positions = bufferLine.geometry.attributes.position.array;
-    let index = 0;
-    for (let i = 0; i < bufferSize; i++){
-      positions[index++] = -11 + 22 * i / bufferSize;
-      positions[index++] = 4;
-      positions[index++] = -25;
-    }
   }
   scene.add(bufferLine);
   scene.add(lines);
@@ -132,8 +120,8 @@
         var index = 0;
 
         for (var j = 0; j < ffts[i].length*3; j++) {
-          positions[index++] = -11 + (22 * j / ffts[i].length);
-          positions[index++] = -5 + ffts[i][j];
+          positions[index++] = 10.7 + (8 * Math.log10(j/ffts[i].length));
+          positions[index++] = -5 + 2 * ffts[i][j];
           positions[index++] = -15 - i;
         }
 
@@ -144,19 +132,18 @@
       if (features.spectralCentroid) {
         // SpectralCentroid is an awesome variable name
         // We're really just updating the x axis
-        centroidArrow.position.set(-11 +
-          (22 * features.spectralCentroid / bufferSize / 2), -6, -15);
+        centroidArrow.position.set(10.7 + (8 * Math.log10(features.spectralCentroid / (bufferSize / 2))), -6, -15);
       }
 
       // Render Spectral Rolloff Arrow
       if (features.spectralRolloff) {
         // We're really just updating the x axis
-        rolloffArrow.position.set(
-          -11 + (features.spectralRolloff / 44100 * 22), -6, -15);
+        var rolloff = (features.spectralRolloff / 22050)
+        rolloffArrow.position.set(10.7 + (8 * Math.log10(rolloff)), -6, -15);
       }
       // Render RMS Arrow
       if (features.rms) {
-        // We're really just updating the x axis
+        // We're really just updating the y axis
         rmsArrow.position.set(-11, -5 + (10 * features.rms), -15);
       }
 
