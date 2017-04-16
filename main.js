@@ -253,12 +253,13 @@
 
 	    this.context = new AudioContext();
 
-	    this.synthesizer = {};
-	    this.synthesizer.out = this.context.createGain();
+	    var elvis = document.getElementById('elvisSong');
+	    var stream = this.context.createMediaElementSource(elvis);
+	    stream.connect(this.context.destination);
 
 	    this.meyda = Meyda.createMeydaAnalyzer({
 	      audioContext: this.context,
-	      source: this.synthesizer.out,
+	      source: stream,
 	      bufferSize: bufferSize,
 	      windowingFunction: 'blackman'
 	    });
@@ -269,17 +270,26 @@
 	  Audio.prototype.initializeMicrophoneSampling = function () {
 	    var errorCallback = function errorCallback(err) {
 	      // We should fallback to an audio file here, but that's difficult on mobile
-	      var elvis = document.getElementById('elvisSong');
-	      var stream = _this.context.createMediaElementSource(elvis);
-	      stream.connect(_this.context.destination);
-	      _this.meyda.setSource(stream);
+	      if (_this.context.state === 'suspended') {
+	        var resume = function resume() {
+	          _this.context.resume();
+
+	          setTimeout(function () {
+	            if (_this.context.state === 'running') {
+	              document.body.removeEventListener('touchend', resume, false);
+	            }
+	          }, 0);
+	        };
+
+	        document.body.addEventListener('touchend', resume, false);
+	      };
 	    };
 
 	    try {
-	      navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.getUserMedia;
+	      navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.getUserMedia || navigator.mediaDevices.getUserMedia;
 	      var constraints = { video: false, audio: true };
 	      var successCallback = function successCallback(mediaStream) {
-	        document.getElementById('elvisSong').style.display = 'none';
+	        document.getElementById('audioControl').style.display = 'none';
 	        console.log('User allowed microphone access.');
 	        console.log('Initializing AudioNode from MediaStream');
 	        var source = _this.context.createMediaStreamSource(mediaStream);
@@ -288,11 +298,9 @@
 	        console.groupEnd();
 	      };
 
-	      try {
-	        console.log('Asking for permission...');
-	        navigator.getUserMedia(constraints, successCallback, errorCallback);
-	      } catch (e) {
-	        var p = navigator.mediaDevices.getUserMedia(constraints);
+	      console.log('Asking for permission...');
+	      var getUserMediaPromise = navigator.getUserMedia(constraints, successCallback, errorCallback);
+	      if (getUserMediaPromise) {
 	        p.then(successCallback);
 	        p.catch(errorCallback);
 	      }
@@ -302,6 +310,7 @@
 	  };
 
 	  Audio.prototype.get = function (features) {
+	    _this.context.resume();
 	    return _this.meyda.get(features);
 	  };
 
