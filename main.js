@@ -81,15 +81,15 @@
 	  var renderer = new THREE.WebGLRenderer();
 	  renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
 	  renderer.setSize(resolution * aspectRatio, resolution);
-	  renderer.domElement.style.height = resolution + 'px';
-	  renderer.domElement.style.width = document.querySelector('.col').offsetWidth + 'px';
-	  window.addEventListener('resize', function () {
-	    var canvasWidth = document.querySelector('.col').offsetWidth;
-	    resolution = canvasWidth / 16 * 10;
-	    renderer.setSize(resolution * aspectRatio, resolution);
-	    renderer.domElement.height = resolution * window.devicePixelRatio;
-	    renderer.domElement.width = canvasWidth * window.devicePixelRatio;
-	  });
+	  renderer.domElement.style.width = '100%';
+	  renderer.domElement.style.height = 'auto';
+	  // window.addEventListener('resize', function(){
+	  //   let canvasWidth = document.querySelector('.col').offsetWidth;
+	  //   resolution = canvasWidth/16*10;
+	  //   renderer.setSize(resolution * aspectRatio, resolution);
+	  //   renderer.domElement.height = resolution * window.devicePixelRatio;
+	  //   renderer.domElement.width = canvasWidth * window.devicePixelRatio;
+	  // });
 	  document.querySelector('#showcase').appendChild(renderer.domElement);
 
 	  var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
