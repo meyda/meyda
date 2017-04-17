@@ -15,16 +15,23 @@ import mfcc from './extractors/mfcc';
 import powerSpectrum from './extractors/powerSpectrum';
 import spectralFlux from './extractors/spectralFlux';
 
-export default {
-  buffer: function (args) {
-    return args.signal;
-  },
+let buffer = function(args) {
+  return args.signal;
+};
 
+let complexSpectrum = function (args) {
+  return args.complexSpectrum;
+};
+
+let amplitudeSpectrum = function (args) {
+  return args.ampSpectrum;
+};
+
+export {
+  buffer,
   rms,
   energy,
-  complexSpectrum: function (args) {
-    return args.complexSpectrum;
-  },
+  complexSpectrum,
 
   spectralSlope,
   spectralCentroid,
@@ -33,9 +40,7 @@ export default {
   spectralSpread,
   spectralSkewness,
   spectralKurtosis,
-  amplitudeSpectrum: function (args) {
-    return args.ampSpectrum;
-  },
+  amplitudeSpectrum,
 
   zcr,
   loudness,
@@ -43,5 +48,5 @@ export default {
   perceptualSharpness,
   powerSpectrum,
   mfcc,
-  spectralFlux,
+  spectralFlux
 };
