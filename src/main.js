@@ -33,13 +33,19 @@
 
   var renderer = new THREE.WebGLRenderer({ canvas: document.querySelector("canvas") });
 
-
   function resize() {
-    var resolution = renderer.domElement.parentNode.offsetWidth / 16 * 10;
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = 'auto';
+
+    var resolution = renderer.domElement.clientWidth / 16 * 10;
     renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
+
     renderer.setSize(resolution * aspectRatio, resolution);
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = 'auto';
+
+    camera.aspect = (resolution * aspectRatio) / resolution;
+    camera.updateProjectionMatrix();
   }
 
   resize();
@@ -137,7 +143,7 @@
       // Render Spectral Rolloff Arrow
       if (features.spectralRolloff) {
         // We're really just updating the x axis
-        var rolloff = (features.spectralRolloff / 22050)
+        var rolloff = (features.spectralRolloff / 22050);
         rolloffArrow.position.set(10.7 + (8 * Math.log10(rolloff)), -6, -15);
       }
       // Render RMS Arrow
