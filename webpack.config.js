@@ -7,7 +7,7 @@ module.exports = {
     output: {
      filename: 'meyda.js',
      library: 'Meyda',
-     libraryTarget: 'var'
+     libraryTarget: 'umd'
     },
     module: {
       rules: [
@@ -16,10 +16,7 @@ module.exports = {
           exclude: /node_modules/,
           loader: 'babel-loader',
           options: {
-            presets: ['es2015'],
-            plugins: [
-              'add-module-exports'
-            ]
+            presets: [['es2015', {modules: false}]]
           }
         }
       ]
@@ -31,7 +28,7 @@ module.exports = {
      filename: 'meyda.min.js',
      sourceMapFilename: 'meyda.min.map',
      library: 'Meyda',
-     libraryTarget: 'var'
+     libraryTarget: 'umd'
     },
     module: {
       rules: [
@@ -40,10 +37,7 @@ module.exports = {
           exclude: /node_modules/,
           loader: 'babel-loader',
           options: {
-            presets: ['es2015'],
-            plugins: [
-              'add-module-exports'
-            ]
+            presets: [['es2015', {modules: false}]]
           }
         }
       ]
