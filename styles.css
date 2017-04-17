@@ -1,0 +1,51 @@
+body {
+  padding: 5rem 0;
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+}
+
+audio {
+  width:100%;
+}
+
+.key-item {
+  font-size: small;
+  text-align: center;
+  display: inline-block;
+  margin: 0 15px;
+  vertical-align: middle;
+}
+
+.key-color {
+  border: 1px solid;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 5px 0 0;
+  vertical-align: middle;
+}
+
+.key-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.key-color.pink {
+  background-color: #ff00ff;
+}
+
+.key-color.yellow {
+  background-color: #ffff00;
+}
+
+.key-color.blue {
+  background-color: #0000ff;
+}
+
+div#legend {
+  text-align: center;
+  vertical-align: middle;
+}
