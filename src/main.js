@@ -31,12 +31,11 @@
   var ffts = initializeFFTs(20, bufferSize);
   var buffer = null;
 
-  var renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('canvas') });
+  var renderer = new THREE.WebGLRenderer({ canvas: document.querySelector("canvas") });
 
 
   function resize() {
     var resolution = renderer.domElement.parentNode.offsetWidth / 16 * 10;
-    console.dir(renderer.domElement.parentNode);
     renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
     renderer.setSize(resolution * aspectRatio, resolution);
     renderer.domElement.style.width = '100%';
