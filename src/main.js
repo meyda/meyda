@@ -5,7 +5,6 @@
   let Audio = require('./audio');
   let a = new Audio(bufferSize);
 
-  var resolution = document.querySelector('.col').offsetWidth/16*10;
   var aspectRatio = 16 / 10;
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(40, aspectRatio, 0.1, 1000);
@@ -32,19 +31,20 @@
   var ffts = initializeFFTs(20, bufferSize);
   var buffer = null;
 
-  var renderer = new THREE.WebGLRenderer();
-  renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
-  renderer.setSize(resolution * aspectRatio, resolution);
-  renderer.domElement.style.width = '100%';
-  renderer.domElement.style.height = 'auto';
-  // window.addEventListener('resize', function(){
-  //   let canvasWidth = document.querySelector('.col').offsetWidth;
-  //   resolution = canvasWidth/16*10;
-  //   renderer.setSize(resolution * aspectRatio, resolution);
-  //   renderer.domElement.height = resolution * window.devicePixelRatio;
-  //   renderer.domElement.width = canvasWidth * window.devicePixelRatio;
-  // });
-  document.querySelector('#showcase').appendChild(renderer.domElement);
+  var renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('canvas') });
+
+
+  function resize() {
+    var resolution = renderer.domElement.parentNode.offsetWidth / 16 * 10;
+    console.dir(renderer.domElement.parentNode);
+    renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
+    renderer.setSize(resolution * aspectRatio, resolution);
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = 'auto';
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
 
   var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
   directionalLight.position.set(0, 1, 1);
