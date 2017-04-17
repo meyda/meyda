@@ -9,13 +9,13 @@ var babelify = require('babelify');
 var webpack = require('webpack-stream');
 
 gulp.task('buildWeb:regular', function() {
-  return gulp.src('./src/main.js')
+  return gulp.src('./src/index.js')
     .pipe(webpack(require('./webpack.config.js').regular, require('webpack'))) // pass webpack for webpack2
     .pipe(gulp.dest('./dist/web'));
 });
 
 gulp.task('buildWeb:minified', function() {
-  return gulp.src('./src/main.js')
+  return gulp.src('./src/index.js')
     .pipe(webpack(require('./webpack.config.js').minified, require('webpack'))) // pass webpack for webpack2
     .pipe(gulp.dest('./dist/web'));
 });
