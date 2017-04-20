@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hughrawlinson/meyda.git"
+    "url": "https://github.com/meyda/meyda.git"
   },
   "keywords": [
     "audio",
@@ -42,9 +42,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hughrawlinson/meyda/issues"
+    "url": "https://github.com/meyda/meyda/issues"
   },
-  "homepage": "https://github.com/hughrawlinson/meyda",
+  "homepage": "https://github.com/meyda/meyda",
   "devDependencies": {
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.1",
