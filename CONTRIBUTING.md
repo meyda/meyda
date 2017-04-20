@@ -1,6 +1,6 @@
 # Contributing
 
-We welcome any and all contributions to Meyda, including filing issues, feature requests, pull requests, feedback, and any other comments. Please familiarise yourself with our [Contributor Covenant](https://github.com/hughrawlinson/meyda/wiki/Contributor-Covenant). The core contributors are quite limited on time, so we'd really appreciate if you could stick to the following few rules:
+We welcome any and all contributions to Meyda, including filing issues, feature requests, pull requests, feedback, and any other comments. Please familiarise yourself with our [Contributor Covenant](https://github.com/meyda/meyda/wiki/Contributor-Covenant). The core contributors are quite limited on time, so we'd really appreciate if you could stick to the following few rules:
 
 ### Filing issues
 * Bug reports
