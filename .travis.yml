@@ -22,6 +22,6 @@ deploy:
     secure: VSJZDjyOoQNGn4+oULoSair9NVn6RflRdUGmES1m87om04AjPV9IYsxosyR9YnSinlWYBXO8bh1aDiSWcoh/ExoHr4P5Olu+GYWRoOivE54k/81R4rAFz2AC/eftkdbsM+tE56YEQyyxNDSn1wgj9h6RM4gjFhh6BKwfRHGTEBk=
   on:
     tags: true
-    repo: hughrawlinson/meyda
+    repo: meyda/meyda
     branch: master
 
