@@ -70,8 +70,8 @@
   },
   "dependencies": {
     "dct": "0.0.3",
+    "fftjs": "0.0.2-alpha.0",
     "gulp": "^3.9.0",
-    "jsfft-for-meyda": "0.0.1",
     "node-getopt": "^0.2.3",
     "through2": "^2.0.1",
     "wav": "^1.0.0"

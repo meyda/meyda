@@ -1,7 +1,6 @@
 import * as utilities from './utilities';
 import * as extractors from './featureExtractors';
-import * as fft from 'jsfft-for-meyda';
-import {ComplexArray} from 'jsfft-for-meyda';
+import {fft, ifft} from 'fftjs';
 import {MeydaAnalyzer} from './meyda-wa';
 
 var Meyda = {
@@ -138,15 +137,7 @@ var prepareSignalWithSpectrum = function (signal,
     preparedSignal.signal,
     windowingFunction);
 
-  // create complexarray to hold the spectrum
-  var data = new ComplexArray(bufferSize);
-
-  // map time domain
-  data.map(function (value, i, n) {
-    value.real = preparedSignal.windowedSignal[i];
-  });
-
-  preparedSignal.complexSpectrum = data.FFT();
+  preparedSignal.complexSpectrum = fft(preparedSignal.windowedSignal);
   preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
   for (var i = 0; i < bufferSize / 2; i++) {
     preparedSignal.ampSpectrum[i] = Math.sqrt(
