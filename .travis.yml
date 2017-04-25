@@ -10,11 +10,11 @@ sudo: false
 script: npm run travis
 notifications:
   slack:
-    secure: IOuozca39vvU6tjxxq1HXaf5pSVEFpTkm64eaSCJuO2ON3peK0889JXdP3Bdn3BArNbpqXHECYGrAxa/s5lEzNo/Yr27bXBpC8P16Avu+0ifd93u3laPLL9EU8A3cwk+Sl/zXyOm3rPJ6S6TKAzIR7ATTbSLwAiFszSOhziLN+s=
+    secure: Z+kV8Q/rDT7AubCvmB8sQGcoBYpM3pRTALhYoi0eZKYtSsqzn0EPdOT7B0zG+UZ7smooDRjdSy+ba1KCbOCKfq4Q/Rov3v3qQdoASmseLRpniz/Lr2sJZtq5h3NXT0MTId+E1TzZZh2eokzXc7inP4ZOxEkoXPTclDqQA6A8JUA=
 addons:
   code_climate:
     secure: UzGiBUR3lUurZQ2Pr5w8cgIFK9GIuGYVANDa2D9he1bzxkiXcMxySYqNjsPusgH3loGdi+DGENOcrVfOYo1qEYOuIZunmof6V9hMYbemgSUeDEUG7VSTG3l2vVGsJGShIlyAoh0T2TDVaxmhsKUMRmsrU2byJp7BggBGFIWG8lY=
-before_deploy: "npm run build"
+before_deploy: npm run build
 deploy:
   provider: npm
   email: hugh@codeoclock.net
@@ -24,4 +24,3 @@ deploy:
     tags: true
     repo: meyda/meyda
     branch: master
-
