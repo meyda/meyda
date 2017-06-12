@@ -22,10 +22,12 @@ export class MeydaAnalyzer{
   this._m.windowingFunction = options.windowingFunction || 'hanning';
   this._m.featureExtractors = featureExtractors;
   this._m.EXTRACTION_STARTED = options.startImmediately || false;
+  this._m.channelCount = options.channelCount || 1;
+  this._m.channelIndex = options.channelIndex || 0;
 
   //create nodes
   this._m.spn = this._m.audioContext.createScriptProcessor(
-    this._m.bufferSize, 1, 1);
+    this._m.bufferSize, this._m.channelCount, this._m.channelCount);
   this._m.spn.connect(this._m.audioContext.destination);
 
   this._m._featuresToExtract = options.featureExtractors || [];
@@ -50,7 +52,7 @@ export class MeydaAnalyzer{
       this._m.previousInputData = this._m.inputData;
     }
 
-    this._m.inputData = e.inputBuffer.getChannelData(0);
+    this._m.inputData = e.inputBuffer.getChannelData(this._m.channelIndex);
 
     var features = this._m.extract(
       this._m._featuresToExtract,
@@ -59,7 +61,7 @@ export class MeydaAnalyzer{
 
     // call callback if applicable
     if (typeof this._m.callback === 'function' && this._m.EXTRACTION_STARTED) {
-      this._m.callback(features);
+      this._m.callback(features, this._m.channelIndex);
     }
 
   };

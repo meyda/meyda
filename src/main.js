@@ -11,6 +11,8 @@ var meyda = () => {
     sampleRate: 44100,
     melBands: 26,
     callback: null,
+    channelCount: 1,
+    channelIndex: 0,
     windowingFunction: 'hanning',
     featureExtractors: extractors,
     EXTRACTION_STARTED: false,
