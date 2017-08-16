@@ -11,5 +11,8 @@ export default function(args) {
   );
   var maxVal = Math.max.apply(null, chromagram);
 
-  return chromagram.map(v => v / maxVal);
+
+  return maxVal
+    ? chromagram.map(v => v / maxVal)
+    : chromagram;
 }
