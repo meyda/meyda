@@ -61,8 +61,7 @@ var Meyda = {
 
     // Recalculate chroma bank if buffer length changed
     if (typeof this.chromaFilterBank == 'undefined' ||
-            this.barkScale.length != this.bufferSize ||
-            this.chromaFilterBank.length != this.melBands) {
+            this.chromaFilterBank.length != this.chromaBands) {
       this.chromaFilterBank = utilities.createChromaFilterBank(
           this.chromaBands,
           this.sampleRate,
@@ -100,6 +99,7 @@ var Meyda = {
       for (var x = 0; x < feature.length; x++) {
         results[feature[x]] = (this.featureExtractors[feature[x]]({
           ampSpectrum:this.ampSpectrum,
+          chromaFilterBank: this.chromaFilterBank,
           complexSpectrum:this.complexSpectrum,
           signal:this.signal,
           bufferSize:this.bufferSize,
@@ -116,6 +116,7 @@ var Meyda = {
     }    else if (typeof feature === 'string') {
       return this.featureExtractors[feature]({
         ampSpectrum:this.ampSpectrum,
+        chromaFilterBank: this.chromaFilterBank,
         complexSpectrum:this.complexSpectrum,
         signal:this.signal,
         bufferSize:this.bufferSize,
