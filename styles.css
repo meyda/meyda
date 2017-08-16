@@ -49,3 +49,27 @@ div#legend {
   text-align: center;
   vertical-align: middle;
 }
+
+#chroma:before {
+  content: 'Chroma bands:';
+  margin-right: 10px;
+  display: inline-block;
+  text-align: center;
+}
+
+#chroma {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chroma-band {
+  flex: 0 1 28px;
+  height: 28px;
+  display: inline-block;
+  text-align: center;
+  padding-top: 7px;
+  font-size: 10px;
+  color: #ffffff;
+}

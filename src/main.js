@@ -1,6 +1,7 @@
 (function () {
   'use strict';
 
+  var scale = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B'];
   const bufferSize = 1024;
   let Audio = require('./audio');
   let a = new Audio(bufferSize);
@@ -106,6 +107,7 @@
   // scene.add(loudnessLines);
 
   let features = null;
+  let chromaWrapper = null;
 
   function render() {
     features = a.get([
@@ -114,8 +116,15 @@
       'spectralRolloff',
       'loudness',
       'rms',
+      'chroma',
     ]);
     if (features) {
+      chromaWrapper = document.querySelector('#chroma');
+      if (chromaWrapper && features.chroma) {
+        chromaWrapper.innerHTML = features.chroma.reduce((acc, v, i) => `${acc} <div class="chroma-band" style="background-color: rgba(0,${Math.round(255 * v)},0,1)">${scale[i]}</div>`, '');
+      }
+
+
       ffts.pop();
       ffts.unshift(features.amplitudeSpectrum);
       const windowedSignalBuffer = a.meyda._m.signal;
