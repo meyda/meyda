@@ -12,6 +12,7 @@ import loudness from './extractors/loudness';
 import perceptualSpread from './extractors/perceptualSpread';
 import perceptualSharpness from './extractors/perceptualSharpness';
 import mfcc from './extractors/mfcc';
+import chroma from './extractors/chroma';
 import powerSpectrum from './extractors/powerSpectrum';
 import spectralFlux from './extractors/spectralFlux';
 
@@ -48,5 +49,6 @@ export {
   perceptualSharpness,
   powerSpectrum,
   mfcc,
+  chroma,
   spectralFlux
 };

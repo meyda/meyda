@@ -9,6 +9,7 @@ var Meyda = {
   bufferSize: 512,
   sampleRate: 44100,
   melBands: 26,
+  chromaBands: 12,
   callback: null,
   windowingFunction: 'hanning',
   featureExtractors: extractors,
@@ -48,12 +49,22 @@ var Meyda = {
       );
     }
 
-    // Recalcuate mel bank if buffer length changed
+    // Recalculate mel bank if buffer length changed
     if (typeof this.melFilterBank == 'undefined' ||
             this.barkScale.length != this.bufferSize ||
             this.melFilterBank.length != this.melBands) {
       this.melFilterBank = utilities.createMelFilterBank(
           this.melBands,
+          this.sampleRate,
+          this.bufferSize);
+    }
+
+    // Recalculate chroma bank if buffer length changed
+    if (typeof this.chromaFilterBank == 'undefined' ||
+            this.barkScale.length != this.bufferSize ||
+            this.chromaFilterBank.length != this.melBands) {
+      this.chromaFilterBank = utilities.createChromaFilterBank(
+          this.chromaBands,
           this.sampleRate,
           this.bufferSize);
     }
