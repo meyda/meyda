@@ -15,8 +15,8 @@ describe('chroma', function () {
       chromaFilterBank:utilities.createChromaFilterBank(12, 44100, 512),
     });
 
-    for (var i in TestData.EXPECTED_CHROMAGRAM_OUPUT) {
-      assert.approximately(chromagram[i], TestData.EXPECTED_CHROMAGRAM_OUPUT[i], 1e-15);
+    for (var i in TestData.EXPECTED_CHROMAGRAM_OUTPUT) {
+      assert.approximately(chromagram[i], TestData.EXPECTED_CHROMAGRAM_OUTPUT[i], 1e-5);
     }
 
     done();
