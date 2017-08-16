@@ -170,7 +170,7 @@ export function normalizeByColumn (a) {
     });
     return acc;
   }, emptyRow).map(Math.sqrt);
-  return a.map((row, i) => row.map((v, j) => v / colDenominators[j] ));
+  return a.map((row, i) => row.map((v, j) => v / (colDenominators[j] || 1) ));
 };
 
 export function createChromaFilterBank(numFilters, sampleRate, bufferSize, centerOctave=5, octaveWidth=2, baseC=true, A440=440) {
