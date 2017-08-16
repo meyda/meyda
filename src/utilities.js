@@ -173,8 +173,7 @@ export function normalizeByColumn (a) {
   return a.map((row, i) => row.map((v, j) => v / colDenominators[j] ));
 };
 
-export function createChromaFilterBank(numFilters, sampleRate, bufferSize, centerOctave=5, octaveWidth=2, baseC=true) {
-  var A440 = 440;
+export function createChromaFilterBank(numFilters, sampleRate, bufferSize, centerOctave=5, octaveWidth=2, baseC=true, A440=440) {
   var numOutputBins = Math.floor(bufferSize / 2) + 1;
 
 
@@ -204,8 +203,8 @@ export function createChromaFilterBank(numFilters, sampleRate, bufferSize, cente
   weights = normalizeByColumn(weights);
 
   if (octaveWidth) {
-    var octWts = frequencyBins.map(v => Math.exp(-0.5 * Math.pow((v / numFilters - centerOctave) / octaveWidth, 2)));
-    weights = wts.map(row => row.map((cell, j) => cell * octWts[j]));
+    var octaveWeights = frequencyBins.map(v => Math.exp(-0.5 * Math.pow((v / numFilters - centerOctave) / octaveWidth, 2)));
+    weights = weights.map(row => row.map((cell, j) => cell * octaveWeights[j]));
   }
 
   if (baseC) {
