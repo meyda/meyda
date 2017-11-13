@@ -6,7 +6,7 @@ var fs = require('fs');
 var featureExtractors = require('../dist/node/featureExtractors');
 
 describe('featureExtractors', function () {
-  it('should provide all of the feature extractors', function (done) {
+  it('should provide all of the feature extractors', function () {
     var featureExtractorsProvided = fs.readdirSync('./dist/node/extractors');
     featureExtractorsProvided = featureExtractorsProvided.map(function (value) {
       return value.substr(0, value.lastIndexOf('.')) || value;
@@ -16,10 +16,13 @@ describe('featureExtractors', function () {
     featureExtractorsProvided.push('complexSpectrum');
     featureExtractorsProvided.push('amplitudeSpectrum');
     featureExtractorsProvided.splice(
-  featureExtractorsProvided.indexOf('extractorUtilities'), 1);
+      featureExtractorsProvided.indexOf('extractorUtilities'),
+      1
+    );
 
     assert.sameMembers(
-  Object.keys(featureExtractors), featureExtractorsProvided);
-    done();
+      Object.keys(featureExtractors),
+      featureExtractorsProvided
+    );
   });
 });
