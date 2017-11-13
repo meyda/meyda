@@ -169,7 +169,7 @@ export function frame(buffer, frameLength, hopLength) {
     throw new Error('Frame length cannot be less that 1');
   }
 
-  var numFrames = 1 + Math.floor((buffer.length - frameLength) / hopLength);
+  const numFrames = 1 + Math.floor((buffer.length - frameLength) / hopLength);
 
   return new Array(numFrames).fill(0).map((_, i) =>
     buffer.slice(i * hopLength, (i * hopLength) + frameLength));
