@@ -141,7 +141,7 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
     // pre-populating the arrays with 0s.
     filterBank[j] = Array.apply(
             null,
-						new Array((bufferSize / 2) + 1)).map(Number.prototype.valueOf, 0);
+            new Array((bufferSize / 2) + 1)).map(Number.prototype.valueOf, 0);
 
     //creating the lower and upper slopes for each bin
     for (let i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j + 1]; i++) {
@@ -189,11 +189,11 @@ export function createChromaFilterBank(numFilters, sampleRate, bufferSize, cente
     .map((v, i) => Math.max(v - frequencyBins[i]), 1)
     .concat([1]);
 
-  var numFilters2 = Math.round(numFilters / 2);
+  var halfNumFilters = Math.round(numFilters / 2);
 
   var filterPeaks = new Array(numFilters).fill(0)
     .map((_, i) => frequencyBins.map(frq =>
-      ((10 * numFilters + numFilters2 + frq - i) % numFilters) - numFilters2
+      ((10 * numFilters + halfNumFilters + frq - i) % numFilters) - halfNumFilters
     ));
 
   var weights = filterPeaks.map((row, i) => row.map((_, j) => (
@@ -203,12 +203,14 @@ export function createChromaFilterBank(numFilters, sampleRate, bufferSize, cente
   weights = normalizeByColumn(weights);
 
   if (octaveWidth) {
-    var octaveWeights = frequencyBins.map(v => Math.exp(-0.5 * Math.pow((v / numFilters - centerOctave) / octaveWidth, 2)));
+    var octaveWeights = frequencyBins.map(v =>
+      Math.exp(-0.5 * Math.pow((v / numFilters - centerOctave) / octaveWidth, 2))
+    );
     weights = weights.map(row => row.map((cell, j) => cell * octaveWeights[j]));
   }
 
   if (baseC) {
-    weights = weights.slice(3).concat(weights.slice(0, 3));
+    weights = [...weights.slice(3), ...weights.slice(0, 3)];
   }
 
   return weights.map(row => row.slice(0, numOutputBins));

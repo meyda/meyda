@@ -5,9 +5,11 @@ import melToFreq from './../utilities';
 var dct = require('dct');
 
 export default function(args) {
-  if (typeof args.ampSpectrum !== 'object' ||
-       typeof args.melFilterBank !== 'object') {
-    throw new TypeError();
+  if (typeof args.ampSpectrum !== 'object') {
+    throw new TypeError('Valid ampSpectrum is required to generate MFCC');
+  }
+  if (typeof args.melFilterBank !== 'object') {
+    throw new TypeError('Valid melFilterBank is required to generate MFCC');
   }
 
   // Tutorial from:
