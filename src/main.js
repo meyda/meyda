@@ -9,6 +9,7 @@ var Meyda = {
   bufferSize: 512,
   sampleRate: 44100,
   melBands: 26,
+  chromaBands: 12,
   callback: null,
   windowingFunction: 'hanning',
   featureExtractors: extractors,
@@ -48,12 +49,21 @@ var Meyda = {
       );
     }
 
-    // Recalcuate mel bank if buffer length changed
+    // Recalculate mel bank if buffer length changed
     if (typeof this.melFilterBank == 'undefined' ||
             this.barkScale.length != this.bufferSize ||
             this.melFilterBank.length != this.melBands) {
       this.melFilterBank = utilities.createMelFilterBank(
           this.melBands,
+          this.sampleRate,
+          this.bufferSize);
+    }
+
+    // Recalculate chroma bank if buffer length changed
+    if (typeof this.chromaFilterBank == 'undefined' ||
+            this.chromaFilterBank.length != this.chromaBands) {
+      this.chromaFilterBank = utilities.createChromaFilterBank(
+          this.chromaBands,
           this.sampleRate,
           this.bufferSize);
     }
@@ -89,6 +99,7 @@ var Meyda = {
       for (var x = 0; x < feature.length; x++) {
         results[feature[x]] = (this.featureExtractors[feature[x]]({
           ampSpectrum:this.ampSpectrum,
+          chromaFilterBank: this.chromaFilterBank,
           complexSpectrum:this.complexSpectrum,
           signal:this.signal,
           bufferSize:this.bufferSize,
@@ -105,6 +116,7 @@ var Meyda = {
     } else if (typeof feature === 'string') {
       return this.featureExtractors[feature]({
         ampSpectrum:this.ampSpectrum,
+        chromaFilterBank: this.chromaFilterBank,
         complexSpectrum:this.complexSpectrum,
         signal:this.signal,
         bufferSize:this.bufferSize,

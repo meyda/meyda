@@ -158,6 +158,64 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
   return filterBank;
 }
 
+export function hzToOctaves(freq, A440) {
+  return Math.log2(16 * freq / A440);
+}
+
+export function normalizeByColumn (a) {
+  var emptyRow = a[0].map(() => 0);
+  var colDenominators = a.reduce((acc, row) => {
+    row.forEach((cell, j) => {
+      acc[j] += Math.pow(cell, 2);
+    });
+    return acc;
+  }, emptyRow).map(Math.sqrt);
+  return a.map((row, i) => row.map((v, j) => v / (colDenominators[j] || 1) ));
+};
+
+export function createChromaFilterBank(numFilters, sampleRate, bufferSize, centerOctave=5, octaveWidth=2, baseC=true, A440=440) {
+  var numOutputBins = Math.floor(bufferSize / 2) + 1;
+
+
+  var frequencyBins = new Array(bufferSize).fill(0)
+    .map((_, i) => numFilters * hzToOctaves(sampleRate * i / bufferSize, A440));
+
+  // Set a value for the 0 Hz bin that is 1.5 octaves below bin 1
+  // (so chroma is 50% rotated from bin 1, and bin width is broad)
+  frequencyBins[0] = frequencyBins[1] - 1.5 * numFilters;
+
+  var binWidthBins = frequencyBins
+    .slice(1)
+    .map((v, i) => Math.max(v - frequencyBins[i]), 1)
+    .concat([1]);
+
+  var halfNumFilters = Math.round(numFilters / 2);
+
+  var filterPeaks = new Array(numFilters).fill(0)
+    .map((_, i) => frequencyBins.map(frq =>
+      ((10 * numFilters + halfNumFilters + frq - i) % numFilters) - halfNumFilters
+    ));
+
+  var weights = filterPeaks.map((row, i) => row.map((_, j) => (
+    Math.exp(-0.5 * Math.pow(2 * filterPeaks[i][j] / binWidthBins[j], 2))
+  )));
+
+  weights = normalizeByColumn(weights);
+
+  if (octaveWidth) {
+    var octaveWeights = frequencyBins.map(v =>
+      Math.exp(-0.5 * Math.pow((v / numFilters - centerOctave) / octaveWidth, 2))
+    );
+    weights = weights.map(row => row.map((cell, j) => cell * octaveWeights[j]));
+  }
+
+  if (baseC) {
+    weights = [...weights.slice(3), ...weights.slice(0, 3)];
+  }
+
+  return weights.map(row => row.slice(0, numOutputBins));
+}
+
 export function frame(buffer, frameLength, hopLength) {
   if (buffer.length < frameLength) {
     throw new Error('Buffer is too short for frame length');
