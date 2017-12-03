@@ -6,6 +6,7 @@
   var opt = require('node-getopt').create([
           ['','o[=OUTPUT_FILE]','Path to output file (optional, if not specified prints to console'],
           ['', 'bs[=BUFFER_SIZE]', 'Buffer size in samples (optional, default is 512)'],
+          ['', 'hs[=HOP_SIZE]', 'Hop size in samples (optional, defaults to matching buffer size)'],
           ['', 'w[=WINDOWING_FUNCTION]', 'Windowing function (optional, default is hanning)'],
           ['', 'format[=FORMAT_TYPE]', 'Type of output file (optional, default is csv)'],
           ['p', '', 'Disables some of the logging and outputs data to stdout, useful for piping'],
@@ -28,9 +29,11 @@
   var fs = require('fs');
 
   var FRAME_SIZE = parseInt(opt.options.bs) || 512;
+  var HOP_SIZE = parseInt(opt.options.hs) || FRAME_SIZE;
   Meyda.bufferSize = FRAME_SIZE;
+  Meyda.hopSize = HOP_SIZE;
   Meyda.windowingFunction = opt.options.w || 'hanning';
-  
+
   var outputFormat = null;
   if (opt.options.o){
      outputFormat = opt.options.format || 'csv';
@@ -86,6 +89,7 @@
     //cosmetics
     console.log('\n=========\nMeyda CLI\n=========\n\n');
     console.log('Buffer size: ' + FRAME_SIZE);
+    console.log('Hop size: ' + HOP_SIZE);
     console.log('Windowing function: ' + Meyda.windowingFunction);
     console.log('Will extract:');
     //log features to extract
@@ -105,7 +109,8 @@
       if (_chunk.length > FRAME_SIZE) {
         // if so, we'll extract stuff from it frame by frame, until we're left with something that's short enough to buffer
         while(_chunk.length > FRAME_SIZE) {
-          var frame = _chunk.splice(0, FRAME_SIZE);
+          var frame = _chunk.slice(0, FRAME_SIZE);
+          _chunk.splice(0, HOP_SIZE);
           extractFeatures(frame);
           if (!opt.options.p) process.stdout.write('-');
           frameCount++;
@@ -114,8 +119,9 @@
 
       buffer = buffer.concat(_chunk);
       //if we're long enough, splice the frame, and extract features on it
-      if (buffer.length >= FRAME_SIZE) {
-        extractFeatures(buffer.splice(0, FRAME_SIZE));
+      while (buffer.length >= FRAME_SIZE) {
+        extractFeatures(buffer.slice(0, FRAME_SIZE));
+        buffer.splice(0, HOP_SIZE);
         if (!opt.options.p) process.stdout.write('-');
         frameCount++;
       }
@@ -124,12 +130,16 @@
       //check if there's still something left in our buffer
       if (buffer.length) {
         //zero pad the buffer at the end so we get a full frame (needed for successful spectral analysis)
-        for (let i = buffer.length; i < FRAME_SIZE; i++) {
+        for (let i = buffer.length; i < 2 * FRAME_SIZE - HOP_SIZE; i++) {
           buffer.push(0);
         }
         //extract features for zero-padded frame
-        extractFeatures(buffer);
-        frameCount++;
+        while (buffer.length >= FRAME_SIZE) {
+          extractFeatures(buffer.slice(0, FRAME_SIZE));
+          buffer.splice(0, HOP_SIZE);
+          if (!opt.options.p) process.stdout.write('-');
+          frameCount++;
+        }
       }
 
       // only print out information if piping flag is disabled.

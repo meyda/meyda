@@ -113,7 +113,7 @@ var Meyda = {
       }
 
       return results;
-    }    else if (typeof feature === 'string') {
+    } else if (typeof feature === 'string') {
       return this.featureExtractors[feature]({
         ampSpectrum:this.ampSpectrum,
         chromaFilterBank: this.chromaFilterBank,

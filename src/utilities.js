@@ -215,3 +215,20 @@ export function createChromaFilterBank(numFilters, sampleRate, bufferSize, cente
 
   return weights.map(row => row.slice(0, numOutputBins));
 }
+
+export function frame(buffer, frameLength, hopLength) {
+  if (buffer.length < frameLength) {
+    throw new Error('Buffer is too short for frame length');
+  }
+  if (hopLength < 1) {
+    throw new Error('Hop length cannot be less that 1');
+  }
+  if (frameLength < 1) {
+    throw new Error('Frame length cannot be less that 1');
+  }
+
+  const numFrames = 1 + Math.floor((buffer.length - frameLength) / hopLength);
+
+  return new Array(numFrames).fill(0).map((_, i) =>
+    buffer.slice(i * hopLength, (i * hopLength) + frameLength));
+}
