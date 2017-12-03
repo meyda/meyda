@@ -69,3 +69,20 @@ describe('applyWindow', function () {
     done();
   });
 });
+
+describe('frame', function () {
+  it('returns the expected number of frames for hop size < buffer size', function () {
+    const frames = util.frame(new Array(2048).fill(0), 1024, 512);
+    assert.equal(frames.length, 3);
+  });
+
+  it('returns the expected number of frames for hop size === buffer size', function () {
+    const frames = util.frame(new Array(2048).fill(0), 1024, 1024);
+    assert.equal(frames.length, 2);
+  });
+
+  it('returns the expected number of frames where buffer size isn\'t a hop size multiple', function () {
+    const frames = util.frame(new Array(2048).fill(0), 1024, 500);
+    assert.equal(frames.length, 3);
+  });
+});

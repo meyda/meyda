@@ -141,7 +141,7 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
     // pre-populating the arrays with 0s.
     filterBank[j] = Array.apply(
             null,
-						new Array((bufferSize / 2) + 1)).map(Number.prototype.valueOf, 0);
+            new Array((bufferSize / 2) + 1)).map(Number.prototype.valueOf, 0);
 
     //creating the lower and upper slopes for each bin
     for (let i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j + 1]; i++) {
@@ -156,4 +156,21 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
   }
 
   return filterBank;
+}
+
+export function frame(buffer, frameLength, hopLength) {
+  if (buffer.length < frameLength) {
+    throw new Error('Buffer is too short for frame length');
+  }
+  if (hopLength < 1) {
+    throw new Error('Hop length cannot be less that 1');
+  }
+  if (frameLength < 1) {
+    throw new Error('Frame length cannot be less that 1');
+  }
+
+  const numFrames = 1 + Math.floor((buffer.length - frameLength) / hopLength);
+
+  return new Array(numFrames).fill(0).map((_, i) =>
+    buffer.slice(i * hopLength, (i * hopLength) + frameLength));
 }
