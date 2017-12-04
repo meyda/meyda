@@ -1,6 +1,6 @@
 {
   "name": "meyda",
-  "version": "4.0.5",
+  "version": "4.1.0",
   "description": "Real-time feature extraction for the web audio api",
   "main": "./dist/node/main.js",
   "browser": "./dist/web/meyda.min.js",
