@@ -1,2 +1,1 @@
-# if there's no npmignore, npm will use gitignore, which we don't want
-# so we have an empty .npmignore now. yay.
+!dist
