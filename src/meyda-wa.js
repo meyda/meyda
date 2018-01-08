@@ -52,10 +52,15 @@ export class MeydaAnalyzer {
     this._m.featureExtractors = featureExtractors;
     this._m.EXTRACTION_STARTED = options.startImmediately || false;
     this._m.numberOfMFCCCoefficients = options.numberOfMFCCCoefficients || this._m.numberOfMFCCCoefficients || 13;
+    this._m.channel = typeof options.channel === 'number' ? options.channel : 0;
+    this._m.inputs = options.inputs || 1;
+    this._m.outputs = options.outputs || 1;
 
     //create nodes
     this._m.spn = this._m.audioContext.createScriptProcessor(
-      this._m.bufferSize, 1, 1);
+      this._m.bufferSize,
+      this._m.inputs,
+      this._m.outputs);
     this._m.spn.connect(this._m.audioContext.destination);
 
     this._m._featuresToExtract = options.featureExtractors || [];
@@ -83,7 +88,7 @@ export class MeydaAnalyzer {
         this._m.previousInputData = this._m.inputData;
       }
 
-      this._m.inputData = e.inputBuffer.getChannelData(0);
+      this._m.inputData = e.inputBuffer.getChannelData(this._m.channel);
 
       if (!this._m.previousInputData) {
         var buffer = this._m.inputData;
