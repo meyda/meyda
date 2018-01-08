@@ -107,6 +107,10 @@ export class MeydaAnalyzer {
     this._m.source.connect(this._m.spn);
   }
 
+  setChannel(channel) {
+    this._m.channel = channel;
+  }
+
   get(features) {
     if (this._m.inputData) {
       return this._m.extract(
