@@ -97,7 +97,9 @@ export class MeydaAnalyzer {
   }
 
   setSource(source) {
-    source.connect(this._m.spn);
+    this._m.source && this._m.source.disconnect(this._m.spn);
+    this._m.source = source;
+    this._m.source.connect(this._m.spn);
   }
 
   get(features) {
