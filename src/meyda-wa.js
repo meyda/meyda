@@ -155,6 +155,10 @@ export class MeydaAnalyzer {
     this._m.source.connect(this._m.spn);
   }
 
+  setChannel(channel) {
+    this._m.channel = channel;
+  }
+
   /**
    * Get a set of features from the current frame.
    * @param {(string|Array.<string>)} [features]
