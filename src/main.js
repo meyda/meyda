@@ -55,7 +55,7 @@ var Meyda = {
             this.barkScale.length != this.bufferSize ||
             this.melFilterBank.length != this.melBands) {
       this.melFilterBank = utilities.createMelFilterBank(
-          this.melBands,
+          Math.max(this.melBands, this.numberOfMFCCCoefficients),
           this.sampleRate,
           this.bufferSize);
     }

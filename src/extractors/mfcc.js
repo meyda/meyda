@@ -11,13 +11,10 @@ export default function(args) {
   if (typeof args.melFilterBank !== 'object') {
     throw new TypeError('Valid melFilterBank is required to generate MFCC');
   }
-  if (typeof args.numberOfMFCCCoefficients !== 'number') {
-    throw new TypeError('Number of MFCC Coeficcients is required to generate MFCC');
-  }
 
   let numberOfMFCCCoefficients = 13;
 
-  if (args.numberOfMFCCCoefficients) {
+  if (args.numberOfMFCCCoefficients && typeof args.numberOfMFCCCoefficients === 'number') {
     if (args.numberOfMFCCCoefficients > 40) {
       numberOfMFCCCoefficients = 40;
     } else if (args.numberOfMFCCCoefficients < 1) {
@@ -33,6 +30,10 @@ export default function(args) {
   let powSpec = powerSpectrum(args);
   let numFilters = args.melFilterBank.length;
   let filtered = Array(numFilters);
+
+  if (numFilters < numberOfMFCCCoefficients) {
+    throw new Error("Insufficient filter bank for requested number of coefficients");
+  }
 
   let loggedMelBands = new Float32Array(numFilters);
 
