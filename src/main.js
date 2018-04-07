@@ -94,26 +94,7 @@ var Meyda = {
       this.previousAmpSpectrum = preparedSignal.ampSpectrum;
     }
 
-    if (typeof feature === 'object') {
-      var results = {};
-      for (var x = 0; x < feature.length; x++) {
-        results[feature[x]] = (this.featureExtractors[feature[x]]({
-          ampSpectrum:this.ampSpectrum,
-          chromaFilterBank: this.chromaFilterBank,
-          complexSpectrum:this.complexSpectrum,
-          signal:this.signal,
-          bufferSize:this.bufferSize,
-          sampleRate:this.sampleRate,
-          barkScale:this.barkScale,
-          melFilterBank:this.melFilterBank,
-          previousSignal:this.previousSignal,
-          previousAmpSpectrum:this.previousAmpSpectrum,
-          previousComplexSpectrum:this.previousComplexSpectrum,
-        }));
-      }
-
-      return results;
-    } else if (typeof feature === 'string') {
+    const extract = (feature) => {
       return this.featureExtractors[feature]({
         ampSpectrum:this.ampSpectrum,
         chromaFilterBank: this.chromaFilterBank,
@@ -127,7 +108,16 @@ var Meyda = {
         previousAmpSpectrum:this.previousAmpSpectrum,
         previousComplexSpectrum:this.previousComplexSpectrum,
       });
-    }    else {
+    };
+
+    if (typeof feature === 'object') {
+      feature.reduce((acc, el) =>
+        Object.assign({}, acc, {
+          [el]: extract(el),
+        }), {});
+    } else if (typeof feature === 'string') {
+      return extract(feature);
+    } else {
       throw this._errors.invalidFeatureFmt;
     }
   },
