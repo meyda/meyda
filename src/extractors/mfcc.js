@@ -11,6 +11,21 @@ export default function(args) {
   if (typeof args.melFilterBank !== 'object') {
     throw new TypeError('Valid melFilterBank is required to generate MFCC');
   }
+  if (typeof args.numberOfMFCCCoefficients !== 'number') {
+    throw new TypeError('Number of MFCC Coeficcients is required to generate MFCC');
+  }
+
+  let numberOfMFCCCoefficients = 13;
+
+  if (args.numberOfMFCCCoefficients) {
+    if (args.numberOfMFCCCoefficients > 40) {
+      numberOfMFCCCoefficients = 40;
+    } else if (args.numberOfMFCCCoefficients < 1) {
+      numberOfMFCCCoefficients = 1;
+    } else {
+      numberOfMFCCCoefficients = args.numberOfMFCCCoefficients;
+    }
+  }
 
   // Tutorial from:
   // http://practicalcryptography.com/miscellaneous/machine-learning
@@ -38,7 +53,7 @@ export default function(args) {
 
   //dct
   let loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
-  let mfccs = dct(loggedMelBandsArray).slice(0,13);
+  let mfccs = dct(loggedMelBandsArray).slice(0, numberOfMFCCCoefficients);
 
   return mfccs;
 }

@@ -14,6 +14,7 @@ var Meyda = {
   windowingFunction: 'hanning',
   featureExtractors: extractors,
   EXTRACTION_STARTED: false,
+  numberOfMFCCCoefficients: 13,
   _featuresToExtract: [],
   windowing: utilities.applyWindow,
   _errors: {
@@ -107,6 +108,7 @@ var Meyda = {
         previousSignal:this.previousSignal,
         previousAmpSpectrum:this.previousAmpSpectrum,
         previousComplexSpectrum:this.previousComplexSpectrum,
+        numberOfMFCCCoefficients:this.numberOfMFCCCoefficients,
       });
     };
 
