@@ -12,17 +12,7 @@ export default function(args) {
     throw new TypeError('Valid melFilterBank is required to generate MFCC');
   }
 
-  let numberOfMFCCCoefficients = 13;
-
-  if (args.numberOfMFCCCoefficients && typeof args.numberOfMFCCCoefficients === 'number') {
-    if (args.numberOfMFCCCoefficients > 40) {
-      numberOfMFCCCoefficients = 40;
-    } else if (args.numberOfMFCCCoefficients < 1) {
-      numberOfMFCCCoefficients = 1;
-    } else {
-      numberOfMFCCCoefficients = args.numberOfMFCCCoefficients;
-    }
-  }
+  let numberOfMFCCCoefficients = Math.min(40, Math.max(1, args.numberOfMFCCCoefficients || 13));
 
   // Tutorial from:
   // http://practicalcryptography.com/miscellaneous/machine-learning
