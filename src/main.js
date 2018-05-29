@@ -113,7 +113,7 @@ var Meyda = {
     };
 
     if (typeof feature === 'object') {
-      feature.reduce((acc, el) =>
+      return feature.reduce((acc, el) =>
         Object.assign({}, acc, {
           [el]: extract(el),
         }), {});
