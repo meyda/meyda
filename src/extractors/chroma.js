@@ -1,5 +1,3 @@
-import { createChromaFilterBank } from './../utilities';
-
 export default function(args) {
   if (typeof args.ampSpectrum !== 'object') {
     throw new TypeError('Valid ampSpectrum is required to generate chroma');
