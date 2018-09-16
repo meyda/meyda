@@ -156,7 +156,11 @@ export class MeydaAnalyzer {
   }
 
   setChannel(channel) {
-    this._m.channel = channel;
+    if (channel <= this._m.inputs) {
+      this._m.channel = channel;
+    } else {
+      console.error(`Channel ${channel} does not exist. Make sure you've provided a value for 'inputs' that is greater than ${channel} when instantiating the MeydaAnalyzer`);
+    }
   }
 
   /**
