@@ -11,7 +11,7 @@ If you run into any difficulties, please help us out by [reporting an issue]
 [new-issue] so that we can clarify this document for everyone.
 
 Today we'll build a website that plays an audio file, and shows the user the
-volume of the audio as it plays. Lets get started!
+level (how loud the sound is) of the audio as it plays. Lets get started!
 
 ## 1. Create a website project using your favorite tool
 
@@ -79,7 +79,7 @@ audio.
 
 Here's where Meyda gets involved! Now that audio is flowing between nodes in the
 Audio Context box, we need to create a Meyda Analyzer to listen to the audio
-and compute the volume. Let's look at the code.
+and compute the level. Let's look at the code.
 
 ```js
 if (typeof Meyda === "undefined") {
@@ -105,8 +105,8 @@ If Meyda isn't available in Javascript, lets log it so that we know what's going
 on. Usually this is caused by Meyda not being included correctly. If you're
 using Glitch, make sure you've installed Meyda by pasting
 `<script src="https://unpkg.com/meyda/dist/web/meyda.min.js"></script>` into
-your Javascript. In most other projects, make sure you've installed Meyda using
-npm, and imported or required it into your Javascript file.
+your HTML. In most other projects, make sure you've installed Meyda using npm,
+and imported or required it into your Javascript file.
 
 ```js
 if (typeof Meyda === "undefined") {
@@ -128,16 +128,16 @@ const analyzer = Meyda.createMeydaAnalyzer({
   "source": source,
   // Buffer Size tells Meyda how often to check the audio feature, and is
   // measured in Audio Samples. Usually there are 44100 Audio Samples in 1
-  // second, which means in this case Meyda will calculate the volume about 86
+  // second, which means in this case Meyda will calculate the level about 86
   // (44100/512) times per second.
   "bufferSize": 512,
   // Here we're telling Meyda which audio features to calculate. While Meyda can
   // calculate a variety of audio features, in this case we only want to know
   // the "rms" (root mean square) of the audio signal, which corresponds to its
-  // volume
+  // level
   "featureExtractors": ["rms"],
   // Finally, we provide a function which Meyda will call every time it
-  // calculates a new volume. This function will be called around 86 times per
+  // calculates a new level. This function will be called around 86 times per
   // second.
   "callback": features => {
     console.log(features);
@@ -146,36 +146,36 @@ const analyzer = Meyda.createMeydaAnalyzer({
 ```
 
 Now that Meyda is hooked up to our Audio Source, we tell it to start calculating
-the volume like this:
+the level like this:
 
 ```js
 analyzer.start();
 ```
 
 When you run this code and play the audio in your HTML Audio Element, you should
-hear the audio, and see the volume being printed to your browser console.
+hear the audio, and see the level being printed to your browser console.
 
 ## 5. Show the audio analysis that Meyda returns to your user
 
-Only one more step! Now that Meyda is calculating the volume of your audio in
-real time, you can show the volume in your web app. While there are plenty of
+Only one more step! Now that Meyda is calculating the level of your audio in
+real time, you can show the level in your web app. While there are plenty of
 ways to visualize things, one of the simplest ways is to set the value of an
 html input element of type "range". Range is great because it displays as a
 slider in your web page. Lets add one in to our HTML:
 
 ```html
-<label for="volume">Volume</label>
+<label for="level">level</label>
 <input type="range"
-       id="volumeRange"
-       name="volume"
+       id="levelRange"
+       name="level"
        min="0.0"
        max="1.0"
        step="0.001"
        />
 ```
 
-The volume (root mean square) audio feature ranges between 0 and 1, so we set
-these as the min and max values of our range. Volume is a continuous audio
+The level (root mean square) audio feature ranges between 0 and 1, so we set
+these as the min and max values of our range. Level is a continuous audio
 feature (as opposed to having a discrete set of possible values), so we set the
 step size of our range element to be very small, so that we don't lose too much
 precision when displaying it.
@@ -188,19 +188,19 @@ know where to paste the code, don't worry - you can check out the finished code
 at the end of the tutorial.
 
 ```js
-const volumeRangeElement = document.getElementById("volumeRange");
+const levelRangeElement = document.getElementById("levelRange");
 ```
 
-Finally, inside Meyda's callback (where you log the volume), you should set the
-value of the range element to the value of the volume that Meyda reported.
+Finally, inside Meyda's callback (where you log the level), you should set the
+value of the range element to the value of the level that Meyda reported.
 
 ```js
-volumeRangeElement.value = features.rms;
+levelRangeElement.value = features.rms;
 ```
 
 ---
 
-Well done! You built a website that shows the user the volume of the audio
+Well done! You built a website that shows the user the level of the audio
 that's playing!
 
 Have a look at our complete implementation of this site hosted on Glitch.com
