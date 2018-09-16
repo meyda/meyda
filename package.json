@@ -9,15 +9,12 @@
     "meyda": "./bin/cli.js"
   },
   "scripts": {
-    "pretest": "npm run lint && npm run build && npm run coverage",
+    "pretest": "npm run lint && npm run build",
     "test": "mocha -C --recursive test",
     "build": "gulp build",
-    "coverage": "istanbul cover _mocha -- --recursive test --report lcovonly",
-    "codeclimate": "cat ./coverage/lcov.info && codeclimate-test-reporter < ./coverage/lcov.info",
     "default": "npm run clean && npm install && npm test && npm run lint",
     "lint": "eslint src test",
-    "clean": "rm -rf dist node_modules src-cov coverage lib-cov",
-    "travis": "npm run default && npm run codeclimate",
+    "clean": "rm -rf dist node_modules",
     "push": "git push --follow-tags",
     "prepublish": "npm run build",
     "postpublish": "npm run clean && npm run push"
