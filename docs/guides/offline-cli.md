@@ -6,11 +6,12 @@ In this guide, we'll learn how to use Meyda's command line interface to perform
 offline audio feature extraction on a file on disk.
 
 The difference between online and offline audio feature extraction is that while
-online audio feature extraction happens in "real time", while audio is playing
-to a listener, offline audio feature extraction doesn't output the audio. As a
-result, it can run much faster than real time, because it doesn't need to wait
-for the audio to be played out of the speakers, and can run through an audio
-signal much faster than a human could listen to it.
+online audio feature extraction happens in "real time", while audio is being
+generated (possibly from a microphone, or other input device), offline audio
+feature extraction can be run when the audio is already generated. As a result,
+it can run much faster than real time, because it doesn't need to wait for the
+audio to be generated, and can run through an audio signal much faster than a
+human could listen to it.
 
 Why might it be useful to perform offline audio feature extraction on a file on
 disk? One straightforward use case is if you imagine that you have a large bank
