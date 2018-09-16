@@ -1,8 +1,3 @@
-# Meyda Showcase Site
+## Meyda reference docs
 
-This is a website to showcase the Meyda Audio Feature Extraction library for Node.js and web audio.
-
-## Usage
-
-Develop with `npm run serve`
-Build the js with `npm run build`
+Automatically generated reference documentation for the Meyda library.
