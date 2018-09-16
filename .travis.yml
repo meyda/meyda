@@ -13,7 +13,3 @@ script: npm run default
 notifications:
   slack:
     secure: Z+kV8Q/rDT7AubCvmB8sQGcoBYpM3pRTALhYoi0eZKYtSsqzn0EPdOT7B0zG+UZ7smooDRjdSy+ba1KCbOCKfq4Q/Rov3v3qQdoASmseLRpniz/Lr2sJZtq5h3NXT0MTId+E1TzZZh2eokzXc7inP4ZOxEkoXPTclDqQA6A8JUA=
-addons:
-  code_climate:
-    secure: UzGiBUR3lUurZQ2Pr5w8cgIFK9GIuGYVANDa2D9he1bzxkiXcMxySYqNjsPusgH3loGdi+DGENOcrVfOYo1qEYOuIZunmof6V9hMYbemgSUeDEUG7VSTG3l2vVGsJGShIlyAoh0T2TDVaxmhsKUMRmsrU2byJp7BggBGFIWG8lY=
-
