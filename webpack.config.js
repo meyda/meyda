@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   regular: {
@@ -16,7 +17,7 @@ module.exports = {
           exclude: /node_modules/,
           loader: 'babel-loader',
           options: {
-            presets: [['env', {modules: false}]]
+            presets: [['@babel/preset-env', {modules: false}]]
           }
         }
       ]
@@ -37,19 +38,24 @@ module.exports = {
           exclude: /node_modules/,
           loader: 'babel-loader',
           options: {
-            presets: [['env', {modules: false}]]
+            presets: [['@babel/preset-env', {modules: false}]]
           }
         }
       ]
     },
-    plugins: [
-      new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          warnings: true,
-          drop_console: false
-        },
-        sourceMap: true
-      })
-    ]
+    optimization: {
+      minimizer: [
+        new UglifyJsPlugin({
+          parallel: true,
+          uglifyOptions: {
+            compress: {
+              warnings: true,
+              drop_console: false
+            }
+          },
+          sourceMap: true
+        })
+      ]
+    }
   }
 };
