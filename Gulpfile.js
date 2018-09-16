@@ -23,7 +23,7 @@ gulp.task('buildWeb:minified', function() {
 gulp.task('buildNode',function(){
   return gulp.src('./src/**/*.js')
     .pipe(babel({
-      presets: ['env'],
+      presets: ['@babel/preset-env'],
       plugins: ['babel-plugin-add-module-exports']
     }))
     .pipe(gulp.dest('./dist/node/'));
