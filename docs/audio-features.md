@@ -27,7 +27,7 @@ The infinite integral of the squared signal. According to Lathi [2].
 
 * _Description_: The number of times that the signal crosses the zero value in the buffer.
 * _What Is It Used For_: Helps differentiating between percussive and pitched sounds. Percussive sounds will have a random ZCR across buffers, where pitched sounds will return a more constant value.
-* _Range_: 0 - half of the sampling rate. In Meyda the default sampling rate is 44100Hz and therefore ZCR's range is 0 - 22050.
+* _Range_: 0 - half of the sampling rate. In Meyda the default sampling rate is 44100Hz (`sampleRate`) and therefore the default ZCR range is 0 - 22050.
 
 ## Spectral Features
 
@@ -36,58 +36,70 @@ The infinite integral of the squared signal. According to Lathi [2].
 
 * _Description_: This is also known as the magnitude spectrum. After calculating the Short Time Fourier Transform (STFT), we are left with the signal represented in the frequency domain. The output is an array, where each index is a frequency bin (i.e. containing information about a range of frequencies) containing a complex value (real and imaginary). The amplitude spectrum takes this FT and returns the amplitude of each index, therefore representing the distribution of frequencies in the signal along with their strength.
 * _What Is It Used For_: Very useful for any sort of audio analysis. In fact, many of the features extracted in Meyda are based on this :).
-* _Range_: An array half the size of the FFT (`fftSize` parameter), containing information about frequencies 0 - half of the sampling rate. In Meyda the default sampling rate is 44100Hz.
+* _Range_: An array half the size of the FFT, containing information about frequencies 0 - half of the sampling rate. In Meyda the default sampling rate (`sampleRate`) is 44100Hz and the FFT size is equal to the buffer size (`bufferSize`) - with a default of 512.
 
 ### Power Spectrum
 `powerSpectrum`
 
 * _Description_: This is the `amplitudeSpectrum` squared.
 * _What Is It Used For_: This emphasizes differences between frequency bins compared to the amplitude spectrum.
-* _Range_: An array half the size of the FFT (`fftSize` parameter), containing information about frequencies 0 - half of the sampling rate. In Meyda the default sampling rate is 44100Hz.
+* _Range_: An array half the size of the FFT, containing information about frequencies 0 - half of the sampling rate. In Meyda the default sampling rate (`sampleRate`) is 44100Hz and the FFT size is equal to the buffer size (`bufferSize`) - with a default of 512.
 
 ### Spectral Centroid
 `spectralCentroid`
 
 * _Description_: An indicator of the "brightness" of a given sound, represents the spectral centre of gravity. If you were to take the spectrum, make a wooden block out of it and try to balance it on your finger (across the X axis), the spectral centroid would be the frequency that your finger "touches" when it successfully balances.
 * _What Is It Used For_: As mentioned, it's quantifying the "brightness" of a sound. This can be used for example to classify a bass guitar (low spectral centroid) from a trumpet (high spectral centroid).
-* _Range_: 0 - half of the FFT size (`fftSize` parameter).
+* _Range_: 0 - half of the FFT size. In Meyda the FFT size is equal to the buffer size (`bufferSize`) - with a default of 512.
 
 ### Spectral Flatness
 `spectralFlatness`
 
 * _Description_: The flatness of the spectrum as represented by the ratio between the geometric and arithmetic means.
-* _What Is It Used For_: Determining how noisy a signal is. For example a pure sine wave will have a flatness that approaches `0.0`, and white noise will have a flatness that approaches `1.0`.
+* _What Is It Used For_: Determining how noisy a sound is. For example a pure sine wave will have a flatness that approaches `0.0`, and white noise will have a flatness that approaches `1.0`.
 * _Range_: `0.0 - 1.0` where `0.0` is not flat and `1.0` is very flat.
 
 ### Spectral Flux
 `spectralFlux`
 
-A measure of the difference between the current spectrum and that of the previous frame. Often corresponds to perceptual roughness.
+* _Description_: A measure of how quickly the spectrum of a signal is changing. It is calculated by computing the difference between the current spectrum and that of the previous frame.
+* _What Is It Used For_: Often corresponds to perceptual "roughness" of a sound. Can be used for example, to determine the timbre of a sound.
+* _Range_: Starts at `0.0`. This has no upper range as it depends on the input signal.
 
 ### Spectral Slope
 `spectralSlope`
 
-A measure of how ‘inclined’ the shape of the spectrum is. Calculated by performing linear regression on the amplitude spectrum.
+* _Description_: A measure of how ‘inclined’ the shape of the spectrum is. Calculated by performing linear regression on the amplitude spectrum.
+* _What Is It Used For_: Can be used to differentiate between different voice qualities, such as hissing, breathing and regular speech. Closely relates to spectral centroid and spectral rolloff.
+* _Range_: `0.0 - 1.0`
 
 ### Spectral Rolloff
 `spectralRolloff`
 
-The frequency below which is contained 99% of the energy of the spectrum.
+* _Description_: The frequency below which is contained 99% of the energy of the spectrum.
+* _What Is It Used For_: Can be used to approximate the maximum frquency in a signal.
+* _Range_: 0 - half of the sampling rate. In Meyda the default sampling rate (`sampleRate`) is 44100Hz.
 
 ### Spectral Spread
 `spectralSpread`
 
-Indicates the "fullness" of the spectrum.
+* _Description_: Indicates how spread the frequency content is across the spectrum. Corresponds with the frequency bandwidth.
+* _What Is It Used For_: Can be used to differentiate between noisy (high spectral spread) and pitched sounds (low spectral spread).
+* _Range_: 0 - half of the FFT size. In Meyda the FFT size is equal to the buffer size (`bufferSize`) - with a default of 512.
 
 ### Spectral Skewness
 `spectralSkewness`
 
-Indicates whether or not the spectrum is skewed towards a particular range of values.
+* _Description_: Indicates whether or not the spectrum is skewed towards a particular range of values, relative to its mean.
+* _What Is It Used For_:
+* _Range_: Could be negative, positive, or 0. Where 0 is symmetric about the mean, negative indicates that the frequency content is skewed towards the right of the mean, and positive indicates that the frequency content is skewed towards the left of the mean.
 
 ### Spectral Kurtosis
 `spectralKurtosis`
 
-The "pointedness" of a spectrum, can be used to indicate "pitchiness".
+* _Description_: The "pointedness" of a spectrum, can be used to indicate "pitchiness / tonality" of a sound. Can be viewed as the opposite of Spectral Flatness.
+* _What Is It Used For_:
+* _Range_: `0.0 - 1.0`, where `0.0` is not tonal, and `1.0` is very tonal
 
 ### Chroma
 `chroma`
