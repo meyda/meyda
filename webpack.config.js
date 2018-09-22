@@ -1,9 +1,11 @@
+/* global module process require */
 var path = require('path');
 var webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   regular: {
+    mode: process.env('NODE_ENV') || 'development',
     devtool: 'source-map',
     output: {
      filename: 'meyda.js',
@@ -24,6 +26,7 @@ module.exports = {
     }
   },
   minified: {
+    mode: process.env('NODE_ENV') || 'development',
     devtool: 'source-map',
     output: {
      filename: 'meyda.min.js',
