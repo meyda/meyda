@@ -8,8 +8,6 @@ cache:
   - node_modules
 sudo: false
 script: npm run default
-env:
-  - NODE_ENV=production
 notifications:
   slack:
     secure: Z+kV8Q/rDT7AubCvmB8sQGcoBYpM3pRTALhYoi0eZKYtSsqzn0EPdOT7B0zG+UZ7smooDRjdSy+ba1KCbOCKfq4Q/Rov3v3qQdoASmseLRpniz/Lr2sJZtq5h3NXT0MTId+E1TzZZh2eokzXc7inP4ZOxEkoXPTclDqQA6A8JUA=
