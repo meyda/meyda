@@ -11,7 +11,7 @@
   "scripts": {
     "pretest": "npm run lint && npm run build",
     "test": "mocha -C --recursive test",
-    "build": "gulp build",
+    "build": "NODE_ENV=production; gulp build",
     "default": "npm run clean && npm install && npm test && npm run lint",
     "lint": "eslint src test",
     "clean": "rm -rf dist node_modules",
