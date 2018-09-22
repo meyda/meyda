@@ -4,16 +4,18 @@ layout: default
 
 ## What is an Audio Feature?
 
-An audio feature is a measurement of a particular characteristic of an audio signal. Audio features can be measured by running an algorithm on an audio signal that will return a number, or a set of numbers that quantify the characteristic that the specific algorithm is intended to measure. Meyda implements a selection of standardized audio features that are used widely across a variety of music computing scenarios.
+Often, observing and analysing an audio signal as a waveform doesn't provide us a lot of information about its contents. An audio feature is a measurement of a particular characteristic of an audio signal, and it gives us insight into what the signal contains. Audio features can be measured by running an algorithm on an audio signal that will return a number, or a set of numbers that quantify the characteristic that the specific algorithm is intended to measure. Meyda implements a selection of standardized audio features that are used widely across a variety of music computing scenarios.
 
 *Following is a list of supported features with their explanations. Unless stated otherwise, extraction algorithms have been adapted from the [yaafe](http://yaafe.sourceforge.net) library.*
 
 ## Time-domain features
-
+Better documentation of what each audio feature is, what it represents, and what it should be used for, and what its range is"
 ### RMS
 `rms`
 
-The root mean square of the waveform calculated in the time domain to indicate its loudness. Corresponds to the ‘Energy’ feature in YAAFE, adapted from Loy’s Musimathics [1].
+* _Description_: The root mean square of the waveform calculated in the time domain to indicate its loudness. Corresponds to the ‘Energy’ feature in YAAFE, adapted from Loy’s Musimathics [1].
+* _What Is It Used For_: Getting a rough idea about the loudness of a signal.
+* _Range_: 0.0 - 1.0
 
 ### Energy
 `energy`
@@ -23,29 +25,39 @@ The infinite integral of the squared signal. According to Lathi [2].
 ### ZCR
 `zcr`
 
-The number of times that the signal crosses the zero value in the buffer. Corresponds to ZCR in jAudio.
+* _Description_: The number of times that the signal crosses the zero value in the buffer.
+* _What Is It Used For_: Helps differentiating between percussive and pitched sounds. Percussive sounds will have a random ZCR across buffers, where pitched sounds will return a more constant value.
+* _Range_: 0 - half of the sampling rate. In Meyda the default sampling rate is 44100Hz and therefore ZCR's range is 0 - 22050.
 
 ## Spectral Features
 
 ### AmplitudeSpectrum
 `amplitudeSpectrum`
 
-Frequency domain amplitude spectrum, a transformation from the complex FFT.
+* _Description_: This is also known as the magnitude spectrum. After calculating the Short Time Fourier Transform (STFT), we are left with the signal represented in the frequency domain. The output is an array, where each index is a frequency bin (i.e. containing information about a range of frequencies) containing a complex value (real and imaginary). The amplitude spectrum takes this FT and returns the amplitude of each index, therefore representing the distribution of frequencies in the signal along with their strength.
+* _What Is It Used For_: Very useful for any sort of audio analysis. In fact, many of the features extracted in Meyda are based on this :).
+* _Range_: An array half the size of the FFT (`fftSize` parameter), containing information about frequencies 0 - half of the sampling rate. In Meyda the default sampling rate is 44100Hz.
 
 ### Power Spectrum
 `powerSpectrum`
 
-Frequency domain power spectrum, a transformation from the complex FFT.
+* _Description_: This is the `amplitudeSpectrum` squared.
+* _What Is It Used For_: This emphasizes differences between frequency bins compared to the amplitude spectrum.
+* _Range_: An array half the size of the FFT (`fftSize` parameter), containing information about frequencies 0 - half of the sampling rate. In Meyda the default sampling rate is 44100Hz.
 
 ### Spectral Centroid
 `spectralCentroid`
 
-An indicator of the brightness of a given spectrum, represents the spectral centre of gravity.
+* _Description_: An indicator of the "brightness" of a given sound, represents the spectral centre of gravity. If you were to take the spectrum, make a wooden block out of it and try to balance it on your finger (across the X axis), the spectral centroid would be the frequency that your finger "touches" when it successfully balances.
+* _What Is It Used For_: As mentioned, it's quantifying the "brightness" of a sound. This can be used for example to classify a bass guitar (low spectral centroid) from a trumpet (high spectral centroid).
+* _Range_: 0 - half of the FFT size (`fftSize` parameter).
 
 ### Spectral Flatness
 `spectralFlatness`
 
-The flatness of the spectrum as represented by the ratio between the geometric and arithmetic means. It is an indicator of the ‘noisiness’ of a sound.
+* _Description_: The flatness of the spectrum as represented by the ratio between the geometric and arithmetic means.
+* _What Is It Used For_: Determining how noisy a signal is. For example a pure sine wave will have a flatness that approaches `0.0`, and white noise will have a flatness that approaches `1.0`.
+* _Range_: `0.0 - 1.0` where `0.0` is not flat and `1.0` is very flat.
 
 ### Spectral Flux
 `spectralFlux`
