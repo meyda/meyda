@@ -2,6 +2,10 @@
 layout: default
 ---
 
+## What is an Audio Feature?
+
+An audio feature is a measurement of a particular characteristic of an audio signal. Audio features can be measured by running an algorithm on an audio signal that will return a number, or a set of numbers that quantify the characteristic that the specific algorithm is intended to measure. Meyda implements a selection of standardized audio features that are used widely across a variety of music computing scenarios.
+
 *Following is a list of supported features with their explanations. Unless stated otherwise, extraction algorithms have been adapted from the [yaafe](http://yaafe.sourceforge.net) library.*
 
 ## Time-domain features
@@ -120,6 +124,10 @@ A simple `Float32Array` of sample values
 
 ## Windowing functions
 
+Windowing functions are used during the conversion of a signal from the time domain (i.e. air pressure over time) to the frequency domain (the phase and intensity of each sine wave that comprises the signal); a prerequisite for many of the audio features described above. Windowing functions generate an envelope of numbers between 0 and 1, and multiply these numbers pointwise with each sample in the signal buffer, making the samples at the middle of the buffer relatively louder, and making the samples at either end of the buffer relatively quieter. This smooths out the result of the conversion to the frequency domain, which makes the final audio features more consistent and less jittery.
+
+Meyda supports 4 windowing functions, each with different characteristics. For more information on windowing, please consult [this article][wikipedia-windowing]
+
 ### Hanning
 `Meyda.windowing(signalToBeWindowed, "hanning");`
 
@@ -148,3 +156,5 @@ A simple `Float32Array` of sample values
 [4] S. Davis and P. Mermelstein, “Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences,” *Acoustics, Speech and Signal Processing, IEEE Transactions on*, vol. 28, pp. 357–366, Aug 1980.
 
 [5] M. Grierson, “Maximilian: A cross platform c++ audio synthesis library for artists learning to program.,” in *Proceedings of International Computer Music Conference,* 2010.
+
+[windowing]: https://en.wikipedia.org/wiki/Window_function
