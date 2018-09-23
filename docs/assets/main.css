@@ -81,3 +81,7 @@ div#legend {
 #title-link:hover {
   text-decoration: none;
 }
+
+img {
+  max-width: 100%;
+}
