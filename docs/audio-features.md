@@ -40,7 +40,7 @@ Often, observing and analysing an audio signal as a waveform doesn't provide us 
 ### AmplitudeSpectrum
 `amplitudeSpectrum`
 
-* _Description_: This is also known as the magnitude spectrum. By calculating the Fast Fourier Transform (FFT), we get the signal represented in the frequency domain. The output is an array, where each index is a frequency bin (i.e. containing information about a range of frequencies) containing a complex value (real and imaginary). The amplitude spectrum takes this complex array and computes the amplitude of each index. The result is the distribution of frequencies in the signal along with their corresponding strength.
+* _Description_: This is also known as the magnitude spectrum. By calculating the Fast Fourier Transform (FFT), we get the signal represented in the frequency domain. The output is an array, where each index is a frequency bin (i.e. containing information about a range of frequencies) containing a complex value (real and imaginary). The amplitude spectrum takes this complex array and computes the amplitude of each index. The result is the distribution of frequencies in the signal along with their corresponding strength. If you want to learn more about Fourier Transform, and the differences between time-domain to frequency-domain analysis, [this article][mathworks-fourier] is a good place to start.
 * _What Is It Used For_: Very useful for any sort of audio analysis. In fact, many of the features extracted in Meyda are based on this :).
 * _Range_: An array half the size of the FFT, containing information about frequencies between 0 - half of the sampling rate. In Meyda the default sampling rate (`sampleRate`) is 44100Hz and the FFT size is equal to the buffer size (`bufferSize`) - with a default of 512.
 
@@ -97,7 +97,7 @@ Often, observing and analysing an audio signal as a waveform doesn't provide us 
 `spectralSkewness`
 
 * _Description_: Indicates whether or not the spectrum is skewed towards a particular range of values, relative to its mean.
-* _What Is It Used For_:
+* _What Is It Used For_: Often used to get an idea about the timbre of a sound.
 * _Range_: Could be negative, positive, or 0. Where 0 is symmetric about the mean, negative indicates that the frequency content is skewed towards the right of the mean, and positive indicates that the frequency content is skewed towards the left of the mean.
 
 ### Spectral Kurtosis
@@ -210,3 +210,5 @@ Meyda supports 4 windowing functions, each with different characteristics. For m
 [wikipedia-mel]: https://en.wikipedia.org/wiki/Mel_scale
 
 [wikipedia-bark]: https://en.wikipedia.org/wiki/Bark_scale
+
+[mathworks-fourier]: https://www.mathworks.com/help/signal/examples/practical-introduction-to-frequency-domain-analysis.html
