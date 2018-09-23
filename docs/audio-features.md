@@ -10,8 +10,9 @@ Often, observing and analysing an audio signal as a waveform doesn't provide us 
 
 <br>
 <br>
+
 ## Time-domain features
-Better documentation of what each audio feature is, what it represents, and what it should be used for, and what its range is"
+
 ### RMS
 `rms`
 
