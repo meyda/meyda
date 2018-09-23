@@ -1,13 +1,25 @@
 # meyda
-[![Build Status](https://travis-ci.org/meyda/meyda.svg?branch=master)](https://travis-ci.org/meyda/meyda)
+[![Build Status][build-status-image]][meyda-travis]
 
-Meyda is a Javascript audio feature extraction library. Meyda supports both offline feature extraction as well as real-time feature extraction using the [Web Audio API](https://github.com/WebAudio/web-audio-api "Web Audio API"). We wrote a paper about it, which is available [here](http://doc.gold.ac.uk/~mu202hr/publications/RawlinsonSegalFiala_WAC2015.pdf).
+Meyda is a Javascript audio feature extraction library. Meyda supports both offline feature extraction as well as real-time feature extraction using the [Web Audio API][web-audio-api]. We wrote a paper about it, which is available [here][meyda-paper].
 
-[hughrawlinson](https://github.com/hughrawlinson "Hugh Rawlinson") | [nevosegal](https://github.com/nevosegal "Nevo Segal") | [jakubfiala](https://github.com/jakubfiala "Jakub Fiala") | [2xAA](https://github.com/2xaa)
+[hughrawlinson][hugh-github] | [nevosegal][nevo-github] | [jakubfiala][jakub-github] | [2xAA][2xaa-github]
 
 ### Usage
-Please see [the documentation](https://github.com/meyda/meyda/wiki/Getting-Started) for setup and usage instructions.
+Please see [the documentation](docs) for setup and usage instructions.
 
 ### Contributing
 
-Please see [our contributor guidelines](https://github.com/meyda/meyda/wiki/contributing) for guidelines about contributing, and bear in mind that we adhere to the [Contributor Covenant](https://github.com/meyda/meyda/wiki/Contributor-Covenant)
+Please see [our contributor guidelines][contributing] for guidelines about contributing, and bear in mind that we adhere to the [Contributor Covenant][contributor-covenant]
+
+[build-status-image]: https://travis-ci.org/meyda/meyda.svg?branch=master
+[meyda-travis]: https://travis-ci.org/meyda/meyda
+[web-audio-api]: https://github.com/WebAudio/web-audio-api
+[meyda-paper]: http://doc.gold.ac.uk/~mu202hr/publications/RawlinsonSegalFiala_WAC2015.pdf
+[hugh-github]: https://github.com/hughrawlinson
+[nevo-github]: https://github.com/nevosegal
+[jakub-github]: https://github.com/jakubfiala
+[2xaa-github]: https://github.com/2xaa
+[contributing]: https://meyda.js.org/guides/contributing
+[contributor-covenant]: https://github.com/meyda/meyda/wiki/Contributor-Covenant
+[docs]: https://meyda.js.org/
