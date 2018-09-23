@@ -50,7 +50,7 @@ div#legend {
   vertical-align: middle;
 }
 
-.showcase #chroma:before {
+#showcase #chroma::before {
   content: 'Chroma bands:';
   margin-right: 10px;
   display: inline-block;
@@ -65,6 +65,30 @@ div#legend {
 }
 
 #showcase .chroma-band {
+  flex: 0 1 28px;
+  height: 28px;
+  display: inline-block;
+  text-align: center;
+  padding-top: 7px;
+  font-size: 10px;
+  color: #ffffff;
+}
+
+#showcase #mfcc::before {
+  content: 'MFCC bands:';
+  margin-right: 10px;
+  display: inline-block;
+  text-align: center;
+}
+
+#showcase #mfcc {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#showcase .mfcc-band {
   flex: 0 1 28px;
   height: 28px;
   display: inline-block;

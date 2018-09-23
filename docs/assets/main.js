@@ -267,15 +267,21 @@
   // scene.add(loudnessLines);
 
   var features = null;
-  var chromaWrapper = null;
+  var chromaWrapper = document.querySelector('#chroma');
+  var mfccWrapper = document.querySelector('#mfcc');
 
   function render() {
-    features = a.get(['amplitudeSpectrum', 'spectralCentroid', 'spectralRolloff', 'loudness', 'rms', 'chroma']);
+    features = a.get(['amplitudeSpectrum', 'spectralCentroid', 'spectralRolloff', 'loudness', 'rms', 'chroma', 'mfcc']);
     if (features) {
-      chromaWrapper = document.querySelector('#chroma');
       if (chromaWrapper && features.chroma) {
         chromaWrapper.innerHTML = features.chroma.reduce(function (acc, v, i) {
-          return acc + ' <div class="chroma-band" style="background-color: rgba(0,' + Math.round(255 * v) + ',0,1)">' + scale[i] + '</div>';
+          return acc + '\n          <div class="chroma-band" style="background-color: rgba(0,' + Math.round(255 * v) + ',0,1)">' + scale[i] + '</div>';
+        }, '');
+      }
+
+      if (mfccWrapper && features.mfcc) {
+        mfccWrapper.innerHTML = features.mfcc.reduce(function (acc, v, i) {
+          return acc + '\n          <div class="mfcc-band" style="background-color: rgba(0,' + Math.round(v + 25) * 5 + ',0,1)">' + i + '</div>';
         }, '');
       }
 
