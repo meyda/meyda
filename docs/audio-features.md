@@ -8,54 +8,61 @@ Often, observing and analysing an audio signal as a waveform doesn't provide us 
 
 *Following is a list of supported features with their explanations. Unless stated otherwise, extraction algorithms have been adapted from the [yaafe](http://yaafe.sourceforge.net) library.*
 
+<br>
+<br>
 ## Time-domain features
 Better documentation of what each audio feature is, what it represents, and what it should be used for, and what its range is"
 ### RMS
 `rms`
 
-* _Description_: The root mean square of the waveform calculated in the time domain to indicate its loudness. Corresponds to the ‘Energy’ feature in YAAFE, adapted from Loy’s Musimathics [1].
+* _Description_: The root mean square of the waveform, that corresponds to its loudness. Corresponds to the ‘Energy’ feature in YAAFE, adapted from Loy’s Musimathics [1].
 * _What Is It Used For_: Getting a rough idea about the loudness of a signal.
-* _Range_: 0.0 - 1.0
-
-### Energy
-`energy`
-
-The infinite integral of the squared signal. According to Lathi [2].
+* _Range_: `0.0 - 1.0` where `0.0` is not loud and `1.0` is very loud.
 
 ### ZCR
 `zcr`
 
 * _Description_: The number of times that the signal crosses the zero value in the buffer.
 * _What Is It Used For_: Helps differentiating between percussive and pitched sounds. Percussive sounds will have a random ZCR across buffers, where pitched sounds will return a more constant value.
-* _Range_: 0 - half of the sampling rate. In Meyda the default sampling rate is 44100Hz (`sampleRate`) and therefore the default ZCR range is 0 - 22050.
+* _Range_: 0 - ((buffer size / 2) - 1). In Meyda, the default buffer size (`bufferSize`) is 512 and therefore the default ZCR range is `0 - 255`.
 
+### Energy
+`energy`
+
+* _Description_: The infinite integral of the squared signal. According to Lathi [2].
+* _What Is It Used For_: This is another indicator to the loudness of the signal.
+* _Range_: 0 - `bufferSize`, where `0.0` is very quiet and `bufferSize` is very loud.
+
+
+<br>
+<br>
 ## Spectral Features
 
 ### AmplitudeSpectrum
 `amplitudeSpectrum`
 
-* _Description_: This is also known as the magnitude spectrum. After calculating the Short Time Fourier Transform (STFT), we are left with the signal represented in the frequency domain. The output is an array, where each index is a frequency bin (i.e. containing information about a range of frequencies) containing a complex value (real and imaginary). The amplitude spectrum takes this FT and returns the amplitude of each index, therefore representing the distribution of frequencies in the signal along with their strength.
+* _Description_: This is also known as the magnitude spectrum. By calculating the Fast Fourier Transform (FFT), we get the signal represented in the frequency domain. The output is an array, where each index is a frequency bin (i.e. containing information about a range of frequencies) containing a complex value (real and imaginary). The amplitude spectrum takes this complex array and computes the amplitude of each index. The result is the distribution of frequencies in the signal along with their corresponding strength.
 * _What Is It Used For_: Very useful for any sort of audio analysis. In fact, many of the features extracted in Meyda are based on this :).
-* _Range_: An array half the size of the FFT, containing information about frequencies 0 - half of the sampling rate. In Meyda the default sampling rate (`sampleRate`) is 44100Hz and the FFT size is equal to the buffer size (`bufferSize`) - with a default of 512.
+* _Range_: An array half the size of the FFT, containing information about frequencies between 0 - half of the sampling rate. In Meyda the default sampling rate (`sampleRate`) is 44100Hz and the FFT size is equal to the buffer size (`bufferSize`) - with a default of 512.
 
 ### Power Spectrum
 `powerSpectrum`
 
 * _Description_: This is the `amplitudeSpectrum` squared.
-* _What Is It Used For_: This emphasizes differences between frequency bins compared to the amplitude spectrum.
-* _Range_: An array half the size of the FFT, containing information about frequencies 0 - half of the sampling rate. In Meyda the default sampling rate (`sampleRate`) is 44100Hz and the FFT size is equal to the buffer size (`bufferSize`) - with a default of 512.
+* _What Is It Used For_: This better emphasizes the differences between frequency bins, compared to the amplitude spectrum.
+* _Range_: An array half the size of the FFT, containing information about between frequencies 0 - half of the sampling rate. In Meyda the default sampling rate (`sampleRate`) is 44100Hz and the FFT size is equal to the buffer size (`bufferSize`) - with a default of 512.
 
 ### Spectral Centroid
 `spectralCentroid`
 
-* _Description_: An indicator of the "brightness" of a given sound, represents the spectral centre of gravity. If you were to take the spectrum, make a wooden block out of it and try to balance it on your finger (across the X axis), the spectral centroid would be the frequency that your finger "touches" when it successfully balances.
+* _Description_: An indicator of the "brightness" of a given sound, representing the spectral centre of gravity. If you were to take the spectrum, make a wooden block out of it and try to balance it on your finger (across the X axis), the spectral centroid would be the frequency that your finger "touches" when it successfully balances.
 * _What Is It Used For_: As mentioned, it's quantifying the "brightness" of a sound. This can be used for example to classify a bass guitar (low spectral centroid) from a trumpet (high spectral centroid).
 * _Range_: 0 - half of the FFT size. In Meyda the FFT size is equal to the buffer size (`bufferSize`) - with a default of 512.
 
 ### Spectral Flatness
 `spectralFlatness`
 
-* _Description_: The flatness of the spectrum as represented by the ratio between the geometric and arithmetic means.
+* _Description_: The flatness of the spectrum. It is computed using the ratio between the geometric and arithmetic means.
 * _What Is It Used For_: Determining how noisy a sound is. For example a pure sine wave will have a flatness that approaches `0.0`, and white noise will have a flatness that approaches `1.0`.
 * _Range_: `0.0 - 1.0` where `0.0` is not flat and `1.0` is very flat.
 
@@ -77,7 +84,7 @@ The infinite integral of the squared signal. According to Lathi [2].
 `spectralRolloff`
 
 * _Description_: The frequency below which is contained 99% of the energy of the spectrum.
-* _What Is It Used For_: Can be used to approximate the maximum frquency in a signal.
+* _What Is It Used For_: Can be used to approximate the maximum frequency in a signal.
 * _Range_: 0 - half of the sampling rate. In Meyda the default sampling rate (`sampleRate`) is 44100Hz.
 
 ### Spectral Spread
@@ -97,36 +104,48 @@ The infinite integral of the squared signal. According to Lathi [2].
 ### Spectral Kurtosis
 `spectralKurtosis`
 
-* _Description_: The "pointedness" of a spectrum, can be used to indicate "pitchiness / tonality" of a sound. Can be viewed as the opposite of Spectral Flatness.
-* _What Is It Used For_:
-* _Range_: `0.0 - 1.0`, where `0.0` is not tonal, and `1.0` is very tonal
+* _Description_: An indicator to how pointy the spectrum is. Can be viewed as the opposite of Spectral Flatness.
+* _What Is It Used For_: Often used to indicate "pitchiness / tonality" of a sound.
+* _Range_: `0.0 - 1.0`, where `0.0` is not tonal, and `1.0` is very tonal.
 
 ### Chroma
 `chroma`
 
-Calculates the spectral energy of the signal for each chromatic pitch class (C, C♯, D, D♯, E, F, F♯, G, G♯, A, A♯, B). Often used to analyse the harmonic content of recorded music, such as in chord or key detection.
+* _Description_: Calculates the how much of each chromatic pitch class (C, C♯, D, D♯, E, F, F♯, G, G♯, A, A♯, B) exists in the signal.
+* _What Is It Used For_: Often used to analyse the harmonic content of recorded music, such as in chord or key detection.
+* _Range_: `0.0 - 1.0` for each pitch class.
 
 ## Perceptual features
 
 ### Loudness
 `loudness`
 
-The loudness of the spectrum as perceived by a human, using Bark bands. Outputs an object consisting of Specific Loudness ( `.specific` – calculated for each Bark band) and Total Loudness ( `.total` – a sum of the specific loudness coefficients).
+* _Description_: Humans' perception of frequency is non-linear. The [Bark Scale][wikipedia-bark] was developed in order to have a scale on which equal distances correspond to equal distances of frequency perception. This feature outputs an object with two values:
+  * The loudness of the input sound on each step (often referred to as bands) of this scale (`.specific`). There are 24 bands overall.
+  * Total Loudness (`.total`), which is a sum of the 24 `.specific` loudness coefficients.
+* _What Is It Used For_: Can be used to construct filters that better correspond with the human perception of loudness.
+* _Range_: `0.0 - 1.0` for each `.specific` loudness. `0.0 - 24.0` for `.total` loudness.
 
 ### Perceptual Spread
 `perceptualSpread`
 
-How "full" a human will perceive the sound to be.
+* _Description_: Computes the spread of the `.specific` loudness coefficients, over the bark scale.
+* _What Is It Used For_: An indicator of how "rich / full" a sound will be perceived.
+* _Range_: `0.0 - 1.0` where `0.0` is not "rich" and `1.0` is very "rich".
 
 ### Perceptual Sharpness
 `perceptualSharpness`
 
-Perceived sharpness of the loudness Bark coefficients.
+* _Description_: Perceived "sharpness" of a sound, based the Bark loudness coefficients.
+* _What Is It Used For_: Detecting if an input sound is perceived as "sharp". Can be used, for example, for differentiating between snare-drum and bass-drum sounds.
+* _Range_: `0.0 - 1.0` where `0.0` is not "sharp" (e.g. bass-drum) and `1.0` very sharp (e.g. snare-drum).
 
 ### Mel-Frequency Cepstral Coefficients
 `mfcc`
 
-A widely used metric for describing timbral characteristics based on the Mel scale. Implemented according to Huang [3], Davis [4], Grierson [5] and the [librosa](https://github.com/bmcfee/librosa) library.
+* _Description_: As humans don't interpret pitch in a linear manner, various scales of frequencies were devised to represent the way humans hear the distances between pitches. The [Mel scale][wikipedia-mel] is one of them, and it is now widely used for voice-related applications. The Meyda implementation was inspired by Huang [3], Davis [4], Grierson [5] and the [librosa](https://github.com/bmcfee/librosa) library.
+* _What Is It Used For_: Often used to perform voice activity detection (VAD) prior to automatic speech recognition (ASR).
+* _Range_: An array of values representing the intensity for each Mel band. The default size of the array is 13, but is configureable via `numberOfMFCCCoefficients`.
 
 <br>
 <br>
@@ -136,12 +155,17 @@ A widely used metric for describing timbral characteristics based on the Mel sca
 ### Complex Spectrum
 `complexSpectrum`
 
-A `ComplexArray` object carrying both real and imaginary parts of the FFT.
+* _Description_: An array of complex values (`ComplexArray`) containing both the real and the imaginary parts of the FFT.
+* _What Is It Used For_: To create the `amplitudeSpectrum`. It is also used to do further signal processing, as it contains information about both the frequency the phase of the signal.
+* _Range_: An array half the size of the FFT, containing information about frequencies 0 - half of the sampling rate, and their corresponding phase values. In Meyda the default sampling rate (`sampleRate`) is 44100Hz and the FFT size is equal to the buffer size (`bufferSize`) - with a default of 512.
+
 
 ### Buffer
 `buffer`
 
-A simple `Float32Array` of sample values
+* _Description_: This is the raw audio that you get when reading an input from a microphone, a wav file, or any other input audio. It is encoded as a `Float32Array`.
+* _What Is It Used For_: All of the time-domain features in Meyda are extracted from this buffer. You can also use that to visualise the audio waveform.
+* _Range_: An array of size `bufferSize`, where each value can range between `-1.0 - 1.0`.
 
 <br>
 <br>
@@ -181,4 +205,8 @@ Meyda supports 4 windowing functions, each with different characteristics. For m
 
 [5] M. Grierson, “Maximilian: A cross platform c++ audio synthesis library for artists learning to program.,” in *Proceedings of International Computer Music Conference,* 2010.
 
-[windowing]: https://en.wikipedia.org/wiki/Window_function
+[wikipedia-windowing]: https://en.wikipedia.org/wiki/Window_function
+
+[wikipedia-mel]: https://en.wikipedia.org/wiki/Mel_scale
+
+[wikipedia-bark]: https://en.wikipedia.org/wiki/Bark_scale
