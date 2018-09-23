@@ -9,7 +9,6 @@ Often, observing and analysing an audio signal as a waveform doesn't provide us 
 *Following is a list of supported features with their explanations. Unless stated otherwise, extraction algorithms have been adapted from the [yaafe](http://yaafe.sourceforge.net) library.*
 
 <br>
-<br>
 
 ## Time-domain features
 
@@ -34,9 +33,8 @@ Often, observing and analysing an audio signal as a waveform doesn't provide us 
 * _What Is It Used For_: This is another indicator to the loudness of the signal.
 * _Range_: 0 - `bufferSize`, where `0.0` is very quiet and `bufferSize` is very loud.
 
+<br>
 
-<br>
-<br>
 ## Spectral Features
 
 ### AmplitudeSpectrum
@@ -116,6 +114,8 @@ Often, observing and analysing an audio signal as a waveform doesn't provide us 
 * _What Is It Used For_: Often used to analyse the harmonic content of recorded music, such as in chord or key detection.
 * _Range_: `0.0 - 1.0` for each pitch class.
 
+<br>
+
 ## Perceptual features
 
 ### Loudness
@@ -149,7 +149,6 @@ Often, observing and analysing an audio signal as a waveform doesn't provide us 
 * _Range_: An array of values representing the intensity for each Mel band. The default size of the array is 13, but is configureable via `numberOfMFCCCoefficients`.
 
 <br>
-<br>
 
 ## Utility extractors
 
@@ -168,7 +167,6 @@ Often, observing and analysing an audio signal as a waveform doesn't provide us 
 * _What Is It Used For_: All of the time-domain features in Meyda are extracted from this buffer. You can also use that to visualise the audio waveform.
 * _Range_: An array of size `bufferSize`, where each value can range between `-1.0 - 1.0`.
 
-<br>
 <br>
 
 ## Windowing functions
@@ -191,6 +189,7 @@ Meyda supports 4 windowing functions, each with different characteristics. For m
 
 ### Rectangular (no window)
 `Meyda.windowing(signalToBeWindowed, "rect");`
+
 <br>
 <br>
 
