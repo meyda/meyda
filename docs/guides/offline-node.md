@@ -98,6 +98,9 @@ in a variety of contexts, including web servers, command line utilities,
 scripts that extract audio features and insert them into a database for later
 use, and much more.
 
+You can see an example implementation of the code in this demo in our [runkit
+demo page][runkit-demo]
+
 Next, why don't you check out our [audio feature reference]
 [audio-feature-reference] to learn about the various audio features that Meyda
 can extract?
@@ -106,4 +109,5 @@ can extract?
 [offline-cli]: /guides/offline-cli
 [api-reference]: /reference
 [signal-image]: /images/signal-image.png
+[runkit-demo]: https://runkit.com/raw/5ba62181c2e2f10013c5bf38
 [audio-feature-reference]: /audio-features

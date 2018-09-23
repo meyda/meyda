@@ -289,7 +289,7 @@
 
         for (var j = 0; j < ffts[_i].length * 3; j++) {
           positions[index++] = 10.7 + 8 * Math.log10(j / ffts[_i].length);
-          positions[index++] = -5 + 2 * ffts[_i][j];
+          positions[index++] = -5 + 0.1 * ffts[_i][j];
           positions[index++] = -15 - _i;
         }
 
