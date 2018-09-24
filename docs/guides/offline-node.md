@@ -83,7 +83,7 @@ Finally, we can pass the signal to Meyda and ask it to calculate the zero
 crossing rate for the signal:
 
 ```javascript
-Meyda.get('zcr', signal);
+Meyda.extract('zcr', signal);
 // returns 20
 ```
 
