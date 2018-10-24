@@ -27,7 +27,7 @@ To call Meyda's command line interface, we first need to install the Meyda
 package globally, using npm.
 
 ```sh
-$ npm instal --global meyda
+$ npm install --global meyda
 ```
 
 Once that command has run, the Meyda executable should be available on your
