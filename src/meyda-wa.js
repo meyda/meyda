@@ -50,7 +50,7 @@ export class MeydaAnalyzer {
     this._m.windowingFunction = options.windowingFunction || 'hanning';
     this._m.featureExtractors = featureExtractors;
     this._m.EXTRACTION_STARTED = options.startImmediately || false;
-    options.numberOfMFCCCoefficients && this._m.numberOfMFCCCoefficients = options.numberOfMFCCCoefficients;
+    this._m.numberOfMFCCCoefficients = options.numberOfMFCCCoefficients || this._m.numberOfMFCCCoefficients || 13;
 
     //create nodes
     this._m.spn = this._m.audioContext.createScriptProcessor(
