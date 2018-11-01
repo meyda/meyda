@@ -19,6 +19,7 @@ import * as featureExtractors from './featureExtractors';
   *   "bufferSize": 512,
   *   "featureExtractors": ["rms"],
   *   "inputs": 2,
+  *   "numberOfMFCCCoefficients": 20
   *   "callback": features => {
   *     levelRangeElement.value = features.rms;
   *   }
@@ -50,6 +51,7 @@ export class MeydaAnalyzer {
     this._m.windowingFunction = options.windowingFunction || 'hanning';
     this._m.featureExtractors = featureExtractors;
     this._m.EXTRACTION_STARTED = options.startImmediately || false;
+    this._m.numberOfMFCCCoefficients = options.numberOfMFCCCoefficients || this._m.numberOfMFCCCoefficients || 13;
 
     //create nodes
     this._m.spn = this._m.audioContext.createScriptProcessor(
