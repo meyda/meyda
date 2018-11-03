@@ -6,7 +6,7 @@ Meyda is a Javascript audio feature extraction library. Meyda supports both offl
 [hughrawlinson][hugh-github] | [nevosegal][nevo-github] | [jakubfiala][jakub-github] | [2xAA][2xaa-github]
 
 ### Usage
-Please see [the documentation](docs) for setup and usage instructions.
+Please see [the documentation][docs] for setup and usage instructions.
 
 ### Contributing
 
