@@ -74,5 +74,6 @@
   },
   "engines": {
     "node": ">=6.0.0"
-  }
+  },
+  "typings": "./meyda.d.ts"
 }
