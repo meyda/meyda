@@ -19,6 +19,7 @@ import * as featureExtractors from './featureExtractors';
   *   "bufferSize": 512,
   *   "featureExtractors": ["rms"],
   *   "inputs": 2,
+  *   "numberOfMFCCCoefficients": 2
   *   "callback": features => {
   *     levelRangeElement.value = features.rms;
   *   }
