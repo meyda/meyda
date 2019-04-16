@@ -1,9 +1,8 @@
 import loudness from './loudness';
+import {verifySymbol} from "../utilities/utilities";
 
-export default function() {
-  if (typeof arguments[0].signal !== 'object') {
-    throw new TypeError();
-  }
+export default function () {
+  verifySymbol(arguments[0]);
 
   var loudnessValue = loudness(arguments[0]);
 

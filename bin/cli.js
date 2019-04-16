@@ -1,19 +1,19 @@
 #! /usr/bin/env node
 
-(function(){
+(function () {
   'use strict';
 
   var opt = require('node-getopt').create([
-          ['','o[=OUTPUT_FILE]','Path to output file (optional, if not specified prints to console'],
-          ['', 'bs[=BUFFER_SIZE]', 'Buffer size in samples (optional, default is 512)'],
-          ['', 'hs[=HOP_SIZE]', 'Hop size in samples (optional, defaults to matching buffer size)'],
-          ['', 'w[=WINDOWING_FUNCTION]', 'Windowing function (optional, default is hanning)'],
-          ['', 'format[=FORMAT_TYPE]', 'Type of output file (optional, default is csv)'],
-          ['p', '', 'Disables some of the logging and outputs data to stdout, useful for piping'],
-          ['h', 'help', 'Display help']
-      ])
-      .bindHelp()
-      .parseSystem();
+    ['', 'o[=OUTPUT_FILE]', 'Path to output file (optional, if not specified prints to console'],
+    ['', 'bs[=BUFFER_SIZE]', 'Buffer size in samples (optional, default is 512)'],
+    ['', 'hs[=HOP_SIZE]', 'Hop size in samples (optional, defaults to matching buffer size)'],
+    ['', 'w[=WINDOWING_FUNCTION]', 'Windowing function (optional, default is hanning)'],
+    ['', 'format[=FORMAT_TYPE]', 'Type of output file (optional, default is csv)'],
+    ['p', '', 'Disables some of the logging and outputs data to stdout, useful for piping'],
+    ['h', 'help', 'Display help']
+  ])
+    .bindHelp()
+    .parseSystem();
 
   if (!opt.argv.length)
     throw new Error('Input file was not specified.');
@@ -35,14 +35,14 @@
   Meyda.windowingFunction = opt.options.w || 'hanning';
 
   var outputFormat = null;
-  if (opt.options.o){
-     outputFormat = opt.options.format || 'csv';
+  if (opt.options.o) {
+    outputFormat = opt.options.format || 'csv';
   }
   var features = {};
   var featuresToExtract = opt.argv.slice(1);
 
   for (var i = 0; i < featuresToExtract.length; i++) {
-      features[featuresToExtract[i]] = [];
+    features[featuresToExtract[i]] = [];
   }
 
   // utility to convert typed arrays to normal arrays
@@ -58,8 +58,7 @@
   function output(val) {
     if (!opt.options.o || opt.options.p) {
       process.stdout.write(val);
-    }
-    else {
+    } else {
       wstream.write(val);
     }
   }
@@ -71,8 +70,8 @@
     //run the extraction of selected features
     var fset = Meyda.extract(featuresToExtract, frame);
     for (let j = 0; j < featuresToExtract.length; j++) {
-        var feature = fset[featuresToExtract[j]];
-        features[featuresToExtract[j]].push(feature);
+      var feature = fset[featuresToExtract[j]];
+      features[featuresToExtract[j]].push(feature);
     }
   }
 
@@ -93,7 +92,7 @@
     console.log('Windowing function: ' + Meyda.windowingFunction);
     console.log('Will extract:');
     //log features to extract
-    featuresToExtract.forEach(function(f,i,a){
+    featuresToExtract.forEach(function (f, i, a) {
       process.stdout.write(f + ' ');
     });
 
@@ -102,13 +101,13 @@
 
 
   var wl = new WavLoader(
-    function(chunk){
+    function (chunk) {
       //convert to normal array so we can concatenate
       var _chunk = typedToArray(chunk);
       //check if chunk is bigger than frame
       if (_chunk.length > FRAME_SIZE) {
         // if so, we'll extract stuff from it frame by frame, until we're left with something that's short enough to buffer
-        while(_chunk.length > FRAME_SIZE) {
+        while (_chunk.length > FRAME_SIZE) {
           var frame = _chunk.slice(0, FRAME_SIZE);
           _chunk.splice(0, HOP_SIZE);
           extractFeatures(frame);
@@ -126,7 +125,7 @@
         frameCount++;
       }
     },
-    function(data) {
+    function (data) {
       //check if there's still something left in our buffer
       if (buffer.length) {
         //zero pad the buffer at the end so we get a full frame (needed for successful spectral analysis)
@@ -143,7 +142,7 @@
       }
 
       // only print out information if piping flag is disabled.
-      if(!opt.options.p){
+      if (!opt.options.p) {
         process.stdout.write('-|\nExtraction finished.\n\n');
         console.log(frameCount + ' frames analysed.\n');
       }
@@ -151,29 +150,29 @@
       // if output to file is enabled.
       if (opt.options.o) {
 
-        if(outputFormat == 'json') {
+        if (outputFormat == 'json') {
           process.stdout.write('Writing to ' + opt.options.o + '...\n');
           output(JSON.stringify(features, null, 4));
-        }
-        else if (outputFormat == 'csv'){
+        } else if (outputFormat == 'csv') {
           process.stdout.write('Writing to ' + opt.options.o + '...\n');
-          for(let i = 0; i < featuresToExtract.length; i++){
+          for (let i = 0; i < featuresToExtract.length; i++) {
             output(featuresToExtract[i].toString());
-            output(i == featuresToExtract.length-1 ? '' : ',');
+            output(i == featuresToExtract.length - 1 ? '' : ',');
           }
-
+          /home/s;
+          eanitzel / Documents / Programming / School / Project;
+          Management / meyda / bin / cli.js;
           output('\n');
-          for(let i=0; i<frameCount; i++){
-            for(let j=0; j<featuresToExtract.length; j++){
+          for (let i = 0; i < frameCount; i++) {
+            for (let j = 0; j < featuresToExtract.length; j++) {
               var feature = features[featuresToExtract[j]];
-              if(typeof feature[i] === 'object'){
-                for(let f = 0; f < Object.keys(feature[i]).length; f++)
+              if (typeof feature[i] === 'object') {
+                for (let f = 0; f < Object.keys(feature[i]).length; f++)
                   output(feature[i][f] + ',');
-                  output(j == featuresToExtract.length-1 ? '' : ',');
-              }
-              else{
+                output(j == featuresToExtract.length - 1 ? '' : ',');
+              } else {
                 output(feature[i].toString());
-                output(j == featuresToExtract.length-1 ? '' : ',');
+                output(j == featuresToExtract.length - 1 ? '' : ',');
               }
             }
             output('\n');
@@ -183,23 +182,20 @@
         console.log('Done.');
         wstream.end();
         console.log('');
-      }
-
-      else {
+      } else {
         // if there is no output flag, print to console.
-        for(let j=0; j<featuresToExtract.length; j++){
+        for (let j = 0; j < featuresToExtract.length; j++) {
           output('\n*********' + featuresToExtract[j].toString() + '*********\n\n');
 
-          for(let i=0; i<frameCount; i++){
+          for (let i = 0; i < frameCount; i++) {
             var feature = features[featuresToExtract[j]];
-            if(typeof feature[i] === 'object'){
+            if (typeof feature[i] === 'object') {
               var keys = Object.keys(feature[i]);
-              for(let f = 0; f < keys.length; f++){
+              for (let f = 0; f < keys.length; f++) {
                 output(feature[i][keys[f]] + '');
-                output(f == keys.length-1 ? '\n' : ',');
+                output(f == keys.length - 1 ? '\n' : ',');
               }
-            }
-            else{
+            } else {
               output(feature[i].toString());
               output('\n');
             }
@@ -208,13 +204,13 @@
         }
       }
       //get averages
-        for (let j = 0; j < featuresToExtract.length; j++) {
-            //check if this feature returns arrays
-            if (typeof features[featuresToExtract[j]][0] != 'object') //if not, calculate average
-              console.log('Average ' + featuresToExtract[j] + ': ' + features[featuresToExtract[j]].reduce(function(previousValue, currentValue) {
-                  return previousValue + currentValue;
-              }) / features[featuresToExtract[j]].length);
-        }
+      for (let j = 0; j < featuresToExtract.length; j++) {
+        //check if this feature returns arrays
+        if (typeof features[featuresToExtract[j]][0] != 'object') //if not, calculate average
+          console.log('Average ' + featuresToExtract[j] + ': ' + features[featuresToExtract[j]].reduce(function (previousValue, currentValue) {
+            return previousValue + currentValue;
+          }) / features[featuresToExtract[j]].length);
+      }
     }
   );
 

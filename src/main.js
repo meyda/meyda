@@ -1,4 +1,6 @@
-import * as utilities from './utilities';
+import * as utilities from './utilities/utilities';
+import {createMelFilterBank} from './utilities/melFIlterBank';
+import {createChromaFilterBank} from './utilities/chromaFilterBank';
 import * as extractors from './featureExtractors';
 import {fft, ifft} from 'fftjs';
 import {MeydaAnalyzer} from './meyda-wa';
@@ -22,12 +24,12 @@ import {MeydaAnalyzer} from './meyda-wa';
  * @property {boolean} [startImmediately] - Pass `true` to start feature extraction immediately
  */
 
- /**
-  * Web Audio context
-  * Either an {@link AudioContext|https://developer.mozilla.org/en-US/docs/Web/API/AudioContext}
-  * or an {@link OfflineAudioContext|https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext}
-  * @typedef {Object} AudioContext
-  */
+/**
+ * Web Audio context
+ * Either an {@link AudioContext|https://developer.mozilla.org/en-US/docs/Web/API/AudioContext}
+ * or an {@link OfflineAudioContext|https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext}
+ * @typedef {Object} AudioContext
+ */
 
 /**
  * AudioNode
@@ -126,7 +128,7 @@ var Meyda = {
   windowing: utilities.applyWindow,
   _errors: {
     notPow2: new Error(
-        'Meyda: Buffer size must be a power of 2, e.g. 64 or 512'),
+      'Meyda: Buffer size must be a power of 2, e.g. 64 or 512'),
     featureUndef: new Error('Meyda: No features defined.'),
     invalidFeatureFmt: new Error('Meyda: Invalid feature format'),
     invalidInput: new Error('Meyda: Invalid input.'),
@@ -175,40 +177,40 @@ var Meyda = {
    */
   extract: function (feature, signal, previousSignal) {
     if (!signal)
-        throw this._errors.invalidInput;
+      throw this._errors.invalidInput;
     else if (typeof signal != 'object')
-        throw this._errors.invalidInput;
+      throw this._errors.invalidInput;
     else if (!feature)
-        throw this._errors.featureUndef;
+      throw this._errors.featureUndef;
     else if (!utilities.isPowerOfTwo(signal.length))
-        throw this._errors.notPow2;
+      throw this._errors.notPow2;
 
     if (typeof this.barkScale == 'undefined' ||
-            this.barkScale.length != this.bufferSize) {
+      this.barkScale.length != this.bufferSize) {
       this.barkScale = utilities.createBarkScale(
-          this.bufferSize,
-          this.sampleRate,
-          this.bufferSize
+        this.bufferSize,
+        this.sampleRate,
+        this.bufferSize
       );
     }
 
     // Recalculate mel bank if buffer length changed
     if (typeof this.melFilterBank == 'undefined' ||
-            this.barkScale.length != this.bufferSize ||
-            this.melFilterBank.length != this.melBands) {
-      this.melFilterBank = utilities.createMelFilterBank(
-          Math.max(this.melBands, this.numberOfMFCCCoefficients),
-          this.sampleRate,
-          this.bufferSize);
+      this.barkScale.length != this.bufferSize ||
+      this.melFilterBank.length != this.melBands) {
+      this.melFilterBank = createMelFilterBank(
+        Math.max(this.melBands, this.numberOfMFCCCoefficients),
+        this.sampleRate,
+        this.bufferSize);
     }
 
     // Recalculate chroma bank if buffer length changed
     if (typeof this.chromaFilterBank == 'undefined' ||
-            this.chromaFilterBank.length != this.chromaBands) {
-      this.chromaFilterBank = utilities.createChromaFilterBank(
-          this.chromaBands,
-          this.sampleRate,
-          this.bufferSize);
+      this.chromaFilterBank.length != this.chromaBands) {
+      this.chromaFilterBank = createChromaFilterBank(
+        this.chromaBands,
+        this.sampleRate,
+        this.bufferSize);
     }
 
     if (typeof signal.buffer == 'undefined') {
@@ -219,9 +221,9 @@ var Meyda = {
     }
 
     let preparedSignal = prepareSignalWithSpectrum(
-            signal,
-            this.windowingFunction,
-            this.bufferSize);
+      signal,
+      this.windowingFunction,
+      this.bufferSize);
 
     this.signal = preparedSignal.windowedSignal;
     this.complexSpectrum = preparedSignal.complexSpectrum;
@@ -229,8 +231,8 @@ var Meyda = {
 
     if (previousSignal) {
       let preparedSignal = prepareSignalWithSpectrum(previousSignal,
-              this.windowingFunction,
-              this.bufferSize);
+        this.windowingFunction,
+        this.bufferSize);
 
       this.previousSignal = preparedSignal.windowedSignal;
       this.previousComplexSpectrum = preparedSignal.complexSpectrum;
@@ -239,18 +241,18 @@ var Meyda = {
 
     const extract = (feature) => {
       return this.featureExtractors[feature]({
-        ampSpectrum:this.ampSpectrum,
+        ampSpectrum: this.ampSpectrum,
         chromaFilterBank: this.chromaFilterBank,
-        complexSpectrum:this.complexSpectrum,
-        signal:this.signal,
-        bufferSize:this.bufferSize,
-        sampleRate:this.sampleRate,
-        barkScale:this.barkScale,
-        melFilterBank:this.melFilterBank,
-        previousSignal:this.previousSignal,
-        previousAmpSpectrum:this.previousAmpSpectrum,
-        previousComplexSpectrum:this.previousComplexSpectrum,
-        numberOfMFCCCoefficients:this.numberOfMFCCCoefficients,
+        complexSpectrum: this.complexSpectrum,
+        signal: this.signal,
+        bufferSize: this.bufferSize,
+        sampleRate: this.sampleRate,
+        barkScale: this.barkScale,
+        melFilterBank: this.melFilterBank,
+        previousSignal: this.previousSignal,
+        previousAmpSpectrum: this.previousAmpSpectrum,
+        previousComplexSpectrum: this.previousComplexSpectrum,
+        numberOfMFCCCoefficients: this.numberOfMFCCCoefficients,
       });
     };
 
@@ -268,14 +270,14 @@ var Meyda = {
 };
 
 var prepareSignalWithSpectrum = function (signal,
-  windowingFunction,
-  bufferSize) {
+                                          windowingFunction,
+                                          bufferSize) {
   var preparedSignal = {};
 
   if (typeof signal.buffer == 'undefined') {
     //signal is a normal array, convert to F32A
     preparedSignal.signal = utilities.arrayToTyped(signal);
-  }  else {
+  } else {
     preparedSignal.signal = signal;
   }
 

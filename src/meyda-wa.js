@@ -1,4 +1,5 @@
-import * as utilities from './utilities';
+import * as utilities         from './utilities/utilities';
+import {createMelFilterBank}  from './utilities/melFIlterBank';
 import * as featureExtractors from './featureExtractors';
 
 /**
@@ -63,7 +64,7 @@ export class MeydaAnalyzer {
       this._m.bufferSize,
       this._m.sampleRate,
       this._m.bufferSize);
-    this._m.melFilterBank = utilities.createMelFilterBank(
+    this._m.melFilterBank = createMelFilterBank(
       this._m.melBands,
       this._m.sampleRate,
       this._m.bufferSize);

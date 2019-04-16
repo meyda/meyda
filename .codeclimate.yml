@@ -1,0 +1,12 @@
+version: "2"
+plugins:
+    editorconfig:
+        enabled: true
+    git-legal:
+        enabled: true
+exclude_patterns:
+    - "docs/"
+    - "dist/"
+    - "**/test/"
+    - "**/node_modules/"
+    - "bin/"

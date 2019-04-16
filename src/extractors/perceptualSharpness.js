@@ -1,23 +1,24 @@
 import loudness from './loudness';
+import {verifySymbol} from "../utilities/utilities";
 
-export default function() {
-  if (typeof arguments[0].signal !== 'object') {
-    throw new TypeError();
+export default function () {
+  verifySymbol(arguments[0]);
+
+  let loudnessValue = loudness(arguments[0]);
+  let spec = loudnessValue.specific;
+  let output = 0;
+
+  for (let i = 0; i < spec.length; i++) {
+    output += updateOutput(i, spec);
   }
-
-  var loudnessValue = loudness(arguments[0]);
-  var spec = loudnessValue.specific;
-  var output = 0;
-
-  for (var i = 0; i < spec.length; i++) {
-    if (i < 15) {
-      output += (i + 1) * spec[i + 1];
-    } else {
-      output += 0.066 * Math.exp(0.171 * (i + 1));
-    }
-  }
-
   output *= 0.11 / loudnessValue.total;
 
   return output;
+}
+
+function updateOutput(index, spec) {
+  if (index < 15) {
+    return (index + 1) * spec[index + 1];
+  }
+  return 0.066 * Math.exp(0.171 * (index + 1));
 }

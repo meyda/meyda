@@ -1,7 +1,7 @@
 var chai = require('chai');
 var assert = chai.assert;
 var TestData = require('../TestData');
-var utilities = require('../../dist/node/utilities');
+var createChromaFilterBank = require('../../dist/node/utilities/chromaFilterBank').createChromaFilterBank;
 
 // Setup
 var chroma = require('../../dist/node/extractors/chroma');
@@ -12,7 +12,7 @@ describe('chroma', function () {
       sampleRate: 44100,
       bufferSize: 512,
       ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
-      chromaFilterBank:utilities.createChromaFilterBank(12, 44100, 512),
+      chromaFilterBank:createChromaFilterBank(12, 44100, 512),
     });
 
     for (var i in TestData.EXPECTED_CHROMAGRAM_OUTPUT) {

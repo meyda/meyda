@@ -1,16 +1,9 @@
 import powerSpectrum from './powerSpectrum';
-import freqToMel from './../utilities';
-import melToFreq from './../utilities';
 
 var dct = require('dct');
 
-export default function(args) {
-  if (typeof args.ampSpectrum !== 'object') {
-    throw new TypeError('Valid ampSpectrum is required to generate MFCC');
-  }
-  if (typeof args.melFilterBank !== 'object') {
-    throw new TypeError('Valid melFilterBank is required to generate MFCC');
-  }
+export default function (args) {
+  verifyArgs(args);
 
   let numberOfMFCCCoefficients = Math.min(40, Math.max(1, args.numberOfMFCCCoefficients || 13));
 
@@ -47,4 +40,13 @@ export default function(args) {
   let mfccs = dct(loggedMelBandsArray).slice(0, numberOfMFCCCoefficients);
 
   return mfccs;
+}
+
+function verifyArgs(args) {
+  if (typeof args.ampSpectrum !== 'object') {
+    throw new TypeError('Valid ampSpectrum is required to generate MFCC');
+  }
+  if (typeof args.melFilterBank !== 'object') {
+    throw new TypeError('Valid melFilterBank is required to generate MFCC');
+  }
 }

@@ -1,7 +1,7 @@
 var chai = require('chai');
 var assert = chai.assert;
 var TestData = require('../TestData');
-var utilities = require('../../dist/node/utilities');
+var createMelFilterBank = require('../../dist/node/utilities/melFIlterBank').createMelFilterBank;
 
 // Setup
 var mfcc = require('../../dist/node/extractors/mfcc');
@@ -12,7 +12,7 @@ describe('mfcc', function () {
       sampleRate:44100,
       bufferSize:512,
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
-      melFilterBank:utilities.createMelFilterBank(26, 44100, 512),
+      melFilterBank:createMelFilterBank(26, 44100, 512),
     });
 
     const expectedValues = [
@@ -45,7 +45,7 @@ describe('mfcc', function () {
       sampleRate:44100,
       bufferSize:512,
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
-      melFilterBank:utilities.createMelFilterBank(26, 44100, 512),
+      melFilterBank:createMelFilterBank(26, 44100, 512),
       numberOfMFCCCoefficients: 3
     });
 
@@ -69,7 +69,7 @@ describe('mfcc', function () {
       sampleRate:44100,
       bufferSize:512,
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
-      melFilterBank:utilities.createMelFilterBank(40, 44100, 512),
+      melFilterBank:createMelFilterBank(40, 44100, 512),
       numberOfMFCCCoefficients: 40
     });
 
