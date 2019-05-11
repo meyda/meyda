@@ -10,6 +10,13 @@ To build the reference docs from the annotations in the source code, run the fol
 $ npm run generatereferencedocs
 ```
 
+To build the Javascript demo of Meyda that runs in the docs folder, run
+
+```
+$ cd docs
+$ npm run build
+```
+
 To serve the docs locally
 
 ```
