@@ -116,8 +116,6 @@ describe('mfcc', function () {
       0.5762094772418701
     ];
 
-    console.log(en);
-
     assert.equal(expectedValues.length, en.length);
 
     for (var index in en) {
