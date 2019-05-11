@@ -1,24 +1,6 @@
 var gulp = require('gulp');
-var sourcemaps = require('gulp-sourcemaps');
 var babel = require('gulp-babel');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var browserify = require('browserify');
-var through2 = require('through2');
-var babelify = require('babelify');
 var webpack = require('webpack-stream');
-
-gulp.task('buildWeb:regular', function() {
-  return gulp.src('./src/index.js')
-    .pipe(webpack(require('./webpack.config.js').regular, require('webpack'))) // pass webpack for webpack2
-    .pipe(gulp.dest('./dist/web'));
-});
-
-gulp.task('buildWeb:minified', function() {
-  return gulp.src('./src/index.js')
-    .pipe(webpack(require('./webpack.config.js').minified, require('webpack'))) // pass webpack for webpack2
-    .pipe(gulp.dest('./dist/web'));
-});
 
 gulp.task('buildNode',function(){
   return gulp.src('./src/**/*.js')
@@ -29,5 +11,11 @@ gulp.task('buildNode',function(){
     .pipe(gulp.dest('./dist/node/'));
 });
 
-gulp.task('buildWeb', gulp.parallel('buildWeb:regular', 'buildWeb:minified'));
+gulp.task('buildWeb', function() {
+  return gulp.src('./src/index.js')
+    .pipe(webpack({
+      config: require('./webpack.config.js')
+    }))
+    .pipe(gulp.dest('./dist/web'));
+});
 gulp.task('build', gulp.parallel('buildNode', 'buildWeb'));

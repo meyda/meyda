@@ -3,8 +3,10 @@ var path = require('path');
 var webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = {
-  regular: {
+module.exports = [
+  {
+    name: 'regular',
+    entry: './src/index.js',
     mode: process.env['NODE_ENV'] || 'development',
     devtool: 'source-map',
     output: {
@@ -25,7 +27,9 @@ module.exports = {
       ]
     }
   },
-  minified: {
+  {
+    name: 'minified',
+    entry: './src/index.js',
     mode: process.env['NODE_ENV'] || 'development',
     devtool: 'source-map',
     output: {
@@ -61,4 +65,4 @@ module.exports = {
       ]
     }
   }
-};
+];
