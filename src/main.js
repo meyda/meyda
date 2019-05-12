@@ -20,7 +20,6 @@ import {MeydaAnalyzer} from './meyda-wa';
  * @property {string} [windowingFunction] - The Windowing Function to apply to the signal before transformation to the frequency domain
  * @property {string|Array.<string>} [featureExtractors] - Specify the feature extractors you want to run on the audio.
  * @property {boolean} [startImmediately] - Pass `true` to start feature extraction immediately
- * @property {number} [numberOfMFCCCoefficients] - The number of MFCC co-efficients that the MFCC feature extractor should return
  */
 
  /**
@@ -122,11 +121,6 @@ var Meyda = {
    */
   featureExtractors: extractors,
   EXTRACTION_STARTED: false,
-  /**
-   * The number of MFCC co-efficients that the MFCC feature extractor should return
-   * @instance
-   * @member {number}
-   */
   numberOfMFCCCoefficients: 13,
   _featuresToExtract: [],
   windowing: utilities.applyWindow,
