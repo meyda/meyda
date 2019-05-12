@@ -18,7 +18,7 @@
     "push": "git push --follow-tags",
     "prepublish": "npm run build",
     "postpublish": "npm run clean && npm run push",
-    "generatereferencedocs": "jsdoc src/main.js src/meyda-wa.js -d docs/reference -R docs/README.md"
+    "generatereferencedocs": "jsdoc src/meyda-wa.js src/main.js -d docs/reference -R docs/README.md"
   },
   "repository": {
     "type": "git",
@@ -59,7 +59,7 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^2.0.0",
     "istanbul": "^0.4.0",
-    "jsdoc": "^3.6.1",
+    "jsdoc": "^3.6.2",
     "mocha": "^5.2.0",
     "mocha-lcov-reporter": "^1.3.0",
     "uglifyjs-webpack-plugin": "^2.1.2",
