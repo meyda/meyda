@@ -155,6 +155,13 @@ export class MeydaAnalyzer {
     this._m.source.connect(this._m.spn);
   }
 
+  /**
+   * Set the channel of the audio node for Meyda to listen to
+   * @param {number} channel - the index of the channel on the input audio node
+   * for Meyda to listen to.
+   * @example
+   * analyzer.setChannel(0);
+   */
   setChannel(channel) {
     if (channel <= this._m.inputs) {
       this._m.channel = channel;
