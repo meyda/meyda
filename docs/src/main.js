@@ -110,6 +110,106 @@
   let chromaWrapper = document.querySelector('#chroma');
   let mfccWrapper = document.querySelector('#mfcc');
 
+  function autoCorrelation(arr) {
+    var ac = new Float32Array(arr.length);
+    for (var lag = 0; lag < arr.length; lag++) {
+      var value = 0;
+      for (var index = 0; index < arr.length - lag; index++) {
+        let a = arr[index];
+        let otherindex = index - lag;
+        let b = otherindex >= 0 ? arr[otherindex] : 0;
+        value = value + a * b;
+      }
+      ac[lag] = value;
+    }
+    return ac;
+  }
+
+  function renderChroma() {
+    chromaWrapper.innerHTML = features.chroma.reduce((acc, v, i) =>
+      `${acc}
+        <div class="chroma-band" style="background-color: rgba(0,${Math.round(255 * v)},0,1)">${scale[i]}</div>`, ''
+    );
+  }
+
+  function renderMfcc() {
+    mfccWrapper.innerHTML = features.mfcc.reduce((acc, v, i) =>
+      `${acc}
+          <div class="mfcc-band" style="background-color: rgba(0,${Math.round(v + 25) * 5},0,1)">${i}</div>`, ''
+    );
+  }
+
+  function renderFft() {
+    for (let i = 0; i < ffts.length; i++) {
+      var positions = lines.children[i].geometry.attributes.position.array;
+      var index = 0;
+
+      for (var j = 0; j < ffts[i].length*3; j++) {
+        positions[index++] = 10.7 + (8 * Math.log10(j/ffts[i].length));
+        positions[index++] = -5 + 0.1 * ffts[i][j];
+        positions[index++] = -15 - i;
+      }
+
+      lines.children[i].geometry.attributes.position.needsUpdate = true;
+    }
+  }
+
+  function renderLoudness() {
+    for (var i = 0; i < features.loudness.specific.length; i++) {
+      let geometry = new THREE.Geometry();
+      geometry.vertices.push(new THREE.Vector3(
+        -11 + 22 * i / features.loudness.specific.length,
+        -6 + features.loudness.specific[i] * 3,
+        -15
+      ));
+      geometry.vertices.push(new THREE.Vector3(
+        -11 + 22 * i / features.loudness.specific.length + 22 /
+        features.loudness.specific.length,
+        -6 + features.loudness.specific[i] * 3,
+        -15
+      ));
+      loudnessLines.add(new THREE.Line(geometry, yellowMaterial));
+      geometry.dispose();
+    }
+
+    // for (let c = 0; c < loudnessLines.children.length; c++) {
+    //   loudnessLines.remove(loudnessLines.children[c]); //forEach is slow
+    // }
+  }
+
+  function renderSignalBuffer(windowedSignalBuffer) {
+    let positions = bufferLine.geometry.attributes.position.array;
+    let index = 0;
+    for (var i = 0; i < bufferSize; i++){
+      positions[index++] = -11 + 22 * i / bufferSize;
+      positions[index++] = 4 + (windowedSignalBuffer[i] * 5);
+      positions[index++] = -25;
+    }
+    bufferLine.geometry.attributes.position.needsUpdate = true;
+  }
+
+  function renderArrows() {
+    // Render Spectral Centroid Arrow
+    if (features.spectralCentroid) {
+      // SpectralCentroid is an awesome variable name
+      // We're really just updating the x axis
+      centroidArrow.position.set(10.7 + (8 * Math.log10(features.spectralCentroid / (bufferSize / 2))), -6, -15);
+    }
+
+    // Render Spectral Rolloff Arrow
+    if (features.spectralRolloff) {
+      // We're really just updating the x axis
+      var rolloff = (features.spectralRolloff / 22050);
+      rolloffArrow.position.set(10.7 + (8 * Math.log10(rolloff)), -6, -15);
+    }
+
+    // Render RMS Arrow
+    if (features.rms) {
+      // We're really just updating the y axis
+      rmsArrow.position.set(-11, -5 + (10 * features.rms), -15);
+    }
+  }
+
   function render() {
     features = a.get([
       'amplitudeSpectrum',
@@ -118,94 +218,36 @@
       'loudness',
       'rms',
       'chroma',
-      'mfcc'
+      'mfcc',
+      'buffer'
     ]);
     if (features) {
       if (chromaWrapper && features.chroma) {
-        chromaWrapper.innerHTML = features.chroma.reduce((acc, v, i) =>
-          `${acc}
-          <div class="chroma-band" style="background-color: rgba(0,${Math.round(255 * v)},0,1)">${scale[i]}</div>`, ''
-        );
+        renderChroma();
       }
 
       if (mfccWrapper && features.mfcc) {
-        mfccWrapper.innerHTML = features.mfcc.reduce((acc, v, i) =>
-          `${acc}
-          <div class="mfcc-band" style="background-color: rgba(0,${Math.round(v + 25) * 5},0,1)">${i}</div>`, ''
-        )
+        renderMfcc();
       }
 
       ffts.pop();
       ffts.unshift(features.amplitudeSpectrum);
-      const windowedSignalBuffer = a.meyda._m.signal;
+      const windowedSignalBuffer = autoCorrelation(a.meyda._m.signal);
+      // const windowedSignalBuffer = a.meyda._m.signal;
 
-      for (let i = 0; i < ffts.length; i++) {
-        var positions = lines.children[i].geometry.attributes.position.array;
-        var index = 0;
+      renderFft();
 
-        for (var j = 0; j < ffts[i].length*3; j++) {
-          positions[index++] = 10.7 + (8 * Math.log10(j/ffts[i].length));
-          positions[index++] = -5 + 0.1 * ffts[i][j];
-          positions[index++] = -15 - i;
-        }
-
-        lines.children[i].geometry.attributes.position.needsUpdate = true;
-      }
-
-      // Render Spectral Centroid Arrow
-      if (features.spectralCentroid) {
-        // SpectralCentroid is an awesome variable name
-        // We're really just updating the x axis
-        centroidArrow.position.set(10.7 + (8 * Math.log10(features.spectralCentroid / (bufferSize / 2))), -6, -15);
-      }
-
-      // Render Spectral Rolloff Arrow
-      if (features.spectralRolloff) {
-        // We're really just updating the x axis
-        var rolloff = (features.spectralRolloff / 22050);
-        rolloffArrow.position.set(10.7 + (8 * Math.log10(rolloff)), -6, -15);
-      }
-      // Render RMS Arrow
-      if (features.rms) {
-        // We're really just updating the y axis
-        rmsArrow.position.set(-11, -5 + (10 * features.rms), -15);
-      }
+      renderArrows();
 
       if (windowedSignalBuffer) {
-        // Render Signal Buffer
-        let positions = bufferLine.geometry.attributes.position.array;
-        let index = 0;
-        for (var i = 0; i < bufferSize; i++){
-          positions[index++] = -11 + 22 * i / bufferSize;
-          positions[index++] = 4 + (windowedSignalBuffer[i] * 5);
-          positions[index++] = -25;
-        }
-        bufferLine.geometry.attributes.position.needsUpdate = true;
+        renderSignalBuffer(windowedSignalBuffer);
       }
 
-      // // Render loudness
+      // Render loudness
       // if (features.loudness && features.loudness.specific) {
-      //   for (var i = 0; i < features.loudness.specific.length; i++) {
-      //     let geometry = new THREE.Geometry();
-      //     geometry.vertices.push(new THREE.Vector3(
-      //       -11 + 22 * i / features.loudness.specific.length,
-      //       -6 + features.loudness.specific[i] * 3,
-      //       -15
-      //     ));
-      //     geometry.vertices.push(new THREE.Vector3(
-      //       -11 + 22 * i / features.loudness.specific.length + 22 /
-      //       features.loudness.specific.length,
-      //       -6 + features.loudness.specific[i] * 3,
-      //       -15
-      //     ));
-      //     loudnessLines.add(new THREE.Line(geometry, yellowMaterial));
-      //     geometry.dispose();
-      //   }
+      //   renderLoudness();
       // }
 
-      // for (let c = 0; c < loudnessLines.children.length; c++) {
-      //   loudnessLines.remove(loudnessLines.children[c]); //forEach is slow
-      // }
     }
 
     requestAnimationFrame(render);
