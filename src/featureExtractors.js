@@ -15,6 +15,7 @@ import mfcc from './extractors/mfcc';
 import chroma from './extractors/chroma';
 import powerSpectrum from './extractors/powerSpectrum';
 import spectralFlux from './extractors/spectralFlux';
+import autocorrelation from './extractors/autocorrelation';
 
 let buffer = function(args) {
   return args.signal;
@@ -33,6 +34,7 @@ export {
   rms,
   energy,
   complexSpectrum,
+  autocorrelation,
 
   spectralSlope,
   spectralCentroid,
