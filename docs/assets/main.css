@@ -65,6 +65,7 @@ div#legend {
 }
 
 #showcase .chroma-band {
+  --band-value: rgba(0,0,0,1);
   flex: 0 1 28px;
   height: 28px;
   display: inline-block;
@@ -72,6 +73,7 @@ div#legend {
   padding-top: 7px;
   font-size: 10px;
   color: #ffffff;
+  background-color: var(--band-value);
 }
 
 #showcase #mfcc::before {
@@ -89,6 +91,7 @@ div#legend {
 }
 
 #showcase .mfcc-band {
+  --band-value: rgba(0,0,0,1);
   flex: 0 1 28px;
   height: 28px;
   display: inline-block;
@@ -96,6 +99,7 @@ div#legend {
   padding-top: 7px;
   font-size: 10px;
   color: #ffffff;
+  background-color: var(--band-value);
 }
 
 #title-link {

@@ -108,7 +108,9 @@
 
   let features = null;
   let chromaWrapper = document.querySelector('#chroma');
+  let chromaChildren = Array.from(chromaWrapper.children);
   let mfccWrapper = document.querySelector('#mfcc');
+  let mfccChildren = Array.from(mfccWrapper.children);
 
   function autoCorrelation(arr) {
     var ac = new Float32Array(arr.length);
@@ -126,17 +128,21 @@
   }
 
   function renderChroma() {
-    chromaWrapper.innerHTML = features.chroma.reduce((acc, v, i) =>
-      `${acc}
-        <div class="chroma-band" style="background-color: rgba(0,${Math.round(255 * v)},0,1)">${scale[i]}</div>`, ''
-    );
+    features.chroma.forEach((v, index) => {
+      chromaChildren[index].style.setProperty(
+        '--band-value',
+        `rgba(0,${Math.round(255*v)},0,1)`
+      );
+    });
   }
 
   function renderMfcc() {
-    mfccWrapper.innerHTML = features.mfcc.reduce((acc, v, i) =>
-      `${acc}
-          <div class="mfcc-band" style="background-color: rgba(0,${Math.round(v + 25) * 5},0,1)">${i}</div>`, ''
-    );
+    features.mfcc.forEach((v, index) => {
+      mfccChildren[index].style.setProperty(
+        '--band-value',
+        `rgba(0,${Math.round(v + 25) * 5},0,1)`
+      );
+    });
   }
 
   function renderFft() {
@@ -147,6 +153,9 @@
       for (var j = 0; j < ffts[i].length*3; j++) {
         positions[index++] = 10.7 + (8 * Math.log10(j/ffts[i].length));
         positions[index++] = -5 + 0.1 * ffts[i][j];
+        // TODO: I think we can improve performance by caching the shapes and
+        // pushing them back once a frame, rather than saving and recalculating
+        // the shapes from the saved FFT each time.
         positions[index++] = -15 - i;
       }
 

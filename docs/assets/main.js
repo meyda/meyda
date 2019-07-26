@@ -268,16 +268,18 @@
 
   var features = null;
   var chromaWrapper = document.querySelector('#chroma');
+  var chromaChildren = Array.from(chromaWrapper.children);
   var mfccWrapper = document.querySelector('#mfcc');
+  var mfccChildren = Array.from(mfccWrapper.children);
 
   function autoCorrelation(arr) {
-    var ac = new Float32Array(2048);
+    var ac = new Float32Array(arr.length);
     for (var lag = 0; lag < arr.length; lag++) {
       var value = 0;
       for (var index = 0; index < arr.length - lag; index++) {
         var _a = arr[index];
         var otherindex = index - lag;
-        var b = otherindex >= 0 ? arr[index - lag] : 0;
+        var b = otherindex >= 0 ? arr[otherindex] : 0;
         value = value + _a * b;
       }
       ac[lag] = value;
@@ -286,15 +288,15 @@
   }
 
   function renderChroma() {
-    chromaWrapper.innerHTML = features.chroma.reduce(function (acc, v, i) {
-      return acc + '\n        <div class="chroma-band" style="background-color: rgba(0,' + Math.round(255 * v) + ',0,1)">' + scale[i] + '</div>';
-    }, '');
+    features.chroma.forEach(function (v, index) {
+      chromaChildren[index].style.setProperty('--band-value', 'rgba(0,' + Math.round(255 * v) + ',0,1)');
+    });
   }
 
   function renderMfcc() {
-    mfccWrapper.innerHTML = features.mfcc.reduce(function (acc, v, i) {
-      return acc + '\n          <div class="mfcc-band" style="background-color: rgba(0,' + Math.round(v + 25) * 5 + ',0,1)">' + i + '</div>';
-    }, '');
+    features.mfcc.forEach(function (v, index) {
+      mfccChildren[index].style.setProperty('--band-value', 'rgba(0,' + Math.round(v + 25) * 5 + ',0,1)');
+    });
   }
 
   function renderFft() {
@@ -305,6 +307,9 @@
       for (var j = 0; j < ffts[_i].length * 3; j++) {
         positions[index++] = 10.7 + 8 * Math.log10(j / ffts[_i].length);
         positions[index++] = -5 + 0.1 * ffts[_i][j];
+        // TODO: I think we can improve performance by caching the shapes and
+        // pushing them back once a frame, rather than saving and recalculating
+        // the shapes from the saved FFT each time.
         positions[index++] = -15 - _i;
       }
 
