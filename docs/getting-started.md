@@ -42,7 +42,7 @@ Can't find a tutorial that matches up with what you're trying to do with Meyda?
 Not finding the documentation to be clear enough? Please open a [GitHub Issue]
 [new-issue], and we'll do our best to help.
 
-[audio-features]: https://github.com/meyda/meyda/wiki/Audio-Features
+[audio-features]: /audio-features
 [new-issue]: https://github.com/meyda/meyda/issues/new
 [online-web-audio]: /guides/online-web-audio
 [offline-cli]: /guides/offline-cli
