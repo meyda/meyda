@@ -76,6 +76,8 @@
 (function () {
   var _this;
   var Audio = function Audio(bufferSize) {
+    var _this2 = this;
+
     if (window.hasOwnProperty('webkitAudioContext') && !window.hasOwnProperty('AudioContext')) {
       window.AudioContext = webkitAudioContext;
     }
@@ -93,12 +95,26 @@
     var stream = this.context.createMediaElementSource(elvis);
     stream.connect(this.context.destination);
 
-    this.meyda = Meyda.createMeydaAnalyzer({
+    // this.meyda = Meyda.createMeydaAnalyzer({
+    //   audioContext: this.context,
+    //   source: stream,
+    //   bufferSize: bufferSize,
+    //   windowingFunction: 'blackman',
+    // });
+
+    this.meyda = { get: function get() {
+        amplitudeSpectrum: [];
+      }, _m: { signal: [] } };
+
+    Meyda.createMeydaAnalyzerWorklet({
       audioContext: this.context,
       source: stream,
       bufferSize: bufferSize,
       windowingFunction: 'blackman'
+    }).then(function (analyzer) {
+      _this2.meyda = analyzer;
     });
+
     _this = this;
     this.initializeMicrophoneSampling();
   };
@@ -122,7 +138,6 @@
     };
 
     try {
-      navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.getUserMedia || navigator.mediaDevices.getUserMedia;
       var constraints = { video: false, audio: true };
       var successCallback = function successCallback(mediaStream) {
         document.getElementById('audioControl').style.display = 'none';
@@ -135,7 +150,7 @@
       };
 
       console.log('Asking for permission...');
-      var getUserMediaPromise = navigator.getUserMedia(constraints, successCallback, errorCallback);
+      var getUserMediaPromise = navigator.mediaDevices.getUserMedia(constraints, successCallback, errorCallback);
       if (getUserMediaPromise) {
         p.then(successCallback);
         p.catch(errorCallback);
@@ -271,7 +286,7 @@
   var mfccWrapper = document.querySelector('#mfcc');
 
   function render() {
-    features = a.get(['amplitudeSpectrum', 'spectralCentroid', 'spectralRolloff', 'loudness', 'rms', 'chroma', 'mfcc']);
+    features = a.get(['amplitudeSpectrum', 'spectralCentroid', 'spectralRolloff', 'loudness', 'rms', 'chroma', 'mfcc', 'buffer']);
     if (features) {
       if (chromaWrapper && features.chroma) {
         chromaWrapper.innerHTML = features.chroma.reduce(function (acc, v, i) {
@@ -287,7 +302,7 @@
 
       ffts.pop();
       ffts.unshift(features.amplitudeSpectrum);
-      var windowedSignalBuffer = a.meyda._m.signal;
+      var windowedSignalBuffer = features.buffer;
 
       for (var _i = 0; _i < ffts.length; _i++) {
         var positions = lines.children[_i].geometry.attributes.position.array;

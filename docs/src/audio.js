@@ -20,12 +20,26 @@
     let stream = this.context.createMediaElementSource(elvis);
     stream.connect(this.context.destination);
 
-    this.meyda = Meyda.createMeydaAnalyzer({
+    // this.meyda = Meyda.createMeydaAnalyzer({
+    //   audioContext: this.context,
+    //   source: stream,
+    //   bufferSize: bufferSize,
+    //   windowingFunction: 'blackman',
+    // });
+
+    this.meyda = {get:()=>{
+      amplitudeSpectrum: []
+    }, _m:{signal:[]}};
+
+    Meyda.createMeydaAnalyzerWorklet({
       audioContext: this.context,
       source: stream,
       bufferSize: bufferSize,
       windowingFunction: 'blackman',
+    }).then((analyzer) => {
+      this.meyda = analyzer;
     });
+
     _this = this;
     this.initializeMicrophoneSampling();
   };
@@ -49,8 +63,6 @@
     };
 
     try {
-      navigator.getUserMedia = navigator.webkitGetUserMedia ||
-        navigator.getUserMedia || navigator.mediaDevices.getUserMedia;
       var constraints = { video: false, audio: true };
       var successCallback = function (mediaStream) {
         document.getElementById('audioControl').style.display = 'none';
@@ -63,7 +75,7 @@
       };
 
       console.log('Asking for permission...');
-      let getUserMediaPromise = navigator.getUserMedia(
+      let getUserMediaPromise = navigator.mediaDevices.getUserMedia(
         constraints,
         successCallback,
         errorCallback

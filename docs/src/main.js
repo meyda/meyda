@@ -118,7 +118,8 @@
       'loudness',
       'rms',
       'chroma',
-      'mfcc'
+      'mfcc',
+      'buffer'
     ]);
     if (features) {
       if (chromaWrapper && features.chroma) {
@@ -137,7 +138,7 @@
 
       ffts.pop();
       ffts.unshift(features.amplitudeSpectrum);
-      const windowedSignalBuffer = a.meyda._m.signal;
+      const windowedSignalBuffer = features.buffer;
 
       for (let i = 0; i < ffts.length; i++) {
         var positions = lines.children[i].geometry.attributes.position.array;
