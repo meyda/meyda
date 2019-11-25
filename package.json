@@ -68,7 +68,7 @@
     "webpack-stream": "^5.2.1"
   },
   "dependencies": {
-    "dct": "0.0.3",
+    "dct": "0.1.0",
     "fftjs": "0.0.4",
     "node-getopt": "^0.2.3",
     "wav": "^1.0.0"
