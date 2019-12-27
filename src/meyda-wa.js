@@ -19,6 +19,7 @@ import * as featureExtractors from './featureExtractors';
   *   "bufferSize": 512,
   *   "featureExtractors": ["rms"],
   *   "inputs": 2,
+  *   "numberOfMFCCCoefficients": 20
   *   "callback": features => {
   *     levelRangeElement.value = features.rms;
   *   }
@@ -53,6 +54,7 @@ export class MeydaAnalyzer {
     this._m.channel = typeof options.channel === 'number' ? options.channel : 0;
     this._m.inputs = options.inputs || 1;
     this._m.outputs = options.outputs || 1;
+    this._m.numberOfMFCCCoefficients = options.numberOfMFCCCoefficients || this._m.numberOfMFCCCoefficients || 13;
 
     //create nodes
     this._m.spn = this._m.audioContext.createScriptProcessor(
@@ -69,7 +71,7 @@ export class MeydaAnalyzer {
       this._m.sampleRate,
       this._m.bufferSize);
     this._m.melFilterBank = utilities.createMelFilterBank(
-      this._m.melBands,
+      Math.max(this._m.melBands, this._m.numberOfMFCCCoefficients),
       this._m.sampleRate,
       this._m.bufferSize);
 
