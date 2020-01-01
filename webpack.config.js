@@ -1,7 +1,7 @@
 /* global module process require */
 var path = require('path');
 var webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = [
   {
@@ -52,9 +52,9 @@ module.exports = [
     },
     optimization: {
       minimizer: [
-        new UglifyJsPlugin({
+        new TerserPlugin({
           parallel: true,
-          uglifyOptions: {
+          terserOptions: {
             compress: {
               warnings: true,
               drop_console: false
