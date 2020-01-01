@@ -11,7 +11,7 @@
     "babelify": "^7.3.0",
     "watchify": "^3.11.1",
     "webpack": "^2.4.1",
-    "webpack-cli": "^3.3.2"
+    "webpack-cli": "^3.3.10"
   },
   "scripts": {
     "test": "echo 'No tests yet...'",
