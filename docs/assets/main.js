@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -80,12 +80,13 @@
       window.AudioContext = webkitAudioContext;
     }
 
-    if (navigator.hasOwnProperty('webkitGetUserMedia') && !navigator.hasOwnProperty('getUserMedia')) {
-      navigator.getUserMedia = webkitGetUserMedia;
-      if (!AudioContext.prototype.hasOwnProperty('createScriptProcessor')) {
-        AudioContext.prototype.createScriptProcessor = AudioContext.prototype.createJavaScriptNode;
-      }
-    }
+    // if (navigator.hasOwnProperty('webkitGetUserMedia') &&
+    //   !navigator.hasOwnProperty('getUserMedia')) {
+    //     navigator.getUserMedia = webkitGetUserMedia;
+    //     if (!AudioContext.prototype.hasOwnProperty('createScriptProcessor')) {
+    //       AudioContext.prototype.createScriptProcessor = AudioContext.prototype.createJavaScriptNode;
+    //     }
+    //   }
 
     this.context = new AudioContext();
 
@@ -101,6 +102,10 @@
     });
     _this = this;
     this.initializeMicrophoneSampling();
+  };
+
+  Audio.prototype.getSampleRate = function getSampleRate() {
+    return this.context.sampleRate;
   };
 
   Audio.prototype.initializeMicrophoneSampling = function () {
@@ -122,24 +127,51 @@
     };
 
     try {
-      navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.getUserMedia || navigator.mediaDevices.getUserMedia;
+      // navigator.getUserMedia = navigator.webkitGetUserMedia ||
+      //   navigator.getUserMedia || navigator.mediaDevices.getUserMedia;
       var constraints = { video: false, audio: true };
       var successCallback = function successCallback(mediaStream) {
         document.getElementById('audioControl').style.display = 'none';
         console.log('User allowed microphone access.');
         console.log('Initializing AudioNode from MediaStream');
-        var source = _this.context.createMediaStreamSource(mediaStream);
+        // var source = _this.context.createMediaStreamSource(mediaStream);
+        var source = _this.context.createOscillator();
+        source.frequency.value = 4 * 23.4375;
+        source.start();
         console.log('Setting Meyda Source to Microphone');
         _this.meyda.setSource(source);
         console.groupEnd();
       };
+      //TODO Delete this
+      successCallback();
+      return;
 
       console.log('Asking for permission...');
-      var getUserMediaPromise = navigator.getUserMedia(constraints, successCallback, errorCallback);
-      if (getUserMediaPromise) {
-        p.then(successCallback);
-        p.catch(errorCallback);
-      }
+      // let getUserMediaPromise = navigator.mediaDevices.getUserMedia(
+      //   constraints,
+      //   successCallback,
+      //   errorCallback
+      navigator.mediaDevices.enumerateDevices().then(function (devices) {
+        var device = devices.filter(function (_ref) {
+          var kind = _ref.kind;
+          return kind === "audioinput";
+        }).filter(function (_ref2) {
+          var label = _ref2.label;
+          return label === "Scarlett 2i2 USB";
+        })[0];
+        var getUserMediaPromise = navigator.mediaDevices.getUserMedia({
+          audio: {
+            deviceId: {
+              exact: devices[4].deviceId
+            }
+          }
+        });
+        if (getUserMediaPromise) {
+          getUserMediaPromise.then(successCallback);
+          getUserMediaPromise.catch(errorCallback);
+        }
+      });
+      // ).then(successCallback).cathc(errorCallback);
     } catch (e) {
       errorCallback();
     }
@@ -160,13 +192,154 @@
 "use strict";
 
 
+var utils = __webpack_require__(3);
+
+// real to complex fft
+var fft = function fft(signal) {
+
+  var complexSignal = {};
+
+  if (signal.real === undefined || signal.imag === undefined) {
+    complexSignal = utils.constructComplexArray(signal);
+  } else {
+    complexSignal.real = signal.real.slice();
+    complexSignal.imag = signal.imag.slice();
+  }
+
+  var N = complexSignal.real.length;
+  var logN = Math.log2(N);
+
+  if (Math.round(logN) != logN) throw new Error('Input size must be a power of 2.');
+
+  if (complexSignal.real.length != complexSignal.imag.length) {
+    throw new Error('Real and imaginary components must have the same length.');
+  }
+
+  var bitReversedIndices = utils.bitReverseArray(N);
+
+  // sort array
+  var ordered = {
+    'real': [],
+    'imag': []
+  };
+
+  for (var i = 0; i < N; i++) {
+    ordered.real[bitReversedIndices[i]] = complexSignal.real[i];
+    ordered.imag[bitReversedIndices[i]] = complexSignal.imag[i];
+  }
+
+  for (var _i = 0; _i < N; _i++) {
+    complexSignal.real[_i] = ordered.real[_i];
+    complexSignal.imag[_i] = ordered.imag[_i];
+  }
+  // iterate over the number of stages
+  for (var n = 1; n <= logN; n++) {
+    var currN = Math.pow(2, n);
+
+    // find twiddle factors
+    for (var k = 0; k < currN / 2; k++) {
+      var twiddle = utils.euler(k, currN);
+
+      // on each block of FT, implement the butterfly diagram
+      for (var m = 0; m < N / currN; m++) {
+        var currEvenIndex = currN * m + k;
+        var currOddIndex = currN * m + k + currN / 2;
+
+        var currEvenIndexSample = {
+          'real': complexSignal.real[currEvenIndex],
+          'imag': complexSignal.imag[currEvenIndex]
+        };
+        var currOddIndexSample = {
+          'real': complexSignal.real[currOddIndex],
+          'imag': complexSignal.imag[currOddIndex]
+        };
+
+        var odd = utils.multiply(twiddle, currOddIndexSample);
+
+        var subtractionResult = utils.subtract(currEvenIndexSample, odd);
+        complexSignal.real[currOddIndex] = subtractionResult.real;
+        complexSignal.imag[currOddIndex] = subtractionResult.imag;
+
+        var additionResult = utils.add(odd, currEvenIndexSample);
+        complexSignal.real[currEvenIndex] = additionResult.real;
+        complexSignal.imag[currEvenIndex] = additionResult.imag;
+      }
+    }
+  }
+
+  return complexSignal;
+};
+
+// complex to real ifft
+var ifft = function ifft(signal) {
+
+  if (signal.real === undefined || signal.imag === undefined) {
+    throw new Error("IFFT only accepts a complex input.");
+  }
+
+  var N = signal.real.length;
+
+  var complexSignal = {
+    'real': [],
+    'imag': []
+  };
+
+  //take complex conjugate in order to be able to use the regular FFT for IFFT
+  for (var i = 0; i < N; i++) {
+    var currentSample = {
+      'real': signal.real[i],
+      'imag': signal.imag[i]
+    };
+
+    var conjugateSample = utils.conj(currentSample);
+    complexSignal.real[i] = conjugateSample.real;
+    complexSignal.imag[i] = conjugateSample.imag;
+  }
+
+  //compute
+  var X = fft(complexSignal);
+
+  //normalize
+  complexSignal.real = X.real.map(function (val) {
+    return val / N;
+  });
+
+  complexSignal.imag = X.imag.map(function (val) {
+    return val / N;
+  });
+
+  return complexSignal;
+};
+
+module.exports = {
+  fft: fft,
+  ifft: ifft
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 (function () {
   'use strict';
+
+  var _require = __webpack_require__(1),
+      fft = _require.fft,
+      ifft = _require.ifft;
 
   var scale = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B'];
   var bufferSize = 1024;
   var Audio = __webpack_require__(0);
   var a = new Audio(bufferSize);
+  var highestDetectableMidiNote = 103;
+  var highestDetectableFrequency = Math.pow(2, (highestDetectableMidiNote - 69) / 12) * 440;
+  var sampleRate = a.getSampleRate();
+  var highestDetectablePeriod = Math.ceil(sampleRate / highestDetectableFrequency);
+  console.log(highestDetectableFrequency);
+  console.log(highestDetectablePeriod);
 
   var aspectRatio = 16 / 10;
   var scene = new THREE.Scene();
@@ -272,19 +445,43 @@
   var mfccWrapper = document.querySelector('#mfcc');
   var mfccChildren = Array.from(mfccWrapper.children);
 
-  function autoCorrelation(arr) {
-    var ac = new Float32Array(arr.length);
-    for (var lag = 0; lag < arr.length; lag++) {
-      var value = 0;
-      for (var index = 0; index < arr.length - lag; index++) {
-        var _a = arr[index];
-        var otherindex = index - lag;
-        var b = otherindex >= 0 ? arr[otherindex] : 0;
-        value = value + _a * b;
-      }
-      ac[lag] = value;
-    }
-    return ac;
+  // function autoCorrelation(arr) {
+  //   var ac = new Float32Array(arr.length);
+  //   for (var lag = 0; lag < arr.length; lag++) {
+  //     var value = 0;
+  //     for (var index = 0; index < arr.length - lag; index++) {
+  //       let a = arr[index];
+  //       let otherindex = index - lag;
+  //       let b = otherindex >= 0 ? arr[otherindex] : 0;
+  //       value = value + a * b;
+  //     }
+  //     ac[lag] = value;
+  //   }
+  //   return ac;
+  // }
+
+  function autoCorrelation(buffer) {
+    var magnitudeSpectrum = fft(buffer);
+    var powerSpectrum = {
+      real: magnitudeSpectrum.real.map(function (n) {
+        return Math.pow(n, 2);
+      }),
+      imag: magnitudeSpectrum.imag.map(function (n) {
+        return Math.pow(n, 2);
+      })
+    };
+    var ac = ifft(powerSpectrum);
+    return ac.real;
+  }
+
+  function normalize(arr) {
+    return arr;
+    var max = Math.max.apply(Math, arr);
+    var min = Math.min.apply(Math, arr);
+    var magnitude = Math.max(max, Math.abs(min));
+    return arr.map(function (n) {
+      return n / magnitude;
+    });
   }
 
   function renderChroma() {
@@ -364,6 +561,23 @@
     }
   }
 
+  function getFreq(autocorrelationBuffer) {
+    var maxLagIndex = 0;
+    var maxLag = 0;
+    var firstPeakOver = false;
+    for (var _i2 = highestDetectablePeriod; _i2 < autocorrelationBuffer.length / 2; _i2++) {
+      if (!firstPeakOver && autocorrelationBuffer[_i2] < 0.01) {
+        firstPeakOver = true;
+      }
+      if (firstPeakOver && autocorrelationBuffer[_i2] > maxLag) {
+        maxLag = autocorrelationBuffer[_i2];
+        maxLagIndex = _i2;
+      }
+    }
+
+    console.log(1 / maxLagIndex * sampleRate);
+  }
+
   function render() {
     features = a.get(['amplitudeSpectrum', 'spectralCentroid', 'spectralRolloff', 'loudness', 'rms', 'chroma', 'mfcc', 'buffer']);
     if (features) {
@@ -377,8 +591,10 @@
 
       ffts.pop();
       ffts.unshift(features.amplitudeSpectrum);
-      var windowedSignalBuffer = autoCorrelation(a.meyda._m.signal);
-      // const windowedSignalBuffer = a.meyda._m.signal;
+      if (features.rms > 0.05) {
+        getFreq(normalize(autoCorrelation(a.meyda._m.signal)));
+      }
+      var windowedSignalBuffer = a.meyda._m.signal;
 
       renderFft();
 
@@ -400,6 +616,101 @@
 
   render();
 })();
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// memoization of the reversal of different lengths.
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var memoizedReversal = {};
+var memoizedZeroBuffers = {};
+
+var constructComplexArray = function constructComplexArray(signal) {
+  var complexSignal = {};
+
+  complexSignal.real = signal.real === undefined ? signal.slice() : signal.real.slice();
+
+  var bufferSize = complexSignal.real.length;
+
+  if (memoizedZeroBuffers[bufferSize] === undefined) {
+    memoizedZeroBuffers[bufferSize] = Array.apply(null, Array(bufferSize)).map(Number.prototype.valueOf, 0);
+  }
+
+  complexSignal.imag = memoizedZeroBuffers[bufferSize].slice();
+
+  return complexSignal;
+};
+
+var bitReverseArray = function bitReverseArray(N) {
+  if (memoizedReversal[N] === undefined) {
+    var maxBinaryLength = (N - 1).toString(2).length; //get the binary length of the largest index.
+    var templateBinary = '0'.repeat(maxBinaryLength); //create a template binary of that length.
+    var reversed = {};
+    for (var n = 0; n < N; n++) {
+      var currBinary = n.toString(2); //get binary value of current index.
+
+      //prepend zeros from template to current binary. This makes binary values of all indices have the same length.
+      currBinary = templateBinary.substr(currBinary.length) + currBinary;
+
+      currBinary = [].concat(_toConsumableArray(currBinary)).reverse().join(''); //reverse
+      reversed[n] = parseInt(currBinary, 2); //convert to decimal
+    }
+    memoizedReversal[N] = reversed; //save
+  }
+  return memoizedReversal[N];
+};
+
+// complex multiplication
+var multiply = function multiply(a, b) {
+  return {
+    'real': a.real * b.real - a.imag * b.imag,
+    'imag': a.real * b.imag + a.imag * b.real
+  };
+};
+
+// complex addition
+var add = function add(a, b) {
+  return {
+    'real': a.real + b.real,
+    'imag': a.imag + b.imag
+  };
+};
+
+// complex subtraction
+var subtract = function subtract(a, b) {
+  return {
+    'real': a.real - b.real,
+    'imag': a.imag - b.imag
+  };
+};
+
+// euler's identity e^x = cos(x) + sin(x)
+var euler = function euler(kn, N) {
+  var x = -2 * Math.PI * kn / N;
+  return { 'real': Math.cos(x), 'imag': Math.sin(x) };
+};
+
+// complex conjugate
+var conj = function conj(a) {
+  a.imag *= -1;
+  return a;
+};
+
+module.exports = {
+  bitReverseArray: bitReverseArray,
+  multiply: multiply,
+  add: add,
+  subtract: subtract,
+  euler: euler,
+  conj: conj,
+  constructComplexArray: constructComplexArray
+};
 
 /***/ })
 /******/ ]);

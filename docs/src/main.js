@@ -1,10 +1,19 @@
 (function () {
   'use strict';
 
+  let { fft, ifft } = require('fftjs');
+
   var scale = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B'];
   const bufferSize = 1024;
   let Audio = require('./audio');
   let a = new Audio(bufferSize);
+  const highestDetectableMidiNote = 103;
+  const highestDetectableFrequency =
+    Math.pow(2, ((highestDetectableMidiNote-69)/12)) * 440;
+  const sampleRate = a.getSampleRate();
+  const highestDetectablePeriod = Math.ceil(sampleRate / highestDetectableFrequency);
+  console.log(highestDetectableFrequency);
+  console.log(highestDetectablePeriod);
 
   var aspectRatio = 16 / 10;
   var scene = new THREE.Scene();
@@ -112,19 +121,37 @@
   let mfccWrapper = document.querySelector('#mfcc');
   let mfccChildren = Array.from(mfccWrapper.children);
 
-  function autoCorrelation(arr) {
-    var ac = new Float32Array(arr.length);
-    for (var lag = 0; lag < arr.length; lag++) {
-      var value = 0;
-      for (var index = 0; index < arr.length - lag; index++) {
-        let a = arr[index];
-        let otherindex = index - lag;
-        let b = otherindex >= 0 ? arr[otherindex] : 0;
-        value = value + a * b;
-      }
-      ac[lag] = value;
+  // function autoCorrelation(arr) {
+  //   var ac = new Float32Array(arr.length);
+  //   for (var lag = 0; lag < arr.length; lag++) {
+  //     var value = 0;
+  //     for (var index = 0; index < arr.length - lag; index++) {
+  //       let a = arr[index];
+  //       let otherindex = index - lag;
+  //       let b = otherindex >= 0 ? arr[otherindex] : 0;
+  //       value = value + a * b;
+  //     }
+  //     ac[lag] = value;
+  //   }
+  //   return ac;
+  // }
+
+  function autoCorrelation(buffer) {
+    const magnitudeSpectrum = fft(buffer);
+    const powerSpectrum = {
+      real: magnitudeSpectrum.real.map(n => Math.pow(n, 2)),
+      imag: magnitudeSpectrum.imag.map(n => Math.pow(n, 2)),
     }
-    return ac;
+    const ac = ifft(powerSpectrum);
+    return ac.real;
+  }
+
+  function normalize(arr) {
+    return arr;
+    const max = Math.max.apply(Math, arr);
+    const min = Math.min.apply(Math, arr);
+    const magnitude = Math.max(max, Math.abs(min));
+    return arr.map(n => n / magnitude);
   }
 
   function renderChroma() {
@@ -219,6 +246,23 @@
     }
   }
 
+  function getFreq(autocorrelationBuffer) {
+    let maxLagIndex = 0;
+    let maxLag = 0;
+    let firstPeakOver = false;
+    for (let i = highestDetectablePeriod; i < autocorrelationBuffer.length/2; i++) {
+      if (!firstPeakOver && autocorrelationBuffer[i] < 0.01) {
+        firstPeakOver = true;
+      }
+      if (firstPeakOver && autocorrelationBuffer[i] > maxLag) {
+        maxLag = autocorrelationBuffer[i];
+        maxLagIndex = i;
+      }
+    }
+
+    console.log(1/maxLagIndex * sampleRate);
+  }
+
   function render() {
     features = a.get([
       'amplitudeSpectrum',
@@ -241,8 +285,10 @@
 
       ffts.pop();
       ffts.unshift(features.amplitudeSpectrum);
-      const windowedSignalBuffer = autoCorrelation(a.meyda._m.signal);
-      // const windowedSignalBuffer = a.meyda._m.signal;
+      if (features.rms > 0.05) {
+        getFreq(normalize(autoCorrelation(a.meyda._m.signal)));
+      }
+      const windowedSignalBuffer = a.meyda._m.signal;
 
       renderFft();
 
