@@ -3,8 +3,8 @@
     "ecmaVersion": 6,
     "sourceType": "module"
   },
-  env: {
-    es6: true
+  "env": {
+    "es6": true
   },
   "rules": {
     "semi": 2

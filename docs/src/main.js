@@ -107,7 +107,8 @@
   // scene.add(loudnessLines);
 
   let features = null;
-  let chromaWrapper = null;
+  let chromaWrapper = document.querySelector('#chroma');
+  let mfccWrapper = document.querySelector('#mfcc');
 
   function render() {
     features = a.get([
@@ -117,13 +118,22 @@
       'loudness',
       'rms',
       'chroma',
+      'mfcc'
     ]);
     if (features) {
-      chromaWrapper = document.querySelector('#chroma');
       if (chromaWrapper && features.chroma) {
-        chromaWrapper.innerHTML = features.chroma.reduce((acc, v, i) => `${acc} <div class="chroma-band" style="background-color: rgba(0,${Math.round(255 * v)},0,1)">${scale[i]}</div>`, '');
+        chromaWrapper.innerHTML = features.chroma.reduce((acc, v, i) =>
+          `${acc}
+          <div class="chroma-band" style="background-color: rgba(0,${Math.round(255 * v)},0,1)">${scale[i]}</div>`, ''
+        );
       }
 
+      if (mfccWrapper && features.mfcc) {
+        mfccWrapper.innerHTML = features.mfcc.reduce((acc, v, i) =>
+          `${acc}
+          <div class="mfcc-band" style="background-color: rgba(0,${Math.round(v + 25) * 5},0,1)">${i}</div>`, ''
+        )
+      }
 
       ffts.pop();
       ffts.unshift(features.amplitudeSpectrum);

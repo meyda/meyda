@@ -157,7 +157,7 @@ var Meyda = {
    * });
    */
   createMeydaAnalyzer: function (options) {
-    return new MeydaAnalyzer(options, Meyda);
+    return new MeydaAnalyzer(options, Object.assign({}, Meyda));
   },
 
   /**

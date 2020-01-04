@@ -50,10 +50,15 @@ export class MeydaAnalyzer {
     this._m.windowingFunction = options.windowingFunction || 'hanning';
     this._m.featureExtractors = featureExtractors;
     this._m.EXTRACTION_STARTED = options.startImmediately || false;
+    this._m.channel = typeof options.channel === 'number' ? options.channel : 0;
+    this._m.inputs = options.inputs || 1;
+    this._m.outputs = options.outputs || 1;
 
     //create nodes
     this._m.spn = this._m.audioContext.createScriptProcessor(
-      this._m.bufferSize, 1, 1);
+      this._m.bufferSize,
+      this._m.inputs,
+      this._m.outputs);
     this._m.spn.connect(this._m.audioContext.destination);
 
     this._m._featuresToExtract = options.featureExtractors || [];
@@ -81,7 +86,7 @@ export class MeydaAnalyzer {
         this._m.previousInputData = this._m.inputData;
       }
 
-      this._m.inputData = e.inputBuffer.getChannelData(0);
+      this._m.inputData = e.inputBuffer.getChannelData(this._m.channel);
 
       if (!this._m.previousInputData) {
         var buffer = this._m.inputData;
@@ -143,7 +148,24 @@ export class MeydaAnalyzer {
    * analyzer.setSource(audioSourceNode);
    */
   setSource(source) {
-    source.connect(this._m.spn);
+    this._m.source && this._m.source.disconnect(this._m.spn);
+    this._m.source = source;
+    this._m.source.connect(this._m.spn);
+  }
+
+  /**
+   * Set the channel of the audio node for Meyda to listen to
+   * @param {number} channel - the index of the channel on the input audio node
+   * for Meyda to listen to.
+   * @example
+   * analyzer.setChannel(0);
+   */
+  setChannel(channel) {
+    if (channel <= this._m.inputs) {
+      this._m.channel = channel;
+    } else {
+      console.error(`Channel ${channel} does not exist. Make sure you've provided a value for 'inputs' that is greater than ${channel} when instantiating the MeydaAnalyzer`);
+    }
   }
 
   /**

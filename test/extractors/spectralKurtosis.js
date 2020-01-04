@@ -11,7 +11,7 @@ describe('spectralKurtosis', function () {
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
-    assert.equal(en, 0.1511072674115075);
+    assert.approximately(en, 0.1511072674115075, 1e-15);
 
     done();
   });
