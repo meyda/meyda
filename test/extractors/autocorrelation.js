@@ -8,25 +8,20 @@ var sin128 = require('./autocorrelationTestData/sin128.json');
 var sin128AC = require('./autocorrelationTestData/sin128.ac.json');
 
 describe('autocorrelation', function () {
-  it.only('should blah', function(done) {
-    // assert.deepEqual(autocorrelation({signal: sin128}), new Float32Array(sin128AC));
-    autocorrelation({signal:sin128}).forEach((element, index) => {
+  it.only('should return correct autocorrelation value within an error rate', function() {
+    let errorRate = 0.00001;
+    const resultingAC = autocorrelation({signal:sin128});
+    while (errorRate > 0.000000000001) {
       try {
-        assert.approximately(element, sin128AC[index], 5);
+
+        resultingAC.forEach((element, index) => {
+          assert.approximately(element, sin128AC[index], errorRate);
+        });
+        errorRate *= 0.9;
       } catch (e) {
-        throw Error(`index: ${index}: ${element}, ${sin128AC[index]} \n${e.message}`);
+        throw Error(`Failed approximate check with error rate ${errorRate}`);
       }
-    });
-  });
-
-  it('should return correct autocorrelation value', function (done) {
-    var en = autocorrelation({
-      signal:TestData.VALID_SIGNAL,
-    });
-
-    assert.deepEqual(en, TestData.VALID_AUTOCORRELATION);
-
-    done();
+    }
   });
 
   it('should throw an error when passed an empty object', function (done) {
