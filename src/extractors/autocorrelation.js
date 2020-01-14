@@ -1,3 +1,21 @@
+function zeroIfOutOfBound(i, f) {
+  if (i < 0) {
+    return 0;
+  }
+  if (i >= f.length - 1) {
+    return 0;
+  }
+  return f[i];
+}
+
+function phi(t, f) {
+  var acc = 0;
+  for (var i = 0; i < f.length; i++) {
+    acc += f[i] * zeroIfOutOfBound(i + t, f);
+  }
+  return acc;
+}
+
 export default function autocorrelation() {
   if (typeof arguments[0].signal !== 'object') {
     throw new TypeError();
@@ -5,16 +23,9 @@ export default function autocorrelation() {
 
   const arr = arguments[0].signal;
 
-  var ac = new Float32Array(arr.length);
-  for (var lag = 0; lag < arr.length; lag++) {
-    var value = 0;
-    for (var index = 0; index < arr.length - lag; index++) {
-      let a = arr[index];
-      let otherindex = index - lag;
-      let b = otherindex >= 0 ? arr[otherindex] : 0;
-      value = value + a * b;
-    }
-    ac[lag] = value;
+  var ac = new Float32Array(arr.length*2);
+  for (var lag = -1*arr.length; lag < arr.length; lag++) {
+    ac[lag + arr.length] = phi(lag, arr);
   }
   return ac;
-}
+};
