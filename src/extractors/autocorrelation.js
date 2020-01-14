@@ -17,6 +17,8 @@ function phi(t, f) {
 }
 
 export default function autocorrelation() {
+  // implementation of final formula in this document:
+  // https://ocw.mit.edu/courses/mechanical-engineering/2-161-signal-processing-continuous-and-discrete-fall-2008/lecture-notes/lecture_21.pdf
   if (typeof arguments[0].signal !== 'object') {
     throw new TypeError();
   }
