@@ -1,3 +1,6 @@
+import powerSpectrum from './powerSpectrum';
+import {ifft} from 'fftjs';
+
 function zeroIfOutOfBound(i, f) {
   if (i < 0) {
     return 0;
@@ -16,9 +19,7 @@ function phi(t, f) {
   return acc;
 }
 
-export default function autocorrelation() {
-  // implementation of final formula in this document:
-  // https://ocw.mit.edu/courses/mechanical-engineering/2-161-signal-processing-continuous-and-discrete-fall-2008/lecture-notes/lecture_21.pdf
+export function autocorrelation() {
   if (typeof arguments[0].signal !== 'object') {
     throw new TypeError();
   }
@@ -31,3 +32,13 @@ export default function autocorrelation() {
   }
   return ac;
 };
+
+export function autocorrelationFreq(){
+  if (typeof arguments[0].ampSpectrum !== 'object') {
+    throw new TypeError();
+  }
+
+  const powSpec = powerSpectrum({ampSpectrum: arguments[0].ampSpectrum});
+
+  return ifft({real: powSpec, imag: Array(powSpec.length).fill(0)}).real;
+}

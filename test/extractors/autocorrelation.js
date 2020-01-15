@@ -2,13 +2,32 @@ var chai = require('chai');
 var assert = chai.assert;
 
 // Setup
-var autocorrelation = require('../../dist/node/extractors/autocorrelation');
+var { autocorrelation, autocorrelationFreq } = require('../../dist/node/extractors/autocorrelation');
+var { fft } = require('fftjs');
 var sin128 = require('./autocorrelationTestData/sin128.json');
 var sin128AC = require('./autocorrelationTestData/sin128.ac.json');
 
-describe('autocorrelation', function () {
+describe('autocorrelation frequency domain', function() {
+  it('should be the same as the other implementation', function() {
+    let errorRate = 9990.000002;
+    const ampSpectrum = fft(sin128).real;
+    const resultingAC = autocorrelationFreq({ampSpectrum});
+
+    console.log(JSON.stringify(resultingAC));
+
+    while (errorRate > 0.000000001) {
+      resultingAC.forEach((element, index) => {
+        assert.approximately(element, sin128AC[index], errorRate);
+      });
+
+      errorRate *= 0.9;
+    }
+  });
+});
+
+describe('autocorrelation', function() {
   it('should return correct autocorrelation value within an error rate', function() {
-    let errorRate = 0.000002;
+    const errorRate = 0.000002;
     const resultingAC = autocorrelation({signal:sin128});
 
     resultingAC.forEach((element, index) => {
