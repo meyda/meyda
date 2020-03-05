@@ -173,7 +173,7 @@ Often, observing and analysing an audio signal as a waveform doesn't provide us 
 
 Windowing functions are used during the conversion of a signal from the time domain (i.e. air pressure over time) to the frequency domain (the phase and intensity of each sine wave that comprises the signal); a prerequisite for many of the audio features described above. Windowing functions generate an envelope of numbers between 0 and 1, and multiply these numbers pointwise with each sample in the signal buffer, making the samples at the middle of the buffer relatively louder, and making the samples at either end of the buffer relatively quieter. This smooths out the result of the conversion to the frequency domain, which makes the final audio features more consistent and less jittery.
 
-Meyda supports 4 windowing functions, each with different characteristics. For more information on windowing, please consult [this article][wikipedia-windowing]
+Meyda supports 4 windowing functions, each with different characteristics. For more information on windowing, please consult [this article][wikipedia-windowing]. By default, Meyda applies the hanning window, not the rectangular window, to signals before converting them into the frequency domain.
 
 ### Hanning
 `Meyda.windowing(signalToBeWindowed, "hanning");`
