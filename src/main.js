@@ -113,6 +113,9 @@ var Meyda = {
   /**
    * Specify the windowing function to apply to the buffer before the
    * transformation from the time domain to the frequency domain is performed
+   *
+   * The default windowing function is the hanning window.
+   *
    * @instance
    * @member {string}
    */
@@ -168,6 +171,11 @@ var Meyda = {
 
   /**
    * Extract an audio feature from a buffer
+   *
+   * Unless `meyda.windowingFunction` is set otherwise, `extract` will
+   * internally apply a hanning window to the buffer prior to conversion into
+   * the frequency domain.
+   *
    * @function
    * @param {(string|Array.<string>)} feature - the feature you want to extract
    * @param {Array.<number>} signal
