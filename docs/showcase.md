@@ -19,3 +19,7 @@ Have you used Meyda in your project? We're interested in seeing where Meyda ends
 * [Picognizer](https://github.com/qurihara/picognizer) by [@qurihara](https://github.com/qurihara)
 
 > Picognizer is the 100% JavaScript library for detecting synthesized sounds (e.g. sound effects of video games, replayed speech or music, and sound alerts of home appliances). You can run it on your web browser without any server-side systems.
+
+* [Kaos Logo Generator](https://lusion.co/work/kaos-logo-generator/) by [Lusion](https://lusion.co/)
+
+> A system that allows web users to generate their unique logos using their voices
