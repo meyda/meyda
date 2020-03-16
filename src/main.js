@@ -2,6 +2,7 @@ import * as utilities from './utilities';
 import * as extractors from './featureExtractors';
 import {fft, ifft} from 'fftjs';
 import {MeydaAnalyzer} from './meyda-wa';
+import createMeydaAnalyzerWorkletNode from './MeydaAnalyzerWorkletNode';
 
 /**
  * Meyda Module
@@ -167,6 +168,10 @@ var Meyda = {
    */
   createMeydaAnalyzer: function (options) {
     return new MeydaAnalyzer(options, Object.assign({}, Meyda));
+  },
+
+  createMeydaAnalyzerWorklet: function(options) {
+    return createMeydaAnalyzerWorkletNode(options, Object.assign({}, Meyda));
   },
 
   /**
