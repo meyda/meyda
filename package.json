@@ -68,7 +68,7 @@
   "dependencies": {
     "dct": "0.1.0",
     "fftjs": "0.0.4",
-    "node-getopt": "^0.2.3",
+    "node-getopt": "^0.3.2",
     "wav": "^1.0.0"
   },
   "engines": {
