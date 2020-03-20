@@ -48,7 +48,7 @@
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
     "babel-loader": "^8.0.6",
-    "babel-plugin-add-module-exports": "^0.2.0",
+    "babel-plugin-add-module-exports": "^1.0.2",
     "babelify": "^7.3.0",
     "browserify": "^16.5.0",
     "chai": "^3.1.0",
