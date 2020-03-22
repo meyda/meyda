@@ -1,22 +1,20 @@
-var chai = require('chai');
-var assert = chai.assert;
 var TestData = require('../TestData');
 
 // Setup
 var spectralKurtosis = require('../../dist/node/extractors/spectralKurtosis');
 
-describe('spectralKurtosis', function () {
-  it('should return correct Spectral Kurtosis value', function (done) {
+describe('spectralKurtosis', () => {
+  test('should return correct Spectral Kurtosis value', done => {
     var en = spectralKurtosis({
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
-    assert.approximately(en, 0.1511072674115075, 1e-15);
+    expect(Math.abs(en - 0.1511072674115075)).toBeLessThanOrEqual(1e-15);
 
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  test('should throw an error when passed an empty object', done => {
     try {
       var en = spectralKurtosis({});
     } catch (e) {
@@ -24,7 +22,7 @@ describe('spectralKurtosis', function () {
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  test('should throw an error when not passed anything', done => {
     try {
       var en = spectralKurtosis();
     } catch (e) {
@@ -32,7 +30,7 @@ describe('spectralKurtosis', function () {
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  test('should throw an error when passed something invalid', done => {
     try {
       var en = spectralKurtosis({ signal:'not a signal' });
     } catch (e) {

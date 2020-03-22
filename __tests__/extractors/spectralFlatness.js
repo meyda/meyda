@@ -1,24 +1,22 @@
-var chai = require('chai');
-var assert = chai.assert;
 var TestData = require('../TestData');
 
 // Setup
 var spectralFlatness = require('../../dist/node/extractors/spectralFlatness');
 
-describe('spectralFlatness', function () {
-  it('should return correct Spectral Flatness value', function (done) {
+describe('spectralFlatness', () => {
+  test('should return correct Spectral Flatness value', done => {
     var en = spectralFlatness({
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
     // Node 7 adds precision to Math.exp, we use Chai's approximate assertion
     // to account for the extra precision.
-    assert.approximately(en, 0.4395908170404335, 1e-16);
+    expect(Math.abs(en - 0.4395908170404335)).toBeLessThanOrEqual(1e-16);
 
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  test('should throw an error when passed an empty object', done => {
     try {
       var en = spectralFlatness({});
     } catch (e) {
@@ -26,7 +24,7 @@ describe('spectralFlatness', function () {
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  test('should throw an error when not passed anything', done => {
     try {
       var en = spectralFlatness();
     } catch (e) {
@@ -34,7 +32,7 @@ describe('spectralFlatness', function () {
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  test('should throw an error when passed something invalid', done => {
     try {
       var en = spectralFlatness({ signal:'not a signal' });
     } catch (e) {

@@ -1,18 +1,16 @@
-var chai = require('chai');
-var assert = chai.assert;
 var TestData = require('../TestData');
 
 // Setup
 var loudness = require('../../dist/node/extractors/loudness');
 
-describe('loudness', function () {
-  it('should return correct value given a valid signal', function (done) {
+describe('loudness', () => {
+  test('should return correct value given a valid signal', done => {
     var en = loudness({
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
       barkScale:TestData.VALID_BARK_SCALE,
     });
 
-    assert.deepEqual(en, { specific:{ 0:0.8241609334945679,
+    expect(en).toEqual({ specific:{ 0:0.8241609334945679,
     1:0.971539318561554,
     2:0.7246851921081543,
     3:0.868057370185852,
@@ -43,7 +41,7 @@ describe('loudness', function () {
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  test('should throw an error when passed an empty object', done => {
     try {
       var en = loudness({});
     } catch (e) {
@@ -51,7 +49,7 @@ describe('loudness', function () {
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  test('should throw an error when not passed anything', done => {
     try {
       var en = loudness();
     } catch (e) {
@@ -59,7 +57,7 @@ describe('loudness', function () {
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  test('should throw an error when passed something invalid', done => {
     try {
       var en = loudness({ signal:'not a signal' });
     } catch (e) {
