@@ -61,7 +61,7 @@
     "jest": "^25.1.0",
     "jest-github-reporter": "^0.4.3",
     "jsdoc": "^3.6.3",
-    "semantic-release": "^16.0.4",
+    "semantic-release": "^15.14.0",
     "terser-webpack-plugin": "^2.3.1",
     "uglifyjs-webpack-plugin": "^2.1.2",
     "webpack": "^4.31.0",
