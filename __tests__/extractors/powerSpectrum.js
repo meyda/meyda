@@ -1,22 +1,20 @@
-var chai = require('chai');
-var assert = chai.assert;
 var TestData = require('../TestData');
 
 // Setup
 var powerSpectrum = require('../../dist/node/extractors/powerSpectrum');
 
-describe('powerSpectrum', function () {
-  it('should return correct Power Spectrum value', function (done) {
+describe('powerSpectrum', () => {
+  test('should return correct Power Spectrum value', done => {
     var en = powerSpectrum({
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
-    assert.deepEqual(en, TestData.EXPECTED_POWER_SPECTRUM_OUTPUT);
+    expect(en).toEqual(TestData.EXPECTED_POWER_SPECTRUM_OUTPUT);
 
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  test('should throw an error when passed an empty object', done => {
     try {
       var en = powerSpectrum({});
     } catch (e) {
@@ -24,7 +22,7 @@ describe('powerSpectrum', function () {
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  test('should throw an error when not passed anything', done => {
     try {
       var en = powerSpectrum();
     } catch (e) {
@@ -32,7 +30,7 @@ describe('powerSpectrum', function () {
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  test('should throw an error when passed something invalid', done => {
     try {
       var en = powerSpectrum({ signal:'not a signal' });
     } catch (e) {

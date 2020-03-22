@@ -1,12 +1,10 @@
-var chai = require('chai');
-var assert = chai.assert;
 var fs = require('fs');
 
 // Setup
 var featureExtractors = require('../dist/node/featureExtractors');
 
-describe('featureExtractors', function () {
-  it('should provide all of the feature extractors', function () {
+describe('featureExtractors', () => {
+  test('should provide all of the feature extractors', () => {
     var featureExtractorsProvided = fs.readdirSync('./dist/node/extractors');
     featureExtractorsProvided = featureExtractorsProvided.map(function (value) {
       return value.substr(0, value.lastIndexOf('.')) || value;
@@ -20,9 +18,6 @@ describe('featureExtractors', function () {
       1
     );
 
-    assert.sameMembers(
-      Object.keys(featureExtractors),
-      featureExtractorsProvided
-    );
+    expect(Object.keys(featureExtractors)).toEqual(featureExtractorsProvided);
   });
 });

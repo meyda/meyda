@@ -1,22 +1,20 @@
-var chai = require('chai');
-var assert = chai.assert;
 var TestData = require('../TestData');
 
 // Setup
 var spectralCentroid = require('../../dist/node/extractors/spectralCentroid');
 
-describe('spectralCentroid', function () {
-  it('should return correct Spectral Centroid value', function (done) {
+describe('spectralCentroid', () => {
+  test('should return correct Spectral Centroid value', done => {
     var en = spectralCentroid({
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
-    assert.equal(en, 45.12823119078897);
+    expect(en).toEqual(45.12823119078897);
 
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  test('should throw an error when passed an empty object', done => {
     try {
       var en = spectralCentroid({});
     } catch (e) {
@@ -24,7 +22,7 @@ describe('spectralCentroid', function () {
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  test('should throw an error when not passed anything', done => {
     try {
       var en = spectralCentroid();
     } catch (e) {
@@ -32,7 +30,7 @@ describe('spectralCentroid', function () {
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  test('should throw an error when passed something invalid', done => {
     try {
       var en = spectralCentroid({ signal:'not a signal' });
     } catch (e) {

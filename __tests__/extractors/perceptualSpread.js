@@ -1,24 +1,22 @@
-var chai = require('chai');
-var assert = chai.assert;
 var TestData = require('../TestData');
 
 // Setup
 var perceptualSpread = require('../../dist/node/extractors/perceptualSpread');
 
-describe('perceptualSpread', function () {
-  it('should return correct Spread value given valid signal', function (done) {
+describe('perceptualSpread', () => {
+  test('should return correct Spread value given valid signal', done => {
     var en = perceptualSpread({
       signal:TestData.VALID_SIGNAL,
       ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
       barkScale:TestData.VALID_BARK_SCALE,
     });
 
-    assert.equal(en, 0.8947325916336791);
+    expect(en).toEqual(0.8947325916336791);
 
     done();
   });
 
-  it('should throw an error when passed an empty object', function (done) {
+  test('should throw an error when passed an empty object', done => {
     try {
       var en = perceptualSpread({});
     } catch (e) {
@@ -26,7 +24,7 @@ describe('perceptualSpread', function () {
     }
   });
 
-  it('should throw an error when not passed anything', function (done) {
+  test('should throw an error when not passed anything', done => {
     try {
       var en = perceptualSpread();
     } catch (e) {
@@ -34,7 +32,7 @@ describe('perceptualSpread', function () {
     }
   });
 
-  it('should throw an error when passed something invalid', function (done) {
+  test('should throw an error when passed something invalid', done => {
     try {
       var en = perceptualSpread({ signal:'not a signal' });
     } catch (e) {
