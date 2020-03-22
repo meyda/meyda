@@ -3,9 +3,9 @@ node_js:
 - '8'
 - '10'
 - '12'
+# https://travis-ci.community/t/npm-ci-will-fail-if-cached-dependency-includes-npm/4203
 cache:
-  directories:
-  - node_modules
+  npm: false
 sudo: false
 script: npm run semantic-release
 notifications:
