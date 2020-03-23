@@ -77,6 +77,9 @@
     "reporters": [
       "default",
       "jest-github-reporter"
+    ],
+    "testPathIgnorePatterns": [
+      "__tests__/TestData.js"
     ]
   }
 }
