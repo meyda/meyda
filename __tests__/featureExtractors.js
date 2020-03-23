@@ -18,6 +18,6 @@ describe('featureExtractors', () => {
       1
     );
 
-    expect(Object.keys(featureExtractors)).toEqual(featureExtractorsProvided);
+    expect(new Set(Object.keys(featureExtractors))).toEqual(new Set(featureExtractorsProvided));
   });
 });
