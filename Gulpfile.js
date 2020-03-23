@@ -1,21 +1,24 @@
-var gulp = require('gulp');
-var babel = require('gulp-babel');
-var webpack = require('webpack-stream');
+const { src, dest, parallel } = require('gulp');
+const babel = require('gulp-babel');
+const webpack = require('webpack-stream');
 
-gulp.task('buildNode',function(){
-  return gulp.src('./src/**/*.js')
+function web() {
+  return src('./src/**/*.js')
     .pipe(babel({
       presets: ['@babel/preset-env'],
       plugins: ['babel-plugin-add-module-exports']
     }))
-    .pipe(gulp.dest('./dist/node/'));
-});
+    .pipe(dest('./dist/node'));
+};
 
-gulp.task('buildWeb', function() {
-  return gulp.src('./src/index.js')
+function node() {
+  return src('./src/index.js')
     .pipe(webpack({
       config: require('./webpack.config.js')
     }))
-    .pipe(gulp.dest('./dist/web'));
-});
-gulp.task('build', gulp.parallel('buildNode', 'buildWeb'));
+    .pipe(dest('./dist/web'));
+};
+
+exports.web = web;
+exports.node = node;
+exports.default = parallel(web, node);
