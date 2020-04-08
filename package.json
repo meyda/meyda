@@ -48,6 +48,9 @@
   "devDependencies": {
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@commitlint/travis-cli": "^8.3.5",
     "babel-loader": "^8.1.0",
     "babel-plugin-add-module-exports": "^1.0.2",
     "babelify": "^10.0.0",
@@ -58,6 +61,7 @@
     "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.0",
     "gulp-sourcemaps": "^2.6.5",
+    "husky": "^4.2.3",
     "jest": "^25.1.0",
     "jest-github-reporter": "^0.4.3",
     "jsdoc": "^3.6.3",
@@ -84,5 +88,10 @@
     "testPathIgnorePatterns": [
       "__tests__/TestData.js"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
