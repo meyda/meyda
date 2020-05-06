@@ -1,8 +1,8 @@
 language: node_js
 node_js:
-- '8'
 - '10'
 - '12'
+- '13'
 - '14'
 # https://travis-ci.community/t/npm-ci-will-fail-if-cached-dependency-includes-npm/4203
 cache:
