@@ -14,7 +14,7 @@ update_configs:
       prefix: "fix"
       prefix_development: "chore"
       include_scope: true
-  - package_manager: "ruby"
+  - package_manager: "ruby:bundler"
     directory: "/docs"
     update_schedule: "daily"
     commit_message:
