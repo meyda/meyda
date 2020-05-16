@@ -6,3 +6,4 @@ test
 CODE_OF_CONDUCT.md
 Gulpfile.js
 webpack.config.js
+coverage
