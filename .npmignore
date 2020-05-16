@@ -1,6 +1,6 @@
 !dist
 docs
-test
+__tests__
 .eslintrc
 .travis.yml
 CODE_OF_CONDUCT.md
