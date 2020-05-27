@@ -5,7 +5,7 @@
   "main": "",
   "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.9.6",
+    "@babel/core": "^7.10.0",
     "@babel/preset-env": "^7.9.6",
     "babel-loader": "^8.1.0",
     "webpack": "^4.43.0",
