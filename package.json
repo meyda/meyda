@@ -50,7 +50,7 @@
     "@babel/preset-env": "^7.7.7",
     "@commitlint/cli": "^9.0.1",
     "@commitlint/config-conventional": "^8.3.4",
-    "@commitlint/travis-cli": "^8.3.5",
+    "@commitlint/travis-cli": "^9.0.1",
     "babel-loader": "^8.1.0",
     "babel-plugin-add-module-exports": "^1.0.2",
     "babelify": "^10.0.0",
