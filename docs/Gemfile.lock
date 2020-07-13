@@ -29,7 +29,7 @@ GEM
       rouge (~> 3.0)
       safe_yaml (~> 1.0)
       terminal-table (~> 1.8)
-    jekyll-feed (0.14.0)
+    jekyll-feed (0.15.0)
       jekyll (>= 3.7, < 5.0)
     jekyll-sass-converter (2.1.0)
       sassc (> 2.0.1, < 3.0)
@@ -70,7 +70,7 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll (~> 4.1.1)
-  jekyll-feed (~> 0.14.0)
+  jekyll-feed (~> 0.15.0)
   minima (~> 2.5.1)
   tzinfo-data
 
