@@ -99,7 +99,7 @@
       "@commitlint/config-conventional"
     ],
     "rules": {
-      "body-max-line-length": [0, "always", 1000],
+      "body-max-line-length": [0, "always", 1000]
     }
   }
 }
