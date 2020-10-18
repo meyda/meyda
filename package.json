@@ -12,7 +12,7 @@
     "pretest": "npm run lint && npm run build",
     "test": "jest",
     "build": "NODE_ENV=production; gulp",
-    "default": "npm run clean && npm install && npm test && npm run lint",
+    "default": "npm test && npm run lint",
     "lint": "eslint src __tests__",
     "clean": "rm -rf dist node_modules",
     "push": "git push --follow-tags",
@@ -59,6 +59,7 @@
     "eslint": "^7.1.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
+    "gulp-cli": "^2.3.0",
     "gulp-concat": "^2.6.0",
     "gulp-sourcemaps": "^2.6.5",
     "husky": "^4.2.3",
@@ -99,7 +100,11 @@
       "@commitlint/config-conventional"
     ],
     "rules": {
-      "body-max-line-length": [0, "always", 1000]
+      "body-max-line-length": [
+        0,
+        "always",
+        1000
+      ]
     }
   }
 }
