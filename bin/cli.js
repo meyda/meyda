@@ -6,6 +6,7 @@
   var opt = require('node-getopt').create([
           ['','o[=OUTPUT_FILE]','Path to output file (optional, if not specified prints to console'],
           ['', 'bs[=BUFFER_SIZE]', 'Buffer size in samples (optional, default is 512)'],
+          ['', 'mfcc[=MFCC_COEFFICIENTS]', 'Number of MFCC co-efficients that the MFCC feature extractor should return (optional, default is 13)'],
           ['', 'hs[=HOP_SIZE]', 'Hop size in samples (optional, defaults to matching buffer size)'],
           ['', 'w[=WINDOWING_FUNCTION]', 'Windowing function (optional, default is hanning)'],
           ['', 'format[=FORMAT_TYPE]', 'Type of output file (optional, default is csv)'],
@@ -30,9 +31,11 @@
 
   var FRAME_SIZE = parseInt(opt.options.bs) || 512;
   var HOP_SIZE = parseInt(opt.options.hs) || FRAME_SIZE;
+  var MFCC_COEFFICIENTS =  parseInt(opt.options.mfcc) || 13;
   Meyda.bufferSize = FRAME_SIZE;
   Meyda.hopSize = HOP_SIZE;
   Meyda.windowingFunction = opt.options.w || 'hanning';
+  Meyda.numberOfMFCCCoefficients = MFCC_COEFFICIENTS;
 
   var outputFormat = null;
   if (opt.options.o){
