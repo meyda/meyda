@@ -8,7 +8,7 @@
     "@babel/core": "^7.12.16",
     "@babel/preset-env": "^7.12.16",
     "babel-loader": "^8.2.2",
-    "webpack": "^5.22.0",
+    "webpack": "^5.24.2",
     "webpack-cli": "^4.5.0"
   },
   "scripts": {
