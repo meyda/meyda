@@ -60,7 +60,6 @@ module.exports = [
               drop_console: false
             }
           },
-          sourceMap: true
         })
       ]
     }
