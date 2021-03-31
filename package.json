@@ -75,6 +75,7 @@
     "dct": "0.1.0",
     "fftjs": "0.0.4",
     "node-getopt": "^0.3.2",
+    "terser-webpack-plugin": "^5.1.1",
     "wav": "^1.0.0"
   },
   "engines": {
