@@ -1,7 +1,7 @@
 /* global module process require */
 var path = require('path');
 var webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin');
+var TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = [
   {
@@ -53,7 +53,6 @@ module.exports = [
     optimization: {
       minimizer: [
         new TerserPlugin({
-          parallel: true,
           terserOptions: {
             compress: {
               warnings: true,
