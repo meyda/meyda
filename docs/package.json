@@ -3,14 +3,6 @@
   "version": "1.0.0",
   "description": "A showcase site for Meyda",
   "main": "",
-  "dependencies": {},
-  "devDependencies": {
-    "@babel/core": "^7.14.2",
-    "@babel/preset-env": "^7.14.2",
-    "babel-loader": "^8.2.2",
-    "webpack": "^5.37.0",
-    "webpack-cli": "^4.7.0"
-  },
   "scripts": {
     "test": "echo 'No tests yet...'",
     "build": "./node_modules/webpack/bin/webpack.js --progress --color"
@@ -27,5 +19,6 @@
     "url": "https://github.com/hughrawlinson/meyda/issues"
   },
   "homepage": "https://meyda.js.org/",
-  "browserslist": "> 0.25%, not dead"
+  "browserslist": "> 0.25%, not dead",
+  "private": "true"
 }
