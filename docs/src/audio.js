@@ -58,8 +58,11 @@
         navigator.webkitGetUserMedia ||
         navigator.getUserMedia ||
         navigator.mediaDevices.getUserMedia;
-      var constraints = { video: false, audio: true };
-      var successCallback = function (mediaStream) {
+      var constraints = {
+        video: false,
+        audio: true,
+      };
+      var successCallback = function successCallback(mediaStream) {
         document.getElementById("audioControl").style.display = "none";
         console.log("User allowed microphone access.");
         console.log("Initializing AudioNode from MediaStream");
@@ -70,15 +73,25 @@
       };
 
       console.log("Asking for permission...");
-      let getUserMediaPromise = navigator.getUserMedia(
-        constraints,
-        successCallback,
-        errorCallback
-      );
-      if (getUserMediaPromise) {
-        p.then(successCallback);
-        p.catch(errorCallback);
-      }
+      var getUserMediaPromise = function (error) {
+        console.log(error);
+        navigator.getUserMedia(
+          {
+            audio: true,
+          },
+          successCallback,
+          function (e) {
+            errorCallback();
+          }
+        );
+      };
+
+      navigator.mediaDevices
+        .getUserMedia({
+          audio: true,
+        })
+        .then(successCallback)
+        .catch(getUserMediaPromise);
     } catch (e) {
       errorCallback();
     }
