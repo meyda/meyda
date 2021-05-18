@@ -73,25 +73,23 @@
       };
 
       console.log("Asking for permission...");
-      var getUserMediaPromise = function (error) {
-        console.log(error);
-        navigator.getUserMedia(
-          {
-            audio: true,
-          },
-          successCallback,
-          function (e) {
-            errorCallback();
-          }
-        );
-      };
-
       navigator.mediaDevices
         .getUserMedia({
           audio: true,
         })
         .then(successCallback)
-        .catch(getUserMediaPromise);
+        .catch(function (error) {
+          console.log(error);
+          navigator.getUserMedia(
+            {
+              audio: true,
+            },
+            successCallback,
+            function (e) {
+              errorCallback();
+            }
+          );
+        });
     } catch (e) {
       errorCallback();
     }
