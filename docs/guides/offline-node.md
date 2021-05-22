@@ -2,8 +2,8 @@
 layout: default
 ---
 
-__Note: This guide requires a working installation of Node JS. If you don't have
-one, please get set up using the [Node Version Manager][nvm]__
+**Note: This guide requires a working installation of Node JS. If you don't have
+one, please get set up using the [Node Version Manager][nvm]**
 
 # Offline Audio Feature Extraction in Node.js
 
@@ -14,10 +14,10 @@ or visual score generation for example, you may wish to script the audio feature
 extraction process. Meyda exposes two interfaces for scripting audio feature
 extraction:
 
-* [A Command Line Interface][offline-cli]
-  * Useful for bash scripting of audio feature extraction
-* A Javascript API that does not depend up on Web Audio
-  * Useful for scripting feature extraction in Node JS
+- [A Command Line Interface][offline-cli]
+  - Useful for bash scripting of audio feature extraction
+- A Javascript API that does not depend up on Web Audio
+  - Useful for scripting feature extraction in Node JS
 
 This article will discuss offline audio feature extraction in Node JS.
 
@@ -28,6 +28,10 @@ where a client could upload audio from their system, and receive the results of
 feature extraction in response. This is useful if you do not wish to run audio
 feature extraction in the client - perhaps you need to target browsers that do
 not support the Web Audio API.
+
+_This guide doesn't cover how to load audio from disk in Node - it applies to
+audio wherever you've loaded it from. If you'd like to learn how to load audio
+from disk in Node, check out [this article][load-audio-from-disk-article]._
 
 ## How to call Meyda in Node
 
@@ -55,7 +59,7 @@ npm install --save meyda
 In our Javascript file (`index.js` in the example above), we'll import Meyda:
 
 ```javascript
-var Meyda = require('meyda');
+var Meyda = require("meyda");
 ```
 
 Next, we will construct a signal that contains 20 zero crosses. A signal is a
@@ -63,7 +67,7 @@ list of numbers that can be between the values of -1 and 1. When a signal goes
 from a negative value to a positive value, or vice versa, it has crossed zero.
 
 ```javascript
-var signal = (new Array(32).fill(0).map((element, index) => {
+var signal = new Array(32).fill(0).map((element, index) => {
   const remainder = index % 3;
   if (remainder === 0) {
     return 1;
@@ -71,7 +75,7 @@ var signal = (new Array(32).fill(0).map((element, index) => {
     return 0;
   }
   return -1;
-}));
+});
 ```
 
 The signal looks like this:
@@ -83,7 +87,7 @@ Finally, we can pass the signal to Meyda and ask it to calculate the zero
 crossing rate for the signal:
 
 ```javascript
-Meyda.extract('zcr', signal);
+Meyda.extract("zcr", signal);
 // returns 20
 ```
 
@@ -111,3 +115,4 @@ can extract?
 [signal-image]: /images/signal-image.png
 [runkit-demo]: https://runkit.com/raw/5ba62181c2e2f10013c5bf38
 [audio-feature-reference]: /audio-features
+[load-audio-from-disk-article]: https://www.hughrawlinson.me/posts/2021/05/19/loading-audio-in-node-js
