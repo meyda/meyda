@@ -67,6 +67,7 @@
     "jest-github-reporter": "^1.0.0",
     "jsdoc": "^3.6.3",
     "semantic-release": "^17.0.7",
+    "terser-webpack-plugin": "^5.1.1",
     "webpack": "^5.11.1",
     "webpack-cli": "^4.3.1",
     "webpack-stream": "^6.0.0"
@@ -75,7 +76,6 @@
     "dct": "0.1.0",
     "fftjs": "0.0.4",
     "node-getopt": "^0.3.2",
-    "terser-webpack-plugin": "^5.1.1",
     "wav": "^1.0.0"
   },
   "engines": {
