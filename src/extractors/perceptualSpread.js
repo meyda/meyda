@@ -1,7 +1,7 @@
-import loudness from './loudness';
+import loudness from "./loudness";
 
-export default function() {
-  if (typeof arguments[0].signal !== 'object') {
+export default function () {
+  if (typeof arguments[0].signal !== "object") {
     throw new TypeError();
   }
 

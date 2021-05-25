@@ -1,13 +1,13 @@
-var TestData = require('../TestData');
+var TestData = require("../TestData");
 
 // Setup
-var loudness = require('../../dist/node/extractors/loudness');
+var loudness = require("../../dist/node/extractors/loudness");
 
-describe('loudness', () => {
-  test('should return correct value given a valid signal', done => {
+describe("loudness", () => {
+  test("should return correct value given a valid signal", (done) => {
     var en = loudness({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
-      barkScale:TestData.VALID_BARK_SCALE,
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
+      barkScale: TestData.VALID_BARK_SCALE,
     });
 
     expect(en).toEqual({
@@ -37,13 +37,13 @@ describe('loudness', () => {
         0.7742922306060791,
         0.8974387645721436,
       ]),
-      total:17.959227442741394,
+      total: 17.959227442741394,
     });
 
     done();
   });
 
-  test('should throw an error when passed an empty object', done => {
+  test("should throw an error when passed an empty object", (done) => {
     try {
       var en = loudness({});
     } catch (e) {
@@ -51,7 +51,7 @@ describe('loudness', () => {
     }
   });
 
-  test('should throw an error when not passed anything', done => {
+  test("should throw an error when not passed anything", (done) => {
     try {
       var en = loudness();
     } catch (e) {
@@ -59,9 +59,9 @@ describe('loudness', () => {
     }
   });
 
-  test('should throw an error when passed something invalid', done => {
+  test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = loudness({ signal:'not a signal' });
+      var en = loudness({ signal: "not a signal" });
     } catch (e) {
       done();
     }

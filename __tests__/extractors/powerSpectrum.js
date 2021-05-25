@@ -1,12 +1,12 @@
-var TestData = require('../TestData');
+var TestData = require("../TestData");
 
 // Setup
-var powerSpectrum = require('../../dist/node/extractors/powerSpectrum');
+var powerSpectrum = require("../../dist/node/extractors/powerSpectrum");
 
-describe('powerSpectrum', () => {
-  test('should return correct Power Spectrum value', done => {
+describe("powerSpectrum", () => {
+  test("should return correct Power Spectrum value", (done) => {
     var en = powerSpectrum({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
     expect(en).toEqual(TestData.EXPECTED_POWER_SPECTRUM_OUTPUT);
@@ -14,7 +14,7 @@ describe('powerSpectrum', () => {
     done();
   });
 
-  test('should throw an error when passed an empty object', done => {
+  test("should throw an error when passed an empty object", (done) => {
     try {
       var en = powerSpectrum({});
     } catch (e) {
@@ -22,7 +22,7 @@ describe('powerSpectrum', () => {
     }
   });
 
-  test('should throw an error when not passed anything', done => {
+  test("should throw an error when not passed anything", (done) => {
     try {
       var en = powerSpectrum();
     } catch (e) {
@@ -30,9 +30,9 @@ describe('powerSpectrum', () => {
     }
   });
 
-  test('should throw an error when passed something invalid', done => {
+  test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = powerSpectrum({ signal:'not a signal' });
+      var en = powerSpectrum({ signal: "not a signal" });
     } catch (e) {
       done();
     }

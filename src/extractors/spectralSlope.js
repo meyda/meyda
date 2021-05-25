@@ -1,5 +1,5 @@
-export default function(args) {
-  if (typeof args.ampSpectrum !== 'object') {
+export default function (args) {
+  if (typeof args.ampSpectrum !== "object") {
     throw new TypeError();
   }
 
@@ -12,13 +12,15 @@ export default function(args) {
 
   for (var i = 0; i < args.ampSpectrum.length; i++) {
     ampSum += args.ampSpectrum[i];
-    let curFreq = i * args.sampleRate / args.bufferSize;
+    let curFreq = (i * args.sampleRate) / args.bufferSize;
     freqs[i] = curFreq;
     powFreqSum += curFreq * curFreq;
     freqSum += curFreq;
     ampFreqSum += curFreq * args.ampSpectrum[i];
   }
 
-  return (args.ampSpectrum.length * ampFreqSum - freqSum * ampSum) / (ampSum * (
-        powFreqSum - Math.pow(freqSum, 2)));
+  return (
+    (args.ampSpectrum.length * ampFreqSum - freqSum * ampSum) /
+    (ampSum * (powFreqSum - Math.pow(freqSum, 2)))
+  );
 }
