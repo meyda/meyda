@@ -1,6 +1,4 @@
 import powerSpectrum from "./powerSpectrum";
-import freqToMel from "./../utilities";
-import melToFreq from "./../utilities";
 
 var dct = require("dct");
 
