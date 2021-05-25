@@ -1,18 +1,21 @@
-import powerSpectrum from './powerSpectrum';
-import freqToMel from './../utilities';
-import melToFreq from './../utilities';
+import powerSpectrum from "./powerSpectrum";
+import freqToMel from "./../utilities";
+import melToFreq from "./../utilities";
 
-var dct = require('dct');
+var dct = require("dct");
 
-export default function(args) {
-  if (typeof args.ampSpectrum !== 'object') {
-    throw new TypeError('Valid ampSpectrum is required to generate MFCC');
+export default function (args) {
+  if (typeof args.ampSpectrum !== "object") {
+    throw new TypeError("Valid ampSpectrum is required to generate MFCC");
   }
-  if (typeof args.melFilterBank !== 'object') {
-    throw new TypeError('Valid melFilterBank is required to generate MFCC');
+  if (typeof args.melFilterBank !== "object") {
+    throw new TypeError("Valid melFilterBank is required to generate MFCC");
   }
 
-  let numberOfMFCCCoefficients = Math.min(40, Math.max(1, args.numberOfMFCCCoefficients || 13));
+  let numberOfMFCCCoefficients = Math.min(
+    40,
+    Math.max(1, args.numberOfMFCCCoefficients || 13)
+  );
 
   // Tutorial from:
   // http://practicalcryptography.com/miscellaneous/machine-learning
@@ -22,7 +25,9 @@ export default function(args) {
   let filtered = Array(numFilters);
 
   if (numFilters < numberOfMFCCCoefficients) {
-    throw new Error("Insufficient filter bank for requested number of coefficients");
+    throw new Error(
+      "Insufficient filter bank for requested number of coefficients"
+    );
   }
 
   let loggedMelBands = new Float32Array(numFilters);
@@ -30,7 +35,7 @@ export default function(args) {
   for (let i = 0; i < loggedMelBands.length; i++) {
     filtered[i] = new Float32Array(args.bufferSize / 2);
     loggedMelBands[i] = 0;
-    for (let j = 0; j < (args.bufferSize / 2); j++) {
+    for (let j = 0; j < args.bufferSize / 2; j++) {
       //point-wise multiplication between power spectrum and filterbanks.
       filtered[i][j] = args.melFilterBank[i][j] * powSpec[j];
 
