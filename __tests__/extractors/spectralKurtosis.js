@@ -1,12 +1,12 @@
-var TestData = require('../TestData');
+var TestData = require("../TestData");
 
 // Setup
-var spectralKurtosis = require('../../dist/node/extractors/spectralKurtosis');
+var spectralKurtosis = require("../../dist/node/extractors/spectralKurtosis");
 
-describe('spectralKurtosis', () => {
-  test('should return correct Spectral Kurtosis value', done => {
+describe("spectralKurtosis", () => {
+  test("should return correct Spectral Kurtosis value", (done) => {
     var en = spectralKurtosis({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
     expect(Math.abs(en - 0.1511072674115075)).toBeLessThanOrEqual(1e-15);
@@ -14,7 +14,7 @@ describe('spectralKurtosis', () => {
     done();
   });
 
-  test('should throw an error when passed an empty object', done => {
+  test("should throw an error when passed an empty object", (done) => {
     try {
       var en = spectralKurtosis({});
     } catch (e) {
@@ -22,7 +22,7 @@ describe('spectralKurtosis', () => {
     }
   });
 
-  test('should throw an error when not passed anything', done => {
+  test("should throw an error when not passed anything", (done) => {
     try {
       var en = spectralKurtosis();
     } catch (e) {
@@ -30,9 +30,9 @@ describe('spectralKurtosis', () => {
     }
   });
 
-  test('should throw an error when passed something invalid', done => {
+  test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = spectralKurtosis({ signal:'not a signal' });
+      var en = spectralKurtosis({ signal: "not a signal" });
     } catch (e) {
       done();
     }

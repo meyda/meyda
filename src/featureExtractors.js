@@ -1,22 +1,22 @@
-import rms from './extractors/rms';
-import energy from './extractors/energy';
-import spectralSlope from './extractors/spectralSlope';
-import spectralCentroid from './extractors/spectralCentroid';
-import spectralRolloff from './extractors/spectralRolloff';
-import spectralFlatness from './extractors/spectralFlatness';
-import spectralSpread from './extractors/spectralSpread';
-import spectralSkewness from './extractors/spectralSkewness';
-import spectralKurtosis from './extractors/spectralKurtosis';
-import zcr from './extractors/zcr';
-import loudness from './extractors/loudness';
-import perceptualSpread from './extractors/perceptualSpread';
-import perceptualSharpness from './extractors/perceptualSharpness';
-import mfcc from './extractors/mfcc';
-import chroma from './extractors/chroma';
-import powerSpectrum from './extractors/powerSpectrum';
-import spectralFlux from './extractors/spectralFlux';
+import rms from "./extractors/rms";
+import energy from "./extractors/energy";
+import spectralSlope from "./extractors/spectralSlope";
+import spectralCentroid from "./extractors/spectralCentroid";
+import spectralRolloff from "./extractors/spectralRolloff";
+import spectralFlatness from "./extractors/spectralFlatness";
+import spectralSpread from "./extractors/spectralSpread";
+import spectralSkewness from "./extractors/spectralSkewness";
+import spectralKurtosis from "./extractors/spectralKurtosis";
+import zcr from "./extractors/zcr";
+import loudness from "./extractors/loudness";
+import perceptualSpread from "./extractors/perceptualSpread";
+import perceptualSharpness from "./extractors/perceptualSharpness";
+import mfcc from "./extractors/mfcc";
+import chroma from "./extractors/chroma";
+import powerSpectrum from "./extractors/powerSpectrum";
+import spectralFlux from "./extractors/spectralFlux";
 
-let buffer = function(args) {
+let buffer = function (args) {
   return args.signal;
 };
 
@@ -33,7 +33,6 @@ export {
   rms,
   energy,
   complexSpectrum,
-
   spectralSlope,
   spectralCentroid,
   spectralRolloff,
@@ -42,7 +41,6 @@ export {
   spectralSkewness,
   spectralKurtosis,
   amplitudeSpectrum,
-
   zcr,
   loudness,
   perceptualSpread,
@@ -50,5 +48,5 @@ export {
   powerSpectrum,
   mfcc,
   chroma,
-  spectralFlux
+  spectralFlux,
 };

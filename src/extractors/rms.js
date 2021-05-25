@@ -1,5 +1,5 @@
-export default function(args) {
-  if (typeof args.signal !== 'object') {
+export default function (args) {
+  if (typeof args.signal !== "object") {
     throw new TypeError();
   }
 

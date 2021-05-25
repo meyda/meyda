@@ -1,13 +1,13 @@
-var TestData = require('../TestData');
+var TestData = require("../TestData");
 
 // Setup
-var spectralRolloff = require('../../dist/node/extractors/spectralRolloff');
+var spectralRolloff = require("../../dist/node/extractors/spectralRolloff");
 
-describe('spectralRolloff', () => {
-  test('should return correct Spectral Rolloff value', done => {
+describe("spectralRolloff", () => {
+  test("should return correct Spectral Rolloff value", (done) => {
     var en = spectralRolloff({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
-      sampleRate:44100,
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
+      sampleRate: 44100,
     });
 
     expect(en).toEqual(21012.35294117647);
@@ -15,7 +15,7 @@ describe('spectralRolloff', () => {
     done();
   });
 
-  test('should throw an error when passed an empty object', done => {
+  test("should throw an error when passed an empty object", (done) => {
     try {
       var en = spectralRolloff({});
     } catch (e) {
@@ -23,7 +23,7 @@ describe('spectralRolloff', () => {
     }
   });
 
-  test('should throw an error when not passed anything', done => {
+  test("should throw an error when not passed anything", (done) => {
     try {
       var en = spectralRolloff();
     } catch (e) {
@@ -31,9 +31,9 @@ describe('spectralRolloff', () => {
     }
   });
 
-  test('should throw an error when passed something invalid', done => {
+  test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = spectralRolloff({ signal:'not a signal' });
+      var en = spectralRolloff({ signal: "not a signal" });
     } catch (e) {
       done();
     }

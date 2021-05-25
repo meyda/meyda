@@ -1,14 +1,14 @@
-var TestData = require('../TestData');
+var TestData = require("../TestData");
 
 // Setup
-var spectralSlope = require('../../dist/node/extractors/spectralSlope');
+var spectralSlope = require("../../dist/node/extractors/spectralSlope");
 
-describe('spectralSlope', () => {
-  test('should return correct Spectral Slope value', done => {
+describe("spectralSlope", () => {
+  test("should return correct Spectral Slope value", (done) => {
     var en = spectralSlope({
-      ampSpectrum:TestData.VALID_AMPLITUDE_SPECTRUM,
-      sampleRate:44100,
-      bufferSize:512,
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
+      sampleRate: 44100,
+      bufferSize: 512,
     });
 
     expect(en < 0.0000003).toEqual(true);
@@ -16,7 +16,7 @@ describe('spectralSlope', () => {
     done();
   });
 
-  test('should throw an error when passed an empty object', done => {
+  test("should throw an error when passed an empty object", (done) => {
     try {
       var en = spectralSlope({});
     } catch (e) {
@@ -24,7 +24,7 @@ describe('spectralSlope', () => {
     }
   });
 
-  test('should throw an error when not passed anything', done => {
+  test("should throw an error when not passed anything", (done) => {
     try {
       var en = spectralSlope();
     } catch (e) {
@@ -32,9 +32,9 @@ describe('spectralSlope', () => {
     }
   });
 
-  test('should throw an error when passed something invalid', done => {
+  test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = spectralSlope({ signal:'not a signal' });
+      var en = spectralSlope({ signal: "not a signal" });
     } catch (e) {
       done();
     }

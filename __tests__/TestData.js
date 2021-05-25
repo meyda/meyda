@@ -2578,7 +2578,7 @@ barkScale = new Float32Array([
   25.424030303955078,
   25.425203323364258,
   25.426368713378906,
-  25.427532196044922
+  25.427532196044922,
 ]);
 
 const expectedChromagramOutput = new Float32Array([
@@ -2597,10 +2597,10 @@ const expectedChromagramOutput = new Float32Array([
 ]);
 
 module.exports = {
-  VALID_SIGNAL:validSignal,
-  VALID_AMPLITUDE_SPECTRUM:validAmpSpec,
-  VALID_FFT:validFFT,
-  VALID_BARK_SCALE:barkScale,
-  EXPECTED_POWER_SPECTRUM_OUTPUT:expectedPowerSpectrumOutput,
-  EXPECTED_CHROMAGRAM_OUTPUT:expectedChromagramOutput,
+  VALID_SIGNAL: validSignal,
+  VALID_AMPLITUDE_SPECTRUM: validAmpSpec,
+  VALID_FFT: validFFT,
+  VALID_BARK_SCALE: barkScale,
+  EXPECTED_POWER_SPECTRUM_OUTPUT: expectedPowerSpectrumOutput,
+  EXPECTED_CHROMAGRAM_OUTPUT: expectedChromagramOutput,
 };

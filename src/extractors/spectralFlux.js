@@ -1,7 +1,8 @@
-export default function(args) {
-  if (typeof args.signal !== 'object' ||
-  typeof args.previousSignal != 'object'
-		) {
+export default function (args) {
+  if (
+    typeof args.signal !== "object" ||
+    typeof args.previousSignal != "object"
+  ) {
     throw new TypeError();
   }
 

@@ -1,54 +1,54 @@
 /* global module process require */
-var path = require('path');
-var webpack = require('webpack');
-var TerserPlugin = require('terser-webpack-plugin');
+var path = require("path");
+var webpack = require("webpack");
+var TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = [
   {
-    name: 'regular',
-    entry: './src/index.js',
-    mode: process.env['NODE_ENV'] || 'development',
-    devtool: 'source-map',
+    name: "regular",
+    entry: "./src/index.js",
+    mode: process.env["NODE_ENV"] || "development",
+    devtool: "source-map",
     output: {
-     filename: 'meyda.js',
-     library: 'Meyda',
-     libraryTarget: 'umd'
+      filename: "meyda.js",
+      library: "Meyda",
+      libraryTarget: "umd",
     },
     module: {
       rules: [
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: [['@babel/preset-env', {modules: false}]]
-          }
-        }
-      ]
-    }
+            presets: [["@babel/preset-env", { modules: false }]],
+          },
+        },
+      ],
+    },
   },
   {
-    name: 'minified',
-    entry: './src/index.js',
-    mode: process.env['NODE_ENV'] || 'development',
-    devtool: 'source-map',
+    name: "minified",
+    entry: "./src/index.js",
+    mode: process.env["NODE_ENV"] || "development",
+    devtool: "source-map",
     output: {
-     filename: 'meyda.min.js',
-     sourceMapFilename: 'meyda.min.map',
-     library: 'Meyda',
-     libraryTarget: 'umd'
+      filename: "meyda.min.js",
+      sourceMapFilename: "meyda.min.map",
+      library: "Meyda",
+      libraryTarget: "umd",
     },
     module: {
       rules: [
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: [['@babel/preset-env', {modules: false}]]
-          }
-        }
-      ]
+            presets: [["@babel/preset-env", { modules: false }]],
+          },
+        },
+      ],
     },
     optimization: {
       minimizer: [
@@ -56,11 +56,11 @@ module.exports = [
           terserOptions: {
             compress: {
               warnings: true,
-              drop_console: false
-            }
+              drop_console: false,
+            },
           },
-        })
-      ]
-    }
-  }
+        }),
+      ],
+    },
+  },
 ];

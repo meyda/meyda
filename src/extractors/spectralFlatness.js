@@ -1,5 +1,5 @@
-export default function() {
-  if (typeof arguments[0].ampSpectrum !== 'object') {
+export default function () {
+  if (typeof arguments[0].ampSpectrum !== "object") {
     throw new TypeError();
   }
 
@@ -10,6 +10,9 @@ export default function() {
     denominator += arguments[0].ampSpectrum[i];
   }
 
-  return Math.exp(numerator / arguments[0].ampSpectrum.length) *
-      arguments[0].ampSpectrum.length / denominator;
+  return (
+    (Math.exp(numerator / arguments[0].ampSpectrum.length) *
+      arguments[0].ampSpectrum.length) /
+    denominator
+  );
 }
