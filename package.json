@@ -63,7 +63,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-sourcemaps": "^3.0.0",
     "husky": "^6.0.0",
-    "jest": "^26.0.0",
+    "jest": "^27.0.1",
     "jest-github-reporter": "^1.0.0",
     "jsdoc": "^3.6.3",
     "semantic-release": "^17.0.7",
