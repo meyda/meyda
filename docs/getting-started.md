@@ -54,6 +54,14 @@ security issues, including Content Security Policy headers on your own site to
 allow Javascript sources from unpkg, and using [subresource integrity] to ensure
 the integrity of the installed script.
 
+### Typescript support
+
+Type definitions are available in Meyda and are managed in the [DefinitelyTyped repository][typesource]. To get code completion in your IDE and type checking at compile time, install the [@types/meyda] package from npm alongside Meyda.
+
+```
+npm install --save @types/meyda
+```
+
 ## How can you do these things with Meyda?
 
 Please have a look through the following tutorials for the one that closest
@@ -76,3 +84,5 @@ Not finding the documentation to be clear enough? Please open a [GitHub Issue]
 [offline-node]: /guides/offline-node
 [unpkg]: https://unpkg.com
 [subresource integrity]: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
+[typesource]: https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/meyda
+[@types/meyda]: https://www.npmjs.com/package/@types/meyda
