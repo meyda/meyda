@@ -2,6 +2,7 @@
 docs
 __tests__
 .travis.yml
+.github
 CODE_OF_CONDUCT.md
 rollup.config.js
 coverage
