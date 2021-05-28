@@ -9,7 +9,7 @@ import glob from "glob";
 const SOURCE_FILES = glob.sync("src/**/*.js");
 
 const config = {
-  input: "src/index.js",
+  input: "src/main.js",
   output: {
     file: "dist/web/meyda.js",
     format: "umd",
