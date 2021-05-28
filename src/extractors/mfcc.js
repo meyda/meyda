@@ -1,6 +1,5 @@
 import powerSpectrum from "./powerSpectrum";
-
-var dct = require("dct");
+import dct from "dct";
 
 export default function (args) {
   if (typeof args.ampSpectrum !== "object") {
