@@ -5,7 +5,7 @@
   "main": "",
   "scripts": {
     "test": "echo 'No tests yet...'",
-    "build": "webpack --progress --color"
+    "build": "rollup -c rollup.config.js"
   },
   "repository": {
     "type": "git",
