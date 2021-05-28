@@ -14,10 +14,6 @@
     "build": "NODE_ENV=production; rollup -c rollup.config.js",
     "default": "npm test && npm run lint",
     "lint": "eslint src __tests__",
-    "clean": "rm -rf dist node_modules",
-    "push": "git push --follow-tags",
-    "prepublish": "npm run build",
-    "postpublish": "npm run clean && npm run push",
     "generatereferencedocs": "jsdoc src/meyda-wa.js src/main.js -d docs/reference -R docs/README.md",
     "semantic-release": "semantic-release"
   },
