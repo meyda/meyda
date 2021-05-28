@@ -1,6 +1,7 @@
 import * as utilities from "./utilities";
 import * as extractors from "./featureExtractors";
-import { fft, ifft } from "fftjs";
+// import { fft } from "fftjs";
+var { fft } = require("fftjs");
 import { MeydaAnalyzer } from "./meyda-wa";
 
 /**

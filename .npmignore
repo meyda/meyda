@@ -1,9 +1,7 @@
 !dist
 docs
 __tests__
-.eslintrc
 .travis.yml
 CODE_OF_CONDUCT.md
-Gulpfile.js
-webpack.config.js
+rollup.config.js
 coverage
