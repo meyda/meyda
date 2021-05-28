@@ -2,6 +2,7 @@
 import nodePolyfills from "rollup-plugin-node-polyfills";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
+import commonjs from "@rollup/plugin-commonjs";
 import babel from "@rollup/plugin-babel";
 import glob from "glob";
 
@@ -15,7 +16,14 @@ const config = {
     name: "Meyda",
     sourcemap: true,
   },
-  plugins: [nodePolyfills(), nodeResolve(), babel({ babelHelpers: "bundled" })],
+  plugins: [
+    nodePolyfills(),
+    nodeResolve({
+      browser: true,
+    }),
+    commonjs(),
+    babel({ babelHelpers: "bundled" }),
+  ],
 };
 
 function minified(config) {
@@ -34,7 +42,12 @@ const NODE_CONFIGS = SOURCE_FILES.map((sourcefile) => ({
     format: "cjs",
     exports: "auto",
   },
-  plugins: [nodePolyfills(), nodeResolve(), babel({ babelHelpers: "bundled" })],
+  plugins: [
+    commonjs(),
+    nodePolyfills(),
+    nodeResolve(),
+    babel({ babelHelpers: "bundled" }),
+  ],
 }));
 
 export default [config, minified(config), ...NODE_CONFIGS];
