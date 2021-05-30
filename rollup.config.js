@@ -7,7 +7,7 @@ import babel from "@rollup/plugin-babel";
 import glob from "glob";
 import typescript from "@rollup/plugin-typescript";
 
-const SOURCE_FILES = glob.sync("src/**/*.js");
+const SOURCE_FILES = glob.sync("src/**/*.ts");
 
 const config = {
   input: "src/main.ts",
@@ -18,12 +18,12 @@ const config = {
     sourcemap: true,
   },
   plugins: [
-    typescript(),
     nodePolyfills(),
     nodeResolve({
       browser: true,
     }),
     commonjs(),
+    typescript(),
     babel({ babelHelpers: "bundled" }),
   ],
 };
@@ -45,10 +45,10 @@ const NODE_CONFIGS = SOURCE_FILES.map((sourcefile) => ({
     exports: "auto",
   },
   plugins: [
-    typescript(),
-    commonjs(),
     nodePolyfills(),
     nodeResolve(),
+    typescript(),
+    commonjs(),
     babel({ babelHelpers: "bundled" }),
   ],
 }));

@@ -15,7 +15,7 @@ export function error(message) {
 }
 
 export function pointwiseBufferMult(a, b) {
-  let c = [];
+  let c: number[] = [];
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
     c[i] = a[i] * b[i];
   }

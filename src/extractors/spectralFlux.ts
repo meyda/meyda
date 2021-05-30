@@ -7,8 +7,8 @@ export default function (args) {
   }
 
   let sf = 0;
-  for (let i = -(args.bufferSize / 2); i < signal.length / 2 - 1; i++) {
-    x = Math.abs(args.signal[i]) - Math.abs(args.previousSignal[i]);
+  for (let i = -(args.bufferSize / 2); i < args.signal.length / 2 - 1; i++) {
+    let x = Math.abs(args.signal[i]) - Math.abs(args.previousSignal[i]);
     sf += (x + Math.abs(x)) / 2;
   }
 

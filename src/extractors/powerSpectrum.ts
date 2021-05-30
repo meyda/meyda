@@ -1,5 +1,5 @@
-export default function () {
-  if (typeof arguments[0].ampSpectrum !== "object") {
+export default function (args) {
+  if (typeof args.ampSpectrum !== "object") {
     throw new TypeError();
   }
 
