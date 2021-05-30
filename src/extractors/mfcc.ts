@@ -17,7 +17,7 @@ export default function (args) {
   // Tutorial from:
   // http://practicalcryptography.com/miscellaneous/machine-learning
   // /guide-mel-frequency-cepstral-coefficients-mfccs/
-  let powSpec = powerSpectrum(args);
+  let powSpec = powerSpectrum();
   let numFilters = args.melFilterBank.length;
   let filtered = Array(numFilters);
 

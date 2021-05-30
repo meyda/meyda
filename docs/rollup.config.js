@@ -3,6 +3,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
 import babel from "@rollup/plugin-babel";
+import typescript from "rollup-plugin-typescript";
 
 export default {
   input: "./src/main.js",
@@ -12,6 +13,7 @@ export default {
     name: "meydaDemo",
   },
   plugins: [
+    typescript(),
     nodePolyfills(),
     nodeResolve({
       browser: true,
