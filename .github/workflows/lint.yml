@@ -1,4 +1,4 @@
-name: build
+name: lint
 on: [pull_request]
 
 jobs:
@@ -7,7 +7,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 13.x, 14.x, 15.x, 16.x]
+        node-version: [16.x]
 
     steps:
       - uses: actions/checkout@v1
@@ -22,8 +22,5 @@ jobs:
       - name: Run install
         run: npm install --ci
 
-      - name: Run build
-        run: npm run build
-
-      - name: Run test
-        run: npm run test
+      - name: Run lint
+        run: npm run lint

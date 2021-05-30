@@ -9,7 +9,6 @@
     "meyda": "./bin/cli.js"
   },
   "scripts": {
-    "pretest": "npm run lint && npm run build",
     "test": "jest",
     "build": "NODE_ENV=production; rollup -c rollup.config.js",
     "default": "npm test && npm run lint",
