@@ -11,7 +11,7 @@
   "scripts": {
     "test": "jest",
     "build": "NODE_ENV=production; rollup -c rollup.config.js",
-    "lint": "eslint -f compact src __tests__",
+    "lint": "eslint -f compact",
     "generatereferencedocs": "jsdoc src/meyda-wa.js src/main.js -d docs/reference -R docs/README.md",
     "semantic-release": "semantic-release"
   },
@@ -49,6 +49,8 @@
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.2.1",
     "babel-loader": "^8.1.0",
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
     "babel-plugin-add-module-exports": "^1.0.2",
     "commitizen": "^4.0.3",
     "eslint": "^7.1.0",
@@ -102,13 +104,10 @@
     }
   },
   "eslintConfig": {
-    "parserOptions": {
-      "ecmaVersion": 6,
-      "sourceType": "module"
-    },
-    "env": {
-      "es6": true
-    },
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
     "rules": {
       "semi": 2
     }
