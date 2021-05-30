@@ -304,33 +304,42 @@ var Meyda = {
   },
 };
 
+type Signal = number[];
+
+type SignalPreparedWithSpectrum = {
+  signal: Signal;
+  windowedSignal: Signal;
+  complexSpectrum: ReturnType<typeof fft>;
+  ampSpectrum: Float32Array;
+};
+
 var prepareSignalWithSpectrum = function (
-  signal,
+  providedSignal,
   windowingFunction,
   bufferSize
-) {
-  var preparedSignal = {};
+): SignalPreparedWithSpectrum {
+  var signal =
+    typeof providedSignal.buffer === "undefined"
+      ? utilities.arrayToTyped(providedSignal)
+      : providedSignal;
+  const windowedSignal = utilities.applyWindow(signal, windowingFunction);
 
-  if (typeof signal.buffer == "undefined") {
-    //signal is a normal array, convert to F32A
-    preparedSignal.signal = utilities.arrayToTyped(signal);
-  } else {
-    preparedSignal.signal = signal;
-  }
+  const complexSpectrum = fft(windowedSignal);
+  const ampSpectrum = new Float32Array(bufferSize / 2);
 
-  preparedSignal.windowedSignal = utilities.applyWindow(
-    preparedSignal.signal,
-    windowingFunction
-  );
-
-  preparedSignal.complexSpectrum = fft(preparedSignal.windowedSignal);
-  preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
   for (var i = 0; i < bufferSize / 2; i++) {
-    preparedSignal.ampSpectrum[i] = Math.sqrt(
-      Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
-        Math.pow(preparedSignal.complexSpectrum.imag[i], 2)
+    ampSpectrum[i] = Math.sqrt(
+      Math.pow(complexSpectrum.real[i], 2) +
+        Math.pow(complexSpectrum.imag[i], 2)
     );
   }
+
+  const preparedSignal: SignalPreparedWithSpectrum = {
+    signal,
+    windowedSignal: utilities.applyWindow(signal, windowingFunction),
+    complexSpectrum,
+    ampSpectrum,
+  };
 
   return preparedSignal;
 };
@@ -341,4 +350,5 @@ var prepareSignalWithSpectrum = function (
  */
 export default Meyda;
 
+// @ts-ignore
 if (typeof window !== "undefined") window.Meyda = Meyda;

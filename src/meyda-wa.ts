@@ -27,6 +27,8 @@ import * as featureExtractors from "./featureExtractors";
  * @hideconstructor
  */
 export class MeydaAnalyzer {
+  _m: any;
+
   constructor(options, _this) {
     this._m = _this;
     if (!options.audioContext) {
@@ -96,10 +98,12 @@ export class MeydaAnalyzer {
 
       this._m.inputData = e.inputBuffer.getChannelData(this._m.channel);
 
+      let buffer: any;
+
       if (!this._m.previousInputData) {
-        var buffer = this._m.inputData;
+        buffer = this._m.inputData;
       } else {
-        var buffer = new Float32Array(
+        buffer = new Float32Array(
           this._m.previousInputData.length +
             this._m.inputData.length -
             this._m.hopSize
