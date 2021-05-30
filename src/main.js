@@ -171,6 +171,18 @@ var Meyda = {
   },
 
   /**
+   * List available audio feature extractors. Return format provides the key to
+   * be used in selecting the extractor in the extract methods
+   *
+   * @returns {Array.<string>} featureExtractors - a list of the keys of
+   * available audio feature extractors
+   */
+
+  listAvailableFeatureExtractors: function () {
+    return Object.keys(this.featureExtractors);
+  },
+
+  /**
    * Extract an audio feature from a buffer
    *
    * Unless `meyda.windowingFunction` is set otherwise, `extract` will

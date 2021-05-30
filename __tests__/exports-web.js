@@ -18,6 +18,7 @@ const EXPECTED_EXPORTS = [
   "windowing",
   "_errors",
   "createMeydaAnalyzer",
+  "listAvailableFeatureExtractors",
   "extract",
 ];
 
