@@ -7,7 +7,7 @@ import babel from "@rollup/plugin-babel";
 import glob from "glob";
 import typescript from "@rollup/plugin-typescript";
 
-const SOURCE_FILES = glob.sync("src/**/*.ts");
+const SOURCE_FILES = glob.sync("./src/**/*.ts");
 
 const config = {
   input: "src/main.ts",
@@ -40,7 +40,7 @@ function minified(config) {
 const NODE_CONFIGS = SOURCE_FILES.map((sourcefile) => ({
   input: sourcefile,
   output: {
-    file: sourcefile.replace("src", "dist/node"),
+    file: sourcefile.replace("src", "dist/node").replace(".ts", ".js"),
     format: "cjs",
     exports: "auto",
   },
