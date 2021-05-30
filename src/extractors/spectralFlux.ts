@@ -1,24 +1,21 @@
-// This file isn't being typechecked at all because there are major issues with it.
-// See #852 for details. Once that's merged, this file should be typechecked.
-// @ts-nocheck
 export default function ({
-  signal,
-  previousSignal,
-  bufferSize,
+  complexSpectrum,
+  previousComplexSpectrum
 }: {
-  signal: Float32Array;
-  previousSignal: Float32Array;
-  bufferSize: number;
+  complexSpectrum: {real: number[]; imag: number[]};
+  previousComplexSpectrum: {real: number[]; imag: number[]};
 }): number {
-  if (typeof signal !== "object" || typeof previousSignal != "object") {
+  if (typeof complexSpectrum.real !== "object" || typeof complexSpectrum.imag != "object") {
     throw new TypeError();
   }
 
   let sf = 0;
-  for (let i = -(bufferSize / 2); i < signal.length / 2 - 1; i++) {
-    x = Math.abs(signal[i]) - Math.abs(previousSignal[i]);
-    sf += (x + Math.abs(x)) / 2;
+  for (let i = 0; i < complexSpectrum.real.length; i++) {
+    let x =
+      Math.abs(complexSpectrum.real[i]) -
+      Math.abs(previousComplexSpectrum.real[i]);
+    sf += Math.pow(x, 2);
   }
 
-  return sf;
+  return Math.sqrt(sf);
 }
