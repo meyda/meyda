@@ -1,9 +1,0 @@
-language: node_js
-node_js:
-  - "16"
-# https://travis-ci.community/t/npm-ci-will-fail-if-cached-dependency-includes-npm/4203
-cache:
-  npm: false
-sudo: false
-script:
-  - echo "hooray :)"
