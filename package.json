@@ -11,8 +11,7 @@
   "scripts": {
     "test": "jest",
     "build": "NODE_ENV=production; rollup -c rollup.config.js",
-    "default": "npm test && npm run lint",
-    "lint": "eslint src __tests__",
+    "lint": "eslint -f compact src __tests__",
     "generatereferencedocs": "jsdoc src/meyda-wa.js src/main.js -d docs/reference -R docs/README.md",
     "semantic-release": "semantic-release"
   },
