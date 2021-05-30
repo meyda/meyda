@@ -1,0 +1,39 @@
+name: merge-build
+on:
+  [pull_request]
+  # We should run this only on master, but we've got to dry run test it on a PR
+  # push:
+  #   branches:
+  #     - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Run install
+        run: npm install --ci
+
+      - name: Run build
+        run: npm run build
+
+      - name: Run test
+        run: npm run test
+
+      - name: Semantic Release
+        # run: npm run semantic-release
+        # Do a dry run for now so that we can see if it works!
+        run: ./node_modules/.bin/semantic-release --dry-run
