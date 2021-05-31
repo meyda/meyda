@@ -1,4 +1,12 @@
-export default function (args) {
+import { AmplitudeSpectrum } from "../main";
+
+export type SpectralSlopeParameters = {
+  ampSpectrum: AmplitudeSpectrum;
+  sampleRate: number;
+  bufferSize: number;
+};
+
+export default function spectralSlope(args: SpectralSlopeParameters) {
   if (typeof args.ampSpectrum !== "object") {
     throw new TypeError();
   }

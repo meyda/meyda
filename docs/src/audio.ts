@@ -1,18 +1,27 @@
 /* globals webkitAudioContext, Meyda */
 declare global {
+  function webkitGetUserMedia(
+    constraints?: MediaStreamConstraints
+  ): Promise<MediaStream>;
+  const webkitAudioContext: BaseAudioContext;
   interface Window {
-    webkitAudioContext: AudioContext;
+    webkitAudioContext: BaseAudioContext;
     Meyda: any;
   }
 }
 
-var _this;
-const Audio = function (bufferSize) {
+var _this: any;
+type AudioThis = {
+  context: AudioContext;
+  elvis: HTMLMediaElement;
+  meyda: any;
+};
+const Audio = function (this: AudioThis, bufferSize: number) {
   if (
     window.hasOwnProperty("webkitAudioContext") &&
     !window.hasOwnProperty("AudioContext")
   ) {
-    window.AudioContext = globalThis.webkitAudioContext;
+    window.AudioContext = webkitAudioContext;
   }
 
   if (
@@ -29,7 +38,7 @@ const Audio = function (bufferSize) {
 
   this.context = new AudioContext();
 
-  let elvis = document.getElementById("elvisSong");
+  let elvis = document.getElementById("elvisSong") as HTMLMediaElement;
   let stream = this.context.createMediaElementSource(elvis);
   stream.connect(this.context.destination);
 
@@ -44,7 +53,7 @@ const Audio = function (bufferSize) {
 };
 
 Audio.prototype.initializeMicrophoneSampling = function () {
-  var errorCallback = function (err) {
+  var errorCallback = function (err: any) {
     // We should fallback to an audio file here, but that's difficult on mobile
     if (_this.context.state === "suspended") {
       var resume = function () {
@@ -71,7 +80,7 @@ Audio.prototype.initializeMicrophoneSampling = function () {
       video: false,
       audio: true,
     };
-    var successCallback = function successCallback(mediaStream) {
+    var successCallback = function successCallback(mediaStream: MediaStream) {
       var audioControl = document.getElementById("audioControl");
       if (audioControl) {
         audioControl.style.display = "none";
@@ -107,7 +116,7 @@ Audio.prototype.initializeMicrophoneSampling = function () {
   }
 };
 
-Audio.prototype.get = function (features) {
+Audio.prototype.get = function (features: string) {
   _this.context.resume();
   return _this.meyda.get(features);
 };

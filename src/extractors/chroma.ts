@@ -1,4 +1,11 @@
-export default function (args) {
+import { AmplitudeSpectrum, ChromaFilterBank } from "../main";
+
+export type ChromaParameters = {
+  ampSpectrum: AmplitudeSpectrum;
+  chromaFilterBank: ChromaFilterBank;
+};
+
+export default function (args: ChromaParameters) {
   if (typeof args.ampSpectrum !== "object") {
     throw new TypeError("Valid ampSpectrum is required to generate chroma");
   }

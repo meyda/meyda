@@ -1,4 +1,12 @@
-export default function (args) {
+import { Signal } from "../main";
+
+export type SpectralFluxParameters = {
+  signal: Signal;
+  previousSignal: Signal;
+  bufferSize: number;
+};
+
+export default function spectralFlux(args: SpectralFluxParameters) {
   if (
     typeof args.signal !== "object" ||
     typeof args.previousSignal != "object"

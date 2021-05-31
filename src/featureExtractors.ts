@@ -15,20 +15,30 @@ import mfcc from "./extractors/mfcc";
 import chroma from "./extractors/chroma";
 import powerSpectrum from "./extractors/powerSpectrum";
 import spectralFlux from "./extractors/spectralFlux";
+import { AmplitudeSpectrum, Signal } from "./main";
+import { ComplexSpectrum } from "fftjs";
 
-let buffer = function (args) {
-  return args.signal;
-};
+function buffer({ signal }: { signal: Signal }) {
+  return signal;
+}
 
-let complexSpectrum = function (args) {
-  return args.complexSpectrum;
-};
+function complexSpectrum({
+  complexSpectrum,
+}: {
+  complexSpectrum: ComplexSpectrum;
+}) {
+  return complexSpectrum;
+}
 
-let amplitudeSpectrum = function (args) {
-  return args.ampSpectrum;
-};
+function amplitudeSpectrum({
+  ampSpectrum,
+}: {
+  ampSpectrum: AmplitudeSpectrum;
+}) {
+  return ampSpectrum;
+}
 
-export {
+const extractors = {
   buffer,
   rms,
   energy,
@@ -49,4 +59,17 @@ export {
   mfcc,
   chroma,
   spectralFlux,
-};
+} as const;
+
+type ExtractorsType = typeof extractors;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I
+) => void
+  ? I
+  : never;
+
+type ExtractorFunctions = ExtractorsType[keyof ExtractorsType];
+type AllParameterTypes = Parameters<ExtractorFunctions>[0];
+export type UnionExtractorParams = UnionToIntersection<AllParameterTypes>;
+
+export default extractors;

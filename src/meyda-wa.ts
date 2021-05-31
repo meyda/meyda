@@ -1,5 +1,6 @@
 import * as utilities from "./utilities";
 import * as featureExtractors from "./featureExtractors";
+import Meyda, { MeydaFeature, MeydaOptions, Signal } from "./main";
 
 /**
  * MeydaAnalyzer
@@ -27,12 +28,17 @@ import * as featureExtractors from "./featureExtractors";
  * @hideconstructor
  */
 export class MeydaAnalyzer {
-  _m: any;
+  _m: typeof Meyda;
+  inputData?: Signal;
+  previousInputData?: Signal;
+  frame?: number[];
+  previousFrame?: number[];
+  source?: AudioNode;
 
-  constructor(options, _this) {
+  constructor(options: MeydaOptions, _this: typeof Meyda) {
     this._m = _this;
     if (!options.audioContext) {
-      throw this._m.errors.noAC;
+      throw this._m._errors.noAC;
     } else if (
       options.bufferSize &&
       !utilities.isPowerOfTwo(options.bufferSize)
@@ -51,7 +57,6 @@ export class MeydaAnalyzer {
       options.sampleRate || this._m.audioContext.sampleRate || 44100;
     this._m.callback = options.callback;
     this._m.windowingFunction = options.windowingFunction || "hanning";
-    this._m.featureExtractors = featureExtractors;
     this._m.EXTRACTION_STARTED = options.startImmediately || false;
     this._m.channel = typeof options.channel === "number" ? options.channel : 0;
     this._m.inputs = options.inputs || 1;
@@ -83,47 +88,47 @@ export class MeydaAnalyzer {
       this._m.bufferSize
     );
 
-    this._m.inputData = null;
-    this._m.previousInputData = null;
+    this.inputData = null;
+    this.previousInputData = null;
 
-    this._m.frame = null;
-    this._m.previousFrame = null;
+    this.frame = null;
+    this.previousFrame = null;
 
     this.setSource(options.source);
 
-    this._m.spn.onaudioprocess = (e) => {
-      if (this._m.inputData !== null) {
-        this._m.previousInputData = this._m.inputData;
+    this._m.spn.onaudioprocess = (e: AudioProcessingEvent) => {
+      if (this.inputData !== null) {
+        this.previousInputData = this.inputData;
       }
 
-      this._m.inputData = e.inputBuffer.getChannelData(this._m.channel);
+      this.inputData = e.inputBuffer.getChannelData(this._m.channel);
 
       let buffer: any;
 
-      if (!this._m.previousInputData) {
-        buffer = this._m.inputData;
+      if (!this.previousInputData) {
+        buffer = this.inputData;
       } else {
         buffer = new Float32Array(
-          this._m.previousInputData.length +
-            this._m.inputData.length -
+          this.previousInputData.length +
+            this.inputData.length -
             this._m.hopSize
         );
-        buffer.set(this._m.previousInputData.slice(this._m.hopSize));
+        buffer.set(this.previousInputData.slice(this._m.hopSize));
         buffer.set(
-          this._m.inputData,
-          this._m.previousInputData.length - this._m.hopSize
+          this.inputData,
+          this.previousInputData.length - this._m.hopSize
         );
       }
 
       var frames = utilities.frame(buffer, this._m.bufferSize, this._m.hopSize);
 
       frames.forEach((f) => {
-        this._m.frame = f;
+        this.frame = f;
 
         var features = this._m.extract(
           this._m._featuresToExtract,
-          this._m.frame,
-          this._m.previousFrame
+          this.frame,
+          this.previousFrame
         );
 
         // call callback if applicable
@@ -134,7 +139,7 @@ export class MeydaAnalyzer {
           this._m.callback(features);
         }
 
-        this._m.previousFrame = this._m.frame;
+        this.previousFrame = this.frame;
       });
     };
   }
@@ -150,8 +155,12 @@ export class MeydaAnalyzer {
    * @example
    * analyzer.start('chroma');
    */
-  start(features) {
-    this._m._featuresToExtract = features || this._m._featuresToExtract;
+  start(features?: MeydaFeature | MeydaFeature[]) {
+    this._m._featuresToExtract = features
+      ? Array.isArray(features)
+        ? features
+        : [features]
+      : this._m._featuresToExtract || [];
     this._m.EXTRACTION_STARTED = true;
   }
 
@@ -170,10 +179,10 @@ export class MeydaAnalyzer {
    * @example
    * analyzer.setSource(audioSourceNode);
    */
-  setSource(source) {
-    this._m.source && this._m.source.disconnect(this._m.spn);
-    this._m.source = source;
-    this._m.source.connect(this._m.spn);
+  setSource(source: AudioNode) {
+    this.source && this.source.disconnect(this._m.spn);
+    this.source = source;
+    this.source.connect(this._m.spn);
   }
 
   /**
@@ -183,7 +192,7 @@ export class MeydaAnalyzer {
    * @example
    * analyzer.setChannel(0);
    */
-  setChannel(channel) {
+  setChannel(channel: number) {
     if (channel <= this._m.inputs) {
       this._m.channel = channel;
     } else {
@@ -200,12 +209,12 @@ export class MeydaAnalyzer {
    * @example
    * analyzer.get('spectralFlatness');
    */
-  get(features) {
-    if (this._m.inputData) {
+  get(features: MeydaFeature | MeydaFeature[]) {
+    if (this.inputData) {
       return this._m.extract(
         features || this._m._featuresToExtract,
-        this._m.inputData,
-        this._m.previousInputData
+        this.inputData,
+        this.previousInputData
       );
     } else {
       return null;

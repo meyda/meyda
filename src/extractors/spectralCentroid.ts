@@ -1,9 +1,14 @@
+import { AmplitudeSpectrum } from "../main";
 import { mu } from "./extractorUtilities";
 
-export default function () {
-  if (typeof arguments[0].ampSpectrum !== "object") {
+type SpectralCentroidParameters = {
+  ampSpectrum: AmplitudeSpectrum;
+};
+
+export default function spectralCentroid(args: SpectralCentroidParameters) {
+  if (typeof args.ampSpectrum !== "object") {
     throw new TypeError();
   }
 
-  return mu(1, arguments[0].ampSpectrum);
+  return mu(1, args.ampSpectrum);
 }

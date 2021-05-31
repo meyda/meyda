@@ -1,11 +1,17 @@
-export default function () {
-  if (typeof arguments[0].signal !== "object") {
+import { Signal } from "fftjs";
+
+type EnergyParamters = {
+  signal: Signal;
+};
+
+export default function (args: EnergyParamters) {
+  if (typeof args.signal !== "object") {
     throw new TypeError();
   }
 
   var energy = 0;
-  for (var i = 0; i < arguments[0].signal.length; i++) {
-    energy += Math.pow(Math.abs(arguments[0].signal[i]), 2);
+  for (var i = 0; i < args.signal.length; i++) {
+    energy += Math.pow(Math.abs(args.signal[i]), 2);
   }
 
   return energy;

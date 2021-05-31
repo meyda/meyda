@@ -1,4 +1,9 @@
-export default function (args) {
+import { Signal } from "../main";
+
+export type RmsParameters = {
+  signal: Signal;
+};
+export default function rms(args: RmsParameters) {
   if (typeof args.signal !== "object") {
     throw new TypeError();
   }

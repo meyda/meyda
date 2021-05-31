@@ -1,4 +1,6 @@
-export function mu(i, amplitudeSpect) {
+import { AmplitudeSpectrum } from "../main";
+
+export function mu(i: number, amplitudeSpect: AmplitudeSpectrum) {
   var numerator = 0;
   var denominator = 0;
   for (var k = 0; k < amplitudeSpect.length; k++) {

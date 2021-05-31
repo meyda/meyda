@@ -1,7 +1,15 @@
 import powerSpectrum from "./powerSpectrum";
 import dct from "dct";
+import { AmplitudeSpectrum, MelFilterBank } from "../main";
 
-export default function (args) {
+type MfccParameters = {
+  ampSpectrum: AmplitudeSpectrum;
+  melFilterBank: MelFilterBank;
+  numberOfMFCCCoefficients?: number;
+  bufferSize: number;
+};
+
+export default function (args: MfccParameters) {
   if (typeof args.ampSpectrum !== "object") {
     throw new TypeError("Valid ampSpectrum is required to generate MFCC");
   }

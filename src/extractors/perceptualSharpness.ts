@@ -1,11 +1,18 @@
-import loudness from "./loudness";
+import { Signal } from "fftjs";
+import loudness, { LoudnessParameters } from "./loudness";
 
-export default function () {
-  if (typeof arguments[0].signal !== "object") {
+export type PerceptualSharpnessParamters = {
+  signal: Signal;
+} & LoudnessParameters;
+
+export default function perceptualSharpness(
+  args: PerceptualSharpnessParamters
+) {
+  if (typeof args.signal !== "object") {
     throw new TypeError();
   }
 
-  var loudnessValue = loudness(arguments[0]);
+  var loudnessValue = loudness(args);
   var spec = loudnessValue.specific;
   var output = 0;
 

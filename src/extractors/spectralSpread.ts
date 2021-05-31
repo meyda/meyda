@@ -1,6 +1,11 @@
+import { AmplitudeSpectrum } from "../main";
 import { mu } from "./extractorUtilities";
 
-export default function (args) {
+export type SpectralSpreadParameters = {
+  ampSpectrum: AmplitudeSpectrum;
+};
+
+export default function spectralSpread(args: SpectralSpreadParameters) {
   if (typeof args.ampSpectrum !== "object") {
     throw new TypeError();
   }

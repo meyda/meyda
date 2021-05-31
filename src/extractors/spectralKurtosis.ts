@@ -1,11 +1,16 @@
+import { AmplitudeSpectrum } from "../main";
 import { mu } from "./extractorUtilities";
 
-export default function () {
-  if (typeof arguments[0].ampSpectrum !== "object") {
+export type SpectralKurtosisParameters = {
+  ampSpectrum: AmplitudeSpectrum;
+};
+
+export default function spectralKurtosis(args: SpectralKurtosisParameters) {
+  if (typeof args.ampSpectrum !== "object") {
     throw new TypeError();
   }
 
-  var ampspec = arguments[0].ampSpectrum;
+  var ampspec = args.ampSpectrum;
   var mu1 = mu(1, ampspec);
   var mu2 = mu(2, ampspec);
   var mu3 = mu(3, ampspec);

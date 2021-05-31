@@ -1,7 +1,22 @@
 import * as utilities from "./utilities";
-import * as extractors from "./featureExtractors";
-import { fft } from "fftjs";
+import { WindowFunction } from "./utilities";
+import extractors from "./featureExtractors";
+import { ComplexSpectrum, fft } from "fftjs";
 import { MeydaAnalyzer } from "./meyda-wa";
+
+export type MeydaFeature = keyof typeof extractors;
+export type AmplitudeSpectrum = Float32Array;
+export type BarkScale = Float32Array;
+export type MelFilterBank = number[][];
+export type ChromaFilterBank = number[][];
+export type Signal = Float32Array;
+
+type SignalPreparedWithSpectrum = {
+  signal: Signal;
+  windowedSignal: Signal;
+  complexSpectrum: ReturnType<typeof fft>;
+  ampSpectrum: Float32Array;
+};
 
 /**
  * Meyda Module
@@ -23,24 +38,24 @@ import { MeydaAnalyzer } from "./meyda-wa";
  * @property {number} [numberOfMFCCCoefficients] - The number of MFCC co-efficients that the MFCC feature extractor should return
  */
 
-/**
- * Web Audio context
- * Either an {@link AudioContext|https://developer.mozilla.org/en-US/docs/Web/API/AudioContext}
- * or an {@link OfflineAudioContext|https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext}
- * @typedef {Object} AudioContext
- */
-
-/**
- * AudioNode
- * A Web AudioNode
- * @typedef {Object} AudioNode
- */
-
-/**
- * ScriptProcessorNode
- * A Web Audio ScriptProcessorNode
- * @typedef {Object} ScriptProcessorNode
- */
+export type MeydaOptions = {
+  audioContext: AudioContext;
+  source: AudioNode;
+  bufferSize: number;
+  hopSize: number;
+  sampleRate: number;
+  callback: (arg: any) => any;
+  // This should be a union type
+  windowingFunction: WindowFunction;
+  // This should be a union type
+  // featureExtractors: typeof Object.keys(extractors)[number]
+  featureExtractors: MeydaFeature[];
+  startImmediately: boolean;
+  numberOfMFCCCoefficients: number;
+  outputs: number;
+  inputs: number;
+  channel: number;
+};
 
 /**
  * @class Meyda
@@ -57,14 +72,14 @@ var Meyda = {
    * @instance
    * @member {AudioContext}
    */
-  audioContext: null,
+  audioContext: null as unknown as AudioContext,
   /**
    * Meyda keeps an internal ScriptProcessorNode in which it runs audio feature
    * extraction. The ScriptProcessorNode is stored in this member variable.
    * @instance
    * @member {ScriptProcessorNode}
    */
-  spn: null,
+  spn: null as unknown as ScriptProcessorNode,
   /**
    * The length of each buffer that Meyda will extract audio on. When recieving
    * input via the Web Audio API, the Script Processor Node chunks incoming audio
@@ -79,6 +94,7 @@ var Meyda = {
    * @member {number}
    */
   bufferSize: 512,
+  hopSize: 0,
   /**
    * The number of samples per second of the incoming audio. This affects
    * feature extraction outside of the context of the Web Audio API, and must be
@@ -109,7 +125,7 @@ var Meyda = {
    * @instance
    * @member {Function}
    */
-  callback: null,
+  callback: null as unknown as Function,
   /**
    * Specify the windowing function to apply to the buffer before the
    * transformation from the time domain to the frequency domain is performed
@@ -119,7 +135,7 @@ var Meyda = {
    * @instance
    * @member {string}
    */
-  windowingFunction: "hanning",
+  windowingFunction: "hanning" as WindowFunction,
   /**
    * @member {object}
    */
@@ -131,7 +147,8 @@ var Meyda = {
    * @member {number}
    */
   numberOfMFCCCoefficients: 13,
-  _featuresToExtract: [],
+  // internals
+  _featuresToExtract: [] as MeydaFeature[],
   windowing: utilities.applyWindow,
   _errors: {
     notPow2: new Error(
@@ -143,6 +160,18 @@ var Meyda = {
     noAC: new Error("Meyda: No AudioContext specified."),
     noSource: new Error("Meyda: No source node specified."),
   },
+  barkScale: null as unknown as BarkScale,
+  melFilterBank: [] as MelFilterBank,
+  chromaFilterBank: [] as ChromaFilterBank,
+  signal: null as unknown as Signal,
+  complexSpectrum: null as unknown as ComplexSpectrum,
+  ampSpectrum: null as unknown as AmplitudeSpectrum,
+  previousSignal: null as unknown as Signal,
+  previousComplexSpectrum: null as unknown as ComplexSpectrum,
+  previousAmpSpectrum: null as unknown as AmplitudeSpectrum,
+  inputs: 1,
+  outputs: 1,
+  channel: 0,
 
   /**
    * @summary
@@ -166,7 +195,7 @@ var Meyda = {
    *   }
    * });
    */
-  createMeydaAnalyzer: function (options) {
+  createMeydaAnalyzer: function (options: MeydaOptions) {
     return new MeydaAnalyzer(options, Object.assign({}, Meyda));
   },
 
@@ -200,7 +229,11 @@ var Meyda = {
    * meyda.bufferSize = 2048;
    * const features = meyda.extract(['zcr', 'spectralCentroid'], signal);
    */
-  extract: function (feature, signal, previousSignal) {
+  extract: function (
+    feature: MeydaFeature | MeydaFeature[],
+    signal: number[] | Signal,
+    previousSignal: number[] | Signal
+  ): any {
     if (!signal) throw this._errors.invalidInput;
     else if (typeof signal != "object") throw this._errors.invalidInput;
     else if (!feature) throw this._errors.featureUndef;
@@ -242,8 +275,8 @@ var Meyda = {
       );
     }
 
-    if (typeof signal.buffer == "undefined") {
-      //signal is a normal array, convert to F32A
+    if (signal.constructor !== Float32Array) {
+      // signal is a normal array, convert to F32A
       this.signal = utilities.arrayToTyped(signal);
     } else {
       this.signal = signal;
@@ -271,7 +304,7 @@ var Meyda = {
       this.previousAmpSpectrum = preparedSignal.ampSpectrum;
     }
 
-    const extract = (feature) => {
+    const extract = (feature: string) => {
       return this.featureExtractors[feature]({
         ampSpectrum: this.ampSpectrum,
         chromaFilterBank: this.chromaFilterBank,
@@ -304,22 +337,13 @@ var Meyda = {
   },
 };
 
-type Signal = number[];
-
-type SignalPreparedWithSpectrum = {
-  signal: Signal;
-  windowedSignal: Signal;
-  complexSpectrum: ReturnType<typeof fft>;
-  ampSpectrum: Float32Array;
-};
-
 var prepareSignalWithSpectrum = function (
-  providedSignal,
-  windowingFunction,
-  bufferSize
+  providedSignal: number[] | Signal,
+  windowingFunction: WindowFunction,
+  bufferSize: number
 ): SignalPreparedWithSpectrum {
-  var signal =
-    typeof providedSignal.buffer === "undefined"
+  var signal: Signal =
+    providedSignal.constructor !== Float32Array
       ? utilities.arrayToTyped(providedSignal)
       : providedSignal;
   const windowedSignal = utilities.applyWindow(signal, windowingFunction);

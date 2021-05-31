@@ -1,4 +1,11 @@
-export default function (args) {
+import { AmplitudeSpectrum, BarkScale } from "../main";
+
+export type LoudnessParameters = {
+  ampSpectrum: AmplitudeSpectrum;
+  barkScale: BarkScale;
+};
+
+export default function (args: LoudnessParameters) {
   if (
     typeof args.ampSpectrum !== "object" ||
     typeof args.barkScale !== "object"

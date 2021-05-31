@@ -1,4 +1,4 @@
-export function blackman(size) {
+export function blackman(size: number): Float32Array {
   let blackmanBuffer = new Float32Array(size);
   let coeff1 = (2 * Math.PI) / (size - 1);
   let coeff2 = 2 * coeff1;
@@ -18,7 +18,7 @@ export function blackman(size) {
   return blackmanBuffer;
 }
 
-export function sine(size) {
+export function sine(size: number): Float32Array {
   let coeff = Math.PI / (size - 1);
   let sineBuffer = new Float32Array(size);
 
@@ -29,7 +29,7 @@ export function sine(size) {
   return sineBuffer;
 }
 
-export function hanning(size) {
+export function hanning(size: number): Float32Array {
   let hanningBuffer = new Float32Array(size);
   for (let i = 0; i < size; i++) {
     // According to the R documentation
@@ -40,7 +40,7 @@ export function hanning(size) {
   return hanningBuffer;
 }
 
-export function hamming(size) {
+export function hamming(size: number): Float32Array {
   let hammingBuffer = new Float32Array(size);
   for (let i = 0; i < size; i++) {
     //According to http://uk.mathworks.com/help/signal/ref/hamming.html

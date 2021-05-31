@@ -1,8 +1,10 @@
+import { Signal } from "fftjs";
+import { BarkScale } from "./main";
 import * as windowing from "./windowing";
 
-let windows = {};
+let windows: { [windowName: string]: { [windowLength: number]: Window } } = {};
 
-export function isPowerOfTwo(num) {
+export function isPowerOfTwo(num: number) {
   while (num % 2 === 0 && num > 1) {
     num /= 2;
   }
@@ -10,11 +12,13 @@ export function isPowerOfTwo(num) {
   return num === 1;
 }
 
-export function error(message) {
+export function error(message: string) {
   throw new Error("Meyda: " + message);
 }
 
-export function pointwiseBufferMult(a, b) {
+type ArrayLike = number[] | Float32Array;
+
+export function pointwiseBufferMult(a: ArrayLike, b: ArrayLike): number[] {
   let c: number[] = [];
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
     c[i] = a[i] * b[i];
@@ -23,7 +27,11 @@ export function pointwiseBufferMult(a, b) {
   return c;
 }
 
-export function applyWindow(signal, windowname) {
+type ImplementedWindowFunctions = keyof typeof windowing;
+export type WindowFunction = ImplementedWindowFunctions | "rect" | "";
+type Window = ReturnType<typeof windowing[ImplementedWindowFunctions]>;
+
+export function applyWindow(signal: Signal, windowname: WindowFunction) {
   if (windowname !== "rect") {
     if (windowname === "" || !windowname) windowname = "hanning";
     if (!windows[windowname]) windows[windowname] = {};
@@ -38,14 +46,20 @@ export function applyWindow(signal, windowname) {
       }
     }
 
-    signal = pointwiseBufferMult(signal, windows[windowname][signal.length]);
+    signal = arrayToTyped(
+      pointwiseBufferMult(signal, windows[windowname][signal.length])
+    );
   }
 
   return signal;
 }
 
-export function createBarkScale(length, sampleRate, bufferSize) {
-  let barkScale = new Float32Array(length);
+export function createBarkScale(
+  length: number,
+  sampleRate: number,
+  bufferSize: number
+): BarkScale {
+  let barkScale: BarkScale = new Float32Array(length);
 
   for (var i = 0; i < barkScale.length; i++) {
     barkScale[i] = (i * sampleRate) / bufferSize;
@@ -57,27 +71,27 @@ export function createBarkScale(length, sampleRate, bufferSize) {
   return barkScale;
 }
 
-export function typedToArray(t) {
+export function typedToArray(t: ArrayBufferView): number[] {
   // utility to convert typed arrays to normal arrays
   return Array.prototype.slice.call(t);
 }
 
-export function arrayToTyped(t) {
+export function arrayToTyped(t: number[]): Signal {
   // utility to convert arrays to typed F32 arrays
   return Float32Array.from(t);
 }
 
-export function _normalize(num, range) {
+export function _normalize(num: number, range: number) {
   return num / range;
 }
 
-export function normalize(a, range) {
+export function normalize(a: number[], range: number) {
   return a.map(function (n) {
     return _normalize(n, range);
   });
 }
 
-export function normalizeToOne(a) {
+export function normalizeToOne(a: number[]) {
   var max = Math.max.apply(null, a);
 
   return a.map(function (n) {
@@ -85,7 +99,7 @@ export function normalizeToOne(a) {
   });
 }
 
-export function mean(a) {
+export function mean(a: number[]) {
   return (
     a.reduce(function (prev, cur) {
       return prev + cur;
@@ -93,25 +107,29 @@ export function mean(a) {
   );
 }
 
-function _melToFreq(melValue) {
+function _melToFreq(melValue: number) {
   var freqValue = 700 * (Math.exp(melValue / 1125) - 1);
   return freqValue;
 }
 
-function _freqToMel(freqValue) {
+function _freqToMel(freqValue: number) {
   var melValue = 1125 * Math.log(1 + freqValue / 700);
   return melValue;
 }
 
-export function melToFreq(mV) {
+export function melToFreq(mV: number) {
   return _melToFreq(mV);
 }
 
-export function freqToMel(fV) {
+export function freqToMel(fV: number) {
   return _freqToMel(fV);
 }
 
-export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
+export function createMelFilterBank(
+  numFilters: number,
+  sampleRate: number,
+  bufferSize: number
+) {
   //the +2 is the upper and lower limits
   let melValues = new Float32Array(numFilters + 2);
   let melValuesInFreq = new Float32Array(numFilters + 2);
@@ -171,11 +189,11 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
   return filterBank;
 }
 
-export function hzToOctaves(freq, A440) {
+export function hzToOctaves(freq: number, A440: number) {
   return Math.log2((16 * freq) / A440);
 }
 
-export function normalizeByColumn(a) {
+export function normalizeByColumn(a: number[][]) {
   var emptyRow = a[0].map(() => 0);
   var colDenominators = a
     .reduce((acc, row) => {
@@ -189,9 +207,9 @@ export function normalizeByColumn(a) {
 }
 
 export function createChromaFilterBank(
-  numFilters,
-  sampleRate,
-  bufferSize,
+  numFilters: number,
+  sampleRate: number,
+  bufferSize: number,
   centerOctave = 5,
   octaveWidth = 2,
   baseC = true,
@@ -252,7 +270,11 @@ export function createChromaFilterBank(
   return weights.map((row) => row.slice(0, numOutputBins));
 }
 
-export function frame(buffer, frameLength, hopLength) {
+export function frame(
+  buffer: number[],
+  frameLength: number,
+  hopLength: number
+) {
   if (buffer.length < frameLength) {
     throw new Error("Buffer is too short for frame length");
   }

@@ -1,6 +1,11 @@
+import { AmplitudeSpectrum } from "../main";
 import { mu } from "./extractorUtilities";
 
-export default function (args) {
+export type SpectralSkewnessParameters = {
+  ampSpectrum: AmplitudeSpectrum;
+};
+
+export default function spectralSkewness(args: SpectralSkewnessParameters) {
   if (typeof args.ampSpectrum !== "object") {
     throw new TypeError();
   }

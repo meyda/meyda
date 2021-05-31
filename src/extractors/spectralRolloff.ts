@@ -1,12 +1,19 @@
-export default function () {
-  if (typeof arguments[0].ampSpectrum !== "object") {
+import { AmplitudeSpectrum } from "../main";
+
+export type SpectralRolloffParameters = {
+  ampSpectrum: AmplitudeSpectrum;
+  sampleRate: number;
+};
+
+export default function spectralRolloff(args: SpectralRolloffParameters) {
+  if (typeof args.ampSpectrum !== "object") {
     throw new TypeError();
   }
 
-  var ampspec = arguments[0].ampSpectrum;
+  var ampspec = args.ampSpectrum;
 
   //calculate nyquist bin
-  var nyqBin = arguments[0].sampleRate / (2 * (ampspec.length - 1));
+  var nyqBin = args.sampleRate / (2 * (ampspec.length - 1));
   var ec = 0;
   for (var i = 0; i < ampspec.length; i++) {
     ec += ampspec[i];

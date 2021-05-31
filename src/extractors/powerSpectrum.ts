@@ -1,4 +1,10 @@
-export default function (args) {
+import { AmplitudeSpectrum } from "../main";
+
+type PowerSpectrumParameters = {
+  ampSpectrum: AmplitudeSpectrum;
+};
+
+export default function powerSpectrum(args: PowerSpectrumParameters) {
   if (typeof args.ampSpectrum !== "object") {
     throw new TypeError();
   }

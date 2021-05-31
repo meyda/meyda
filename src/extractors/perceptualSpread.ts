@@ -1,11 +1,16 @@
-import loudness from "./loudness";
+import { Signal } from "../main";
+import loudness, { LoudnessParameters } from "./loudness";
 
-export default function () {
-  if (typeof arguments[0].signal !== "object") {
+export type PerceptualSpreadParameters = {
+  signal: Signal;
+} & LoudnessParameters;
+
+export default function perceptualSpread(args: PerceptualSpreadParameters) {
+  if (typeof args.signal !== "object") {
     throw new TypeError();
   }
 
-  var loudnessValue = loudness(arguments[0]);
+  var loudnessValue = loudness(args);
 
   var max = 0;
   for (var i = 0; i < loudnessValue.specific.length; i++) {
