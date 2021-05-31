@@ -1,6 +1,9 @@
 import * as utilities from "./utilities";
 import { WindowFunction } from "./utilities";
-import extractors from "./featureExtractors";
+import extractors, {
+  ExtractorsType,
+  UnionExtractorParams,
+} from "./featureExtractors";
 import { ComplexSpectrum, fft } from "fftjs";
 import { MeydaAnalyzer } from "./meyda-wa";
 
@@ -167,8 +170,8 @@ var Meyda = {
   complexSpectrum: null as unknown as ComplexSpectrum,
   ampSpectrum: null as unknown as AmplitudeSpectrum,
   previousSignal: null as unknown as Signal,
-  previousComplexSpectrum: null as unknown as ComplexSpectrum,
-  previousAmpSpectrum: null as unknown as AmplitudeSpectrum,
+  // previousComplexSpectrum: null as unknown as ComplexSpectrum,
+  // previousAmpSpectrum: null as unknown as AmplitudeSpectrum,
   inputs: 1,
   outputs: 1,
   channel: 0,
@@ -300,12 +303,12 @@ var Meyda = {
       );
 
       this.previousSignal = preparedSignal.windowedSignal;
-      this.previousComplexSpectrum = preparedSignal.complexSpectrum;
-      this.previousAmpSpectrum = preparedSignal.ampSpectrum;
+      // this.previousComplexSpectrum = preparedSignal.complexSpectrum;
+      // this.previousAmpSpectrum = preparedSignal.ampSpectrum;
     }
 
-    const extract = (feature: string) => {
-      return this.featureExtractors[feature]({
+    const extract = (feature: MeydaFeature) => {
+      const extractorParams: UnionExtractorParams = {
         ampSpectrum: this.ampSpectrum,
         chromaFilterBank: this.chromaFilterBank,
         complexSpectrum: this.complexSpectrum,
@@ -315,10 +318,12 @@ var Meyda = {
         barkScale: this.barkScale,
         melFilterBank: this.melFilterBank,
         previousSignal: this.previousSignal,
-        previousAmpSpectrum: this.previousAmpSpectrum,
-        previousComplexSpectrum: this.previousComplexSpectrum,
+        // Not required by any extractor right now
+        // previousAmpSpectrum: this.previousAmpSpectrum,
+        // previousComplexSpectrum: this.previousComplexSpectrum,
         numberOfMFCCCoefficients: this.numberOfMFCCCoefficients,
-      });
+      };
+      return this.featureExtractors[feature](extractorParams);
     };
 
     if (typeof feature === "object") {

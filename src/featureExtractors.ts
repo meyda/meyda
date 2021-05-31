@@ -61,7 +61,7 @@ const extractors = {
   spectralFlux,
 } as const;
 
-type ExtractorsType = typeof extractors;
+export type ExtractorsType = typeof extractors;
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I
 ) => void
@@ -70,6 +70,8 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 
 type ExtractorFunctions = ExtractorsType[keyof ExtractorsType];
 type AllParameterTypes = Parameters<ExtractorFunctions>[0];
+type AvailableExtractors = keyof ExtractorsType;
+// type MeydaExtractResult = {[k: K in AvailableExtractors]: ReturnType<ExtractorsType[K]>};
 export type UnionExtractorParams = UnionToIntersection<AllParameterTypes>;
 
 export default extractors;

@@ -15,6 +15,7 @@ type AudioThis = {
   context: AudioContext;
   elvis: HTMLMediaElement;
   meyda: any;
+  initializeMicrophoneSampling: Function;
 };
 const Audio = function (this: AudioThis, bufferSize: number) {
   if (
