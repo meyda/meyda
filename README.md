@@ -1,5 +1,6 @@
 # meyda
-[![Build Status][build-status-image]][meyda-travis]
+
+![Build Status][build-status-image]
 
 Meyda is a Javascript audio feature extraction library. Meyda supports both offline feature extraction as well as real-time feature extraction using the [Web Audio API][web-audio-api]. We wrote a paper about it, which is available [here][meyda-paper].
 
@@ -8,14 +9,14 @@ Want to ask questions, or chat about Meyda? Check out our [slack channel] on the
 [hughrawlinson][hugh-github] | [nevosegal][nevo-github] | [jakubfiala][jakub-github] | [2xAA][2xaa-github]
 
 ### Usage
+
 Please see [the documentation][docs] for setup and usage instructions.
 
 ### Contributing
 
 Please see [our contributor guidelines][contributing] for guidelines about contributing, and bear in mind that we adhere to the [Contributor Covenant][contributor-covenant]
 
-[build-status-image]: https://travis-ci.org/meyda/meyda.svg?branch=master
-[meyda-travis]: https://travis-ci.org/meyda/meyda
+[build-status-image]: https://img.shields.io/github/checks-status/meyda/meyda/master
 [web-audio-api]: https://github.com/WebAudio/web-audio-api
 [meyda-paper]: http://doc.gold.ac.uk/~mu202hr/publications/RawlinsonSegalFiala_WAC2015.pdf
 [hugh-github]: https://github.com/hughrawlinson
