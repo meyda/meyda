@@ -1,4 +1,4 @@
-import { Signal } from "fftjs";
+import { Signal } from "../main";
 
 type EnergyParamters = {
   signal: Signal;

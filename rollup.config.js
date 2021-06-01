@@ -7,7 +7,7 @@ import babel from "@rollup/plugin-babel";
 import glob from "glob";
 import typescript from "@rollup/plugin-typescript";
 
-const SOURCE_FILES = glob.sync("./src/**/*.ts");
+const SOURCE_FILES = glob.sync("./src/**/*[^.d.].ts");
 
 const config = {
   input: "src/main.ts",

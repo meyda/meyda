@@ -1,9 +1,6 @@
 import * as utilities from "./utilities";
 import { WindowFunction } from "./utilities";
-import extractors, {
-  ExtractorsType,
-  UnionExtractorParams,
-} from "./featureExtractors";
+import extractors, { UnionExtractorParams } from "./featureExtractors";
 import { ComplexSpectrum, fft } from "fftjs";
 import { MeydaAnalyzer } from "./meyda-wa";
 
@@ -235,7 +232,7 @@ var Meyda = {
   extract: function (
     feature: MeydaFeature | MeydaFeature[],
     signal: number[] | Signal,
-    previousSignal: number[] | Signal
+    previousSignal?: number[] | Signal
   ): any {
     if (!signal) throw this._errors.invalidInput;
     else if (typeof signal != "object") throw this._errors.invalidInput;
@@ -278,7 +275,7 @@ var Meyda = {
       );
     }
 
-    if (signal.constructor !== Float32Array) {
+    if (signal.constructor !== Float32Array && Array.isArray(signal)) {
       // signal is a normal array, convert to F32A
       this.signal = utilities.arrayToTyped(signal);
     } else {
@@ -348,7 +345,7 @@ var prepareSignalWithSpectrum = function (
   bufferSize: number
 ): SignalPreparedWithSpectrum {
   var signal: Signal =
-    providedSignal.constructor !== Float32Array
+    providedSignal.constructor !== Float32Array && Array.isArray(providedSignal)
       ? utilities.arrayToTyped(providedSignal)
       : providedSignal;
   const windowedSignal = utilities.applyWindow(signal, windowingFunction);

@@ -1,4 +1,4 @@
-import { Signal } from "fftjs";
+import { Signal } from "../main";
 import loudness, { LoudnessParameters } from "./loudness";
 
 export type PerceptualSharpnessParamters = {

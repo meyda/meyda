@@ -1,6 +1,6 @@
 import Audio from "./audio";
-
-declare var THREE;
+import * as THREE from "three";
+import { Line } from "three";
 
 var scale = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
 const bufferSize = 1024;
@@ -10,7 +10,7 @@ var aspectRatio = 16 / 10;
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(40, aspectRatio, 0.1, 1000);
 
-var initializeFFTs = function (number, pointCount) {
+var initializeFFTs = function (number: number, pointCount: number) {
   var ffts: number[][] = [];
   for (var i = 0; i < number; i++) {
     ffts.push(new Array(pointCount).fill(0));
@@ -31,7 +31,7 @@ var ffts = initializeFFTs(20, bufferSize);
 var buffer = null;
 
 var renderer = new THREE.WebGLRenderer({
-  canvas: document.querySelector("canvas"),
+  canvas: document.querySelector("canvas") as HTMLCanvasElement,
 });
 
 function resize() {
@@ -80,7 +80,7 @@ for (let i = 0; i < ffts.length; i++) {
   if (ffts[i]) {
     let geometry = new THREE.BufferGeometry(); // May be a way to reuse this
 
-    let positions = new Float32Array(ffts[i].length * 3);
+    let positions: Float32Array = new Float32Array(ffts[i].length * 3);
 
     geometry.addAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setDrawRange(0, ffts[i].length);
@@ -88,7 +88,7 @@ for (let i = 0; i < ffts.length; i++) {
     let line = new THREE.Line(geometry, material);
     lines.add(line);
 
-    positions = line.geometry.attributes.position.array;
+    positions = Float32Array.from(line.geometry.attributes.position.array);
   }
 }
 
@@ -102,14 +102,24 @@ let bufferLine = new THREE.Line(bufferLineGeometry, material);
   );
   bufferLineGeometry.setDrawRange(0, bufferSize);
 
-  positions = bufferLine.geometry.attributes.position.array;
+  positions = Float32Array.from(bufferLine.geometry.attributes.position.array);
 }
 scene.add(bufferLine);
 scene.add(lines);
 
 // scene.add(loudnessLines);
 
-let features: any = null;
+// this type should come from meyda itself
+type FeaturesResult = {
+  chroma?: number[];
+  mfcc?: number[];
+  amplitudeSpectrum: number[];
+  spectralCentroid: number;
+  spectralRolloff: number;
+  rms: number;
+};
+
+let features: FeaturesResult;
 let chromaWrapper = document.querySelector("#chroma");
 let mfccWrapper = document.querySelector("#mfcc");
 
@@ -151,7 +161,8 @@ function render() {
     const windowedSignalBuffer = a.meyda._m.signal;
 
     for (let i = 0; i < ffts.length; i++) {
-      var positions = lines.children[i].geometry.attributes.position.array;
+      const object3d = lines.children[i] as Line;
+      var positions = object3d.geometry.attributes.position.array as number[];
       var index = 0;
 
       for (var j = 0; j < ffts[i].length * 3; j++) {
@@ -160,7 +171,7 @@ function render() {
         positions[index++] = -15 - i;
       }
 
-      lines.children[i].geometry.attributes.position.needsUpdate = true;
+      object3d.geometry.attributes.position.needsUpdate = true;
     }
 
     // Render Spectral Centroid Arrow
@@ -188,7 +199,9 @@ function render() {
 
     if (windowedSignalBuffer) {
       // Render Signal Buffer
-      let positions = bufferLine.geometry.attributes.position.array;
+      let positions = Float32Array.from(
+        bufferLine.geometry.attributes.position.array
+      );
       let index = 0;
       for (var i = 0; i < bufferSize; i++) {
         positions[index++] = -11 + (22 * i) / bufferSize;

@@ -3,9 +3,8 @@ declare module "fftjs" {
     real: number[];
     imag: number[];
   }
-  type Signal = number[] | Float32Array;
-  function fft(signal: Signal): ComplexSpectrum;
-  function ifft(complexSpectrum: ComplexSpectrum): Signal;
+  function fft(signal: ArrayLike<number>): ComplexSpectrum;
+  function ifft(complexSpectrum: ComplexSpectrum): InputSignal;
 }
 
 declare module "dct" {

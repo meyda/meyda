@@ -1,5 +1,4 @@
-import { Signal } from "fftjs";
-import { BarkScale } from "./main";
+import { BarkScale, Signal } from "./main";
 import * as windowing from "./windowing";
 
 let windows: { [windowName: string]: { [windowLength: number]: Window } } = {};

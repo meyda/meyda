@@ -1,5 +1,4 @@
 import * as utilities from "./utilities";
-import * as featureExtractors from "./featureExtractors";
 import Meyda, { MeydaFeature, MeydaOptions, Signal } from "./main";
 
 /**
@@ -88,11 +87,11 @@ export class MeydaAnalyzer {
       this._m.bufferSize
     );
 
-    this.inputData = null;
-    this.previousInputData = null;
+    this.inputData = undefined;
+    this.previousInputData = undefined;
 
-    this.frame = null;
-    this.previousFrame = null;
+    this.frame = undefined;
+    this.previousFrame = undefined;
 
     this.setSource(options.source);
 

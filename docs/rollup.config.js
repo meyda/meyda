@@ -11,7 +11,11 @@ export default {
     file: "./assets/main.js",
     format: "iife",
     name: "meydaDemo",
+    globals: {
+      three: "THREE",
+    },
   },
+  external: ["three"],
   plugins: [
     typescript(),
     nodePolyfills(),
