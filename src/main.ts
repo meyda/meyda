@@ -1,7 +1,7 @@
 import * as utilities from "./utilities";
 import { WindowFunction } from "./utilities";
 import extractors, { UnionExtractorParams } from "./featureExtractors";
-import { ComplexSpectrum, fft } from "fftjs";
+import { fft } from "fftjs";
 import { MeydaAnalyzer } from "./meyda-wa";
 
 export type MeydaFeature = keyof typeof extractors;
@@ -65,21 +65,7 @@ export type MeydaOptions = {
  * @example
  * var Meyda = require('meyda');
  */
-var Meyda = {
-  /**
-   * Meyda stores a reference to the relevant audio context here for use inside
-   * the Web Audio API.
-   * @instance
-   * @member {AudioContext}
-   */
-  audioContext: null as unknown as AudioContext,
-  /**
-   * Meyda keeps an internal ScriptProcessorNode in which it runs audio feature
-   * extraction. The ScriptProcessorNode is stored in this member variable.
-   * @instance
-   * @member {ScriptProcessorNode}
-   */
-  spn: null as unknown as ScriptProcessorNode,
+class Meyda {
   /**
    * The length of each buffer that Meyda will extract audio on. When recieving
    * input via the Web Audio API, the Script Processor Node chunks incoming audio
@@ -90,42 +76,27 @@ var Meyda = {
    * buffer size by the sample rate. If you're using Meyda for visualisation,
    * make sure that you're collecting audio features at a rate that's faster
    * than or equal to the video frame rate you expect.
-   * @instance
-   * @member {number}
    */
-  bufferSize: 512,
-  hopSize: 0,
+  bufferSize = 512;
+  hopSize = 0;
   /**
    * The number of samples per second of the incoming audio. This affects
    * feature extraction outside of the context of the Web Audio API, and must be
    * set accurately - otherwise calculations will be off.
-   * @instance
-   * @member {number}
    */
-  sampleRate: 44100,
+  sampleRate = 44100;
   /**
    * The number of Mel bands to use in the Mel Frequency Cepstral Co-efficients
    * feature extractor
-   * @instance
-   * @member {number}
    */
-  melBands: 26,
+  melBands = 26;
   /**
    * The number of bands to divide the spectrum into for the Chroma feature
    * extractor. 12 is the standard number of semitones per octave in the western
    * music tradition, but Meyda can use an arbitrary number of bands, which
    * can be useful for microtonal music.
-   * @instance
-   * @member {number}
    */
-  chromaBands: 12,
-  /**
-   * A function you can provide that will be called for each buffer that Meyda
-   * receives from its source node
-   * @instance
-   * @member {Function}
-   */
-  callback: null as unknown as Function,
+  chromaBands = 12;
   /**
    * Specify the windowing function to apply to the buffer before the
    * transformation from the time domain to the frequency domain is performed
@@ -135,22 +106,21 @@ var Meyda = {
    * @instance
    * @member {string}
    */
-  windowingFunction: "hanning" as WindowFunction,
+  windowingFunction: WindowFunction = "hanning";
   /**
    * @member {object}
    */
-  featureExtractors: extractors,
-  EXTRACTION_STARTED: false,
+  featureExtractors = extractors;
+  EXTRACTION_STARTED = false;
   /**
    * The number of MFCC co-efficients that the MFCC feature extractor should return
    * @instance
    * @member {number}
    */
-  numberOfMFCCCoefficients: 13,
+  numberOfMFCCCoefficients = 13;
   // internals
-  _featuresToExtract: [] as MeydaFeature[],
-  windowing: utilities.applyWindow,
-  _errors: {
+  windowing = utilities.applyWindow;
+  _errors = {
     notPow2: new Error(
       "Meyda: Buffer size must be a power of 2, e.g. 64 or 512"
     ),
@@ -159,19 +129,15 @@ var Meyda = {
     invalidInput: new Error("Meyda: Invalid input."),
     noAC: new Error("Meyda: No AudioContext specified."),
     noSource: new Error("Meyda: No source node specified."),
-  },
-  barkScale: null as unknown as BarkScale,
-  melFilterBank: [] as MelFilterBank,
-  chromaFilterBank: [] as ChromaFilterBank,
-  signal: null as unknown as Signal,
-  complexSpectrum: null as unknown as ComplexSpectrum,
-  ampSpectrum: null as unknown as AmplitudeSpectrum,
-  previousSignal: null as unknown as Signal,
+  };
+  barkScale: BarkScale = Float32Array.from([]);
+  melFilterBank: MelFilterBank = [];
+  chromaFilterBank: ChromaFilterBank = [];
   // previousComplexSpectrum: null as unknown as ComplexSpectrum,
   // previousAmpSpectrum: null as unknown as AmplitudeSpectrum,
-  inputs: 1,
-  outputs: 1,
-  channel: 0,
+  inputs = 1;
+  outputs = 1;
+  channel = 0;
 
   /**
    * @summary
@@ -195,9 +161,9 @@ var Meyda = {
    *   }
    * });
    */
-  createMeydaAnalyzer: function (options: MeydaOptions) {
-    return new MeydaAnalyzer(options, Object.assign({}, Meyda));
-  },
+  createMeydaAnalyzer(options: MeydaOptions) {
+    return new MeydaAnalyzer(options, this);
+  }
 
   /**
    * List available audio feature extractors. Return format provides the key to
@@ -229,7 +195,7 @@ var Meyda = {
    * meyda.bufferSize = 2048;
    * const features = meyda.extract(['zcr', 'spectralCentroid'], signal);
    */
-  extract: function (
+  extract(
     feature: MeydaFeature | MeydaFeature[],
     signal: number[] | Signal,
     previousSignal?: number[] | Signal
@@ -275,46 +241,44 @@ var Meyda = {
       );
     }
 
-    if (signal.constructor !== Float32Array && Array.isArray(signal)) {
-      // signal is a normal array, convert to F32A
-      this.signal = utilities.arrayToTyped(signal);
-    } else {
-      this.signal = signal;
-    }
-
-    let preparedSignal = prepareSignalWithSpectrum(
+    let {
+      // BUG: we were never actually windowing the signal of the current buffer
+      // We should use windowedSignal instead of signal here.
+      signal: preparedSignal,
+      complexSpectrum: preparedComplexSpectrum,
+      ampSpectrum: preparedAmpSpectrum,
+    } = prepareSignalWithSpectrum(
       signal,
       this.windowingFunction,
       this.bufferSize
     );
 
-    this.signal = preparedSignal.windowedSignal;
-    this.complexSpectrum = preparedSignal.complexSpectrum;
-    this.ampSpectrum = preparedSignal.ampSpectrum;
-
-    if (previousSignal) {
-      let preparedSignal = prepareSignalWithSpectrum(
-        previousSignal,
-        this.windowingFunction,
-        this.bufferSize
-      );
-
-      this.previousSignal = preparedSignal.windowedSignal;
-      // this.previousComplexSpectrum = preparedSignal.complexSpectrum;
-      // this.previousAmpSpectrum = preparedSignal.ampSpectrum;
-    }
+    let {
+      windowedSignal: previousPreparedSignal,
+      /*
+        if we needed these we could use them
+        complexSpectrum: previousPreparedComplexSpectrum,
+        ampSpectrum: previousPreparedAmpSpectrum
+        */
+    } = previousSignal
+      ? prepareSignalWithSpectrum(
+          previousSignal,
+          this.windowingFunction,
+          this.bufferSize
+        )
+      : { windowedSignal: new Float32Array() };
 
     const extract = (feature: MeydaFeature) => {
       const extractorParams: UnionExtractorParams = {
-        ampSpectrum: this.ampSpectrum,
+        ampSpectrum: preparedAmpSpectrum,
         chromaFilterBank: this.chromaFilterBank,
-        complexSpectrum: this.complexSpectrum,
-        signal: this.signal,
+        complexSpectrum: preparedComplexSpectrum,
+        signal: preparedSignal,
         bufferSize: this.bufferSize,
         sampleRate: this.sampleRate,
         barkScale: this.barkScale,
         melFilterBank: this.melFilterBank,
-        previousSignal: this.previousSignal,
+        previousSignal: previousPreparedSignal,
         // Not required by any extractor right now
         // previousAmpSpectrum: this.previousAmpSpectrum,
         // previousComplexSpectrum: this.previousComplexSpectrum,
@@ -336,8 +300,8 @@ var Meyda = {
     } else {
       throw this._errors.invalidFeatureFmt;
     }
-  },
-};
+  }
+}
 
 var prepareSignalWithSpectrum = function (
   providedSignal: number[] | Signal,

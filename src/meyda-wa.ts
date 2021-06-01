@@ -27,14 +27,34 @@ import Meyda, { MeydaFeature, MeydaOptions, Signal } from "./main";
  * @hideconstructor
  */
 export class MeydaAnalyzer {
-  _m: typeof Meyda;
+  _m: Meyda;
   inputData?: Signal;
   previousInputData?: Signal;
   frame?: number[];
   previousFrame?: number[];
   source?: AudioNode;
+  _featuresToExtract: MeydaFeature | MeydaFeature[] = [];
+  /**
+   * A function you can provide that will be called for each buffer that Meyda
+   * receives from its source node
+   * @instance
+   * @member {Function}
+   */
+  callback: Function;
+  /**
+   * Meyda stores a reference to the relevant audio context here for use inside
+   * the Web Audio API.
+   * @instance
+   * @member {AudioContext}
+   */
+  audioContext: AudioContext;
+  /**
+   * Meyda keeps an internal ScriptProcessorNode in which it runs audio feature
+   * extraction. The ScriptProcessorNode is stored in this member variable.
+   */
+  spn: ScriptProcessorNode;
 
-  constructor(options: MeydaOptions, _this: typeof Meyda) {
+  constructor(options: MeydaOptions, _this: Meyda) {
     this._m = _this;
     if (!options.audioContext) {
       throw this._m._errors.noAC;
@@ -47,14 +67,14 @@ export class MeydaAnalyzer {
       throw this._m._errors.noSource;
     }
 
-    this._m.audioContext = options.audioContext;
+    this.audioContext = options.audioContext;
 
     // TODO: validate options
     this._m.bufferSize = options.bufferSize || this._m.bufferSize || 256;
     this._m.hopSize = options.hopSize || this._m.hopSize || this._m.bufferSize;
     this._m.sampleRate =
-      options.sampleRate || this._m.audioContext.sampleRate || 44100;
-    this._m.callback = options.callback;
+      options.sampleRate || this.audioContext.sampleRate || 44100;
+    this.callback = options.callback;
     this._m.windowingFunction = options.windowingFunction || "hanning";
     this._m.EXTRACTION_STARTED = options.startImmediately || false;
     this._m.channel = typeof options.channel === "number" ? options.channel : 0;
@@ -66,14 +86,14 @@ export class MeydaAnalyzer {
       13;
 
     //create nodes
-    this._m.spn = this._m.audioContext.createScriptProcessor(
+    this.spn = this.audioContext.createScriptProcessor(
       this._m.bufferSize,
       this._m.inputs,
       this._m.outputs
     );
-    this._m.spn.connect(this._m.audioContext.destination);
+    this.spn.connect(this.audioContext.destination);
 
-    this._m._featuresToExtract = options.featureExtractors || [];
+    this._featuresToExtract = options.featureExtractors || [];
 
     //always recalculate BS and MFB when a new Meyda analyzer is created.
     this._m.barkScale = utilities.createBarkScale(
@@ -95,7 +115,7 @@ export class MeydaAnalyzer {
 
     this.setSource(options.source);
 
-    this._m.spn.onaudioprocess = (e: AudioProcessingEvent) => {
+    this.spn.onaudioprocess = (e: AudioProcessingEvent) => {
       if (this.inputData !== null) {
         this.previousInputData = this.inputData;
       }
@@ -125,17 +145,14 @@ export class MeydaAnalyzer {
         this.frame = f;
 
         var features = this._m.extract(
-          this._m._featuresToExtract,
+          this._featuresToExtract,
           this.frame,
           this.previousFrame
         );
 
         // call callback if applicable
-        if (
-          typeof this._m.callback === "function" &&
-          this._m.EXTRACTION_STARTED
-        ) {
-          this._m.callback(features);
+        if (typeof this.callback === "function" && this._m.EXTRACTION_STARTED) {
+          this.callback(features);
         }
 
         this.previousFrame = this.frame;
@@ -155,11 +172,11 @@ export class MeydaAnalyzer {
    * analyzer.start('chroma');
    */
   start(features?: MeydaFeature | MeydaFeature[]) {
-    this._m._featuresToExtract = features
+    this._featuresToExtract = features
       ? Array.isArray(features)
         ? features
         : [features]
-      : this._m._featuresToExtract || [];
+      : this._featuresToExtract || [];
     this._m.EXTRACTION_STARTED = true;
   }
 
@@ -179,9 +196,9 @@ export class MeydaAnalyzer {
    * analyzer.setSource(audioSourceNode);
    */
   setSource(source: AudioNode) {
-    this.source && this.source.disconnect(this._m.spn);
+    this.source && this.source.disconnect(this.spn);
     this.source = source;
-    this.source.connect(this._m.spn);
+    this.source.connect(this.spn);
   }
 
   /**
@@ -211,7 +228,7 @@ export class MeydaAnalyzer {
   get(features: MeydaFeature | MeydaFeature[]) {
     if (this.inputData) {
       return this._m.extract(
-        features || this._m._featuresToExtract,
+        features || this._featuresToExtract,
         this.inputData,
         this.previousInputData
       );
