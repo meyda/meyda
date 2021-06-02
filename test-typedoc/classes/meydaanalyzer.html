@@ -1,0 +1,529 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>MeydaAnalyzer | meyda</title>
+	<meta name="description" content="Documentation for meyda">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">meyda</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">meyda</a>
+				</li>
+				<li>
+					<a href="meydaanalyzer.html">MeydaAnalyzer</a>
+				</li>
+			</ul>
+			<h1>Class MeydaAnalyzer</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Meyda&#39;s interface to the Web Audio API. MeydaAnalyzer abstracts an API on
+							top of the Web Audio API&#39;s ScriptProcessorNode, running the Meyda audio
+						feature extractors inside that context.</p>
+					</div>
+					<p>MeydaAnalyzer&#39;s constructor should not be called directly - MeydaAnalyzer
+						objects should be generated using the {@link Meyda.createMeydaAnalyzer}
+					factory function in the main Meyda class.</p>
+					<pre><code><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">analyzer</span><span style="color: #000000"> = </span><span style="color: #001080">Meyda</span><span style="color: #000000">.</span><span style="color: #795E26">createMeydaAnalyzer</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #A31515">&quot;audioContext&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #001080">audioContext</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #A31515">&quot;source&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #001080">source</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #A31515">&quot;bufferSize&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #098658">512</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #A31515">&quot;featureExtractors&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;rms&quot;</span><span style="color: #000000">],</span>
+<span style="color: #000000">  </span><span style="color: #A31515">&quot;inputs&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #A31515">&quot;numberOfMFCCCoefficients&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #098658">20</span>
+<span style="color: #000000">  </span><span style="color: #A31515">&quot;callback&quot;</span><span style="color: #000000">: </span><span style="color: #001080">features</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #001080">levelRangeElement</span><span style="color: #000000">.</span><span style="color: #001080">value</span><span style="color: #000000"> = </span><span style="color: #001080">features</span><span style="color: #000000">.</span><span style="color: #001080">rms</span><span style="color: #000000">;</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">});</span>
+</code></pre>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">MeydaAnalyzer</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="meydaanalyzer.html#_featurestoextract" class="tsd-kind-icon">_features<wbr>ToExtract</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="meydaanalyzer.html#_m" class="tsd-kind-icon">_m</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="meydaanalyzer.html#audiocontext" class="tsd-kind-icon">audio<wbr>Context</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="meydaanalyzer.html#callback" class="tsd-kind-icon">callback</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="meydaanalyzer.html#frame" class="tsd-kind-icon">frame</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="meydaanalyzer.html#inputdata" class="tsd-kind-icon">input<wbr>Data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="meydaanalyzer.html#previousframe" class="tsd-kind-icon">previous<wbr>Frame</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="meydaanalyzer.html#previousinputdata" class="tsd-kind-icon">previous<wbr>Input<wbr>Data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="meydaanalyzer.html#source" class="tsd-kind-icon">source</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="meydaanalyzer.html#spn" class="tsd-kind-icon">spn</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="meydaanalyzer.html#get" class="tsd-kind-icon">get</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="meydaanalyzer.html#setchannel" class="tsd-kind-icon">set<wbr>Channel</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="meydaanalyzer.html#setsource" class="tsd-kind-icon">set<wbr>Source</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="meydaanalyzer.html#start" class="tsd-kind-icon">start</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="meydaanalyzer.html#stop" class="tsd-kind-icon">stop</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="_featurestoextract" class="tsd-anchor"></a>
+					<h3>_features<wbr>ToExtract</h3>
+					<div class="tsd-signature tsd-kind-icon">_features<wbr>ToExtract<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;complexSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;buffer&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rms&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;energy&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSlope&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralCentroid&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralRolloff&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlatness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSkewness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralKurtosis&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;amplitudeSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;zcr&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;loudness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSharpness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;powerSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mfcc&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;chroma&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlux&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">&quot;complexSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;buffer&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rms&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;energy&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSlope&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralCentroid&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralRolloff&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlatness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSkewness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralKurtosis&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;amplitudeSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;zcr&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;loudness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSharpness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;powerSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mfcc&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;chroma&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlux&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L88">meyda-wa.ts:88</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="_m" class="tsd-anchor"></a>
+					<h3>_m</h3>
+					<div class="tsd-signature tsd-kind-icon">_m<span class="tsd-signature-symbol">:</span> <a href="default.html" class="tsd-signature-type" data-tsd-kind="Class">default</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L82">meyda-wa.ts:82</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="audiocontext" class="tsd-anchor"></a>
+					<h3>audio<wbr>Context</h3>
+					<div class="tsd-signature tsd-kind-icon">audio<wbr>Context<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AudioContext</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L102">meyda-wa.ts:102</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Meyda stores a reference to the relevant audio context here for use inside
+							the Web Audio API.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>instance</dt>
+							<dd></dd>
+							<dt>member</dt>
+							<dd><p>{AudioContext}</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="callback" class="tsd-anchor"></a>
+					<h3>callback</h3>
+					<div class="tsd-signature tsd-kind-icon">callback<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L95">meyda-wa.ts:95</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A function you can provide that will be called for each buffer that Meyda
+							receives from its source node</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>instance</dt>
+							<dd></dd>
+							<dt>member</dt>
+							<dd><p>{Function}</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="frame" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> frame</h3>
+					<div class="tsd-signature tsd-kind-icon">frame<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L85">meyda-wa.ts:85</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="inputdata" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> input<wbr>Data</h3>
+					<div class="tsd-signature tsd-kind-icon">input<wbr>Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Float32Array</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L83">meyda-wa.ts:83</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="previousframe" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> previous<wbr>Frame</h3>
+					<div class="tsd-signature tsd-kind-icon">previous<wbr>Frame<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L86">meyda-wa.ts:86</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="previousinputdata" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> previous<wbr>Input<wbr>Data</h3>
+					<div class="tsd-signature tsd-kind-icon">previous<wbr>Input<wbr>Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Float32Array</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L84">meyda-wa.ts:84</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="source" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> source</h3>
+					<div class="tsd-signature tsd-kind-icon">source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AudioNode</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L87">meyda-wa.ts:87</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="spn" class="tsd-anchor"></a>
+					<h3>spn</h3>
+					<div class="tsd-signature tsd-kind-icon">spn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ScriptProcessorNode</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L107">meyda-wa.ts:107</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Meyda keeps an internal ScriptProcessorNode in which it runs audio feature
+							extraction. The ScriptProcessorNode is stored in this member variable.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="get" class="tsd-anchor"></a>
+					<h3>get</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>features<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;complexSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;buffer&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rms&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;energy&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSlope&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralCentroid&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralRolloff&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlatness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSkewness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralKurtosis&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;amplitudeSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;zcr&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;loudness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSharpness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;powerSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mfcc&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;chroma&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlux&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">&quot;complexSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;buffer&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rms&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;energy&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSlope&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralCentroid&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralRolloff&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlatness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSkewness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralKurtosis&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;amplitudeSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;zcr&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;loudness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSharpness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;powerSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mfcc&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;chroma&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlux&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L284">meyda-wa.ts:284</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get a set of features from the current frame.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><p>analyzer.get(&#39;spectralFlatness&#39;);</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>features: <span class="tsd-signature-type">&quot;complexSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;buffer&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rms&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;energy&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSlope&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralCentroid&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralRolloff&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlatness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSkewness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralKurtosis&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;amplitudeSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;zcr&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;loudness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSharpness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;powerSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mfcc&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;chroma&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlux&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">&quot;complexSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;buffer&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rms&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;energy&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSlope&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralCentroid&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralRolloff&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlatness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSkewness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralKurtosis&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;amplitudeSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;zcr&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;loudness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSharpness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;powerSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mfcc&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;chroma&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlux&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setchannel" class="tsd-anchor"></a>
+					<h3>set<wbr>Channel</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Channel<span class="tsd-signature-symbol">(</span>channel<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L267">meyda-wa.ts:267</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Set the channel of the audio node for Meyda to listen to</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><p>analyzer.setChannel(0);</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>channel: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the index of the channel on the input audio node
+										for Meyda to listen to.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setsource" class="tsd-anchor"></a>
+					<h3>set<wbr>Source</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Source<span class="tsd-signature-symbol">(</span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AudioNode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L254">meyda-wa.ts:254</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Set the Audio Node for Meyda to listen to.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><p>analyzer.setSource(audioSourceNode);</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>source: <span class="tsd-signature-type">AudioNode</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The Audio Node for Meyda to listen to</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="start" class="tsd-anchor"></a>
+					<h3>start</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">start<span class="tsd-signature-symbol">(</span>features<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">&quot;complexSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;buffer&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rms&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;energy&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSlope&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralCentroid&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralRolloff&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlatness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSkewness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralKurtosis&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;amplitudeSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;zcr&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;loudness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSharpness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;powerSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mfcc&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;chroma&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlux&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">&quot;complexSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;buffer&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rms&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;energy&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSlope&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralCentroid&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralRolloff&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlatness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSkewness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralKurtosis&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;amplitudeSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;zcr&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;loudness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSharpness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;powerSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mfcc&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;chroma&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlux&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L230">meyda-wa.ts:230</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Start feature extraction
+										The audio features will be passed to the callback function that was defined
+										in the MeydaOptions that were passed to the factory when constructing the
+									MeydaAnalyzer.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><p>analyzer.start(&#39;chroma&#39;);</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> features: <span class="tsd-signature-type">&quot;complexSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;buffer&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rms&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;energy&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSlope&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralCentroid&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralRolloff&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlatness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSkewness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralKurtosis&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;amplitudeSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;zcr&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;loudness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSharpness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;powerSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mfcc&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;chroma&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlux&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">&quot;complexSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;buffer&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rms&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;energy&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSlope&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralCentroid&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralRolloff&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlatness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralSkewness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralKurtosis&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;amplitudeSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;zcr&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;loudness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSpread&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;perceptualSharpness&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;powerSpectrum&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mfcc&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;chroma&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;spectralFlux&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="stop" class="tsd-anchor"></a>
+					<h3>stop</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">stop<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/meyda/meyda/blob/367c71b/src/meyda-wa.ts#L244">meyda-wa.ts:244</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Stop feature extraction.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><p>analyzer.stop();</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
+						<a href="meydaanalyzer.html" class="tsd-kind-icon">Meyda<wbr>Analyzer</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#_featurestoextract" class="tsd-kind-icon">_features<wbr>ToExtract</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#_m" class="tsd-kind-icon">_m</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#audiocontext" class="tsd-kind-icon">audio<wbr>Context</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#callback" class="tsd-kind-icon">callback</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#frame" class="tsd-kind-icon">frame</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#inputdata" class="tsd-kind-icon">input<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#previousframe" class="tsd-kind-icon">previous<wbr>Frame</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#previousinputdata" class="tsd-kind-icon">previous<wbr>Input<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#source" class="tsd-kind-icon">source</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#spn" class="tsd-kind-icon">spn</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#get" class="tsd-kind-icon">get</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#setchannel" class="tsd-kind-icon">set<wbr>Channel</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#setsource" class="tsd-kind-icon">set<wbr>Source</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#start" class="tsd-kind-icon">start</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="meydaanalyzer.html#stop" class="tsd-kind-icon">stop</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-class">
+						<a href="default.html" class="tsd-kind-icon">default</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
