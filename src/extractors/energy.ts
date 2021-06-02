@@ -1,4 +1,4 @@
-import { Signal } from "../main";
+import { Signal } from "../types";
 
 type EnergyParamters = {
   signal: Signal;

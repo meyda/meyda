@@ -1,4 +1,4 @@
-import { AmplitudeSpectrum, ChromaFilterBank } from "../main";
+import { AmplitudeSpectrum, ChromaFilterBank } from "../types";
 
 export type ChromaParameters = {
   ampSpectrum: AmplitudeSpectrum;

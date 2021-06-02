@@ -1,9 +1,61 @@
 import * as utilities from "./utilities";
-import Meyda, { MeydaFeature, MeydaOptions, Signal } from "./main";
+import { WindowFunction } from "./utilities";
+import Meyda from "./main";
+import { MeydaFeature, Signal } from "./types";
+import { NoAudioContextError, NoSourceError, NotPow2Error } from "./errors";
 
 /**
- * MeydaAnalyzer
- * @classdesc
+ * Construction operators for a {@link MeydaAnalyzer}
+ */
+export type MeydaOptions = {
+  /**
+   * The Audio Context for the MeydaAnalyzer to operate in
+   */
+  audioContext: AudioContext;
+  /**
+   * The Audio Node for Meyda to listetn to
+   */
+  source: AudioNode;
+  /**
+   * see {@link Meyda.bufferSize}
+   */
+  bufferSize: number;
+  /**
+   * The number of samples between buffers. This can be used to extract audio
+   * more slowly than realtime, or more frequently (a negative hop size creates
+   * overlapping buffers) for higher resolution features.
+   */
+  hopSize: number;
+  /**
+   * see {@link Meyda.sampleRate}
+   */
+  sampleRate: number;
+  /**
+   * A function to receive the frames of audio features
+   */
+  callback: (arg: any) => any;
+  /**
+   * The Windowing Function to apply to the signal before transformation to the frequency domain
+   */
+  windowingFunction: WindowFunction;
+  /**
+   * Specify the feature extractors you want to run on the audio.
+   */
+  featureExtractors: MeydaFeature[];
+  /**
+   * Pass `true` to start feature extraction immediately
+   */
+  startImmediately: boolean;
+  /**
+   * The number of MFCC co-efficients that the MFCC feature extractor should return
+   */
+  numberOfMFCCCoefficients: number;
+  outputs: number;
+  inputs: number;
+  channel: number;
+};
+
+/**
  * Meyda's interface to the Web Audio API. MeydaAnalyzer abstracts an API on
  * top of the Web Audio API's ScriptProcessorNode, running the Meyda audio
  * feature extractors inside that context.
@@ -12,7 +64,7 @@ import Meyda, { MeydaFeature, MeydaOptions, Signal } from "./main";
  * objects should be generated using the {@link Meyda.createMeydaAnalyzer}
  * factory function in the main Meyda class.
  *
- * @example
+ * ```
  * const analyzer = Meyda.createMeydaAnalyzer({
  *   "audioContext": audioContext,
  *   "source": source,
@@ -24,7 +76,7 @@ import Meyda, { MeydaFeature, MeydaOptions, Signal } from "./main";
  *     levelRangeElement.value = features.rms;
  *   }
  * });
- * @hideconstructor
+ * ```
  */
 export class MeydaAnalyzer {
   _m: Meyda;
@@ -54,17 +106,21 @@ export class MeydaAnalyzer {
    */
   spn: ScriptProcessorNode;
 
+  /**
+   * @internal
+   * @hidden
+   */
   constructor(options: MeydaOptions, _this: Meyda) {
     this._m = _this;
     if (!options.audioContext) {
-      throw this._m._errors.noAC;
+      throw new NoAudioContextError();
     } else if (
       options.bufferSize &&
       !utilities.isPowerOfTwo(options.bufferSize)
     ) {
-      throw this._m._errors.notPow2;
+      throw new NotPow2Error();
     } else if (!options.source) {
-      throw this._m._errors.noSource;
+      throw new NoSourceError();
     }
 
     this.audioContext = options.audioContext;

@@ -1,4 +1,4 @@
-import { AmplitudeSpectrum } from "../main";
+import { AmplitudeSpectrum } from "../types";
 
 type PowerSpectrumParameters = {
   ampSpectrum: AmplitudeSpectrum;

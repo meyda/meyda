@@ -1,4 +1,4 @@
-import { Signal } from "../main";
+import { Signal } from "../types";
 import loudness, { LoudnessParameters } from "./loudness";
 
 export type PerceptualSharpnessParamters = {

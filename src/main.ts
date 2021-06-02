@@ -2,70 +2,31 @@ import * as utilities from "./utilities";
 import { WindowFunction } from "./utilities";
 import extractors, { UnionExtractorParams } from "./featureExtractors";
 import { fft } from "fftjs";
-import { MeydaAnalyzer } from "./meyda-wa";
-
-export type MeydaFeature = keyof typeof extractors;
-export type AmplitudeSpectrum = Float32Array;
-export type BarkScale = Float32Array;
-export type MelFilterBank = number[][];
-export type ChromaFilterBank = number[][];
-export type Signal = Float32Array;
-
-type SignalPreparedWithSpectrum = {
-  signal: Signal;
-  windowedSignal: Signal;
-  complexSpectrum: ReturnType<typeof fft>;
-  ampSpectrum: Float32Array;
-};
+import { MeydaAnalyzer, MeydaOptions } from "./meyda-wa";
+import {
+  Signal,
+  MeydaFeature,
+  BarkScale,
+  MelFilterBank,
+  ChromaFilterBank,
+} from "./types";
+import {
+  FeatureUndefError,
+  InvalidFeatureFmtError,
+  InvalidInputError,
+  NotPow2Error,
+} from "./errors";
 
 /**
  * Meyda Module
  * @module meyda
  */
 
-/**
- * Options for constructing a MeydaAnalyzer
- * @typedef {Object} MeydaOptions
- * @property {AudioContext} audioContext - The Audio Context for the MeydaAnalyzer to operate in.
- * @property {AudioNode} source - The Audio Node for Meyda to listen to.
- * @property {number} [bufferSize] - The size of the buffer.
- * @property {number} [hopSize] - The hop size between buffers.
- * @property {number} [sampleRate] - The number of samples per second in the audio context.
- * @property {Function} [callback] - A function to receive the frames of audio features
- * @property {string} [windowingFunction] - The Windowing Function to apply to the signal before transformation to the frequency domain
- * @property {string|Array.<string>} [featureExtractors] - Specify the feature extractors you want to run on the audio.
- * @property {boolean} [startImmediately] - Pass `true` to start feature extraction immediately
- * @property {number} [numberOfMFCCCoefficients] - The number of MFCC co-efficients that the MFCC feature extractor should return
- */
-
-export type MeydaOptions = {
-  audioContext: AudioContext;
-  source: AudioNode;
-  bufferSize: number;
-  hopSize: number;
-  sampleRate: number;
-  callback: (arg: any) => any;
-  // This should be a union type
-  windowingFunction: WindowFunction;
-  // This should be a union type
-  // featureExtractors: typeof Object.keys(extractors)[number]
-  featureExtractors: MeydaFeature[];
-  startImmediately: boolean;
-  numberOfMFCCCoefficients: number;
-  outputs: number;
-  inputs: number;
-  channel: number;
-};
-
-/**
- * @class Meyda
- * @hideconstructor
- * @classdesc
- * The schema for the default export of the Meyda library.
- * @example
- * var Meyda = require('meyda');
- */
-class Meyda {
+export default class Meyda {
+  /**
+   * @hidden
+   */
+  constructor() {}
   /**
    * The length of each buffer that Meyda will extract audio on. When recieving
    * input via the Web Audio API, the Script Processor Node chunks incoming audio
@@ -120,16 +81,6 @@ class Meyda {
   numberOfMFCCCoefficients = 13;
   // internals
   windowing = utilities.applyWindow;
-  _errors = {
-    notPow2: new Error(
-      "Meyda: Buffer size must be a power of 2, e.g. 64 or 512"
-    ),
-    featureUndef: new Error("Meyda: No features defined."),
-    invalidFeatureFmt: new Error("Meyda: Invalid feature format"),
-    invalidInput: new Error("Meyda: Invalid input."),
-    noAC: new Error("Meyda: No AudioContext specified."),
-    noSource: new Error("Meyda: No source node specified."),
-  };
   barkScale: BarkScale = Float32Array.from([]);
   melFilterBank: MelFilterBank = [];
   chromaFilterBank: ChromaFilterBank = [];
@@ -200,10 +151,10 @@ class Meyda {
     signal: number[] | Signal,
     previousSignal?: number[] | Signal
   ): any {
-    if (!signal) throw this._errors.invalidInput;
-    else if (typeof signal != "object") throw this._errors.invalidInput;
-    else if (!feature) throw this._errors.featureUndef;
-    else if (!utilities.isPowerOfTwo(signal.length)) throw this._errors.notPow2;
+    if (!signal) throw new InvalidInputError();
+    else if (typeof signal != "object") throw new InvalidInputError();
+    else if (!feature) throw new FeatureUndefError();
+    else if (!utilities.isPowerOfTwo(signal.length)) throw new NotPow2Error();
 
     if (
       typeof this.barkScale == "undefined" ||
@@ -298,12 +249,19 @@ class Meyda {
     } else if (typeof feature === "string") {
       return extract(feature);
     } else {
-      throw this._errors.invalidFeatureFmt;
+      throw new InvalidFeatureFmtError();
     }
   }
 }
 
-var prepareSignalWithSpectrum = function (
+type SignalPreparedWithSpectrum = {
+  signal: Signal;
+  windowedSignal: Signal;
+  complexSpectrum: ReturnType<typeof fft>;
+  ampSpectrum: Float32Array;
+};
+
+function prepareSignalWithSpectrum(
   providedSignal: number[] | Signal,
   windowingFunction: WindowFunction,
   bufferSize: number
@@ -332,13 +290,9 @@ var prepareSignalWithSpectrum = function (
   };
 
   return preparedSignal;
-};
-
-/**
- * The Meyda class
- * @type {Meyda}
- */
-export default Meyda;
+}
 
 // @ts-ignore
 if (typeof window !== "undefined") window.Meyda = Meyda;
+
+export { MeydaAnalyzer };

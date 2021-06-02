@@ -1,4 +1,4 @@
-import { AmplitudeSpectrum } from "../main";
+import { AmplitudeSpectrum } from "../types";
 
 export function mu(i: number, amplitudeSpect: AmplitudeSpectrum) {
   var numerator = 0;

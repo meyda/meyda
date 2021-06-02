@@ -1,4 +1,4 @@
-import { BarkScale, Signal } from "./main";
+import { BarkScale, Signal } from "./types";
 import * as windowing from "./windowing";
 
 let windows: { [windowName: string]: { [windowLength: number]: Window } } = {};

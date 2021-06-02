@@ -1,4 +1,4 @@
-import { AmplitudeSpectrum } from "../main";
+import { AmplitudeSpectrum } from "../types";
 
 export type SpectralFlatnessParameters = {
   ampSpectrum: AmplitudeSpectrum;

@@ -1,6 +1,6 @@
 import powerSpectrum from "./powerSpectrum";
 import dct from "dct";
-import { AmplitudeSpectrum, MelFilterBank } from "../main";
+import { AmplitudeSpectrum, MelFilterBank } from "../types";
 
 type MfccParameters = {
   ampSpectrum: AmplitudeSpectrum;

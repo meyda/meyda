@@ -1,4 +1,4 @@
-import { Signal } from "../main";
+import { Signal } from "../types";
 
 export type ZcrParameters = {
   signal: Signal;

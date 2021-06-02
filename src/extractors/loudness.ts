@@ -1,4 +1,4 @@
-import { AmplitudeSpectrum, BarkScale } from "../main";
+import { AmplitudeSpectrum, BarkScale } from "../types";
 
 export type LoudnessParameters = {
   ampSpectrum: AmplitudeSpectrum;

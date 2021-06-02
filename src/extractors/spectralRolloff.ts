@@ -1,4 +1,4 @@
-import { AmplitudeSpectrum } from "../main";
+import { AmplitudeSpectrum } from "../types";
 
 export type SpectralRolloffParameters = {
   ampSpectrum: AmplitudeSpectrum;

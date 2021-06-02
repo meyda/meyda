@@ -15,7 +15,7 @@ import mfcc from "./extractors/mfcc";
 import chroma from "./extractors/chroma";
 import powerSpectrum from "./extractors/powerSpectrum";
 import spectralFlux from "./extractors/spectralFlux";
-import { AmplitudeSpectrum, Signal } from "./main";
+import { AmplitudeSpectrum, Signal } from "./types";
 import { ComplexSpectrum } from "fftjs";
 
 function buffer({ signal }: { signal: Signal }) {
