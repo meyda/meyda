@@ -133,6 +133,12 @@
   }
 
   var wl = new WavLoader(
+    function(config) {
+      Meyda.sampleRate = config.sampleRate;
+      if (!opt.options.p) {
+        console.log("Sample rate recognized as: " + Meyda.sampleRate);
+      }
+    },
     function (chunk) {
       //convert to normal array so we can concatenate
       var _chunk = typedToArray(chunk);
