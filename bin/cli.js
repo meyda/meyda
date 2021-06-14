@@ -142,18 +142,6 @@
     function (chunk) {
       //convert to normal array so we can concatenate
       var _chunk = typedToArray(chunk);
-      //check if chunk is bigger than frame
-      if (_chunk.length > FRAME_SIZE) {
-        // if so, we'll extract stuff from it frame by frame, until we're left with something that's short enough to buffer
-        while (_chunk.length > FRAME_SIZE) {
-          var frame = _chunk.slice(0, FRAME_SIZE);
-          _chunk.splice(0, HOP_SIZE);
-          extractFeatures(frame);
-          if (!opt.options.p) process.stdout.write("-");
-          frameCount++;
-        }
-      }
-
       buffer = buffer.concat(_chunk);
       //if we're long enough, splice the frame, and extract features on it
       while (buffer.length >= FRAME_SIZE) {
