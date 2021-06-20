@@ -6,6 +6,8 @@ layout: default
 
 Often, observing and analysing an audio signal as a waveform doesn't provide us a lot of information about its contents. An audio feature is a measurement of a particular characteristic of an audio signal, and it gives us insight into what the signal contains. Audio features can be measured by running an algorithm on an audio signal that will return a number, or a set of numbers that quantify the characteristic that the specific algorithm is intended to measure. Meyda implements a selection of standardized audio features that are used widely across a variety of music computing scenarios.
 
+Bear in mind that by default, Meyda.extract applies a windowing function to the incoming signal using the hanning windowing function by default. If you compare the results of Meyda's feature extraction to that of another library for the same signal, make sure that the same windowing is being applied, or the features will likely differ. To disable windowing in Meyda.extract, set Meyda.windowingFunction to 'rect'.
+
 _Following is a list of supported features with their explanations. Unless stated otherwise, extraction algorithms have been adapted from the [yaafe](http://yaafe.sourceforge.net) library._
 
 <br>
@@ -18,7 +20,9 @@ _Following is a list of supported features with their explanations. Unless state
 
 - _Description_: The root mean square of the waveform, that corresponds to its loudness. Corresponds to the ‘Energy’ feature in YAAFE, adapted from Loy’s Musimathics [1].
 - _What Is It Used For_: Getting a rough idea about the loudness of a signal.
-- _Range_: `0.0 - 1.0` where `0.0` is not loud and `1.0` is very loud.
+- _Range_: RMS is a positive floating point number, bound only by the length and volume of the input signal. For more information, check out [the wikipedia entry](https://en.wikipedia.org/wiki/Root_mean_square).
+
+To use RMS in applications where you expect a ceiling on each audio feature, we suggest that you measure examples of audio that you will run feature extraction on, identify a reasonable "maximum" to clamp your max to, and apply the Math.min function to take either the current value of rms, or your maximum threshold, whichever is lower.
 
 ### ZCR
 
