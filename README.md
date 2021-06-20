@@ -4,6 +4,8 @@
 
 Meyda is a Javascript audio feature extraction library. Meyda supports both offline feature extraction as well as real-time feature extraction using the [Web Audio API][web-audio-api]. We wrote a paper about it, which is available [here][meyda-paper].
 
+Would you like your Meyda project to be featured in our [user showcase]? [Please let us know!](https://github.com/meyda/meyda/issues/new?assignees=&labels=Showcase+Request&template=showcase-application.md&title=)
+
 Want to ask questions, or chat about Meyda? Check out our [slack channel] on the Web Audio Slack Team. You'll need to [sign up here][web-audio-slack-team-signup] before you can join.
 
 [hughrawlinson][hugh-github] | [nevosegal][nevo-github] | [jakubfiala][jakub-github] | [2xAA][2xaa-github]
@@ -28,3 +30,4 @@ Please see [our contributor guidelines][contributing] for guidelines about contr
 [docs]: https://meyda.js.org/
 [slack channel]: https://web-audio.slack.com/messages/C51A03LBS/
 [web-audio-slack-team-signup]: https://web-audio-slackin.herokuapp.com/
+[user-showcase]: https://meyda.js.org/showcase
