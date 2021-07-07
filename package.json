@@ -13,7 +13,8 @@
     "build": "NODE_ENV=production; rollup -c rollup.config.js",
     "lint": "eslint -f compact src __tests__",
     "generatereferencedocs": "jsdoc src/meyda-wa.js src/main.js -d docs/reference -R docs/README.md",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -75,11 +76,6 @@
     "testPathIgnorePatterns": [
       "__tests__/TestData.js"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   },
   "commitlint": {
     "extends": [
