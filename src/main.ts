@@ -124,9 +124,9 @@ export default class Meyda {
    * available audio feature extractors
    */
 
-  listAvailableFeatureExtractors: function () {
-    return Object.keys(this.featureExtractors);
-  },
+  listAvailableFeatureExtractors() {
+    return Object.keys(extractors);
+  }
 
   /**
    * Extract an audio feature from a buffer
