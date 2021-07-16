@@ -1,3 +1,6 @@
+// This file isn't being typechecked at all because there are major issues with it.
+// See #852 for details. Once that's merged, this file should be typechecked.
+// @ts-nocheck
 export default function (args) {
   if (
     typeof args.signal !== "object" ||
