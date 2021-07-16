@@ -309,7 +309,7 @@ var prepareSignalWithSpectrum = function (
   windowingFunction,
   bufferSize
 ) {
-  var preparedSignal = {};
+  var preparedSignal: any = {};
 
   if (typeof signal.buffer == "undefined") {
     //signal is a normal array, convert to F32A
@@ -341,4 +341,5 @@ var prepareSignalWithSpectrum = function (
  */
 export default Meyda;
 
+// @ts-ignore
 if (typeof window !== "undefined") window.Meyda = Meyda;
