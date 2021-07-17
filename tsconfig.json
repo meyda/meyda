@@ -10,7 +10,8 @@
     "forceConsistentCasingInFileNames": true,
     "alwaysStrict": true,
     "strictNullChecks": true,
-    "strictBindCallApply": true
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true
   },
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recommended"
