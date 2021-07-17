@@ -26,6 +26,7 @@
     "@types/three": "^0.130.0"
   },
   "dependencies": {
+    "meyda": "^5.2.1",
     "three": "^0.130.1"
   }
 }

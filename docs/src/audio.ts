@@ -1,3 +1,4 @@
+import * as Meyda from "meyda";
 var _this;
 const Audio = function (bufferSize) {
   if (
@@ -27,7 +28,6 @@ const Audio = function (bufferSize) {
   let stream = this.context.createMediaElementSource(elvis);
   stream.connect(this.context.destination);
 
-  // @ts-ignore
   this.meyda = Meyda.createMeydaAnalyzer({
     audioContext: this.context,
     source: stream,
