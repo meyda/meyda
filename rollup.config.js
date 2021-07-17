@@ -3,7 +3,6 @@ import nodePolyfills from "rollup-plugin-node-polyfills";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
-import babel from "@rollup/plugin-babel";
 import glob from "glob";
 import typescript from "@rollup/plugin-typescript";
 
@@ -26,7 +25,6 @@ const config = {
     }),
     commonjs(),
     typescript(),
-    babel({ babelHelpers: "bundled" }),
   ],
 };
 
@@ -46,13 +44,7 @@ const NODE_CONFIGS = SOURCE_FILES.map((sourcefile) => ({
     format: "cjs",
     exports: "auto",
   },
-  plugins: [
-    nodePolyfills(),
-    nodeResolve(),
-    commonjs(),
-    typescript(),
-    babel({ babelHelpers: "bundled" }),
-  ],
+  plugins: [nodePolyfills(), nodeResolve(), commonjs(), typescript()],
 }));
 
 export default [config, minified(config), ...NODE_CONFIGS];
