@@ -67,7 +67,7 @@ Audio.prototype.initializeMicrophoneSampling = function () {
       audio: true,
     };
     var successCallback = function successCallback(mediaStream) {
-      document.getElementById("audioControl").style.display = "none";
+      document.getElementById("audioControl")!.style.display = "none";
       console.log("User allowed microphone access.");
       console.log("Initializing AudioNode from MediaStream");
       var source = _this.context.createMediaStreamSource(mediaStream);

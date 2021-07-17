@@ -22,10 +22,11 @@ var scene = new Scene();
 var camera = new PerspectiveCamera(40, aspectRatio, 0.1, 1000);
 
 var initializeFFTs = function (number, pointCount) {
-  var ffts = [];
+  var ffts: number[][] = [];
   for (var i = 0; i < number; i++) {
     ffts.push(
-      Array.apply(null, Array(pointCount)).map(Number.prototype.valueOf, 0)
+      // Array.apply(null, Array(pointCount)).map(Number.prototype.valueOf, 0)
+      Array(pointCount).fill(0)
     );
   }
 
@@ -44,7 +45,7 @@ var ffts = initializeFFTs(20, bufferSize);
 var buffer = null;
 
 var renderer = new WebGLRenderer({
-  canvas: document.querySelector("canvas"),
+  canvas: document.querySelector("canvas")!,
 });
 
 function resize() {
@@ -122,7 +123,7 @@ scene.add(lines);
 
 // scene.add(loudnessLines);
 
-let features = null;
+let features: { [key: string]: any } | undefined = undefined;
 let chromaWrapper = document.querySelector("#chroma");
 let mfccWrapper = document.querySelector("#mfcc");
 

@@ -8,7 +8,8 @@
     "importHelpers": true,
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
-    "alwaysStrict": true
+    "alwaysStrict": true,
+    "strictNullChecks": true
   },
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recommended"
