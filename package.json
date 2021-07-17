@@ -108,7 +108,6 @@
       "@typescript-eslint/no-non-null-assertion": 0,
       "prefer-rest-params": 0,
       "no-undef": 0,
-      "prefer-spread": 1,
       "no-var": 0,
       "prefer-const": 0
     },
