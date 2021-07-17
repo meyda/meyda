@@ -3,13 +3,11 @@
   "compilerOptions": {
 		"outDir": "./typescript-built",
 		"allowJs": true,
-    "target": "ES2020",
-    "module": "esnext",
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "importHelpers": true,
     "moduleResolution": "node"
   },
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Recommended",
-  "importHelpers": true
+  "display": "Recommended"
 }
