@@ -11,7 +11,8 @@
     "alwaysStrict": true,
     "strictNullChecks": true,
     "strictBindCallApply": true,
-    "strictFunctionTypes": true
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true
   },
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recommended"
