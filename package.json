@@ -99,8 +99,26 @@
       "@typescript-eslint"
     ],
     "rules": {
-      "semi": 2
-    }
+      "semi": 2,
+      "@typescript-eslint/explicit-module-boundary-types": 0,
+      "@typescript-eslint/ban-ts-comment": 0,
+      "@typescript-eslint/no-unused-vars": 0,
+      "@typescript-eslint/no-var-requires": 0,
+      "@typescript-eslint/no-explicit-any": 0,
+      "@typescript-eslint/no-non-null-assertion": 0,
+      "prefer-rest-params": 0,
+      "no-prototype-builtins": 0,
+      "no-undef": 0,
+      "for-direction": 0,
+      "no-redeclare": 0,
+      "prefer-spread": 0,
+      "no-var": 0,
+      "prefer-const": 0
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
+    ]
   },
   "workspaces": [
     "docs"
