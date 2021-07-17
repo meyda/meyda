@@ -104,7 +104,7 @@
     //run the extraction of selected features
     var fset = Meyda.extract(featuresToExtract, frame);
     for (let j = 0; j < featuresToExtract.length; j++) {
-      var feature = fset[featuresToExtract[j]];
+      const feature = fset[featuresToExtract[j]];
       features[featuresToExtract[j]].push(feature);
     }
   }
@@ -133,7 +133,7 @@
   }
 
   var wl = new WavLoader(
-    function(config) {
+    function (config) {
       Meyda.sampleRate = config.sampleRate;
       if (!opt.options.p) {
         console.log("Sample rate recognized as: " + Meyda.sampleRate);
@@ -188,7 +188,7 @@
           output("\n");
           for (let i = 0; i < frameCount; i++) {
             for (let j = 0; j < featuresToExtract.length; j++) {
-              var feature = features[featuresToExtract[j]];
+              const feature = features[featuresToExtract[j]];
               if (typeof feature[i] === "object") {
                 for (let f = 0; f < Object.keys(feature[i]).length; f++)
                   output(feature[i][f] + ",");
