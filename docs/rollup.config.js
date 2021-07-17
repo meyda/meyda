@@ -10,9 +10,6 @@ export default {
     file: "./assets/main.js",
     format: "iife",
     name: "meydaDemo",
-    globals: {
-      three: "THREE",
-    },
   },
   plugins: [
     nodePolyfills(),
@@ -23,5 +20,4 @@ export default {
     typescript(),
     terser(),
   ],
-  external: ["three"],
 };
