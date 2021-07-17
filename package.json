@@ -11,7 +11,7 @@
   "scripts": {
     "test": "jest",
     "build": "NODE_ENV=production; rollup -c rollup.config.js",
-    "lint": "eslint -f compact --ext .js,.jsx,.ts,.tsx src __tests__ docs/src",
+    "lint": "eslint -f compact --ext .js,.jsx,.ts,.tsx src __tests__ docs/src bin",
     "generatereferencedocs": "jsdoc src/meyda-wa.js src/main.js -d docs/reference -R docs/README.md",
     "semantic-release": "semantic-release",
     "prepare": "husky install"
