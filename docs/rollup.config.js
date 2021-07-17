@@ -2,7 +2,7 @@ import nodePolyfills from "rollup-plugin-node-polyfills";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
+// import typescript from "@rollup/plugin-typescript";
 
 export default {
   input: "./src/main.js",
@@ -17,7 +17,7 @@ export default {
       browser: true,
     }),
     commonjs(),
-    typescript(),
+    // typescript(),
     terser(),
   ],
 };

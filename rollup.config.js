@@ -1,6 +1,4 @@
 /* eslint-env es2021 */
-import nodePolyfills from "rollup-plugin-node-polyfills";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
 import glob from "glob";
@@ -18,14 +16,7 @@ const config = {
     name: "Meyda",
     sourcemap: true,
   },
-  plugins: [
-    nodePolyfills(),
-    nodeResolve({
-      browser: true,
-    }),
-    commonjs(),
-    typescript(),
-  ],
+  plugins: [commonjs(), typescript()],
 };
 
 function minified(config) {
@@ -44,7 +35,7 @@ const NODE_CONFIGS = SOURCE_FILES.map((sourcefile) => ({
     format: "cjs",
     exports: "auto",
   },
-  plugins: [nodePolyfills(), nodeResolve(), commonjs(), typescript()],
+  plugins: [commonjs(), typescript()],
 }));
 
 export default [config, minified(config), ...NODE_CONFIGS];
