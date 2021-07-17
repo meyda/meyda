@@ -1,13 +1,25 @@
 import Audio from "./audio";
-import * as THREE from "three";
+import {
+  Scene,
+  PerspectiveCamera,
+  LineBasicMaterial,
+  WebGLRenderer,
+  DirectionalLight,
+  Vector3,
+  ArrowHelper,
+  Group,
+  BufferAttribute,
+  BufferGeometry,
+  Line,
+} from "three";
 
 var scale = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
 const bufferSize = 1024;
 let a = new Audio(bufferSize);
 
 var aspectRatio = 16 / 10;
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(40, aspectRatio, 0.1, 1000);
+var scene = new Scene();
+var camera = new PerspectiveCamera(40, aspectRatio, 0.1, 1000);
 
 var initializeFFTs = function (number, pointCount) {
   var ffts = [];
@@ -20,18 +32,18 @@ var initializeFFTs = function (number, pointCount) {
   return ffts;
 };
 
-var material = new THREE.LineBasicMaterial({
+var material = new LineBasicMaterial({
   color: 0x00ff00,
 });
 
-var yellowMaterial = new THREE.LineBasicMaterial({
+var yellowMaterial = new LineBasicMaterial({
   color: 0x00ffff,
 });
 
 var ffts = initializeFFTs(20, bufferSize);
 var buffer = null;
 
-var renderer = new THREE.WebGLRenderer({
+var renderer = new WebGLRenderer({
   canvas: document.querySelector("canvas"),
 });
 
@@ -53,7 +65,7 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+var directionalLight = new DirectionalLight(0xffffff, 0.5);
 directionalLight.position.set(0, 1, 1);
 scene.add(directionalLight);
 
@@ -62,16 +74,16 @@ camera.position.z = 5;
 // Unchanging variables
 const length = 1;
 const hex = 0xffff00;
-const dir = new THREE.Vector3(0, 1, 0);
-const rightDir = new THREE.Vector3(1, 0, 0);
-const origin = new THREE.Vector3(1, -6, -15);
+const dir = new Vector3(0, 1, 0);
+const rightDir = new Vector3(1, 0, 0);
+const origin = new Vector3(1, -6, -15);
 
 // Variables we update
-let centroidArrow = new THREE.ArrowHelper(dir, origin, length, hex);
-let rolloffArrow = new THREE.ArrowHelper(dir, origin, length, 0x0000ff);
-let rmsArrow = new THREE.ArrowHelper(rightDir, origin, length, 0xff00ff);
-let lines = new THREE.Group(); // Lets create a seperate group for our lines
-// let loudnessLines = new THREE.Group();
+let centroidArrow = new ArrowHelper(dir, origin, length, hex);
+let rolloffArrow = new ArrowHelper(dir, origin, length, 0x0000ff);
+let rmsArrow = new ArrowHelper(rightDir, origin, length, 0xff00ff);
+let lines = new Group(); // Lets create a seperate group for our lines
+// let loudnessLines = new Group();
 scene.add(centroidArrow);
 scene.add(rolloffArrow);
 scene.add(rmsArrow);
@@ -79,27 +91,27 @@ scene.add(rmsArrow);
 // Render Spectrogram
 for (let i = 0; i < ffts.length; i++) {
   if (ffts[i]) {
-    let geometry = new THREE.BufferGeometry(); // May be a way to reuse this
+    let geometry = new BufferGeometry(); // May be a way to reuse this
 
     let positions: ArrayLike<number> = new Float32Array(ffts[i].length * 3);
 
-    geometry.addAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.addAttribute("position", new BufferAttribute(positions, 3));
     geometry.setDrawRange(0, ffts[i].length);
 
-    let line = new THREE.Line(geometry, material);
+    let line = new Line(geometry, material);
     lines.add(line);
 
     positions = line.geometry.attributes.position.array;
   }
 }
 
-let bufferLineGeometry = new THREE.BufferGeometry();
-let bufferLine = new THREE.Line(bufferLineGeometry, material);
+let bufferLineGeometry = new BufferGeometry();
+let bufferLine = new Line(bufferLineGeometry, material);
 {
   let positions: ArrayLike<number> = new Float32Array(bufferSize * 3);
   bufferLineGeometry.addAttribute(
     "position",
-    new THREE.BufferAttribute(positions, 3)
+    new BufferAttribute(positions, 3)
   );
   bufferLineGeometry.setDrawRange(0, bufferSize);
 
@@ -207,19 +219,19 @@ function render() {
     // // Render loudness
     // if (features.loudness && features.loudness.specific) {
     //   for (var i = 0; i < features.loudness.specific.length; i++) {
-    //     let geometry = new THREE.Geometry();
-    //     geometry.vertices.push(new THREE.Vector3(
+    //     let geometry = new Geometry();
+    //     geometry.vertices.push(new Vector3(
     //       -11 + 22 * i / features.loudness.specific.length,
     //       -6 + features.loudness.specific[i] * 3,
     //       -15
     //     ));
-    //     geometry.vertices.push(new THREE.Vector3(
+    //     geometry.vertices.push(new Vector3(
     //       -11 + 22 * i / features.loudness.specific.length + 22 /
     //       features.loudness.specific.length,
     //       -6 + features.loudness.specific[i] * 3,
     //       -15
     //     ));
-    //     loudnessLines.add(new THREE.Line(geometry, yellowMaterial));
+    //     loudnessLines.add(new Line(geometry, yellowMaterial));
     //     geometry.dispose();
     //   }
     // }
