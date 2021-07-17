@@ -82,7 +82,7 @@
       "default"
     ],
     "testPathIgnorePatterns": [
-      "__tests__/TestData.js"
+      "__tests__/TestData.ts"
     ]
   },
   "commitlint": {
