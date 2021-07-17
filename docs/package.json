@@ -20,5 +20,9 @@
   },
   "homepage": "https://meyda.js.org/",
   "browserslist": "> 0.25%, not dead",
-  "private": "true"
+  "private": "true",
+  "devDependencies": {
+    "@types/meyda": "^4.3.2",
+    "@types/three": "^0.130.0"
+  }
 }
