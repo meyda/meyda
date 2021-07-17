@@ -4,6 +4,8 @@ import commonjs from "@rollup/plugin-commonjs";
 import glob from "glob";
 import typescript from "@rollup/plugin-typescript";
 
+const plugins = [commonjs(), typescript()];
+
 const SOURCE_FILES = glob
   .sync("src/**/*.ts")
   .filter((filename) => !filename.endsWith(".d.ts"));
@@ -16,7 +18,7 @@ const config = {
     name: "Meyda",
     sourcemap: true,
   },
-  plugins: [commonjs(), typescript()],
+  plugins,
 };
 
 function minified(config) {
@@ -35,7 +37,7 @@ const NODE_CONFIGS = SOURCE_FILES.map((sourcefile) => ({
     format: "cjs",
     exports: "auto",
   },
-  plugins: [commonjs(), typescript()],
+  plugins,
 }));
 
 export default [config, minified(config), ...NODE_CONFIGS];
