@@ -37,6 +37,7 @@ describe("package exports", () => {
 
     expect(Object.keys(meyda)).toEqual(EXPECTED_EXPORTS);
     expect(Object.keys(window["Meyda"])).toEqual(EXPECTED_EXPORTS);
+    // @ts-ignore
     delete window["Meyda"];
   });
 
@@ -46,6 +47,7 @@ describe("package exports", () => {
 
     expect(Object.keys(meyda)).toEqual(EXPECTED_EXPORTS);
     expect(Object.keys(global["Meyda"])).toEqual(EXPECTED_EXPORTS);
+    // @ts-ignore
     delete global["Meyda"];
   });
 });
