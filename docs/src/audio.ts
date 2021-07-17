@@ -2,20 +2,25 @@ import * as Meyda from "meyda";
 var _this;
 const Audio = function (bufferSize) {
   if (
-    window.hasOwnProperty("webkitAudioContext") &&
-    !window.hasOwnProperty("AudioContext")
+    Object.prototype.hasOwnProperty.call(window, "webkitAudioContext") &&
+    !Object.prototype.hasOwnProperty.call(window, "AudioContext")
   ) {
     // @ts-ignore
     window.AudioContext = webkitAudioContext;
   }
 
   if (
-    navigator.hasOwnProperty("webkitGetUserMedia") &&
-    !navigator.hasOwnProperty("getUserMedia")
+    Object.prototype.hasOwnProperty.call(navigator, "webkitGetUserMedia") &&
+    !Object.prototype.hasOwnProperty.call(navigator, "getUserMedia")
   ) {
     // @ts-ignore
     navigator.getUserMedia = webkitGetUserMedia;
-    if (!AudioContext.prototype.hasOwnProperty("createScriptProcessor")) {
+    if (
+      !Object.prototype.hasOwnProperty.call(
+        AudioContext.prototype,
+        "createScriptProcessor"
+      )
+    ) {
       AudioContext.prototype.createScriptProcessor =
         // @ts-ignore
         AudioContext.prototype.createJavaScriptNode;
