@@ -2066,7 +2066,7 @@ var expectedPowerSpectrumOutput = new Float32Array([
   0.00003985162766184658,
 ]);
 
-barkScale = new Float32Array([
+var barkScale = new Float32Array([
   0,
   0.8502324223518372,
   1.694183111190796,
