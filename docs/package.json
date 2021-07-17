@@ -24,5 +24,8 @@
   "devDependencies": {
     "@types/meyda": "^4.3.2",
     "@types/three": "^0.130.0"
+  },
+  "dependencies": {
+    "three": "^0.130.1"
   }
 }

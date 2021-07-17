@@ -1,5 +1,5 @@
 import Audio from "./audio";
-import THREE from "three";
+import * as THREE from "three";
 
 var scale = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
 const bufferSize = 1024;
