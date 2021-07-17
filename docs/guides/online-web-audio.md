@@ -36,13 +36,12 @@ Include it in your HTML by pasting the following snippet into the body of your
 
 ```html
 <audio
-   controls
-   loop
-   crossorigin="anonymous"
-   id="audio"
-   src="[THE URL TO YOUR AUDIO FILE]"
-   >
-</audio>
+  controls
+  loop
+  crossorigin="anonymous"
+  id="audio"
+  src="[THE URL TO YOUR AUDIO FILE]"
+></audio>
 ```
 
 When you load your website, you should now see an audio player that plays your
@@ -84,16 +83,15 @@ and compute the level. Let's look at the code.
 ```js
 if (typeof Meyda === "undefined") {
   console.log("Meyda could not be found! Have you included it?");
-}
-else {
+} else {
   const analyzer = Meyda.createMeydaAnalyzer({
-    "audioContext": audioContext,
-    "source": source,
-    "bufferSize": 512,
-    "featureExtractors": ["rms"],
-    "callback": features => {
+    audioContext: audioContext,
+    source: source,
+    bufferSize: 512,
+    featureExtractors: ["rms"],
+    callback: (features) => {
       console.log(features);
-    }
+    },
   });
   analyzer.start();
 }
@@ -121,27 +119,27 @@ Source Node.
 // Create the Meyda Analyzer
 const analyzer = Meyda.createMeydaAnalyzer({
   // Pass in the AudioContext so that Meyda knows which AudioContext Box to work with
-  "audioContext": audioContext,
+  audioContext: audioContext,
   // Source is the audio node that is playing your audio. It could be any node,
   // but in this case, it's the MediaElementSourceNode corresponding to your
   // HTML 5 Audio Element with your audio in it.
-  "source": source,
+  source: source,
   // Buffer Size tells Meyda how often to check the audio feature, and is
   // measured in Audio Samples. Usually there are 44100 Audio Samples in 1
   // second, which means in this case Meyda will calculate the level about 86
   // (44100/512) times per second.
-  "bufferSize": 512,
+  bufferSize: 512,
   // Here we're telling Meyda which audio features to calculate. While Meyda can
   // calculate a variety of audio features, in this case we only want to know
   // the "rms" (root mean square) of the audio signal, which corresponds to its
   // level
-  "featureExtractors": ["rms"],
+  featureExtractors: ["rms"],
   // Finally, we provide a function which Meyda will call every time it
   // calculates a new level. This function will be called around 86 times per
   // second.
-  "callback": features => {
+  callback: (features) => {
     console.log(features);
-  }
+  },
 });
 ```
 
@@ -165,13 +163,14 @@ slider in your web page. Lets add one in to our HTML:
 
 ```html
 <label for="level">level</label>
-<input type="range"
-       id="levelRange"
-       name="level"
-       min="0.0"
-       max="1.0"
-       step="0.001"
-       />
+<input
+  type="range"
+  id="levelRange"
+  name="level"
+  min="0.0"
+  max="1.0"
+  step="0.001"
+/>
 ```
 
 The level (root mean square) audio feature ranges between 0 and 1, so we set
@@ -210,6 +209,7 @@ Have a look at our complete implementation of this site hosted on Glitch.com
 </div>
 
 Here are a few things you might like to try next:
+
 1. Learn more about audio features
 2. Learn more about Web Audio
 3. Learn how to use Meyda in Node.js

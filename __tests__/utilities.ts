@@ -32,17 +32,14 @@ describe("error", () => {
 describe("pointwiseBufferMult", () => {
   test("multiplies two arrays correctly", (done) => {
     expect(util.pointwiseBufferMult([4, 5, 6], [0.5, 2, 2])).toEqual([
-      2,
-      10,
-      12,
+      2, 10, 12,
     ]);
     done();
   });
 
   test("handles differently sized arrays correctly", (done) => {
     expect(util.pointwiseBufferMult([4, 0.25, 0.7], [0.25, 2])).toEqual([
-      1,
-      0.5,
+      1, 0.5,
     ]);
     done();
   });

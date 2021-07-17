@@ -30,7 +30,7 @@ var WavManager = function (open_callback, data_callback, end_callback) {
 
     reader.on("format", function (format) {
       //read wav headers
-      open_callback({sampleRate: format.sampleRate});
+      open_callback({ sampleRate: format.sampleRate });
       _bitDepth = format.bitDepth;
       _numBytesPerSample = _bitDepth / 8;
       _endian = format.endianness;

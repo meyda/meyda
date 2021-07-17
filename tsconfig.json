@@ -1,8 +1,8 @@
 {
   "exclude": ["dist"],
   "compilerOptions": {
-		"outDir": "./typescript-built",
-		"allowJs": true,
+    "outDir": "./typescript-built",
+    "allowJs": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "importHelpers": true,

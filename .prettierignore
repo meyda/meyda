@@ -1,0 +1,13 @@
+node_modules
+.github
+.husky
+dist
+__tests__/data
+__tests__/TestData.ts
+docs/node_modules
+docs/assets
+docs/_site
+docs/.jekyll-cache
+docs/_includes
+docs/_layouts
+docs/reference
