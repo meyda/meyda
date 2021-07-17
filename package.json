@@ -54,6 +54,8 @@
     "husky": "^7.0.0",
     "jest": "^27.0.3",
     "jsdoc": "^3.6.7",
+    "lint-staged": "^11.0.1",
+    "prettier": "2.3.2",
     "rollup": "^2.50.5",
     "rollup-plugin-terser": "^7.0.2",
     "semantic-release": "^17.4.3",
@@ -99,7 +101,6 @@
       "@typescript-eslint"
     ],
     "rules": {
-      "semi": 2,
       "@typescript-eslint/explicit-module-boundary-types": 0,
       "@typescript-eslint/ban-ts-comment": 0,
       "@typescript-eslint/no-unused-vars": 0,
@@ -115,6 +116,9 @@
       "eslint:recommended",
       "plugin:@typescript-eslint/recommended"
     ]
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   },
   "workspaces": [
     "docs"
