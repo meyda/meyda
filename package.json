@@ -120,6 +120,18 @@
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },
+  "release": {
+    "branches": [
+      {
+        "name": "master"
+      },
+      {
+        "name": "v6",
+        "channel": "v6",
+        "prerelease": "beta"
+      }
+    ]
+  },
   "workspaces": [
     "docs"
   ]
