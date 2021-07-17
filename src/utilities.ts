@@ -150,10 +150,7 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
   for (let j = 0; j < filterBank.length; j++) {
     // Create a two dimensional array of size numFilters * (buffersize/2)+1
     // pre-populating the arrays with 0s.
-    filterBank[j] = Array.apply(null, new Array(bufferSize / 2 + 1)).map(
-      Number.prototype.valueOf,
-      0
-    );
+    filterBank[j] = new Array(bufferSize / 2 + 1).fill(0);
 
     //creating the lower and upper slopes for each bin
     for (let i = fftBinsOfFreq[j]; i < fftBinsOfFreq[j + 1]; i++) {
