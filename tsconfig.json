@@ -9,7 +9,8 @@
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "alwaysStrict": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "strictBindCallApply": true
   },
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recommended"
