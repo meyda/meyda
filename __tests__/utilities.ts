@@ -2,8 +2,11 @@ var util = require("../dist/node/utilities");
 
 describe("isPowerOfTwo", () => {
   test("should validate all powers of two", (done) => {
-    for (var i = 0; i > 2000; i++) {
-      expect(util.isPowerOfTwo(Math.pow(2, i))).toBe(true);
+    for (var i = 0; i < 1000; i++) {
+      const result = util.isPowerOfTwo(Math.pow(2, i));
+      if (result !== true) {
+        done(new Error("isPowerOfTwo failed for " + i));
+      }
     }
 
     done();
