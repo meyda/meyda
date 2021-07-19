@@ -30,4 +30,4 @@ Please see [our contributor guidelines][contributing] for guidelines about contr
 [docs]: https://meyda.js.org/
 [slack channel]: https://web-audio.slack.com/messages/C51A03LBS/
 [web-audio-slack-team-signup]: https://web-audio-slackin.herokuapp.com/
-[user-showcase]: https://meyda.js.org/showcase
+[user showcase]: https://meyda.js.org/showcase
