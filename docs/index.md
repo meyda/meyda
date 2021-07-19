@@ -22,3 +22,4 @@ Want to ask questions, or chat about Meyda? Check out our [slack channel] on the
 [wiki]: https://github.com/hughrawlinson/meyda/wiki/getting-started
 [slack channel]: https://web-audio.slack.com/messages/C51A03LBS/
 [web-audio-slack-team-signup]: https://web-audio-slackin.herokuapp.com/
+[user showcase]: https://meyda.js.org/showcase
