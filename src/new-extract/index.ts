@@ -22,6 +22,9 @@ type RelevantExtractorParams<
   [ExtractorName in T]: ParameterTypesOf<M>[ExtractorName];
 };
 
+type AllMeydaExtractorParams<T extends keyof ExtractorMap> =
+  RelevantExtractorParams<ExtractorMap, T>;
+
 type ExtractPartial = {
   <F extends MeydaExtractors>(features: F, signal: Signal): {
     [ExtractorName in F]: ReturnTypesOf<ExtractorMap>[ExtractorName];
@@ -94,19 +97,28 @@ export const extract: Extract = function extract(options, features, signal) {
   // We have to keep doing type assertions here because Typescript's definitions
   // widen things a bit more than necessary.
 
-  const preparedExtractorParameters = {};
+  // @ts-expect-error
+  const preparedExtractorParameters: AllMeydaExtractorParams<
+    // @ts-expect-error
+    keyof typeof features
+  > = {};
 
   type ProvidedFeature = typeof features[number];
 
+  // @ts-expect-error
   const returnEntries = features.map<
     [ProvidedFeature, ReturnTypesOf<ExtractorMap>[ProvidedFeature]]
-  >((feature) => [
-    feature,
-    extractors[feature]({
-      ...preparedExtractorParameters,
-      signal: new Float32Array(signal),
-    }),
-  ]);
+  >((feature) => {
+    const extractor = extractors[feature];
+    return [
+      feature,
+      // @ts-expect-error
+      extractor({
+        ...preparedExtractorParameters,
+        signal: new Float32Array(signal),
+      }),
+    ];
+  });
 
   return Object.fromEntries(returnEntries) as {
     [ExtractorName in ProvidedFeature]: ReturnType<ExtractorMap[ExtractorName]>;

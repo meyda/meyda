@@ -16,16 +16,24 @@ import chroma from "./extractors/chroma";
 import powerSpectrum from "./extractors/powerSpectrum";
 import spectralFlux from "./extractors/spectralFlux";
 
-let buffer = function (args) {
-  return args.signal;
+let buffer = function ({ signal }: { signal: Float32Array }) {
+  return signal;
 };
 
-let complexSpectrum = function (args) {
-  return args.complexSpectrum;
+let complexSpectrum = function ({
+  complexSpectrum,
+}: {
+  complexSpectrum: number[][];
+}) {
+  return complexSpectrum;
 };
 
-let amplitudeSpectrum = function (args) {
-  return args.ampSpectrum;
+let amplitudeSpectrum = function ({
+  ampSpectrum,
+}: {
+  ampSpectrum: Float32Array;
+}) {
+  return ampSpectrum;
 };
 
 const extractors = {
