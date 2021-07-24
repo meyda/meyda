@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist/esm",
     "declaration": true,
+    "lib": ["DOM", "ES2019"],
     "allowJs": true,
     "esModuleInterop": true,
     "skipLibCheck": true,

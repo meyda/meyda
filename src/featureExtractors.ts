@@ -28,7 +28,7 @@ let amplitudeSpectrum = function (args) {
   return args.ampSpectrum;
 };
 
-export {
+const extractors = {
   buffer,
   rms,
   energy,
@@ -49,4 +49,18 @@ export {
   mfcc,
   chroma,
   spectralFlux,
-};
+} as const;
+
+export type ExtractorMap = typeof extractors;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I
+) => void
+  ? I
+  : never;
+
+type ExtractorFunctions = ExtractorMap[keyof ExtractorMap];
+type AllParameterTypes = Parameters<ExtractorFunctions>[0];
+export type MeydaExtractors = keyof ExtractorMap;
+export type UnionExtractorParams = UnionToIntersection<AllParameterTypes>;
+
+export default extractors;
