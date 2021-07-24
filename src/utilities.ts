@@ -44,7 +44,7 @@ export function applyWindow(signal, windowname) {
   return signal;
 }
 
-export function createBarkScale(length, sampleRate, bufferSize) {
+export function createBarkScale(length, sampleRate, bufferSize): Float32Array {
   let barkScale = new Float32Array(length);
 
   for (var i = 0; i < barkScale.length; i++) {

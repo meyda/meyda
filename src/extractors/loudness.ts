@@ -1,26 +1,32 @@
-export default function (args) {
-  if (
-    typeof args.ampSpectrum !== "object" ||
-    typeof args.barkScale !== "object"
-  ) {
+export default function ({
+  ampSpectrum,
+  barkScale,
+}: {
+  ampSpectrum: Float32Array;
+  barkScale: Float32Array;
+}): {
+  specific: Float32Array;
+  total: number;
+} {
+  if (typeof ampSpectrum !== "object" || typeof barkScale !== "object") {
     throw new TypeError();
   }
 
   var NUM_BARK_BANDS = 24;
   var specific = new Float32Array(NUM_BARK_BANDS);
   var total = 0;
-  var normalisedSpectrum = args.ampSpectrum;
+  var normalisedSpectrum = ampSpectrum;
   var bbLimits = new Int32Array(NUM_BARK_BANDS + 1);
 
   bbLimits[0] = 0;
   var currentBandEnd =
-    args.barkScale[normalisedSpectrum.length - 1] / NUM_BARK_BANDS;
+    barkScale[normalisedSpectrum.length - 1] / NUM_BARK_BANDS;
   var currentBand = 1;
   for (let i = 0; i < normalisedSpectrum.length; i++) {
-    while (args.barkScale[i] > currentBandEnd) {
+    while (barkScale[i] > currentBandEnd) {
       bbLimits[currentBand++] = i;
       currentBandEnd =
-        (currentBand * args.barkScale[normalisedSpectrum.length - 1]) /
+        (currentBand * barkScale[normalisedSpectrum.length - 1]) /
         NUM_BARK_BANDS;
     }
   }

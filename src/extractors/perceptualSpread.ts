@@ -1,11 +1,13 @@
 import loudness from "./loudness";
 
-export default function () {
-  if (typeof arguments[0].signal !== "object") {
-    throw new TypeError();
-  }
-
-  var loudnessValue = loudness(arguments[0]);
+export default function ({
+  ampSpectrum,
+  barkScale,
+}: {
+  ampSpectrum: Float32Array;
+  barkScale: Float32Array;
+}): number {
+  var loudnessValue = loudness({ ampSpectrum, barkScale });
 
   var max = 0;
   for (var i = 0; i < loudnessValue.specific.length; i++) {

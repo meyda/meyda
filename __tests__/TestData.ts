@@ -2596,7 +2596,7 @@ const expectedChromagramOutput = new Float32Array([
   0.8824577772499042,
 ]);
 
-module.exports = {
+export default {
   VALID_SIGNAL: validSignal,
   VALID_AMPLITUDE_SPECTRUM: validAmpSpec,
   VALID_FFT: validFFT,
