@@ -100,7 +100,13 @@ export const extract: Extract = function extract(options, features, signal) {
 
   const returnEntries = features.map<
     [ProvidedFeature, ReturnTypesOf<ExtractorMap>[ProvidedFeature]]
-  >((feature) => [feature, extractors[feature](preparedExtractorParameters)]);
+  >((feature) => [
+    feature,
+    extractors[feature]({
+      ...preparedExtractorParameters,
+      signal: new Float32Array(signal),
+    }),
+  ]);
 
   return Object.fromEntries(returnEntries) as {
     [ExtractorName in ProvidedFeature]: ReturnType<ExtractorMap[ExtractorName]>;
