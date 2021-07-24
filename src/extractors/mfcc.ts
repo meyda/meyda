@@ -1,28 +1,33 @@
-import powerSpectrum from "./powerSpectrum";
+import extractPowerSpectrum from "./powerSpectrum";
 import dct from "dct";
 
-export default function (args) {
-  if (typeof args.ampSpectrum !== "object") {
+export default function ({
+  ampSpectrum,
+  melFilterBank,
+  numberOfMFCCCoefficients,
+  bufferSize,
+}) {
+  if (typeof ampSpectrum !== "object") {
     throw new TypeError("Valid ampSpectrum is required to generate MFCC");
   }
-  if (typeof args.melFilterBank !== "object") {
+  if (typeof melFilterBank !== "object") {
     throw new TypeError("Valid melFilterBank is required to generate MFCC");
   }
 
-  let numberOfMFCCCoefficients = Math.min(
+  let _numberOfMFCCCoefficients = Math.min(
     40,
-    Math.max(1, args.numberOfMFCCCoefficients || 13)
+    Math.max(1, numberOfMFCCCoefficients || 13)
   );
 
   // Tutorial from:
   // http://practicalcryptography.com/miscellaneous/machine-learning
   // /guide-mel-frequency-cepstral-coefficients-mfccs/
   // @ts-ignore
-  let powSpec = powerSpectrum(args);
-  let numFilters = args.melFilterBank.length;
+  let powSpec = extractPowerSpectrum({ ampSpectrum });
+  let numFilters = melFilterBank.length;
   let filtered = Array(numFilters);
 
-  if (numFilters < numberOfMFCCCoefficients) {
+  if (numFilters < _numberOfMFCCCoefficients) {
     throw new Error(
       "Insufficient filter bank for requested number of coefficients"
     );
@@ -31,11 +36,11 @@ export default function (args) {
   let loggedMelBands = new Float32Array(numFilters);
 
   for (let i = 0; i < loggedMelBands.length; i++) {
-    filtered[i] = new Float32Array(args.bufferSize / 2);
+    filtered[i] = new Float32Array(bufferSize / 2);
     loggedMelBands[i] = 0;
-    for (let j = 0; j < args.bufferSize / 2; j++) {
+    for (let j = 0; j < bufferSize / 2; j++) {
       //point-wise multiplication between power spectrum and filterbanks.
-      filtered[i][j] = args.melFilterBank[i][j] * powSpec[j];
+      filtered[i][j] = melFilterBank[i][j] * powSpec[j];
 
       //summing up all of the coefficients into one array
       loggedMelBands[i] += filtered[i][j];
@@ -47,7 +52,7 @@ export default function (args) {
 
   //dct
   let loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
-  let mfccs = dct(loggedMelBandsArray).slice(0, numberOfMFCCCoefficients);
+  let mfccs = dct(loggedMelBandsArray).slice(0, _numberOfMFCCCoefficients);
 
   return mfccs;
 }
