@@ -1,4 +1,4 @@
-export default function ({ signal }: { signal: Float32Array }) {
+export default function ({ signal }: { signal: Float32Array }): number {
   // Keeping this bad runtime typecheck for consistency
   if (typeof signal !== "object") {
     throw new TypeError();
