@@ -111,7 +111,11 @@ export function freqToMel(fV) {
   return _freqToMel(fV);
 }
 
-export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
+export function createMelFilterBank(
+  numFilters: number,
+  sampleRate: number,
+  bufferSize: number
+): number[][] {
   //the +2 is the upper and lower limits
   let melValues = new Float32Array(numFilters + 2);
   let melValuesInFreq = new Float32Array(numFilters + 2);
@@ -130,7 +134,7 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
   //Find the range as part of the linear interpolation
   let valueToAdd = range / (numFilters + 1);
 
-  let fftBinsOfFreq = Array(numFilters + 2);
+  let fftBinsOfFreq: number[] = new Array(numFilters + 2);
 
   for (let i = 0; i < melValues.length; i++) {
     // Initialising the mel frequencies
@@ -146,7 +150,7 @@ export function createMelFilterBank(numFilters, sampleRate, bufferSize) {
     );
   }
 
-  var filterBank = Array(numFilters);
+  var filterBank: number[][] = new Array(numFilters);
   for (let j = 0; j < filterBank.length; j++) {
     // Create a two dimensional array of size numFilters * (buffersize/2)+1
     // pre-populating the arrays with 0s.

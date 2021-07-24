@@ -1,15 +1,21 @@
-export default function (args) {
-  if (typeof args.ampSpectrum !== "object") {
+export default function ({
+  ampSpectrum,
+  chromaFilterBank,
+}: {
+  ampSpectrum: Float32Array;
+  chromaFilterBank: number[][];
+}) {
+  if (typeof ampSpectrum !== "object") {
     throw new TypeError("Valid ampSpectrum is required to generate chroma");
   }
-  if (typeof args.chromaFilterBank !== "object") {
+  if (typeof chromaFilterBank !== "object") {
     throw new TypeError(
       "Valid chromaFilterBank is required to generate chroma"
     );
   }
 
-  var chromagram = args.chromaFilterBank.map((row, i) =>
-    args.ampSpectrum.reduce((acc, v, j) => acc + v * row[j], 0)
+  var chromagram = chromaFilterBank.map((row, i) =>
+    ampSpectrum.reduce((acc, v, j) => acc + v * row[j], 0)
   );
   var maxVal = Math.max(...chromagram);
 
