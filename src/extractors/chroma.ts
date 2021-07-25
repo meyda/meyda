@@ -4,7 +4,7 @@ export default function ({
 }: {
   ampSpectrum: Float32Array;
   chromaFilterBank: number[][];
-}) {
+}): number[] {
   if (typeof ampSpectrum !== "object") {
     throw new TypeError("Valid ampSpectrum is required to generate chroma");
   }
