@@ -1,12 +1,18 @@
-export default function () {
-  if (typeof arguments[0].ampSpectrum !== "object") {
+export default function ({
+  ampSpectrum,
+  sampleRate,
+}: {
+  ampSpectrum: Float32Array;
+  sampleRate: number;
+}): number {
+  if (typeof ampSpectrum !== "object") {
     throw new TypeError();
   }
 
-  var ampspec = arguments[0].ampSpectrum;
+  var ampspec = ampSpectrum;
 
   //calculate nyquist bin
-  var nyqBin = arguments[0].sampleRate / (2 * (ampspec.length - 1));
+  var nyqBin = sampleRate / (2 * (ampspec.length - 1));
   var ec = 0;
   for (var i = 0; i < ampspec.length; i++) {
     ec += ampspec[i];
