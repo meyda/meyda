@@ -6,7 +6,12 @@ export default function ({
   melFilterBank,
   numberOfMFCCCoefficients,
   bufferSize,
-}) {
+}: {
+  ampSpectrum: Float32Array;
+  melFilterBank: number[][];
+  numberOfMFCCCoefficients: number;
+  bufferSize: number;
+}): number[] {
   if (typeof ampSpectrum !== "object") {
     throw new TypeError("Valid ampSpectrum is required to generate MFCC");
   }
@@ -25,7 +30,7 @@ export default function ({
   // @ts-ignore
   let powSpec = extractPowerSpectrum({ ampSpectrum });
   let numFilters = melFilterBank.length;
-  let filtered = Array(numFilters);
+  let filtered: Float32Array[] = Array(numFilters);
 
   if (numFilters < _numberOfMFCCCoefficients) {
     throw new Error(
@@ -33,7 +38,7 @@ export default function ({
     );
   }
 
-  let loggedMelBands = new Float32Array(numFilters);
+  let loggedMelBands: Float32Array = new Float32Array(numFilters);
 
   for (let i = 0; i < loggedMelBands.length; i++) {
     filtered[i] = new Float32Array(bufferSize / 2);
@@ -51,8 +56,12 @@ export default function ({
   }
 
   //dct
-  let loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
-  let mfccs = dct(loggedMelBandsArray).slice(0, _numberOfMFCCCoefficients);
+  let loggedMelBandsArray: number[] =
+    Array.prototype.slice.call(loggedMelBands);
+  let mfccs: number[] = dct(loggedMelBandsArray).slice(
+    0,
+    _numberOfMFCCCoefficients
+  );
 
   return mfccs;
 }
