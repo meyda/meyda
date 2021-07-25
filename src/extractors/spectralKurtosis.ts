@@ -1,11 +1,15 @@
 import { mu } from "./extractorUtilities";
 
-export default function () {
-  if (typeof arguments[0].ampSpectrum !== "object") {
+export default function ({
+  ampSpectrum,
+}: {
+  ampSpectrum: Float32Array;
+}): number {
+  if (typeof ampSpectrum !== "object") {
     throw new TypeError();
   }
 
-  var ampspec = arguments[0].ampSpectrum;
+  var ampspec = ampSpectrum;
   var mu1 = mu(1, ampspec);
   var mu2 = mu(2, ampspec);
   var mu3 = mu(3, ampspec);
