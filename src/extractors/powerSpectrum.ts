@@ -1,4 +1,8 @@
-export default function ({ ampSpectrum }: { ampSpectrum: Float32Array }) {
+export default function ({
+  ampSpectrum,
+}: {
+  ampSpectrum: Float32Array;
+}): Float32Array {
   if (typeof ampSpectrum !== "object") {
     throw new TypeError();
   }
