@@ -1,9 +1,13 @@
 import { mu } from "./extractorUtilities";
 
-export default function () {
-  if (typeof arguments[0].ampSpectrum !== "object") {
+export default function ({
+  ampSpectrum,
+}: {
+  ampSpectrum: Float32Array;
+}): number {
+  if (typeof ampSpectrum !== "object") {
     throw new TypeError();
   }
 
-  return mu(1, arguments[0].ampSpectrum);
+  return mu(1, ampSpectrum);
 }
