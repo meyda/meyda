@@ -1,4 +1,4 @@
-var TestData = require("../TestData");
+import TestData from "../TestData";
 
 // Setup
 var zcr = require("../../dist/node/extractors/zcr");

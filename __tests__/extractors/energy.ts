@@ -1,4 +1,4 @@
-var TestData = require("../TestData");
+import TestData from "../TestData";
 
 // Setup
 var energy = require("../../dist/node/extractors/energy");

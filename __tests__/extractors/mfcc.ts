@@ -1,4 +1,4 @@
-var TestData = require("../TestData");
+import TestData from "../TestData";
 var utilities = require("../../dist/node/utilities");
 
 // Setup
