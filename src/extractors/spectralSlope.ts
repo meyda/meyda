@@ -6,7 +6,7 @@ export default function ({
   ampSpectrum: Float32Array;
   sampleRate: number;
   bufferSize: number;
-}) {
+}): number {
   if (typeof ampSpectrum !== "object") {
     throw new TypeError();
   }
