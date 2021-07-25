@@ -1,18 +1,21 @@
-export default function () {
-  if (typeof arguments[0].ampSpectrum !== "object") {
+export default function ({
+  ampSpectrum,
+}: {
+  ampSpectrum: Float32Array;
+}): number {
+  if (typeof ampSpectrum !== "object") {
     throw new TypeError();
   }
 
   var numerator = 0;
   var denominator = 0;
-  for (var i = 0; i < arguments[0].ampSpectrum.length; i++) {
-    numerator += Math.log(arguments[0].ampSpectrum[i]);
-    denominator += arguments[0].ampSpectrum[i];
+  for (var i = 0; i < ampSpectrum.length; i++) {
+    numerator += Math.log(ampSpectrum[i]);
+    denominator += ampSpectrum[i];
   }
 
   return (
-    (Math.exp(numerator / arguments[0].ampSpectrum.length) *
-      arguments[0].ampSpectrum.length) /
+    (Math.exp(numerator / ampSpectrum.length) * ampSpectrum.length) /
     denominator
   );
 }
