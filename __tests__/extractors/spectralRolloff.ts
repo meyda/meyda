@@ -1,4 +1,4 @@
-var TestData = require("../TestData");
+import TestData from "../TestData";
 
 // Setup
 var spectralRolloff = require("../../dist/node/extractors/spectralRolloff");

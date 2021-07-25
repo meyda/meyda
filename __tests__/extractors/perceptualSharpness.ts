@@ -1,4 +1,4 @@
-var TestData = require("../TestData");
+import TestData from "../TestData";
 
 // Setup
 var percSharp = require("../../dist/node/extractors/perceptualSharpness");
