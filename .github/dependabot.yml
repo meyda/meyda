@@ -15,6 +15,6 @@ updates:
       interval: daily
     open-pull-requests-limit: 10
     commit-message:
-      prefix: fix
-      prefix-development: chore
+      prefix: docs
+      prefix-development: docs
       include: scope
