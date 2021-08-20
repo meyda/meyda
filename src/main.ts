@@ -131,6 +131,12 @@ var Meyda = {
    * @member {number}
    */
   numberOfMFCCCoefficients: 13,
+  /**
+   * The number of bark bands that the loudness feature extractor should return
+   * @instance
+   * @member {number}
+   */
+  numberOfBarkBands: 24,
   _featuresToExtract: [],
   windowing: utilities.applyWindow,
   _errors: {
@@ -285,6 +291,7 @@ var Meyda = {
         previousAmpSpectrum: this.previousAmpSpectrum,
         previousComplexSpectrum: this.previousComplexSpectrum,
         numberOfMFCCCoefficients: this.numberOfMFCCCoefficients,
+        numberOfBarkBands: this.numberOfBarkBands,
       });
     };
 

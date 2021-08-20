@@ -1,9 +1,11 @@
 export default function ({
   ampSpectrum,
   barkScale,
+  numberOfBarkBands = 24,
 }: {
   ampSpectrum: Float32Array;
   barkScale: Float32Array;
+  numberOfBarkBands?: number;
 }): {
   specific: Float32Array;
   total: number;
@@ -12,7 +14,7 @@ export default function ({
     throw new TypeError();
   }
 
-  var NUM_BARK_BANDS = 24;
+  var NUM_BARK_BANDS = numberOfBarkBands;
   var specific = new Float32Array(NUM_BARK_BANDS);
   var total = 0;
   var normalisedSpectrum = ampSpectrum;
