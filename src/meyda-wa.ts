@@ -123,6 +123,8 @@ export class MeydaAnalyzer {
       options.numberOfMFCCCoefficients ||
       this._m.numberOfMFCCCoefficients ||
       13;
+    this._m.numberOfBarkBands =
+      options.numberOfBarkBands || this._m.numberOfBarkBands || 24;
 
     //create nodes
     this._m.spn = this._m.audioContext.createScriptProcessor(
