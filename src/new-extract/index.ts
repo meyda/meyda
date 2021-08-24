@@ -1,3 +1,4 @@
+import { A } from "ts-toolbelt";
 import extractors, {
   MeydaExtractors,
   ExtractorMap,
@@ -25,37 +26,28 @@ type RelevantExtractorParams<
 type AllMeydaExtractorParams<T extends keyof ExtractorMap> =
   RelevantExtractorParams<ExtractorMap, T>;
 
-type ExtractPartial = {
-  <F extends MeydaExtractors>(features: F, signal: Signal): {
-    [ExtractorName in F]: ReturnTypesOf<ExtractorMap>[ExtractorName];
-  };
-  <F extends MeydaExtractors>(features: F): (
-    signal: Signal
-  ) => { [ExtractorName in F]: ReturnTypesOf<ExtractorMap>[ExtractorName] };
+type ExtractionResult<F extends MeydaExtractors> = {
+  [ExtractorName in F]: ReturnTypesOf<ExtractorMap>[ExtractorName];
 };
 
-type CurriedExtract = {
-  <F extends MeydaExtractors>(
-    options: MeydaExtractionOptions,
-    features: F[],
-    signal: Signal
-  ): { [ExtractorName in F]: ReturnTypesOf<ExtractorMap>[ExtractorName] };
-  <F extends MeydaExtractors>(
-    options: MeydaExtractionOptions,
-    features: F[]
-  ): ExtractPartial;
-  (options: MeydaExtractionOptions): ExtractPartial;
-};
+/*
+ * Options have been set, you can provide features and a signal, or just features,
+ * which will partially apply.
+ */
+type OptionedExtract<F extends MeydaExtractors> = A.Compute<{
+  (features: F[], signal: Signal): ExtractionResult<F>;
+  (features: F[]): FeaturedExtract<F>;
+}>;
 
-type Extract = {
-  <F extends MeydaExtractors>(
-    options: MeydaExtractionOptions,
-    features: F[],
-    signal: Signal
-  ): {
-    [ExtractorName in F]: ReturnTypesOf<ExtractorMap>[ExtractorName];
-  };
-};
+/**
+ * Options and features have been set, you just need to provide a signal.
+ */
+type FeaturedExtract<F extends MeydaExtractors> = A.Compute<
+  {
+    (signal: Signal): ExtractionResult<F>;
+  },
+  "flat"
+>;
 
 /**
  * A curryable function that extracts given features from a signal.
@@ -80,20 +72,104 @@ type Extract = {
  * @param signal The signal to extract features from.
  * @returns An object containing the extracted features.
  */
-export const extract: Extract = function extract(options, features, signal) {
-  // // prepare feature extractor params
-  // if (!features) {
-  //   const extractPartial: ExtractPartial = function extractPartial<T, U>(
-  //     features: T,
-  //     signal?: U | undefined
-  //   ) {
-  //     if (!signal) {
-  //       return (signal: U) => extractPartial(features, signal);
-  //     }
-  //   };
-  //   return extractPartial;
-  // }
+// type Extract = {
+//   <F extends MeydaExtractors>(
+//     options: MeydaExtractionOptions
+//   ): OptionedExtract<F>;
+//   <F extends MeydaExtractors>(
+//     options: MeydaExtractionOptions,
+//     features: F[]
+//   ): FeaturedExtract<F>;
+//   <F extends MeydaExtractors>(
+//     options: MeydaExtractionOptions,
+//     features: F[],
+//     signal: Signal
+//   ): ExtractionResult<F>;
+// };
+type Extract = {
+  <F extends MeydaExtractors>(
+    options: MeydaExtractionOptions,
+    features: F[],
+    signal: Signal
+  ): ExtractionResult<F>;
+  <F extends MeydaExtractors>(options: MeydaExtractionOptions, features: F[]): {
+    (signal: Signal): ExtractionResult<F>;
+  };
+  <F extends MeydaExtractors>(options: MeydaExtractionOptions): {
+    (features: F[]): {
+      (signal: Signal): ExtractionResult<F>;
+    };
+    (features: F[], signal: Signal): ExtractionResult<F>;
+  };
+};
 
+export const extract: Extract = function extract<F extends MeydaExtractors>(
+  options: MeydaExtractionOptions,
+  features?: F[],
+  signal?: Signal
+) {
+  const preparedOptions = prepareExtractorOptions(options);
+  if (!features) {
+    return function f<F extends MeydaExtractors>(
+      features: F[],
+      signal?: Signal
+    ) {
+      // I know this looks like duplication, but since we can't call a function
+      // with an optional parameter given a T | undefined, we can't deduplicate
+      // this conditional.
+      if (!signal) {
+        return (signal: Signal) =>
+          fullyAppliedExtract(preparedOptions, features, signal);
+      }
+      return fullyAppliedExtract(preparedOptions, features, signal);
+    };
+  }
+  if (!signal) {
+    return (signal: Signal) =>
+      fullyAppliedExtract(preparedOptions, features, signal);
+  }
+  return fullyAppliedExtract(preparedOptions, features, signal);
+};
+
+type PreparedExtractorOptions = unknown;
+
+type ExtractWithPreparedOptions = {
+  <F extends MeydaExtractors>(
+    options: PreparedExtractorOptions,
+    features: F[]
+  ): (signal: Signal) => ExtractionResult<F>;
+  <F extends MeydaExtractors>(
+    options: PreparedExtractorOptions,
+    features: F[],
+    signal: Signal
+  ): ExtractionResult<F>;
+};
+
+// const extractWithPreparedOptions: ExtractWithPreparedOptions =
+const _extractWithPreparedOptions = function extractWithPreparedOptions<
+  F extends MeydaExtractors
+>(options: PreparedExtractorOptions, features: F[], signal?: Signal) {
+  if (!signal) {
+    return (signal: Signal) =>
+      fullyAppliedExtract<F>(options, features, signal);
+  }
+  const appliedResult = fullyAppliedExtract<F>(options, features, signal);
+  return appliedResult;
+};
+const extractWithPreparedOptions: ExtractWithPreparedOptions =
+  _extractWithPreparedOptions;
+
+const prepareExtractorOptions = (
+  options: MeydaExtractionOptions
+): PreparedExtractorOptions => {
+  return {};
+};
+
+function fullyAppliedExtract<F extends MeydaExtractors>(
+  options: PreparedExtractorOptions,
+  features: F[],
+  signal: Signal
+): ExtractionResult<F> {
   // We have to keep doing type assertions here because Typescript's definitions
   // widen things a bit more than necessary.
 
@@ -108,6 +184,7 @@ export const extract: Extract = function extract(options, features, signal) {
   // @ts-expect-error
   const returnEntries = features.map<
     [ProvidedFeature, ReturnTypesOf<ExtractorMap>[ProvidedFeature]]
+    //@ts-expect-error
   >((feature) => {
     const extractor = extractors[feature];
     return [
@@ -120,13 +197,24 @@ export const extract: Extract = function extract(options, features, signal) {
     ];
   });
 
+  // TODO: Fix the type here
   return Object.fromEntries(returnEntries) as {
     [ExtractorName in ProvidedFeature]: ReturnType<ExtractorMap[ExtractorName]>;
-  };
-};
+  } as any;
+}
 
-extract({}, ["energy", "rms", "complexSpectrum"], [1, 2, 3]);
-extract({}, ["energy", "rms", "complexSpectrum"], new Float32Array([1, 2, 3]));
+const a = extract({}, ["rms"], [1, 2, 3]);
+const b = extract({}, ["rms"]);
+const x = b([1, 2, 3]);
+const c = extract({});
+const rmsExtractor = c(["rms"]);
+const rms = rmsExtractor([1, 2, 3]);
+c(["rms"], [1, 2, 3]);
+const d = extract(
+  {},
+  ["energy", "rms", "complexSpectrum"],
+  new Float32Array([1, 2, 3])
+);
 
 type Intersection<A, B> = A & B;
 type T = Intersection<{ a: string }, { b: number }>;
