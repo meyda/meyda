@@ -6,3 +6,6 @@ __tests__
 CODE_OF_CONDUCT.md
 rollup.config.js
 coverage
+.husky
+.prettierignore
+.tsconfig.json
