@@ -57,7 +57,7 @@
     "prettier": "2.4.1",
     "rollup": "^2.50.5",
     "rollup-plugin-terser": "^7.0.2",
-    "semantic-release": "^17.4.3",
+    "semantic-release": "^18.0.0",
     "ts-jest": "^27.0.3",
     "tslib": "^2.3.0",
     "typedoc": "^0.21.4",
