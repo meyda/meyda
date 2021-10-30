@@ -23,3 +23,7 @@ Here's a list of examples of projects that use Meyda. Would you like your Meyda 
 - [Kaos Logo Generator](https://lusion.co/work/kaos-logo-generator/) by [Lusion](https://lusion.co/)
 
 > A system that allows web users to generate their unique logos using their voices
+
+- [threejs-meydajs-fftspectrum](https://threejs-meydajs-fftspectrum.surge.sh/) by [Andrea Bovo/spleennooname](https://github.com/spleennooname)
+
+> A spectrum fft on steroids: picks up microphone from audio stream and drives the webgl effect.
