@@ -4,13 +4,14 @@
   "description": "Real-time feature extraction for the web audio api",
   "main": "./dist/node/main.js",
   "browser": "./dist/web/meyda.min.js",
-  "jsnext:main": "./src/main.js",
+  "jsnext:main": "./dist/esm/main.js",
+  "types": "./dist/esm/main.d.ts",
   "bin": {
     "meyda": "./bin/cli.js"
   },
   "scripts": {
     "test": "jest",
-    "build": "NODE_ENV=production; rollup -c rollup.config.js",
+    "build": "NODE_ENV=production; tsc && rollup -c rollup.config.js",
     "lint": "tsc --noEmit && eslint -f compact --ext .js,.jsx,.ts,.tsx src __tests__ docs/src bin",
     "generatereferencedocs": "typedoc src/meyda-wa.ts src/main.ts --out docs/reference --readme docs/README.md",
     "semantic-release": "semantic-release",
