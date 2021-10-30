@@ -61,14 +61,12 @@ export interface MeydaAnalyzerOptions {
 }
 
 /**
- * MeydaAnalyzer
- * @classdesc
  * Meyda's interface to the Web Audio API. MeydaAnalyzer abstracts an API on
  * top of the Web Audio API's ScriptProcessorNode, running the Meyda audio
  * feature extractors inside that context.
  *
  * MeydaAnalyzer's constructor should not be called directly - MeydaAnalyzer
- * objects should be generated using the {@link Meyda.createMeydaAnalyzer}
+ * objects should be generated using the {@link createMeydaAnalyzer}
  * factory function in the main Meyda class.
  *
  * Options are of type {@link MeydaAnalyzerOptions}.
@@ -87,7 +85,6 @@ export interface MeydaAnalyzerOptions {
  *   }
  * });
  * ```
- * @hideconstructor
  */
 export class MeydaAnalyzer {
   /** @hidden */
