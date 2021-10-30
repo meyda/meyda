@@ -13,7 +13,7 @@
     "test": "jest",
     "build": "NODE_ENV=production; tsc && rollup -c rollup.config.js",
     "lint": "tsc --noEmit && eslint -f compact --ext .js,.jsx,.ts,.tsx src __tests__ docs/src bin",
-    "generatereferencedocs": "typedoc src/meyda-wa.ts src/main.ts --out docs/reference --readme docs/README.md",
+    "generatereferencedocs": "typedoc src/meyda-wa.ts src/main.ts --out docs/reference --readme none",
     "semantic-release": "semantic-release",
     "prepare": "husky install"
   },

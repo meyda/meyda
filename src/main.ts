@@ -1,70 +1,58 @@
+/**
+ * This file contains the default export for Meyda, you probably want to check
+ * out {@link default}
+ *
+ * @module Meyda
+ */
+
 import * as utilities from "./utilities";
 import * as extractors from "./featureExtractors";
 import { fft } from "fftjs";
-import { MeydaAnalyzer } from "./meyda-wa";
+import { MeydaAnalyzer, MeydaAnalyzerOptions } from "./meyda-wa";
 
 /**
- * Meyda Module
- * @module meyda
+ * A type representing an audio signal. In general it should be an array of
+ * numbers that is sliceable. Float32Array is assignable here, and we generally
+ * expect that most signals will be in this format.
  */
+type MeydaSignal = SliceableArrayLike<number> | Float32Array;
+
+interface SliceableArrayLike<T> extends ArrayLike<T> {
+  slice(start: number, end: number): SliceableArrayLike<T>;
+}
 
 /**
- * Options for constructing a MeydaAnalyzer
- * @typedef {Object} MeydaOptions
- * @property {AudioContext} audioContext - The Audio Context for the MeydaAnalyzer to operate in.
- * @property {AudioNode} source - The Audio Node for Meyda to listen to.
- * @property {number} [bufferSize] - The size of the buffer.
- * @property {number} [hopSize] - The hop size between buffers.
- * @property {number} [sampleRate] - The number of samples per second in the audio context.
- * @property {Function} [callback] - A function to receive the frames of audio features
- * @property {string} [windowingFunction] - The Windowing Function to apply to the signal before transformation to the frequency domain
- * @property {string|Array.<string>} [featureExtractors] - Specify the feature extractors you want to run on the audio.
- * @property {boolean} [startImmediately] - Pass `true` to start feature extraction immediately
- * @property {number} [numberOfMFCCCoefficients] - The number of MFCC co-efficients that the MFCC feature extractor should return
+ * Meyda is a library for extracting audio features from an audio signal.
+ *
+ * The primary entry points are {@link extract} for audio feature extraction on
+ * raw signals you have in memory, and {@link createMeydaAnalyzer}, which
+ * provides a {@link MeydaAnalyzer} object that can be used to extract features
+ * on a Web Audio API AudioNode. The latter is only supported on web targets,
+ * though if you're using the Web Audio API in a non-web target, we'd love to
+ * hear from you.
+ *
+ * We also expose {@link listAvailableFeatureExtractors} which returns a list of the
+ * available feature extractors, and {@link windowing}, which lets you apply
+ * a windowing function to your signal outside of Meyda.
+ *
+ * We existed long before esmodules, so our backwards compatible API may seem
+ * unusual. We export a default object, with read/write fields that control
+ * various parameters of the audio feature extraction process. We're working on
+ * a new interface, check out [#257](https://github.com/meyda/meyda/issues/257)
+ * for more information.
  */
-
-/**
- * Web Audio context
- * Either an {@link AudioContext|https://developer.mozilla.org/en-US/docs/Web/API/AudioContext}
- * or an {@link OfflineAudioContext|https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext}
- * @typedef {Object} AudioContext
- */
-
-/**
- * AudioNode
- * A Web AudioNode
- * @typedef {Object} AudioNode
- */
-
-/**
- * ScriptProcessorNode
- * A Web Audio ScriptProcessorNode
- * @typedef {Object} ScriptProcessorNode
- */
-
-/**
- * @class Meyda
- * @hideconstructor
- * @classdesc
- * The schema for the default export of the Meyda library.
- * @example
- * var Meyda = require('meyda');
- */
-var Meyda = {
+interface Meyda {
   /**
    * Meyda stores a reference to the relevant audio context here for use inside
    * the Web Audio API.
-   * @instance
-   * @member {AudioContext}
    */
-  audioContext: null,
+  audioContext: AudioContext | null;
   /**
    * Meyda keeps an internal ScriptProcessorNode in which it runs audio feature
    * extraction. The ScriptProcessorNode is stored in this member variable.
-   * @instance
-   * @member {ScriptProcessorNode}
+   * @hidden
    */
-  spn: null,
+  spn: ScriptProcessorNode | null;
   /**
    * The length of each buffer that Meyda will extract audio on. When recieving
    * input via the Web Audio API, the Script Processor Node chunks incoming audio
@@ -75,64 +63,132 @@ var Meyda = {
    * buffer size by the sample rate. If you're using Meyda for visualisation,
    * make sure that you're collecting audio features at a rate that's faster
    * than or equal to the video frame rate you expect.
-   * @instance
-   * @member {number}
    */
-  bufferSize: 512,
+  bufferSize: number;
   /**
    * The number of samples per second of the incoming audio. This affects
    * feature extraction outside of the context of the Web Audio API, and must be
    * set accurately - otherwise calculations will be off.
-   * @instance
-   * @member {number}
    */
-  sampleRate: 44100,
+  sampleRate: number;
   /**
    * The number of Mel bands to use in the Mel Frequency Cepstral Co-efficients
    * feature extractor
-   * @instance
-   * @member {number}
    */
-  melBands: 26,
+  melBands: number;
   /**
    * The number of bands to divide the spectrum into for the Chroma feature
    * extractor. 12 is the standard number of semitones per octave in the western
    * music tradition, but Meyda can use an arbitrary number of bands, which
    * can be useful for microtonal music.
-   * @instance
-   * @member {number}
    */
-  chromaBands: 12,
+  chromaBands: number;
   /**
    * A function you can provide that will be called for each buffer that Meyda
    * receives from its source node
-   * @instance
-   * @member {Function}
+   * @hidden
    */
-  callback: null,
+  callback:
+    | ((features: Partial<Meyda.MeydaFeaturesObject>) => void | null)
+    | null;
   /**
    * Specify the windowing function to apply to the buffer before the
    * transformation from the time domain to the frequency domain is performed
    *
    * The default windowing function is the hanning window.
-   *
-   * @instance
-   * @member {string}
    */
-  windowingFunction: "hanning",
-  /**
-   * @member {object}
-   */
-  featureExtractors: extractors,
-  EXTRACTION_STARTED: false,
+  windowingFunction: string;
+  featureExtractors: any;
+  /** @hidden */
+  EXTRACTION_STARTED: boolean;
   /**
    * The number of MFCC co-efficients that the MFCC feature extractor should return
-   * @instance
-   * @member {number}
    */
+  numberOfMFCCCoefficients: number;
+  /** @hidden */
+  _featuresToExtract: string[];
+  /**
+   * Apply a windowing function to a signal
+   */
+  windowing: (
+    signal: MeydaSignal,
+    windowname?: Meyda.MeydaWindowingFunction
+  ) => MeydaSignal;
+  /** @hidden */
+  _errors: { [key: string]: Error };
+  /**
+   * @summary
+   * Create a MeydaAnalyzer
+   *
+   * A factory function for creating a MeydaAnalyzer, the interface for using
+   * Meyda in the context of Web Audio.
+   *
+   * @example
+   * ```javascript
+   * const analyzer = Meyda.createMeydaAnalyzer({
+   *   "audioContext": audioContext,
+   *   "source": source,
+   *   "bufferSize": 512,
+   *   "featureExtractors": ["rms"],
+   *   "inputs": 2,
+   *   "callback": features => {
+   *     levelRangeElement.value = features.rms;
+   *   }
+   * });
+   * ```
+   */
+  createMeydaAnalyzer: (MeydaAnalyzerOptions) => MeydaAnalyzer;
+  /**
+   * List available audio feature extractors. Return format provides the key to
+   * be used in selecting the extractor in the extract methods
+   */
+  listAvailableFeatureExtractors: () => Meyda.MeydaAudioFeature[];
+  /**
+   * Extract an audio feature from a buffer
+   *
+   * Unless `meyda.windowingFunction` is set otherwise, `extract` will
+   * internally apply a hanning window to the buffer prior to conversion into
+   * the frequency domain.
+   *
+   * @param {(string|Array.<string>)} feature - the feature you want to extract
+   * @param {Array.<number>} signal
+   * An array of numbers that represents the signal. It should be of length
+   * `meyda.bufferSize`
+   * @param {Array.<number>} [previousSignal] - the previous buffer
+   * @returns {object} Features
+   * @example
+   * ```javascript
+   * meyda.bufferSize = 2048;
+   * const features = meyda.extract(['zcr', 'spectralCentroid'], signal);
+   * ```
+   *
+   * Aside: yes, you need to modify the value of a field of the default export
+   * of the package to change the buffer size. We realise this now seems not
+   * a good practice. See [this issue](https://github.com/meyda/meyda/issues/257)
+   * to track our progress on implementing a more modern API.
+   */
+  extract: (
+    feature: Meyda.MeydaAudioFeature | Meyda.MeydaAudioFeature[],
+    signal: MeydaSignal,
+    previousSignal?: MeydaSignal
+  ) => Partial<Meyda.MeydaFeaturesObject> | null;
+}
+
+const Meyda: Meyda = {
+  audioContext: null,
+  spn: null,
+  bufferSize: 512,
+  sampleRate: 44100,
+  melBands: 26,
+  chromaBands: 12,
+  callback: null,
+  windowingFunction: "hanning",
+  featureExtractors: extractors,
+  EXTRACTION_STARTED: false,
   numberOfMFCCCoefficients: 13,
   _featuresToExtract: [],
   windowing: utilities.applyWindow,
+  /** @hidden */
   _errors: {
     notPow2: new Error(
       "Meyda: Buffer size must be a power of 2, e.g. 64 or 512"
@@ -179,7 +235,7 @@ var Meyda = {
    */
 
   listAvailableFeatureExtractors: function () {
-    return Object.keys(this.featureExtractors);
+    return Object.keys(this.featureExtractors) as Meyda.MeydaAudioFeature[];
   },
 
   /**
@@ -242,7 +298,7 @@ var Meyda = {
       );
     }
 
-    if (typeof signal.buffer == "undefined") {
+    if ("buffer" in signal && typeof signal.buffer == "undefined") {
       //signal is a normal array, convert to F32A
       this.signal = utilities.arrayToTyped(signal);
     } else {
@@ -335,10 +391,6 @@ var prepareSignalWithSpectrum = function (
   return preparedSignal;
 };
 
-/**
- * The Meyda class
- * @type {Meyda}
- */
 export default Meyda;
 
 // @ts-ignore
