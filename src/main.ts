@@ -207,10 +207,7 @@ const Meyda: Meyda = {
    * A factory function for creating a MeydaAnalyzer, the interface for using
    * Meyda in the context of Web Audio.
    *
-   * @method
-   * @param {MeydaOptions} options Options - an object containing configuration
-   * @returns {MeydaAnalyzer}
-   * @example
+   * ```javascript
    * const analyzer = Meyda.createMeydaAnalyzer({
    *   "audioContext": audioContext,
    *   "source": source,
@@ -221,23 +218,14 @@ const Meyda: Meyda = {
    *     levelRangeElement.value = features.rms;
    *   }
    * });
+   * ```
    */
-  createMeydaAnalyzer: function (options) {
-    return new MeydaAnalyzer(options, Object.assign({}, Meyda));
-  },
-
+  createMeydaAnalyzer,
   /**
    * List available audio feature extractors. Return format provides the key to
    * be used in selecting the extractor in the extract methods
-   *
-   * @returns {Array.<string>} featureExtractors - a list of the keys of
-   * available audio feature extractors
    */
-
-  listAvailableFeatureExtractors: function () {
-    return Object.keys(this.featureExtractors) as Meyda.MeydaAudioFeature[];
-  },
-
+  listAvailableFeatureExtractors,
   /**
    * Extract an audio feature from a buffer
    *
@@ -245,16 +233,10 @@ const Meyda: Meyda = {
    * internally apply a hanning window to the buffer prior to conversion into
    * the frequency domain.
    *
-   * @function
-   * @param {(string|Array.<string>)} feature - the feature you want to extract
-   * @param {Array.<number>} signal
-   * An array of numbers that represents the signal. It should be of length
-   * `meyda.bufferSize`
-   * @param {Array.<number>} [previousSignal] - the previous buffer
-   * @returns {object} Features
-   * @example
+   * ```javascript
    * meyda.bufferSize = 2048;
    * const features = meyda.extract(['zcr', 'spectralCentroid'], signal);
+   * ```
    */
   extract: function (feature, signal, previousSignal) {
     if (!signal) throw this._errors.invalidInput;
@@ -392,6 +374,47 @@ var prepareSignalWithSpectrum = function (
 };
 
 export default Meyda;
+
+/**
+ * List available audio feature extractors. Return format provides the key to
+ * be used in selecting the extractor in the extract methods
+ */
+export function listAvailableFeatureExtractors(): Meyda.MeydaAudioFeature[] {
+  return Object.keys(this.featureExtractors) as Meyda.MeydaAudioFeature[];
+}
+
+/**
+ * Create a MeydaAnalyzer
+ *
+ * A factory function for creating a MeydaAnalyzer, the interface for using
+ * Meyda in the context of Web Audio.
+ *
+ * ```javascript
+ * const analyzer = Meyda.createMeydaAnalyzer({
+ *   "audioContext": audioContext,
+ *   "source": source,
+ *   "bufferSize": 512,
+ *   "featureExtractors": ["rms"],
+ *   "inputs": 2,
+ *   "callback": features => {
+ *     levelRangeElement.value = features.rms;
+ *   }
+ * });
+ * ```
+ */
+export function createMeydaAnalyzer(options) {
+  return new MeydaAnalyzer(options, Object.assign({}, Meyda));
+}
+
+/**
+ * Apply a windowing function to a signal
+ */
+export function windowing(
+  signal: MeydaSignal,
+  windowname: Meyda.MeydaWindowingFunction
+): MeydaSignal {
+  return utilities.applyWindow(signal, windowname);
+}
 
 // @ts-ignore
 if (typeof window !== "undefined") window.Meyda = Meyda;
