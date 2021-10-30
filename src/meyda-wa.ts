@@ -1,5 +1,64 @@
+/// <reference types="./meyda" />
+
 import * as utilities from "./utilities";
 import * as featureExtractors from "./featureExtractors";
+
+/**
+ * MeydaAnalyzerOptions
+ */
+export interface MeydaAnalyzerOptions {
+  /**
+   * The Audio Context for the MeydaAnalyzer to operate in.
+   */
+  audioContext: AudioContext;
+  /**
+   * The Audio Node for Meyda to listen to.
+   */
+  source: AudioNode;
+  /**
+   * The size of the buffer.
+   */
+  bufferSize: number;
+  /**
+   * The number of samples between the start of each buffer.
+   */
+  hopSize?: number | undefined;
+  /**
+   * The number of samples per second in the audioContext.
+   */
+  sampleRate?: number | undefined;
+  /**
+   * Pass `true` to start feature extraction immediately
+   */
+  startImmediately?: boolean | undefined;
+  /**
+   * The channel from the input node to listen to
+   */
+  channel?: number | undefined;
+  /**
+   * The Windowing Function to apply to the signal before transformation to the frequency domain.
+   */
+  windowingFunction?: Meyda.MeydaWindowingFunction | undefined;
+  /**
+   * What feature extractors to return to the callback.
+   */
+  featureExtractors?:
+    | Meyda.MeydaAudioFeature
+    | ReadonlyArray<Meyda.MeydaAudioFeature>
+    | undefined;
+  inputs?: number | undefined;
+  outputs?: number | undefined;
+  /**
+   * The number of mfcc coefficients to calculate for each buffer.
+   */
+  numberOfMFCCCoefficients?: number | undefined;
+  /**
+   * The callback to receive your audio features. Will be called once for each buffer of input audio.
+   */
+  callback?:
+    | ((features: Partial<Meyda.MeydaFeaturesObject>) => void)
+    | undefined;
+}
 
 /**
  * MeydaAnalyzer
@@ -12,7 +71,10 @@ import * as featureExtractors from "./featureExtractors";
  * objects should be generated using the {@link Meyda.createMeydaAnalyzer}
  * factory function in the main Meyda class.
  *
+ * Options are of type {@link MeydaAnalyzerOptions}.
+ *
  * @example
+ * ```javascript
  * const analyzer = Meyda.createMeydaAnalyzer({
  *   "audioContext": audioContext,
  *   "source": source,
@@ -24,11 +86,15 @@ import * as featureExtractors from "./featureExtractors";
  *     levelRangeElement.value = features.rms;
  *   }
  * });
+ * ```
  * @hideconstructor
  */
 export class MeydaAnalyzer {
+  /** @hidden */
   _m: any;
-  constructor(options, _this) {
+
+  /** @hidden */
+  constructor(options: MeydaAnalyzerOptions, _this) {
     this._m = _this;
     if (!options.audioContext) {
       throw this._m.errors.noAC;
@@ -146,9 +212,13 @@ export class MeydaAnalyzer {
    * Change the features that Meyda is extracting. Defaults to the features that
    * were set upon construction in the options parameter.
    * @example
+   * ```javascript
    * analyzer.start('chroma');
+   * ```
    */
-  start(features) {
+  start(
+    features?: Meyda.MeydaAudioFeature | ReadonlyArray<Meyda.MeydaAudioFeature>
+  ): void {
     this._m._featuresToExtract = features || this._m._featuresToExtract;
     this._m.EXTRACTION_STARTED = true;
   }
@@ -156,9 +226,11 @@ export class MeydaAnalyzer {
   /**
    * Stop feature extraction.
    * @example
+   * ```javascript
    * analyzer.stop();
+   * ```
    */
-  stop() {
+  stop(): void {
     this._m.EXTRACTION_STARTED = false;
   }
 
@@ -166,9 +238,11 @@ export class MeydaAnalyzer {
    * Set the Audio Node for Meyda to listen to.
    * @param {AudioNode} source - The Audio Node for Meyda to listen to
    * @example
+   * ```javascript
    * analyzer.setSource(audioSourceNode);
+   * ```
    */
-  setSource(source) {
+  setSource(source: AudioNode): void {
     this._m.source && this._m.source.disconnect(this._m.spn);
     this._m.source = source;
     this._m.source.connect(this._m.spn);
@@ -179,9 +253,11 @@ export class MeydaAnalyzer {
    * @param {number} channel - the index of the channel on the input audio node
    * for Meyda to listen to.
    * @example
+   * ```javascript
    * analyzer.setChannel(0);
+   * ```
    */
-  setChannel(channel) {
+  setChannel(channel: number) {
     if (channel <= this._m.inputs) {
       this._m.channel = channel;
     } else {
@@ -196,9 +272,13 @@ export class MeydaAnalyzer {
    * @param {(string|Array.<string>)} [features]
    * Change the features that Meyda is extracting
    * @example
+   * ```javascript
    * analyzer.get('spectralFlatness');
+   * ```
    */
-  get(features) {
+  get(
+    features?: Meyda.MeydaAudioFeature | ReadonlyArray<Meyda.MeydaAudioFeature>
+  ): Partial<Meyda.MeydaFeaturesObject> | null {
     if (this._m.inputData) {
       return this._m.extract(
         features || this._m._featuresToExtract,
