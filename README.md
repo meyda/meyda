@@ -18,7 +18,7 @@ Please see [the documentation][docs] for setup and usage instructions.
 
 Please see [our contributor guidelines][contributing] for guidelines about contributing, and bear in mind that we adhere to the [Contributor Covenant][contributor-covenant]
 
-[build-status-image]: https://img.shields.io/github/checks-status/meyda/meyda/master
+[build-status-image]: https://img.shields.io/github/checks-status/meyda/meyda/main
 [web-audio-api]: https://github.com/WebAudio/web-audio-api
 [meyda-paper]: http://doc.gold.ac.uk/~mu202hr/publications/RawlinsonSegalFiala_WAC2015.pdf
 [hugh-github]: https://github.com/hughrawlinson
