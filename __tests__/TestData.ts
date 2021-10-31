@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-loss-of-precision: 0 */
 // I want to reformat these arrays as tables but I have no idea how
 // to do it automatically, and I'm sure not doing it manually.
 
