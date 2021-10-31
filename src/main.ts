@@ -9,15 +9,70 @@ import * as utilities from "./utilities";
 import * as extractors from "./featureExtractors";
 import { fft } from "fftjs";
 import { MeydaAnalyzer, MeydaAnalyzerOptions } from "./meyda-wa";
+export interface MeydaFeaturesObject {
+  amplitudeSpectrum: Float32Array;
+  buffer: number[];
+  chroma: number[];
+  complexSpectrum: {
+    real: number[];
+    imag: number[];
+  };
+  energy: number;
+  loudness: {
+    specific: Float32Array;
+    total: number;
+  };
+  mfcc: number[];
+  perceptualSharpness: number;
+  perceptualSpread: number;
+  powerSpectrum: Float32Array;
+  rms: number;
+  spectralCentroid: number;
+  spectralFlatness: number;
+  spectralKurtosis: number;
+  spectralRolloff: number;
+  spectralSkewness: number;
+  spectralSlope: number;
+  spectralSpread: number;
+  zcr: number;
+}
+
+export type MeydaWindowingFunction =
+  | "blackman"
+  | "sine"
+  | "hanning"
+  | "hamming";
+
+export type MeydaAudioFeature =
+  | "amplitudeSpectrum"
+  | "chroma"
+  | "complexSpectrum"
+  | "energy"
+  | "loudness"
+  | "mfcc"
+  | "perceptualSharpness"
+  | "perceptualSpread"
+  | "powerSpectrum"
+  | "rms"
+  | "spectralCentroid"
+  | "spectralFlatness"
+  | "spectralFlux"
+  | "spectralKurtosis"
+  | "spectralRolloff"
+  | "spectralSkewness"
+  | "spectralSlope"
+  | "spectralSpread"
+  | "zcr"
+  | "buffer";
 
 /**
  * A type representing an audio signal. In general it should be an array of
  * numbers that is sliceable. Float32Array is assignable here, and we generally
  * expect that most signals will be in this format.
  */
-type MeydaSignal = SliceableArrayLike<number> | Float32Array;
+export type MeydaSignal = SliceableArrayLike<number> | Float32Array;
 
-interface SliceableArrayLike<T> extends ArrayLike<T> {
+export interface SliceableArrayLike<T> extends ArrayLike<T> {
   slice(start: number, end: number): SliceableArrayLike<T>;
 }
 
@@ -88,9 +143,7 @@ interface Meyda {
    * receives from its source node
    * @hidden
    */
-  callback:
-    | ((features: Partial<Meyda.MeydaFeaturesObject>) => void | null)
-    | null;
+  callback: ((features: Partial<MeydaFeaturesObject>) => void | null) | null;
   /**
    * Specify the windowing function to apply to the buffer before the
    * transformation from the time domain to the frequency domain is performed
@@ -112,7 +165,7 @@ interface Meyda {
    */
   windowing: (
     signal: MeydaSignal,
-    windowname?: Meyda.MeydaWindowingFunction
+    windowname?: MeydaWindowingFunction
   ) => MeydaSignal;
   /** @hidden */
   _errors: { [key: string]: Error };
@@ -142,7 +195,7 @@ interface Meyda {
    * List available audio feature extractors. Return format provides the key to
    * be used in selecting the extractor in the extract methods
    */
-  listAvailableFeatureExtractors: () => Meyda.MeydaAudioFeature[];
+  listAvailableFeatureExtractors: () => MeydaAudioFeature[];
   /**
    * Extract an audio feature from a buffer
    *
@@ -168,10 +221,10 @@ interface Meyda {
    * to track our progress on implementing a more modern API.
    */
   extract: (
-    feature: Meyda.MeydaAudioFeature | Meyda.MeydaAudioFeature[],
+    feature: MeydaAudioFeature | MeydaAudioFeature[],
     signal: MeydaSignal,
     previousSignal?: MeydaSignal
-  ) => Partial<Meyda.MeydaFeaturesObject> | null;
+  ) => Partial<MeydaFeaturesObject> | null;
 }
 
 const Meyda: Meyda = {
@@ -379,8 +432,8 @@ export default Meyda;
  * List available audio feature extractors. Return format provides the key to
  * be used in selecting the extractor in the extract methods
  */
-export function listAvailableFeatureExtractors(): Meyda.MeydaAudioFeature[] {
-  return Object.keys(this.featureExtractors) as Meyda.MeydaAudioFeature[];
+export function listAvailableFeatureExtractors(): MeydaAudioFeature[] {
+  return Object.keys(this.featureExtractors) as MeydaAudioFeature[];
 }
 
 /**
@@ -411,7 +464,7 @@ export function createMeydaAnalyzer(options) {
  */
 export function windowing(
   signal: MeydaSignal,
-  windowname: Meyda.MeydaWindowingFunction
+  windowname: MeydaWindowingFunction
 ): MeydaSignal {
   return utilities.applyWindow(signal, windowname);
 }

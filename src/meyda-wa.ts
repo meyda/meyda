@@ -1,7 +1,10 @@
-/// <reference types="./meyda" />
-
 import * as utilities from "./utilities";
 import * as featureExtractors from "./featureExtractors";
+import type {
+  MeydaAudioFeature,
+  MeydaWindowingFunction,
+  MeydaFeaturesObject,
+} from "./main";
 
 /**
  * MeydaAnalyzerOptions
@@ -38,13 +41,13 @@ export interface MeydaAnalyzerOptions {
   /**
    * The Windowing Function to apply to the signal before transformation to the frequency domain.
    */
-  windowingFunction?: Meyda.MeydaWindowingFunction | undefined;
+  windowingFunction?: MeydaWindowingFunction | undefined;
   /**
    * What feature extractors to return to the callback.
    */
   featureExtractors?:
-    | Meyda.MeydaAudioFeature
-    | ReadonlyArray<Meyda.MeydaAudioFeature>
+    | MeydaAudioFeature
+    | ReadonlyArray<MeydaAudioFeature>
     | undefined;
   inputs?: number | undefined;
   outputs?: number | undefined;
@@ -55,9 +58,7 @@ export interface MeydaAnalyzerOptions {
   /**
    * The callback to receive your audio features. Will be called once for each buffer of input audio.
    */
-  callback?:
-    | ((features: Partial<Meyda.MeydaFeaturesObject>) => void)
-    | undefined;
+  callback?: ((features: Partial<MeydaFeaturesObject>) => void) | undefined;
 }
 
 /**
@@ -213,9 +214,7 @@ export class MeydaAnalyzer {
    * analyzer.start('chroma');
    * ```
    */
-  start(
-    features?: Meyda.MeydaAudioFeature | ReadonlyArray<Meyda.MeydaAudioFeature>
-  ): void {
+  start(features?: MeydaAudioFeature | ReadonlyArray<MeydaAudioFeature>): void {
     this._m._featuresToExtract = features || this._m._featuresToExtract;
     this._m.EXTRACTION_STARTED = true;
   }
@@ -274,8 +273,8 @@ export class MeydaAnalyzer {
    * ```
    */
   get(
-    features?: Meyda.MeydaAudioFeature | ReadonlyArray<Meyda.MeydaAudioFeature>
-  ): Partial<Meyda.MeydaFeaturesObject> | null {
+    features?: MeydaAudioFeature | ReadonlyArray<MeydaAudioFeature>
+  ): Partial<MeydaFeaturesObject> | null {
     if (this._m.inputData) {
       return this._m.extract(
         features || this._m._featuresToExtract,
