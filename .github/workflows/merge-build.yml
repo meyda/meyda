@@ -2,7 +2,7 @@ name: merge-build
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
