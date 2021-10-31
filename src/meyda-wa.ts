@@ -56,6 +56,10 @@ export interface MeydaAnalyzerOptions {
    */
   numberOfMFCCCoefficients?: number | undefined;
   /**
+   * The number of bark bands to calculate for use in feature extractors.
+   */
+  numberOfBarkBands?: number | undefined;
+  /**
    * The callback to receive your audio features. Will be called once for each buffer of input audio.
    */
   callback?: ((features: Partial<MeydaFeaturesObject>) => void) | undefined;
