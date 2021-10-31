@@ -22,6 +22,7 @@ const EXPECTED_EXPORTS = [
   "featureExtractors",
   "EXTRACTION_STARTED",
   "numberOfMFCCCoefficients",
+  "numberOfBarkBands",
   "_featuresToExtract",
   "windowing",
   "_errors",

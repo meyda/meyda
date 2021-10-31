@@ -158,6 +158,10 @@ interface Meyda {
    * The number of MFCC co-efficients that the MFCC feature extractor should return
    */
   numberOfMFCCCoefficients: number;
+  /**
+   * The number of bark bands that the loudness feature extractor should return
+   */
+  numberOfBarkBands: number;
   /** @hidden */
   _featuresToExtract: string[];
   /**
@@ -239,11 +243,6 @@ const Meyda: Meyda = {
   featureExtractors: extractors,
   EXTRACTION_STARTED: false,
   numberOfMFCCCoefficients: 13,
-  /**
-   * The number of bark bands that the loudness feature extractor should return
-   * @instance
-   * @member {number}
-   */
   numberOfBarkBands: 24,
   _featuresToExtract: [],
   windowing: utilities.applyWindow,
