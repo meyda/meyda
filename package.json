@@ -134,5 +134,14 @@
   },
   "workspaces": [
     "docs"
-  ]
+  ],
+  "prettier": {
+    "singleQuote": false,
+    "semi": true,
+    "useTabs": false,
+    "tabWidth": 2,
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "trailingComma": "es5"
+  }
 }
