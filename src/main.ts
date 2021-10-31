@@ -432,7 +432,7 @@ export default Meyda;
  * List available audio feature extractors. Return format provides the key to
  * be used in selecting the extractor in the extract methods
  */
-export function listAvailableFeatureExtractors(): MeydaAudioFeature[] {
+function listAvailableFeatureExtractors(): MeydaAudioFeature[] {
   return Object.keys(this.featureExtractors) as MeydaAudioFeature[];
 }
 
@@ -455,14 +455,14 @@ export function listAvailableFeatureExtractors(): MeydaAudioFeature[] {
  * });
  * ```
  */
-export function createMeydaAnalyzer(options) {
+function createMeydaAnalyzer(options) {
   return new MeydaAnalyzer(options, Object.assign({}, Meyda));
 }
 
 /**
  * Apply a windowing function to a signal
  */
-export function windowing(
+function windowing(
   signal: MeydaSignal,
   windowname: MeydaWindowingFunction
 ): MeydaSignal {
