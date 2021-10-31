@@ -62,9 +62,10 @@ Audio.prototype.initializeMicrophoneSampling = function () {
   };
 
   try {
-    navigator.getUserMedia =
+    const getUserMedia =
       // @ts-ignore
       navigator.webkitGetUserMedia ||
+      // @ts-ignore
       navigator.getUserMedia ||
       navigator.mediaDevices.getUserMedia;
     var constraints = {
@@ -89,7 +90,7 @@ Audio.prototype.initializeMicrophoneSampling = function () {
       .then(successCallback)
       .catch(function (error) {
         console.log(error);
-        navigator.getUserMedia(
+        getUserMedia(
           {
             audio: true,
           },
