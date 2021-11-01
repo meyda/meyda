@@ -1,19 +1,32 @@
+import { normalizeToOne } from "../utilities";
+
 export default function ({
   complexSpectrum,
-  previousComplexSpectrum
+  previousComplexSpectrum,
 }: {
-  complexSpectrum: {real: number[]; imag: number[]};
-  previousComplexSpectrum: {real: number[]; imag: number[]};
+  complexSpectrum: { real: number[]; imag: number[] };
+  previousComplexSpectrum: { real: number[]; imag: number[] };
 }): number {
-  if (typeof complexSpectrum.real !== "object" || typeof complexSpectrum.imag != "object") {
-    throw new TypeError();
+  if (!previousComplexSpectrum) {
+    return 0;
   }
 
+  if (
+    typeof complexSpectrum.real !== "object" ||
+    typeof complexSpectrum.imag != "object"
+  ) {
+    throw new TypeError();
+  }
+  const normalizedRealComponent = normalizeToOne(complexSpectrum.real);
+  const previousNormalizedRealComponent = normalizeToOne(
+    previousComplexSpectrum.real
+  );
+
   let sf = 0;
-  for (let i = 0; i < complexSpectrum.real.length; i++) {
+  for (let i = 0; i < normalizedRealComponent.length; i++) {
     let x =
-      Math.abs(complexSpectrum.real[i]) -
-      Math.abs(previousComplexSpectrum.real[i]);
+      Math.abs(normalizedRealComponent[i]) -
+      Math.abs(previousNormalizedRealComponent[i]);
     sf += Math.pow(x, 2);
   }
 
