@@ -81,8 +81,8 @@ To use RMS in applications where you expect a ceiling on each audio feature, we 
 `spectralFlux`
 
 - _Description_: A measure of how quickly the spectrum of a signal is changing. It is calculated by computing the difference between the current spectrum and that of the previous frame.
-- _What Is It Used For_: Often corresponds to perceptual "roughness" of a sound. Can be used for example, to determine the timbre of a sound.
-- _Range_: Starts at `0.0`. This has no upper range as it depends on the input signal.
+- _What Is It Used For_: Often corresponds to perceptual "roughness" of a sound. Can be used for example, to determine the timbre of a sound, and onset detection.
+- _Range_: Starts at `0.0`. The upper bound is equal to the square root of the buffer size.
 
 ### Spectral Slope
 
