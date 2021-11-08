@@ -29,12 +29,14 @@ export interface MeydaFeaturesObject {
   rms: number;
   spectralCentroid: number;
   spectralFlatness: number;
+  spectralFlux: number;
   spectralKurtosis: number;
   spectralRolloff: number;
   spectralSkewness: number;
   spectralSlope: number;
   spectralSpread: number;
   zcr: number;
+  positiveFlux: number;
 }
 
 export type MeydaWindowingFunction =
@@ -63,7 +65,8 @@ export type MeydaAudioFeature =
   | "spectralSlope"
   | "spectralSpread"
   | "zcr"
-  | "buffer";
+  | "buffer"
+  | "positiveFlux";
 
 /**
  * A type representing an audio signal. In general it should be an array of
