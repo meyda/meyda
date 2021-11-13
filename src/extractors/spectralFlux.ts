@@ -7,10 +7,6 @@ export default function ({
   complexSpectrum: { real: number[]; imag: number[] };
   previousComplexSpectrum: { real: number[]; imag: number[] };
 }): number {
-  if (!Array.isArray(complexSpectrum.real)) {
-    throw new TypeError();
-  }
-
   if (!previousComplexSpectrum) {
     return 0;
   }
