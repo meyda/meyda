@@ -11,12 +11,6 @@ export default function ({
     return 0;
   }
 
-  if (
-    typeof complexSpectrum.real !== "object" ||
-    typeof complexSpectrum.imag != "object"
-  ) {
-    throw new TypeError();
-  }
   const normalizedRealComponent = normalizeToOne(complexSpectrum.real);
   const previousNormalizedRealComponent = normalizeToOne(
     previousComplexSpectrum.real
