@@ -1,22 +1,16 @@
 import TestData from "../TestData";
-import { fft } from "fftjs";
 
 // Setup
 var positiveFlux = require("../../dist/node/extractors/positiveFlux");
 
-var COMPLEX_SPECTRUM = fft(TestData.VALID_SIGNAL);
-
 describe("positiveFlux", () => {
   test("should return correct Positive Flux value", (done) => {
     var en = positiveFlux({
-      complexSpectrum: COMPLEX_SPECTRUM,
-      previousComplexSpectrum: {
-        real: COMPLEX_SPECTRUM.real.map((e) => e * 0.8),
-      },
-      bufferSize: TestData.VALID_SIGNAL.length,
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM.map((e) => e * 0.8),
+      previousAmpSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
-    expect(en).toEqual(2.1288412531209104e-8);
+    expect(en).toEqual(2.8276224855864956e-8);
 
     done();
   });

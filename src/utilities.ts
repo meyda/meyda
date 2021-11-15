@@ -272,3 +272,10 @@ export function frame(buffer, frameLength, hopLength) {
     .fill(0)
     .map((_, i) => buffer.slice(i * hopLength, i * hopLength + frameLength));
 }
+
+export function magnitudeForComplexSpectrum(complexSpectrum) {
+  return complexSpectrum.real.map((real, i) => {
+    const imag = complexSpectrum.imag[i];
+    return Math.sqrt(Math.pow(real, 2) + Math.pow(imag, 2));
+  });
+}
