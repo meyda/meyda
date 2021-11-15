@@ -12,11 +12,12 @@ describe("positiveFlux", () => {
       complexSpectrum: COMPLEX_SPECTRUM,
       previousComplexSpectrum: {
         real: COMPLEX_SPECTRUM.real.map((e) => e * 0.8),
+        imag: COMPLEX_SPECTRUM.real.map((e) => e * 0.8),
       },
       bufferSize: TestData.VALID_SIGNAL.length,
     });
 
-    expect(en).toEqual(2.1288412531209104e-8);
+    expect(en).toEqual(0.5028486117726443);
 
     done();
   });

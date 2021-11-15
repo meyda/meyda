@@ -12,11 +12,12 @@ describe("spectralFlux", () => {
       complexSpectrum: COMPLEX_SPECTRUM,
       previousComplexSpectrum: {
         real: COMPLEX_SPECTRUM.real.map((e) => e * 0.8),
+        imag: COMPLEX_SPECTRUM.real.map((e) => e * 0.8),
       },
       bufferSize: TestData.VALID_SIGNAL.length,
     });
 
-    expect(en).toEqual(1.03425562865083e-7);
+    expect(en).toEqual(0.9351257452798406);
 
     done();
   });

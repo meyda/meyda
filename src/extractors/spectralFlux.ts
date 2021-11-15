@@ -1,4 +1,4 @@
-import { normalizeToOne } from "../utilities";
+import { magnitudeForComplexSpectrum, normalizeToOne } from "../utilities";
 
 export default function ({
   complexSpectrum,
@@ -11,16 +11,21 @@ export default function ({
     return 0;
   }
 
-  const normalizedRealComponent = normalizeToOne(complexSpectrum.real);
-  const previousNormalizedRealComponent = normalizeToOne(
-    previousComplexSpectrum.real
+  const magnitudeSpectrum = magnitudeForComplexSpectrum(complexSpectrum);
+  const previousMagnitudeSpectrum = magnitudeForComplexSpectrum(
+    previousComplexSpectrum
+  );
+
+  const normalizedMagnitudeSpectrum = normalizeToOne(magnitudeSpectrum);
+  const previousNormalizedMagnitudeSpectrum = normalizeToOne(
+    previousMagnitudeSpectrum
   );
 
   let sf = 0;
-  for (let i = 0; i < normalizedRealComponent.length; i++) {
+  for (let i = 0; i < normalizedMagnitudeSpectrum.length; i++) {
     let x =
-      Math.abs(normalizedRealComponent[i]) -
-      Math.abs(previousNormalizedRealComponent[i]);
+      Math.abs(normalizedMagnitudeSpectrum[i]) -
+      Math.abs(previousNormalizedMagnitudeSpectrum[i]);
     sf += Math.pow(x, 2);
   }
 
