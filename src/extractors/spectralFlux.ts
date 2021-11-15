@@ -1,31 +1,24 @@
-import { magnitudeForComplexSpectrum, normalizeToOne } from "../utilities";
+import { normalizeToOne } from "../utilities";
 
 export default function ({
-  complexSpectrum,
-  previousComplexSpectrum,
+  ampSpectrum,
+  previousAmpSpectrum,
 }: {
-  complexSpectrum: { real: number[]; imag: number[] };
-  previousComplexSpectrum: { real: number[]; imag: number[] };
+  ampSpectrum: Float32Array;
+  previousAmpSpectrum: Float32Array;
 }): number {
-  if (!previousComplexSpectrum) {
+  if (!previousAmpSpectrum) {
     return 0;
   }
 
-  const magnitudeSpectrum = magnitudeForComplexSpectrum(complexSpectrum);
-  const previousMagnitudeSpectrum = magnitudeForComplexSpectrum(
-    previousComplexSpectrum
-  );
-
-  const normalizedMagnitudeSpectrum = normalizeToOne(magnitudeSpectrum);
-  const previousNormalizedMagnitudeSpectrum = normalizeToOne(
-    previousMagnitudeSpectrum
-  );
+  const normalizedMagnitudeSpectrum = normalizeToOne(ampSpectrum);
+  const previousNormalizedMagnitudeSpectrum =
+    normalizeToOne(previousAmpSpectrum);
 
   let sf = 0;
   for (let i = 0; i < normalizedMagnitudeSpectrum.length; i++) {
     let x =
-      Math.abs(normalizedMagnitudeSpectrum[i]) -
-      Math.abs(previousNormalizedMagnitudeSpectrum[i]);
+      normalizedMagnitudeSpectrum[i] - previousNormalizedMagnitudeSpectrum[i];
     sf += Math.pow(x, 2);
   }
 

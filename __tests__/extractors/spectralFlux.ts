@@ -1,23 +1,18 @@
 import TestData from "../TestData";
-import { fft } from "fftjs";
 
 // Setup
 var spectralFlux = require("../../dist/node/extractors/spectralFlux");
 
-var COMPLEX_SPECTRUM = fft(TestData.VALID_SIGNAL);
-
 describe("spectralFlux", () => {
   test("should return correct Spectral Flux value", (done) => {
     var en = spectralFlux({
-      complexSpectrum: COMPLEX_SPECTRUM,
-      previousComplexSpectrum: {
-        real: COMPLEX_SPECTRUM.real.map((e) => e * 0.8),
-        imag: COMPLEX_SPECTRUM.real.map((e) => e * 0.8),
-      },
-      bufferSize: TestData.VALID_SIGNAL.length,
+      ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
+      previousAmpSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM.map(
+        (e) => e * 0.8
+      ),
     });
 
-    expect(en).toEqual(0.9351257452798406);
+    expect(en).toEqual(6.8073007097613e-8);
 
     done();
   });
