@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/meyda/meyda",
   "devDependencies": {
-    "@commitlint/cli": "^15.0.0",
+    "@commitlint/cli": "^16.0.1",
     "@commitlint/config-conventional": "^16.0.0",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-typescript": "^8.2.3",
