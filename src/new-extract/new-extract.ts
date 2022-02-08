@@ -7,7 +7,7 @@ import {
 } from "../utilities";
 import * as windowingFunctions from "../windowing";
 
-export type WindowingFunction = keyof typeof windowingFunctions;
+export type WindowingFunction = keyof typeof windowingFunctions | "rectangle";
 export type MeydaAudioFeature = keyof typeof extractors;
 
 type ExtractorMap = typeof extractors;
@@ -25,6 +25,7 @@ type RelevantExtractorParams<
 
 type AllMeydaExtractorParams<T extends keyof ExtractorMap> =
   RelevantExtractorParams<ExtractorMap, T>;
+
 type ReturnTypesOf<T extends Record<string, (...args: any) => any>> = {
   [K in keyof T]: ReturnType<T[K]>;
 };
@@ -70,9 +71,7 @@ function configure(options: MeydaConfigurationOptions): MeydaConfiguration {
   };
 }
 
-export function configureExtractor(
-  options?: Partial<MeydaConfigurationOptions>
-) {
+export function configureMeyda(options?: Partial<MeydaConfigurationOptions>) {
   const defaults = {
     bufferSize: 512,
     sampleRate: 44100,
@@ -88,6 +87,10 @@ export function configureExtractor(
     ...options,
   };
 
+  // DELETE
+  type Params = AllMeydaExtractorParams<keyof ExtractorMap>;
+  // ENDDELETE
+
   const configuration = configure(optionsAfterDefaults);
 
   return function extract<
@@ -95,7 +98,7 @@ export function configureExtractor(
     U extends MeydaSignal | MeydaSignal[]
   >(
     feature: T | T[],
-    signal: MeydaSignal | MeydaSignal
+    signal: MeydaSignal | MeydaSignal[]
   ): U extends [] ? MeydaExtractionResult<T>[] : MeydaExtractionResult<T> {
     type TheRightReturnType = U extends []
       ? MeydaExtractionResult<T>[]
@@ -110,15 +113,16 @@ export function configureExtractor(
       // cache previous (+?) signal, amp spectrum and complex spectrum per channel
       // run extractors with all deps
       // collect to MeydaExtractionResult
-      // @ts-ignore
       const preparedThings: AllMeydaExtractorParams<T> = 9;
 
-      const channelExtractionResult: MeydaExtractionResult<T> = features
-        .map((feature) => [feature, extractors[feature](preparedThings)])
-        .reduce<MeydaExtractionResult<T>>(
-          (acc, [key, value]) => ({ ...acc, [key]: value }),
-          {} as MeydaExtractionResult<T>
-        );
+      const channelExtractionResult: MeydaExtractionResult<T> =
+        Object.fromEntries(
+          features.map((feature) => {
+            const extractor = extractors[feature];
+            extractor("fish");
+            return [feature, extractors[feature](preparedThings)];
+          })
+        ) as MeydaExtractionResult<T>;
 
       return channelExtractionResult;
     });

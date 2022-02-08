@@ -1,6 +1,7 @@
 {
   "exclude": ["./dist", "./docs", "./__tests__", "./rollup.config.js", "./bin"],
   "compilerOptions": {
+    "lib": ["es2019"],
     "outDir": "./dist/esm",
     "declaration": true,
     "allowJs": true,
