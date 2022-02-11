@@ -16,15 +16,15 @@ import chroma from "./extractors/chroma";
 import powerSpectrum from "./extractors/powerSpectrum";
 import spectralFlux from "./extractors/spectralFlux";
 
-let buffer = function (args) {
+const buffer = function (args) {
   return args.signal;
 };
 
-let complexSpectrum = function (args) {
+const complexSpectrum = function (args) {
   return args.complexSpectrum;
 };
 
-let amplitudeSpectrum = function (args) {
+const amplitudeSpectrum = function (args) {
   return args.ampSpectrum;
 };
 

@@ -29,8 +29,8 @@ const Audio = function (bufferSize) {
 
   this.context = new AudioContext();
 
-  let elvis = document.getElementById("elvisSong");
-  let stream = this.context.createMediaElementSource(elvis);
+  const elvis = document.getElementById("elvisSong");
+  const stream = this.context.createMediaElementSource(elvis);
   stream.connect(this.context.destination);
 
   this.meyda = Meyda.createMeydaAnalyzer({

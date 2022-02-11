@@ -1,6 +1,6 @@
 import * as windowing from "./windowing";
 
-let windows = {};
+const windows = {};
 
 export function isPowerOfTwo(num) {
   while (num % 2 === 0 && num > 1) {
@@ -15,7 +15,7 @@ export function error(message) {
 }
 
 export function pointwiseBufferMult(a, b) {
-  let c: number[] = [];
+  const c: number[] = [];
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
     c[i] = a[i] * b[i];
   }
@@ -45,7 +45,7 @@ export function applyWindow(signal, windowname) {
 }
 
 export function createBarkScale(length, sampleRate, bufferSize): Float32Array {
-  let barkScale = new Float32Array(length);
+  const barkScale = new Float32Array(length);
 
   for (var i = 0; i < barkScale.length; i++) {
     barkScale[i] = (i * sampleRate) / bufferSize;
@@ -116,25 +116,25 @@ export function createMelFilterBank(
   sampleRate: number,
   bufferSize: number
 ): number[][] {
-  //the +2 is the upper and lower limits
-  let melValues = new Float32Array(numFilters + 2);
-  let melValuesInFreq = new Float32Array(numFilters + 2);
+  // the +2 is the upper and lower limits
+  const melValues = new Float32Array(numFilters + 2);
+  const melValuesInFreq = new Float32Array(numFilters + 2);
 
-  //Generate limits in Hz - from 0 to the nyquist.
-  let lowerLimitFreq = 0;
-  let upperLimitFreq = sampleRate / 2;
+  // Generate limits in Hz - from 0 to the nyquist.
+  const lowerLimitFreq = 0;
+  const upperLimitFreq = sampleRate / 2;
 
-  //Convert the limits to Mel
-  let lowerLimitMel = _freqToMel(lowerLimitFreq);
-  let upperLimitMel = _freqToMel(upperLimitFreq);
+  // Convert the limits to Mel
+  const lowerLimitMel = _freqToMel(lowerLimitFreq);
+  const upperLimitMel = _freqToMel(upperLimitFreq);
 
-  //Find the range
-  let range = upperLimitMel - lowerLimitMel;
+  // Find the range
+  const range = upperLimitMel - lowerLimitMel;
 
-  //Find the range as part of the linear interpolation
-  let valueToAdd = range / (numFilters + 1);
+  // Find the range as part of the linear interpolation
+  const valueToAdd = range / (numFilters + 1);
 
-  let fftBinsOfFreq: number[] = new Array(numFilters + 2);
+  const fftBinsOfFreq: number[] = new Array(numFilters + 2);
 
   for (let i = 0; i < melValues.length; i++) {
     // Initialising the mel frequencies

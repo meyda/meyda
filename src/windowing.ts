@@ -1,7 +1,7 @@
 export function blackman(size) {
-  let blackmanBuffer = new Float32Array(size);
-  let coeff1 = (2 * Math.PI) / (size - 1);
-  let coeff2 = 2 * coeff1;
+  const blackmanBuffer = new Float32Array(size);
+  const coeff1 = (2 * Math.PI) / (size - 1);
+  const coeff2 = 2 * coeff1;
 
   //According to http://uk.mathworks.com/help/signal/ref/blackman.html
   //first half of the window
@@ -19,8 +19,8 @@ export function blackman(size) {
 }
 
 export function sine(size) {
-  let coeff = Math.PI / (size - 1);
-  let sineBuffer = new Float32Array(size);
+  const coeff = Math.PI / (size - 1);
+  const sineBuffer = new Float32Array(size);
 
   for (let i = 0; i < size; i++) {
     sineBuffer[i] = Math.sin(coeff * i);
@@ -30,7 +30,7 @@ export function sine(size) {
 }
 
 export function hanning(size) {
-  let hanningBuffer = new Float32Array(size);
+  const hanningBuffer = new Float32Array(size);
   for (let i = 0; i < size; i++) {
     // According to the R documentation
     // http://ugrad.stat.ubc.ca/R/library/e1071/html/hanning.window.html
@@ -41,7 +41,7 @@ export function hanning(size) {
 }
 
 export function hamming(size) {
-  let hammingBuffer = new Float32Array(size);
+  const hammingBuffer = new Float32Array(size);
   for (let i = 0; i < size; i++) {
     //According to http://uk.mathworks.com/help/signal/ref/hamming.html
     hammingBuffer[i] = 0.54 - 0.46 * Math.cos(2 * Math.PI * (i / size - 1));

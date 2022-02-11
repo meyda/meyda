@@ -15,7 +15,7 @@ import {
 
 var scale = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
 const bufferSize = 1024;
-let a = new Audio(bufferSize);
+const a = new Audio(bufferSize);
 
 var aspectRatio = 16 / 10;
 var scene = new Scene();
@@ -80,10 +80,10 @@ const rightDir = new Vector3(1, 0, 0);
 const origin = new Vector3(1, -6, -15);
 
 // Variables we update
-let centroidArrow = new ArrowHelper(dir, origin, length, hex);
-let rolloffArrow = new ArrowHelper(dir, origin, length, 0x0000ff);
-let rmsArrow = new ArrowHelper(rightDir, origin, length, 0xff00ff);
-let lines = new Group(); // Lets create a seperate group for our lines
+const centroidArrow = new ArrowHelper(dir, origin, length, hex);
+const rolloffArrow = new ArrowHelper(dir, origin, length, 0x0000ff);
+const rmsArrow = new ArrowHelper(rightDir, origin, length, 0xff00ff);
+const lines = new Group(); // Lets create a seperate group for our lines
 // let loudnessLines = new Group();
 scene.add(centroidArrow);
 scene.add(rolloffArrow);
@@ -92,22 +92,22 @@ scene.add(rmsArrow);
 // Render Spectrogram
 for (let i = 0; i < ffts.length; i++) {
   if (ffts[i]) {
-    let geometry = new BufferGeometry(); // May be a way to reuse this
+    const geometry = new BufferGeometry(); // May be a way to reuse this
 
     let positions: ArrayLike<number> = new Float32Array(ffts[i].length * 3);
 
     geometry.addAttribute("position", new BufferAttribute(positions, 3));
     geometry.setDrawRange(0, ffts[i].length);
 
-    let line = new Line(geometry, material);
+    const line = new Line(geometry, material);
     lines.add(line);
 
     positions = line.geometry.attributes.position.array;
   }
 }
 
-let bufferLineGeometry = new BufferGeometry();
-let bufferLine = new Line(bufferLineGeometry, material);
+const bufferLineGeometry = new BufferGeometry();
+const bufferLine = new Line(bufferLineGeometry, material);
 {
   let positions: ArrayLike<number> = new Float32Array(bufferSize * 3);
   bufferLineGeometry.addAttribute(
@@ -124,8 +124,8 @@ scene.add(lines);
 // scene.add(loudnessLines);
 
 let features: { [key: string]: any } | undefined = undefined;
-let chromaWrapper = document.querySelector("#chroma");
-let mfccWrapper = document.querySelector("#mfcc");
+const chromaWrapper = document.querySelector("#chroma");
+const mfccWrapper = document.querySelector("#mfcc");
 
 function render() {
   features = a.get([
@@ -204,7 +204,7 @@ function render() {
 
     if (windowedSignalBuffer) {
       // Render Signal Buffer
-      let positions = bufferLine.geometry.attributes.position.array;
+      const positions = bufferLine.geometry.attributes.position.array;
       let index = 0;
       for (var i = 0; i < bufferSize; i++) {
         // @ts-ignore

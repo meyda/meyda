@@ -345,7 +345,7 @@ const Meyda: Meyda = {
       this.signal = signal;
     }
 
-    let preparedSignal = prepareSignalWithSpectrum(
+    const preparedSignal = prepareSignalWithSpectrum(
       signal,
       this.windowingFunction,
       this.bufferSize
@@ -356,7 +356,7 @@ const Meyda: Meyda = {
     this.ampSpectrum = preparedSignal.ampSpectrum;
 
     if (previousSignal) {
-      let preparedSignal = prepareSignalWithSpectrum(
+      const preparedSignal = prepareSignalWithSpectrum(
         previousSignal,
         this.windowingFunction,
         this.bufferSize

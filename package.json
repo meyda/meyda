@@ -109,8 +109,7 @@
       "@typescript-eslint/no-explicit-any": 0,
       "@typescript-eslint/no-non-null-assertion": 0,
       "no-undef": 0,
-      "no-var": 0,
-      "prefer-const": 0
+      "no-var": 0
     },
     "extends": [
       "eslint:recommended",
