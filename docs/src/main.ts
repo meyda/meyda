@@ -44,8 +44,12 @@ const yellowMaterial = new LineBasicMaterial({
 const ffts = initializeFFTs(20, bufferSize);
 const buffer = null;
 
+const canvas = document.querySelector("canvas");
+if (!canvas) {
+  throw new Error("Canvas element not found");
+}
 const renderer = new WebGLRenderer({
-  canvas: document.querySelector("canvas")!,
+  canvas,
 });
 
 function resize() {

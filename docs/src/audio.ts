@@ -73,7 +73,11 @@ Audio.prototype.initializeMicrophoneSampling = function () {
       audio: true,
     };
     const successCallback = function successCallback(mediaStream) {
-      document.getElementById("audioControl")!.style.display = "none";
+      const audioControlElement = document.getElementById("audioControl");
+      if (!audioControlElement) {
+        throw new Error("Audio control element not found");
+      }
+      audioControlElement.style.display = "none";
       console.log("User allowed microphone access.");
       console.log("Initializing AudioNode from MediaStream");
       const source = _this.context.createMediaStreamSource(mediaStream);
