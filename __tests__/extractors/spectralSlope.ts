@@ -19,6 +19,7 @@ describe("spectralSlope", () => {
   test("should throw an error when passed an empty object", (done) => {
     try {
       const en = spectralSlope({});
+      en;
     } catch (e) {
       done();
     }
@@ -27,6 +28,7 @@ describe("spectralSlope", () => {
   test("should throw an error when not passed anything", (done) => {
     try {
       const en = spectralSlope();
+      en;
     } catch (e) {
       done();
     }
@@ -35,6 +37,7 @@ describe("spectralSlope", () => {
   test("should throw an error when passed something invalid", (done) => {
     try {
       const en = spectralSlope({ signal: "not a signal" });
+      en;
     } catch (e) {
       done();
     }

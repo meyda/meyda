@@ -25,6 +25,7 @@ describe("chroma", () => {
   test("should throw an error when passed an empty object", (done) => {
     try {
       const chromagram = chroma({});
+      chromagram;
     } catch (e) {
       done();
     }
@@ -33,6 +34,7 @@ describe("chroma", () => {
   test("should throw an error when not passed anything", (done) => {
     try {
       const chromagram = chroma();
+      chromagram;
     } catch (e) {
       done();
     }
@@ -41,6 +43,7 @@ describe("chroma", () => {
   test("should throw an error when passed something invalid", (done) => {
     try {
       const chromagram = chroma({ ampSpectrum: "not a signal" });
+      chromagram;
     } catch (e) {
       done();
     }

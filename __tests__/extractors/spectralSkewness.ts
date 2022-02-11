@@ -17,6 +17,7 @@ describe("spectralSkewness", () => {
   test("should throw an error when passed an empty object", (done) => {
     try {
       const en = spectralSkewness({});
+      en;
     } catch (e) {
       done();
     }
@@ -25,6 +26,7 @@ describe("spectralSkewness", () => {
   test("should throw an error when not passed anything", (done) => {
     try {
       const en = spectralSkewness();
+      en;
     } catch (e) {
       done();
     }
@@ -33,6 +35,7 @@ describe("spectralSkewness", () => {
   test("should throw an error when passed something invalid", (done) => {
     try {
       const en = spectralSkewness({ signal: "not a signal" });
+      en;
     } catch (e) {
       done();
     }

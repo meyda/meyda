@@ -186,7 +186,7 @@ export function normalizeByColumn(a) {
       return acc;
     }, emptyRow)
     .map(Math.sqrt);
-  return a.map((row, i) => row.map((v, j) => v / (colDenominators[j] || 1)));
+  return a.map((row) => row.map((v, j) => v / (colDenominators[j] || 1)));
 }
 
 export function createChromaFilterBank(

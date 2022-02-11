@@ -44,7 +44,8 @@ const Audio = function (bufferSize) {
 };
 
 Audio.prototype.initializeMicrophoneSampling = function () {
-  const errorCallback = function () {
+  const errorCallback = function (e) {
+    console.error(e);
     // We should fallback to an audio file here, but that's difficult on mobile
     if (_this.context.state === "suspended") {
       const resume = function () {
@@ -88,9 +89,7 @@ Audio.prototype.initializeMicrophoneSampling = function () {
 
     console.log("Asking for permission...");
     navigator.mediaDevices
-      .getUserMedia({
-        audio: true,
-      })
+      .getUserMedia(constraints)
       .then(successCallback)
       .catch(function (error) {
         console.log(error);
@@ -100,12 +99,12 @@ Audio.prototype.initializeMicrophoneSampling = function () {
           },
           successCallback,
           function (e) {
-            errorCallback();
+            errorCallback(e);
           }
         );
       });
   } catch (e) {
-    errorCallback();
+    errorCallback(e);
   }
 };
 

@@ -18,6 +18,7 @@ describe("spectralRolloff", () => {
   test("should throw an error when passed an empty object", (done) => {
     try {
       const en = spectralRolloff({});
+      en;
     } catch (e) {
       done();
     }
@@ -26,6 +27,7 @@ describe("spectralRolloff", () => {
   test("should throw an error when not passed anything", (done) => {
     try {
       const en = spectralRolloff();
+      en;
     } catch (e) {
       done();
     }
@@ -34,6 +36,7 @@ describe("spectralRolloff", () => {
   test("should throw an error when passed something invalid", (done) => {
     try {
       const en = spectralRolloff({ signal: "not a signal" });
+      en;
     } catch (e) {
       done();
     }

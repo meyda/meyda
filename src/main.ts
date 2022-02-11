@@ -8,7 +8,7 @@
 import * as utilities from "./utilities";
 import * as extractors from "./featureExtractors";
 import { fft } from "fftjs";
-import { MeydaAnalyzer, MeydaAnalyzerOptions } from "./meyda-wa";
+import { MeydaAnalyzer } from "./meyda-wa";
 export interface MeydaFeaturesObject {
   amplitudeSpectrum: Float32Array;
   buffer: number[];
@@ -74,6 +74,16 @@ export type MeydaSignal = SliceableArrayLike<number> | Float32Array;
 
 export interface SliceableArrayLike<T> extends ArrayLike<T> {
   slice(start: number, end: number): SliceableArrayLike<T>;
+}
+
+/**
+ * Apply a windowing function to a signal
+ */
+function windowing(
+  signal: MeydaSignal,
+  windowname?: MeydaWindowingFunction
+): MeydaSignal {
+  return utilities.applyWindow(signal, windowname);
 }
 
 /**
@@ -245,7 +255,7 @@ const Meyda: Meyda = {
   numberOfMFCCCoefficients: 13,
   numberOfBarkBands: 24,
   _featuresToExtract: [],
-  windowing: utilities.applyWindow,
+  windowing,
   /** @hidden */
   _errors: {
     notPow2: new Error(
@@ -415,7 +425,7 @@ const prepareSignalWithSpectrum = function (
     preparedSignal.signal = signal;
   }
 
-  preparedSignal.windowedSignal = utilities.applyWindow(
+  preparedSignal.windowedSignal = windowing(
     preparedSignal.signal,
     windowingFunction
   );
@@ -463,16 +473,6 @@ function listAvailableFeatureExtractors(): MeydaAudioFeature[] {
  */
 function createMeydaAnalyzer(options) {
   return new MeydaAnalyzer(options, Object.assign({}, Meyda));
-}
-
-/**
- * Apply a windowing function to a signal
- */
-function windowing(
-  signal: MeydaSignal,
-  windowname: MeydaWindowingFunction
-): MeydaSignal {
-  return utilities.applyWindow(signal, windowname);
 }
 
 // @ts-ignore

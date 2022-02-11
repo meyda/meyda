@@ -1,5 +1,4 @@
 var WavManager = function (open_callback, data_callback, end_callback) {
-  var source = new Buffer(1);
   var fs = require("fs");
   var wav = require("wav");
   var _dcb = data_callback;
@@ -9,7 +8,6 @@ var WavManager = function (open_callback, data_callback, end_callback) {
   var _endian = "LE";
   var _signed = false;
   var _format = "unknown";
-  var _channels = 1;
   var read_fun = "readUIntBE";
 
   function int_res(signed, depth) {
@@ -35,7 +33,6 @@ var WavManager = function (open_callback, data_callback, end_callback) {
       _numBytesPerSample = _bitDepth / 8;
       _endian = format.endianness;
       _signed = format.signed;
-      _channels = format.channels;
       _format = format;
       read_fun = (_signed ? "readInt" : "readUInt") + _endian;
     });

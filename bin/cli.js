@@ -125,7 +125,7 @@
     console.log("Windowing function: " + Meyda.windowingFunction);
     console.log("Will extract:");
     //log features to extract
-    featuresToExtract.forEach(function (f, i, a) {
+    featuresToExtract.forEach(function (f) {
       process.stdout.write(f + " ");
     });
 
@@ -151,7 +151,7 @@
         frameCount++;
       }
     },
-    function (data) {
+    function () {
       //check if there's still something left in our buffer
       if (buffer.length) {
         //zero pad the buffer at the end so we get a full frame (needed for successful spectral analysis)

@@ -14,7 +14,7 @@ export default function ({
     );
   }
 
-  const chromagram = chromaFilterBank.map((row, i) =>
+  const chromagram = chromaFilterBank.map((row) =>
     ampSpectrum.reduce((acc, v, j) => acc + v * row[j], 0)
   );
   const maxVal = Math.max(...chromagram);

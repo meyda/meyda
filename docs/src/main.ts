@@ -37,12 +37,12 @@ const material = new LineBasicMaterial({
   color: 0x00ff00,
 });
 
-const yellowMaterial = new LineBasicMaterial({
-  color: 0x00ffff,
-});
+// const yellowMaterial = new LineBasicMaterial({
+//   color: 0x00ffff,
+// });
 
 const ffts = initializeFFTs(20, bufferSize);
-const buffer = null;
+// const buffer = null;
 
 const canvas = document.querySelector("canvas");
 if (!canvas) {
