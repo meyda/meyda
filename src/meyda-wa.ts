@@ -161,7 +161,7 @@ export class MeydaAnalyzer {
     this.setSource(options.source);
 
     this._m.spn.onaudioprocess = (e) => {
-      var buffer;
+      let buffer;
       if (this._m.inputData !== null) {
         this._m.previousInputData = this._m.inputData;
       }
@@ -183,12 +183,16 @@ export class MeydaAnalyzer {
         );
       }
 
-      var frames = utilities.frame(buffer, this._m.bufferSize, this._m.hopSize);
+      const frames = utilities.frame(
+        buffer,
+        this._m.bufferSize,
+        this._m.hopSize
+      );
 
       frames.forEach((f) => {
         this._m.frame = f;
 
-        var features = this._m.extract(
+        const features = this._m.extract(
           this._m._featuresToExtract,
           this._m.frame,
           this._m.previousFrame

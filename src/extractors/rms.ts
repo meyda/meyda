@@ -4,8 +4,8 @@ export default function ({ signal }: { signal: Float32Array }): number {
     throw new TypeError();
   }
 
-  var rms = 0;
-  for (var i = 0; i < signal.length; i++) {
+  let rms = 0;
+  for (let i = 0; i < signal.length; i++) {
     rms += Math.pow(signal[i], 2);
   }
 

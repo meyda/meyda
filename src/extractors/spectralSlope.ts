@@ -18,7 +18,7 @@ export default function ({
   let powFreqSum = 0;
   let ampFreqSum = 0;
 
-  for (var i = 0; i < ampSpectrum.length; i++) {
+  for (let i = 0; i < ampSpectrum.length; i++) {
     ampSum += ampSpectrum[i];
     const curFreq = (i * sampleRate) / bufferSize;
     freqs[i] = curFreq;

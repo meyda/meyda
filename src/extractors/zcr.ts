@@ -3,8 +3,8 @@ export default function ({ signal }: { signal: Float32Array }): number {
     throw new TypeError();
   }
 
-  var zcr = 0;
-  for (var i = 1; i < signal.length; i++) {
+  let zcr = 0;
+  for (let i = 1; i < signal.length; i++) {
     if (
       (signal[i - 1] >= 0 && signal[i] < 0) ||
       (signal[i - 1] < 0 && signal[i] >= 0)

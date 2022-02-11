@@ -1,11 +1,11 @@
 import TestData from "../TestData";
 
 // Setup
-var spectralCentroid = require("../../dist/node/extractors/spectralCentroid");
+const spectralCentroid = require("../../dist/node/extractors/spectralCentroid");
 
 describe("spectralCentroid", () => {
   test("should return correct Spectral Centroid value", (done) => {
-    var en = spectralCentroid({
+    const en = spectralCentroid({
       ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
@@ -16,7 +16,7 @@ describe("spectralCentroid", () => {
 
   test("should throw an error when passed an empty object", (done) => {
     try {
-      var en = spectralCentroid({});
+      const en = spectralCentroid({});
     } catch (e) {
       done();
     }
@@ -24,7 +24,7 @@ describe("spectralCentroid", () => {
 
   test("should throw an error when not passed anything", (done) => {
     try {
-      var en = spectralCentroid();
+      const en = spectralCentroid();
     } catch (e) {
       done();
     }
@@ -32,7 +32,7 @@ describe("spectralCentroid", () => {
 
   test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = spectralCentroid({ signal: "not a signal" });
+      const en = spectralCentroid({ signal: "not a signal" });
     } catch (e) {
       done();
     }

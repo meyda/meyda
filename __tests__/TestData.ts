@@ -2,7 +2,7 @@
 // I want to reformat these arrays as tables but I have no idea how
 // to do it automatically, and I'm sure not doing it manually.
 
-var validSignal = new Float32Array([
+const validSignal = new Float32Array([
   0.210053,
   0.177877,
   0.164105,
@@ -517,7 +517,7 @@ var validSignal = new Float32Array([
   -0.0591427,
 ]);
 
-var validAmpSpec = new Float32Array([
+const validAmpSpec = new Float32Array([
   0.19665084779262543,
   0.2347041368484497,
   0.8820229172706604,
@@ -776,7 +776,7 @@ var validAmpSpec = new Float32Array([
   0.00631281454116106,
 ]);
 
-var validFFT = {
+const validFFT = {
   real: new Float32Array([
     -0.19665084779262543,
     -0.19752468168735504,
@@ -1808,7 +1808,7 @@ var validFFT = {
   length: 512,
 };
 
-var expectedPowerSpectrumOutput = new Float32Array([
+const expectedPowerSpectrumOutput = new Float32Array([
   0.03867155686020851,
   0.055086031556129456,
   0.7779644131660461,
@@ -2067,7 +2067,7 @@ var expectedPowerSpectrumOutput = new Float32Array([
   0.00003985162766184658,
 ]);
 
-var barkScale = new Float32Array([
+const barkScale = new Float32Array([
   0,
   0.8502324223518372,
   1.694183111190796,

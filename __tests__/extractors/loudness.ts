@@ -1,11 +1,11 @@
 import TestData from "../TestData";
 
 // Setup
-var loudness = require("../../dist/node/extractors/loudness");
+const loudness = require("../../dist/node/extractors/loudness");
 
 describe("loudness", () => {
   test("should return correct value given a valid signal", (done) => {
-    var en = loudness({
+    const en = loudness({
       ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
       barkScale: TestData.VALID_BARK_SCALE,
     });
@@ -29,7 +29,7 @@ describe("loudness", () => {
 
   test("should throw an error when passed an empty object", (done) => {
     try {
-      var en = loudness({});
+      const en = loudness({});
     } catch (e) {
       done();
     }
@@ -37,7 +37,7 @@ describe("loudness", () => {
 
   test("should throw an error when not passed anything", (done) => {
     try {
-      var en = loudness();
+      const en = loudness();
     } catch (e) {
       done();
     }
@@ -45,7 +45,7 @@ describe("loudness", () => {
 
   test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = loudness({ signal: "not a signal" });
+      const en = loudness({ signal: "not a signal" });
     } catch (e) {
       done();
     }

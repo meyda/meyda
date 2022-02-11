@@ -401,12 +401,12 @@ const Meyda: Meyda = {
   },
 };
 
-var prepareSignalWithSpectrum = function (
+const prepareSignalWithSpectrum = function (
   signal,
   windowingFunction,
   bufferSize
 ) {
-  var preparedSignal: any = {};
+  const preparedSignal: any = {};
 
   if (typeof signal.buffer == "undefined") {
     //signal is a normal array, convert to F32A
@@ -422,7 +422,7 @@ var prepareSignalWithSpectrum = function (
 
   preparedSignal.complexSpectrum = fft(preparedSignal.windowedSignal);
   preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
-  for (var i = 0; i < bufferSize / 2; i++) {
+  for (let i = 0; i < bufferSize / 2; i++) {
     preparedSignal.ampSpectrum[i] = Math.sqrt(
       Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
         Math.pow(preparedSignal.complexSpectrum.imag[i], 2)

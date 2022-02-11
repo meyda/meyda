@@ -1,5 +1,5 @@
 import * as Meyda from "meyda";
-var _this;
+let _this;
 const Audio = function (bufferSize) {
   if (
     Object.prototype.hasOwnProperty.call(window, "webkitAudioContext") &&
@@ -44,10 +44,10 @@ const Audio = function (bufferSize) {
 };
 
 Audio.prototype.initializeMicrophoneSampling = function () {
-  var errorCallback = function () {
+  const errorCallback = function () {
     // We should fallback to an audio file here, but that's difficult on mobile
     if (_this.context.state === "suspended") {
-      var resume = function () {
+      const resume = function () {
         _this.context.resume();
 
         setTimeout(function () {
@@ -68,15 +68,15 @@ Audio.prototype.initializeMicrophoneSampling = function () {
       // @ts-ignore
       navigator.getUserMedia ||
       navigator.mediaDevices.getUserMedia;
-    var constraints = {
+    const constraints = {
       video: false,
       audio: true,
     };
-    var successCallback = function successCallback(mediaStream) {
+    const successCallback = function successCallback(mediaStream) {
       document.getElementById("audioControl")!.style.display = "none";
       console.log("User allowed microphone access.");
       console.log("Initializing AudioNode from MediaStream");
-      var source = _this.context.createMediaStreamSource(mediaStream);
+      const source = _this.context.createMediaStreamSource(mediaStream);
       console.log("Setting Meyda Source to Microphone");
       _this.meyda.setSource(source);
       console.groupEnd();

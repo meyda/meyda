@@ -14,10 +14,10 @@ export default function ({
     );
   }
 
-  var chromagram = chromaFilterBank.map((row, i) =>
+  const chromagram = chromaFilterBank.map((row, i) =>
     ampSpectrum.reduce((acc, v, j) => acc + v * row[j], 0)
   );
-  var maxVal = Math.max(...chromagram);
+  const maxVal = Math.max(...chromagram);
 
   return maxVal ? chromagram.map((v) => v / maxVal) : chromagram;
 }

@@ -29,7 +29,7 @@ const EXPECTED_EXPORTS = [
 
 describe("package exports", () => {
   test("meyda node exports at least currently expected fields", () => {
-    var meyda = require("../dist/node/main");
+    const meyda = require("../dist/node/main");
 
     expect(Object.keys(meyda)).toEqual(EXPECTED_EXPORTS);
   });

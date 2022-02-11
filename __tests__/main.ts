@@ -1,4 +1,4 @@
-var meyda = require("../dist/node/main");
+const meyda = require("../dist/node/main");
 // trick ts into treating this file as a module
 export {};
 
