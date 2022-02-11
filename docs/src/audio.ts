@@ -1,3 +1,4 @@
+/* globals webkitAudioContext, webkitGetUserMedia */
 import * as Meyda from "meyda";
 let _this;
 const Audio = function (bufferSize: number): void {

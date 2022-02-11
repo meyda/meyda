@@ -104,13 +104,17 @@
     "rules": {
       "@typescript-eslint/ban-ts-comment": 0,
       "@typescript-eslint/no-var-requires": 0,
-      "@typescript-eslint/no-explicit-any": 0,
-      "no-undef": 0
+      "@typescript-eslint/no-explicit-any": 0
     },
     "extends": [
       "eslint:recommended",
       "plugin:@typescript-eslint/recommended"
-    ]
+    ],
+    "env": {
+      "es6": true,
+      "browser": true,
+      "jest": true
+    }
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

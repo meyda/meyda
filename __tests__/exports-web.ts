@@ -1,3 +1,4 @@
+/* globals global */
 /**
  * @jest-environment jsdom
  */
