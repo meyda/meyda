@@ -77,7 +77,7 @@ export function typedToArray(t: Float32Array): number[] {
   return Array.prototype.slice.call(t);
 }
 
-export function arrayToTyped(t: Iterable<number>): Float32Array {
+export function arrayToTyped(t: SliceableArrayLike<number>): Float32Array {
   // utility to convert arrays to typed F32 arrays
   return Float32Array.from(t);
 }

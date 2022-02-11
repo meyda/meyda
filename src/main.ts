@@ -162,7 +162,7 @@ interface Meyda {
    * The default windowing function is the hanning window.
    */
   windowingFunction: string;
-  featureExtractors: any;
+  featureExtractors: typeof extractors;
   /** @hidden */
   EXTRACTION_STARTED: boolean;
   /**
@@ -413,34 +413,35 @@ const Meyda: Meyda = {
 };
 
 const prepareSignalWithSpectrum = function (
-  signal,
-  windowingFunction,
+  inputSignal: MeydaSignal,
+  windowingFunction: MeydaWindowingFunction,
   bufferSize
 ) {
-  const preparedSignal: any = {};
+  const signal =
+    // typeof inputSignal.buffer == "undefined"
+    !(inputSignal instanceof Float32Array)
+      ? // signal is a normal array, convert to F32A
+        utilities.arrayToTyped(inputSignal)
+      : inputSignal;
 
-  if (typeof signal.buffer == "undefined") {
-    //signal is a normal array, convert to F32A
-    preparedSignal.signal = utilities.arrayToTyped(signal);
-  } else {
-    preparedSignal.signal = signal;
-  }
+  const windowedSignal = windowing(signal, windowingFunction);
 
-  preparedSignal.windowedSignal = windowing(
-    preparedSignal.signal,
-    windowingFunction
-  );
+  const complexSpectrum = fft(windowedSignal);
+  const ampSpectrum = new Float32Array(bufferSize / 2);
 
-  preparedSignal.complexSpectrum = fft(preparedSignal.windowedSignal);
-  preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
   for (let i = 0; i < bufferSize / 2; i++) {
-    preparedSignal.ampSpectrum[i] = Math.sqrt(
-      Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
-        Math.pow(preparedSignal.complexSpectrum.imag[i], 2)
+    ampSpectrum[i] = Math.sqrt(
+      Math.pow(complexSpectrum.real[i], 2) +
+        Math.pow(complexSpectrum.imag[i], 2)
     );
   }
 
-  return preparedSignal;
+  return {
+    signal,
+    windowedSignal,
+    complexSpectrum,
+    ampSpectrum,
+  };
 };
 
 export default Meyda;

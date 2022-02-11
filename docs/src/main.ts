@@ -127,6 +127,7 @@ scene.add(lines);
 
 // scene.add(loudnessLines);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let features: { [key: string]: any } | undefined = undefined;
 const chromaWrapper = document.querySelector("#chroma");
 const mfccWrapper = document.querySelector("#mfcc");

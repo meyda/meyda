@@ -94,6 +94,7 @@ export interface MeydaAnalyzerOptions {
  */
 export class MeydaAnalyzer {
   /** @hidden */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _m: any;
 
   /** @hidden */
