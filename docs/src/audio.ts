@@ -1,6 +1,6 @@
 import * as Meyda from "meyda";
 let _this;
-const Audio = function (bufferSize) {
+const Audio = function (bufferSize: number): void {
   if (
     Object.prototype.hasOwnProperty.call(window, "webkitAudioContext") &&
     !Object.prototype.hasOwnProperty.call(window, "AudioContext")

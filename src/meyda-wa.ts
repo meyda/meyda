@@ -5,6 +5,7 @@ import type {
   MeydaWindowingFunction,
   MeydaFeaturesObject,
 } from "./main";
+import Meyda from "./main";
 
 /**
  * MeydaAnalyzerOptions
@@ -96,7 +97,7 @@ export class MeydaAnalyzer {
   _m: any;
 
   /** @hidden */
-  constructor(options: MeydaAnalyzerOptions, _this) {
+  constructor(options: MeydaAnalyzerOptions, _this: typeof Meyda) {
     this._m = _this;
     if (!options.audioContext) {
       throw this._m.errors.noAC;
@@ -263,7 +264,7 @@ export class MeydaAnalyzer {
    * analyzer.setChannel(0);
    * ```
    */
-  setChannel(channel: number) {
+  setChannel(channel: number): void {
     if (channel <= this._m.inputs) {
       this._m.channel = channel;
     } else {

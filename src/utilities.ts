@@ -1,8 +1,13 @@
+import {
+  MeydaSignal,
+  MeydaWindowingFunction,
+  SliceableArrayLike,
+} from "./main";
 import * as windowing from "./windowing";
 
 const windows = {};
 
-export function isPowerOfTwo(num) {
+export function isPowerOfTwo(num: number): boolean {
   while (num % 2 === 0 && num > 1) {
     num /= 2;
   }
@@ -10,11 +15,14 @@ export function isPowerOfTwo(num) {
   return num === 1;
 }
 
-export function error(message) {
+export function error(message: string): Error {
   throw new Error("Meyda: " + message);
 }
 
-export function pointwiseBufferMult(a, b) {
+export function pointwiseBufferMult(
+  a: MeydaSignal,
+  b: MeydaSignal
+): MeydaSignal {
   const c: number[] = [];
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
     c[i] = a[i] * b[i];
@@ -23,9 +31,12 @@ export function pointwiseBufferMult(a, b) {
   return c;
 }
 
-export function applyWindow(signal, windowname) {
+export function applyWindow(
+  signal: MeydaSignal,
+  windowname?: MeydaWindowingFunction
+): MeydaSignal {
   if (windowname !== "rect") {
-    if (windowname === "" || !windowname) windowname = "hanning";
+    if (!windowname) windowname = "hanning";
     if (!windows[windowname]) windows[windowname] = {};
 
     if (!windows[windowname][signal.length]) {
@@ -44,7 +55,11 @@ export function applyWindow(signal, windowname) {
   return signal;
 }
 
-export function createBarkScale(length, sampleRate, bufferSize): Float32Array {
+export function createBarkScale(
+  length: number,
+  sampleRate: number,
+  bufferSize: number
+): Float32Array {
   const barkScale = new Float32Array(length);
 
   for (let i = 0; i < barkScale.length; i++) {
@@ -57,27 +72,27 @@ export function createBarkScale(length, sampleRate, bufferSize): Float32Array {
   return barkScale;
 }
 
-export function typedToArray(t) {
+export function typedToArray(t: Float32Array): number[] {
   // utility to convert typed arrays to normal arrays
   return Array.prototype.slice.call(t);
 }
 
-export function arrayToTyped(t) {
+export function arrayToTyped(t: Iterable<number>): Float32Array {
   // utility to convert arrays to typed F32 arrays
   return Float32Array.from(t);
 }
 
-export function _normalize(num, range) {
+export function _normalize(num: number, range: number): number {
   return num / range;
 }
 
-export function normalize(a, range) {
+export function normalize(a: number[], range: number): number[] {
   return a.map(function (n) {
     return _normalize(n, range);
   });
 }
 
-export function normalizeToOne(a) {
+export function normalizeToOne(a: number[]): number[] {
   const max = Math.max.apply(null, a);
 
   return a.map(function (n) {
@@ -85,7 +100,7 @@ export function normalizeToOne(a) {
   });
 }
 
-export function mean(a) {
+export function mean(a: number[]): number {
   return (
     a.reduce(function (prev, cur) {
       return prev + cur;
@@ -93,21 +108,21 @@ export function mean(a) {
   );
 }
 
-function _melToFreq(melValue) {
+function _melToFreq(melValue: number): number {
   const freqValue = 700 * (Math.exp(melValue / 1125) - 1);
   return freqValue;
 }
 
-function _freqToMel(freqValue) {
+function _freqToMel(freqValue: number): number {
   const melValue = 1125 * Math.log(1 + freqValue / 700);
   return melValue;
 }
 
-export function melToFreq(mV) {
+export function melToFreq(mV: number): number {
   return _melToFreq(mV);
 }
 
-export function freqToMel(fV) {
+export function freqToMel(fV: number): number {
   return _freqToMel(fV);
 }
 
@@ -172,11 +187,11 @@ export function createMelFilterBank(
   return filterBank;
 }
 
-export function hzToOctaves(freq, A440) {
+export function hzToOctaves(freq: number, A440: number): number {
   return Math.log2((16 * freq) / A440);
 }
 
-export function normalizeByColumn(a) {
+export function normalizeByColumn(a: number[][]): number[][] {
   const emptyRow = a[0].map(() => 0);
   const colDenominators = a
     .reduce((acc, row) => {
@@ -190,14 +205,14 @@ export function normalizeByColumn(a) {
 }
 
 export function createChromaFilterBank(
-  numFilters,
-  sampleRate,
-  bufferSize,
+  numFilters: number,
+  sampleRate: number,
+  bufferSize: number,
   centerOctave = 5,
   octaveWidth = 2,
   baseC = true,
   A440 = 440
-) {
+): number[][] {
   const numOutputBins = Math.floor(bufferSize / 2) + 1;
 
   const frequencyBins = new Array(bufferSize)
@@ -253,7 +268,11 @@ export function createChromaFilterBank(
   return weights.map((row) => row.slice(0, numOutputBins));
 }
 
-export function frame(buffer, frameLength, hopLength) {
+export function frame(
+  buffer: MeydaSignal,
+  frameLength: number,
+  hopLength: number
+): SliceableArrayLike<number>[] {
   if (buffer.length < frameLength) {
     throw new Error("Buffer is too short for frame length");
   }

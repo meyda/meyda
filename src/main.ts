@@ -8,7 +8,7 @@
 import * as utilities from "./utilities";
 import * as extractors from "./featureExtractors";
 import { fft } from "fftjs";
-import { MeydaAnalyzer } from "./meyda-wa";
+import { MeydaAnalyzer, MeydaAnalyzerOptions } from "./meyda-wa";
 export interface MeydaFeaturesObject {
   amplitudeSpectrum: Float32Array;
   buffer: number[];
@@ -41,7 +41,8 @@ export type MeydaWindowingFunction =
   | "blackman"
   | "sine"
   | "hanning"
-  | "hamming";
+  | "hamming"
+  | "rect";
 
 export type MeydaAudioFeature =
   | "amplitudeSpectrum"
@@ -471,7 +472,7 @@ function listAvailableFeatureExtractors(): MeydaAudioFeature[] {
  * });
  * ```
  */
-function createMeydaAnalyzer(options) {
+function createMeydaAnalyzer(options: MeydaAnalyzerOptions): MeydaAnalyzer {
   return new MeydaAnalyzer(options, Object.assign({}, Meyda));
 }
 
