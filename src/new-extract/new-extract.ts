@@ -71,6 +71,28 @@ function configure(options: MeydaConfigurationOptions): MeydaConfiguration {
   };
 }
 
+/**
+ * If T is an array, the result type is U[]. Otherwise, the result type is U.
+ */
+type MatchArrayWrap<T, U, V> = T extends Array<V> ? U[] : U;
+
+type OnlyOne<T> = T extends Array<(infer U)[]> ? U : T;
+
+/**
+ * # Configure an extractor
+ * 
+ * Configure an extractor function with options that are shared throughout the
+ * extractor function's lifetime. The options pertain to the type of audio that
+ * the extractor expects - e.g. the sample rate, the consistent windowing
+ * function to apply, etc.
+ *
+ * @param options Configuration used across all feature extractions made with
+ * resulting interface
+ 
+ * @returns A function that takes a set of requested audio features and one
+ * buffer of audio, and returns the requested audio features extracted from that
+ * audio.
+ */
 export function configureMeyda(options?: Partial<MeydaConfigurationOptions>) {
   const defaults = {
     bufferSize: 512,
@@ -93,43 +115,95 @@ export function configureMeyda(options?: Partial<MeydaConfigurationOptions>) {
 
   const configuration = configure(optionsAfterDefaults);
 
-  return function extract<
-    T extends MeydaAudioFeature,
-    U extends MeydaSignal | MeydaSignal[]
-  >(
-    feature: T | T[],
-    signal: MeydaSignal | MeydaSignal[]
-  ): U extends [] ? MeydaExtractionResult<T>[] : MeydaExtractionResult<T> {
-    type TheRightReturnType = U extends []
-      ? MeydaExtractionResult<T>[]
-      : MeydaExtractionResult<T>;
+  /**
+   * ## Extract given audio features from given signal
+   *
+   * @param feature The audio feature(s) to extract. Can be single or an array
+   * @param signal The audio signal to extract the feature(s) from
+   *
+   * The signal should have the same sample rate as specified in the options in
+   * the call to `configureMeyda`. Otherwise, the audio features will be wrong.
+   * There is no way to validate the sample rate of the signal, so you will get
+   * mangled output if you don't match it.
+   */
+  function extract<T extends MeydaAudioFeature>(
+    feature: readonly T[] | T,
+    signal: MeydaSignal
+    // ): MeydaExtractionResult<T> {
+  ): {
+    [ExtractorName in T]: ReturnTypesOf<ExtractorMap>[ExtractorName];
+  } {
     const features = Array.isArray(feature) ? feature : [feature];
-    const signals = Array.isArray(signal) ? signal : [signal];
 
-    const results: MeydaExtractionResult<T>[] = signals.map((signal) => {
-      // TODO:
-      // apply windowing function
-      // run fft on signal
-      // cache previous (+?) signal, amp spectrum and complex spectrum per channel
-      // run extractors with all deps
-      // collect to MeydaExtractionResult
-      const preparedThings: AllMeydaExtractorParams<T> = 9;
+    const signals = Array.isArray(signal[0])
+      ? (signal as unknown as MeydaSignal[])
+      : [signal];
 
-      const channelExtractionResult: MeydaExtractionResult<T> =
-        Object.fromEntries(
-          features.map((feature) => {
-            const extractor = extractors[feature];
-            extractor("fish");
-            return [feature, extractors[feature](preparedThings)];
-          })
-        ) as MeydaExtractionResult<T>;
+    const results: MeydaExtractionResult<OnlyOne<T>>[] = signals.map(
+      (signal) => {
+        // TODO:
+        // apply windowing function
+        // run fft on signal
+        // cache previous (+?) signal, amp spectrum and complex spectrum per channel
+        // run extractors with all deps
+        // collect to MeydaExtractionResult
+        // @ts-ignore
+        const preparedThings: AllMeydaExtractorParams<OnlyOne<T>> = 9;
 
-      return channelExtractionResult;
-    });
+        const channelExtractionResult: MeydaExtractionResult<OnlyOne<T>> =
+          Object.fromEntries(
+            features.map((feature) => {
+              const extractor = extractors[feature];
+              extractor("fish");
+              return [feature, extractors[feature](preparedThings)];
+            })
+          ) as MeydaExtractionResult<OnlyOne<T>>;
 
-    if (!Array.isArray(signal)) {
-      return results[0] as TheRightReturnType;
-    }
-    return results as TheRightReturnType;
+        return channelExtractionResult;
+      }
+    );
+
+    type TheRightReturnType = {
+      [ExtractorName in T]: ReturnTypesOf<ExtractorMap>[ExtractorName];
+    };
+    // if (!Array.isArray(signal)) {
+    //   return results[0] as MatchArrayWrap<U, MeydaExtractionResult<OnlyOne<T>>>;
+    // }
+    // return results as MatchArrayWrap<U, MeydaExtractionResult<OnlyOne<T>>>;
+    return results as unknown as TheRightReturnType;
+  }
+  return extract;
+}
+/**
+ * Returns a Meyda extractor function with configured audio features.
+ *
+ * @param features
+ * @param extractor
+ * @returns
+ */
+export function curryMeyda<T extends MeydaAudioFeature>(
+  features: T | readonly T[],
+  extractor: ReturnType<typeof configureMeyda>
+) {
+  return function (buffer: Parameters<typeof extractor>[1]) {
+    return extractor(features, buffer);
+  };
+}
+
+/**
+ * ### Configure an extractor with options and audio features
+ *
+ * Configure a Meyda extractor function with options and audio features at once.
+ *
+ * @param features
+ * @param options
+ * @returns
+ */
+export function configureMeydaWithExtractors<T extends MeydaAudioFeature>(
+  features: T | readonly T[],
+  options?: Partial<MeydaConfigurationOptions>
+) {
+  return function (signal: MeydaSignal) {
+    return curryMeyda(features, configureMeyda(options))(signal);
   };
 }

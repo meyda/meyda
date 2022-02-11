@@ -70,7 +70,8 @@ export type MeydaAudioFeature =
  * numbers that is sliceable. Float32Array is assignable here, and we generally
  * expect that most signals will be in this format.
  */
-export type MeydaSignal = SliceableArrayLike<number> | Float32Array;
+export type MeydaSignal = number[] | Float32Array;
+// export type MeydaSignal = SliceableArrayLike<number> | Float32Array;
 
 export interface SliceableArrayLike<T> extends ArrayLike<T> {
   slice(start: number, end: number): SliceableArrayLike<T>;
