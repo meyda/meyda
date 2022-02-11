@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const spectralCentroid = require("../../dist/node/extractors/spectralCentroid");
+import spectralCentroid from "../../dist/node/extractors/spectralCentroid";
 
 describe("spectralCentroid", () => {
   test("should return correct Spectral Centroid value", (done) => {

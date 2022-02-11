@@ -1,7 +1,7 @@
-/* globals global */
 /**
  * @jest-environment jsdom
  */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 /**
  * This is required to trick typescript into thinking this file is a module

@@ -1,7 +1,7 @@
-const fs = require("fs");
+import fs from "fs";
 
 // Setup
-const featureExtractors = require("../dist/node/featureExtractors");
+import * as featureExtractors from "../dist/node/featureExtractors";
 
 describe("featureExtractors", () => {
   test("should provide all of the feature extractors", () => {

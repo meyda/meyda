@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 var WavManager = function (open_callback, data_callback, end_callback) {
   var fs = require("fs");
   var wav = require("wav");

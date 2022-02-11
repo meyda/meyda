@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const zcr = require("../../dist/node/extractors/zcr");
+import zcr from "../../dist/node/extractors/zcr";
 
 describe("zcr", () => {
   test("should return correct zcr value", (done) => {

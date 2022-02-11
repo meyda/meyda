@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const spectralSkewness = require("../../dist/node/extractors/spectralSkewness");
+import spectralSkewness from "../../dist/node/extractors/spectralSkewness";
 
 describe("spectralSkewness", () => {
   test("should return correct Spectral Skewness value", (done) => {

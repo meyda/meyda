@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const perceptualSpread = require("../../dist/node/extractors/perceptualSpread");
+import perceptualSpread from "../../dist/node/extractors/perceptualSpread";
 
 describe("perceptualSpread", () => {
   test("should return correct Spread value given valid signal", (done) => {

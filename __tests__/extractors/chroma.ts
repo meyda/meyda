@@ -1,8 +1,8 @@
 import TestData from "../TestData";
-const utilities = require("../../dist/node/utilities");
+import * as utilities from "../../dist/node/utilities";
 
 // Setup
-const chroma = require("../../dist/node/extractors/chroma");
+import chroma from "../../dist/node/extractors/chroma";
 
 describe("chroma", () => {
   test("should return correct chroma value given a valid signal", (done) => {

@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const spectralKurtosis = require("../../dist/node/extractors/spectralKurtosis");
+import spectralKurtosis from "../../dist/node/extractors/spectralKurtosis";
 
 describe("spectralKurtosis", () => {
   test("should return correct Spectral Kurtosis value", (done) => {

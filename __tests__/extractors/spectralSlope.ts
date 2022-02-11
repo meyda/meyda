@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const spectralSlope = require("../../dist/node/extractors/spectralSlope");
+import spectralSlope from "../../dist/node/extractors/spectralSlope";
 
 describe("spectralSlope", () => {
   test("should return correct Spectral Slope value", (done) => {

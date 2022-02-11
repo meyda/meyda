@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const energy = require("../../dist/node/extractors/energy");
+import energy from "../../dist/node/extractors/energy";
 
 describe("energy", () => {
   test("should return the correct value given a valid signal", (done) => {

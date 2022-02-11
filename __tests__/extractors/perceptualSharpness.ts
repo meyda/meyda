@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const percSharp = require("../../dist/node/extractors/perceptualSharpness");
+import percSharp from "../../dist/node/extractors/perceptualSharpness";
 
 describe("percSharp", () => {
   test("should return percSharp value given a valid signal", (done) => {

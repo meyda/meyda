@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const powerSpectrum = require("../../dist/node/extractors/powerSpectrum");
+import powerSpectrum from "../../dist/node/extractors/powerSpectrum";
 
 describe("powerSpectrum", () => {
   test("should return correct Power Spectrum value", (done) => {

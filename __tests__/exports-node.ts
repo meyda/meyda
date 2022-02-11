@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /**
  * This is required to trick typescript into thinking this file is a module
  * rather than a script. If this file is a script, it won't get its own scope

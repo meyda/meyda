@@ -1,4 +1,4 @@
-const util = require("../dist/node/utilities");
+import * as util from "../dist/node/utilities";
 
 describe("isPowerOfTwo", () => {
   test("should validate all powers of two", (done) => {

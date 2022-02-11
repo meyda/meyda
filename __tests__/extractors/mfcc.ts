@@ -1,8 +1,8 @@
 import TestData from "../TestData";
-const utilities = require("../../dist/node/utilities");
+import * as utilities from "../../dist/node/utilities";
 
 // Setup
-const mfcc = require("../../dist/node/extractors/mfcc");
+import mfcc from "../../dist/node/extractors/mfcc";
 
 describe("mfcc", () => {
   test("should return correct mfcc value given a valid signal", (done) => {

@@ -47,6 +47,7 @@
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-typescript": "^8.2.3",
     "@types/jest": "^27.0.0",
+    "@types/node-getopt": "^0.2.32",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.2.0",
     "commitizen": "^4.2.4",
@@ -102,8 +103,7 @@
       "@typescript-eslint"
     ],
     "rules": {
-      "@typescript-eslint/ban-ts-comment": 0,
-      "@typescript-eslint/no-var-requires": 0
+      "@typescript-eslint/ban-ts-comment": 0
     },
     "extends": [
       "eslint:recommended",

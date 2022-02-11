@@ -1,25 +1,25 @@
-const windowing = require("../dist/node/windowing");
+import * as windowing from "../dist/node/windowing";
 
-const blackman128 = require("./data/blackman128.json");
-const blackman256 = require("./data/blackman256.json");
-const blackman512 = require("./data/blackman512.json");
-const blackman1024 = require("./data/blackman1024.json");
-const blackman2048 = require("./data/blackman2048.json");
-const hanning128 = require("./data/hanning128.json");
-const hanning256 = require("./data/hanning256.json");
-const hanning512 = require("./data/hanning512.json");
-const hanning1024 = require("./data/hanning1024.json");
-const hanning2048 = require("./data/hanning2048.json");
-const hamming128 = require("./data/hamming128.json");
-const hamming256 = require("./data/hamming256.json");
-const hamming512 = require("./data/hamming512.json");
-const hamming1024 = require("./data/hamming1024.json");
-const hamming2048 = require("./data/hamming2048.json");
-const sine128 = require("./data/sine128.json");
-const sine256 = require("./data/sine256.json");
-const sine512 = require("./data/sine512.json");
-const sine1024 = require("./data/sine1024.json");
-const sine2048 = require("./data/sine2048.json");
+import blackman128 from "./data/blackman128.json";
+import blackman256 from "./data/blackman256.json";
+import blackman512 from "./data/blackman512.json";
+import blackman1024 from "./data/blackman1024.json";
+import blackman2048 from "./data/blackman2048.json";
+import hanning128 from "./data/hanning128.json";
+import hanning256 from "./data/hanning256.json";
+import hanning512 from "./data/hanning512.json";
+import hanning1024 from "./data/hanning1024.json";
+import hanning2048 from "./data/hanning2048.json";
+import hamming128 from "./data/hamming128.json";
+import hamming256 from "./data/hamming256.json";
+import hamming512 from "./data/hamming512.json";
+import hamming1024 from "./data/hamming1024.json";
+import hamming2048 from "./data/hamming2048.json";
+import sine128 from "./data/sine128.json";
+import sine256 from "./data/sine256.json";
+import sine512 from "./data/sine512.json";
+import sine1024 from "./data/sine1024.json";
+import sine2048 from "./data/sine2048.json";
 
 describe("windowing", () => {
   test("should generate a correct 128 bin blackman window", (done) => {

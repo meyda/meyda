@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const spectralSpread = require("../../dist/node/extractors/spectralSpread");
+import spectralSpread from "../../dist/node/extractors/spectralSpread";
 
 describe("spectralSpread", () => {
   test("should return correct Spectral Spread value", (done) => {

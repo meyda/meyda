@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const rms = require("../../dist/node/extractors/rms");
+import rms from "../../dist/node/extractors/rms";
 
 describe("rms", () => {
   test("should return correct rms value given a valid signal", (done) => {

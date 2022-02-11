@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const loudness = require("../../dist/node/extractors/loudness");
+import loudness from "../../dist/node/extractors/loudness";
 
 describe("loudness", () => {
   test("should return correct value given a valid signal", (done) => {

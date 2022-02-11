@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const spectralFlatness = require("../../dist/node/extractors/spectralFlatness");
+import spectralFlatness from "../../dist/node/extractors/spectralFlatness";
 
 describe("spectralFlatness", () => {
   test("should return correct Spectral Flatness value", (done) => {

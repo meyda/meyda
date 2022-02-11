@@ -1,7 +1,7 @@
 import TestData from "../TestData";
 
 // Setup
-const spectralRolloff = require("../../dist/node/extractors/spectralRolloff");
+import spectralRolloff from "../../dist/node/extractors/spectralRolloff";
 
 describe("spectralRolloff", () => {
   test("should return correct Spectral Rolloff value", (done) => {
