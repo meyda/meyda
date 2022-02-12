@@ -68,6 +68,7 @@
     "dct": "0.1.0",
     "fftjs": "0.0.4",
     "node-getopt": "^0.3.2",
+    "ts-toolbelt": "^9.6.0",
     "wav": "^1.0.2"
   },
   "engines": {
