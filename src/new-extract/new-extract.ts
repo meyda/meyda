@@ -17,26 +17,12 @@ type ParameterTypesOf<T extends Record<string, (...args: any) => any>> = {
   [K in keyof T]: Parameters<T[K]>;
 };
 
-type RelevantExtractorParams<
-  M extends Record<string, (...args: any) => any>,
-  T extends keyof M
-> = {
-  [ExtractorName in T]: ParameterTypesOf<M>[ExtractorName];
-};
-
-type AllMeydaExtractorParams<T extends keyof ExtractorMap> =
-  RelevantExtractorParams<ExtractorMap, T>;
-
 type ReturnTypesOf<T extends Record<string, (...args: any) => any>> = {
   [K in keyof T]: ReturnType<T[K]>;
 };
 
-type MeydaExtractionResult<F extends MeydaAudioFeature> = {
-  [ExtractorName in F]: ReturnTypesOf<ExtractorMap>[ExtractorName];
-};
 type MelFilterBank = ReturnType<typeof createMelFilterBank>;
 type ChromaFilterBank = ReturnType<typeof createChromaFilterBank>;
-
 interface MeydaConfigurationOptions {
   sampleRate: number;
   bufferSize: number;
@@ -75,20 +61,14 @@ function configure(options: MeydaConfigurationOptions): MeydaConfiguration {
 type ConcreteResultType<
   T extends MeydaAudioFeature,
   U extends MeydaSignal[] | MeydaSignal
-> = U extends MeydaSignal[]
+> =
+ U extends MeydaSignal[]
   ? {
       [ExtractorName in T]: ReturnTypesOf<ExtractorMap>[ExtractorName];
     }[]
   : {
       [ExtractorName in T]: ReturnTypesOf<ExtractorMap>[ExtractorName];
     };
-
-/**
- * If T is an array, the result type is U[]. Otherwise, the result type is U.
- */
-type MatchArrayWrap<T, U, V> = T extends Array<V> ? U[] : U;
-
-type OnlyOne<T> = T extends Array<(infer U)[]> ? U : T;
 
 /**
  * # Configure an extractor
