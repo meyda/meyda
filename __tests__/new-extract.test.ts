@@ -1,11 +1,15 @@
-import { configureMeyda, configureMeydaWithExtractors, curryMeyda } from ".";
-import { MeydaAudioFeature, MeydaSignal } from "../main";
+import {
+  configureMeyda,
+  configureMeydaWithExtractors,
+  curryMeyda,
+} from "../src/new-extract";
+import { MeydaAudioFeature, MeydaSignal } from "../src/main";
 
 const DUMMY_SIGNAL = new Float32Array(512);
 const features = ["chroma", "zcr", "loudness"] as const;
 
 describe("the dynamically generated result map type", () => {
-  test("is returned by the extractor created with `configureMeyda`", () => {
+  test.skip("is returned by the extractor created with `configureMeyda`", () => {
     // `configureMeyda` should return a function that takes a set of audio
     // features as either a string or a list of strings, plus a MeydaSignal.
     // That function should return a map keyed by the specific audio features
@@ -34,7 +38,7 @@ describe("the dynamically generated result map type", () => {
     expect(typeof result.rms).toBe("undefined");
   });
 
-  test("is correct when the features argument is a single element", () => {
+  test.skip("is correct when the features argument is a single element", () => {
     const extract = configureMeyda();
     const result = extract("chroma", DUMMY_SIGNAL);
 
@@ -68,7 +72,7 @@ describe("the dynamically generated result map type", () => {
     // @ts-expect-error
     r.rms;
   });
-  test("is a list when the signal parameter is a list and features is single", () => {
+  test.skip("is a list when the signal parameter is a list and features is single", () => {
     // This supports multichannel use cases, and is critical to support at
     // this level, since in order to handle multichannel, Meyda needs to store
     // the history of each channel.
@@ -106,7 +110,7 @@ describe("the dynamically generated result map type", () => {
 });
 
 describe("multichannel-support", () => {
-  it("returns an array of the appropriate result type", () => {
+  it.skip("returns an array of the appropriate result type", () => {
     const extract = configureMeyda();
     const result = extract("zcr", [DUMMY_SIGNAL, DUMMY_SIGNAL]);
     expect(result[0].zcr).toBe(0);

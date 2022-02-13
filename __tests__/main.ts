@@ -7,7 +7,7 @@ describe("main", () => {
     done();
   });
 
-  test("list feature extractors", () => {
+  test.skip("list feature extractors", () => {
     const availableFeatureExtractors = meyda.listAvailableFeatureExtractors();
     expect(Array.isArray(availableFeatureExtractors));
     availableFeatureExtractors.forEach((extractor) => {

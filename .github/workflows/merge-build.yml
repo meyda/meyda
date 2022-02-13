@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - new-extract
 
 jobs:
   build:
@@ -10,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     steps:
       - uses: actions/checkout@v1
