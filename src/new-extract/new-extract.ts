@@ -6,7 +6,8 @@ import {
   createMelFilterBank,
 } from "../utilities";
 import * as windowingFunctions from "../windowing";
-import { A, Union } from "ts-toolbelt";
+import { A, U, Union } from "ts-toolbelt";
+import { MatchTupleLength } from "./match-tuple-length";
 
 export type WindowingFunction = keyof typeof windowingFunctions | "rectangle";
 export type MeydaAudioFeature = keyof typeof extractors;
@@ -58,17 +59,60 @@ function configure(options: MeydaConfigurationOptions): MeydaConfiguration {
   };
 }
 
-type ConcreteResultType<
-  T extends MeydaAudioFeature,
-  U extends MeydaSignal[] | MeydaSignal
-> =
- U extends MeydaSignal[]
-  ? {
-      [ExtractorName in T]: ReturnTypesOf<ExtractorMap>[ExtractorName];
-    }[]
-  : {
-      [ExtractorName in T]: ReturnTypesOf<ExtractorMap>[ExtractorName];
-    };
+// type ConcreteResultType<
+//   T extends MeydaAudioFeature,
+//   U extends readonly MeydaSignal[] | MeydaSignal
+// > = U extends MeydaSignal[]
+//   ? {
+//       [ExtractorName in T]: ReturnTypesOf<ExtractorMap>[ExtractorName];
+//     }[]
+//   : {
+//       [ExtractorName in T]: ReturnTypesOf<ExtractorMap>[ExtractorName];
+//     };
+
+type ConcreteResultType<T extends MeydaAudioFeature> = {
+  [ExtractorName in T]: ReturnTypesOf<ExtractorMap>[ExtractorName];
+};
+
+type MaybePartialResult<
+  T extends V extends readonly (infer K)[] ? K : V extends (infer K)[] ? K : V,
+  U extends readonly MeydaSignal[] | MeydaSignal,
+  V extends readonly MeydaAudioFeature[] | MeydaAudioFeature
+> = MatchTupleLength<
+  U,
+  V extends T[]
+    ? A.Compute<Partial<ConcreteResultType<MeydaAudioFeature>>, "flat">
+    : A.Compute<ConcreteResultType<T>, "flat">
+>;
+
+type ExtractorParameterUnion<T extends MeydaAudioFeature> = Parameters<
+  ExtractorMap[T]
+>[0];
+type ExtractorParametersIntersection<T extends MeydaAudioFeature> =
+  Union.IntersectOf<ExtractorParameterUnion<T>>;
+type ExtractorParameters<T extends MeydaAudioFeature> = {
+  [k in keyof ExtractorParametersIntersection<T>]: ExtractorParametersIntersection<T>[k];
+};
+
+function isArray<T>(thing: T | T[] | readonly T[]): thing is readonly T[] {
+  return Array.isArray(thing);
+}
+
+function isNotArray<T>(thing: T | T[] | readonly T[]): thing is T {
+  return !Array.isArray(thing);
+}
+
+function isReadonlyArray<T>(thing: T | readonly T[]): thing is readonly T[] {
+  return Array.isArray(thing);
+}
+
+function prepareExtractorDependencies<T extends MeydaAudioFeature>(
+  features: readonly T[],
+  signal: MeydaSignal,
+  configuration: MeydaConfiguration
+): ExtractorParameters<T> {
+  return {};
+}
 
 /**
  * # Configure an extractor
@@ -128,38 +172,30 @@ export function configureMeyda(options?: Partial<MeydaConfigurationOptions>) {
    * sure that your audio channels are passed in in the same order every time.
    */
   function extract<
-    T extends MeydaAudioFeature,
-    U extends MeydaSignal[] | MeydaSignal,
-    V extends T[] | readonly T[] | T
-  >(
-    feature: readonly T[] | T,
-    signal: U
-    // ): MeydaExtractionResult<T> {
-  ): A.Compute<
-    // V extends T[]
-    //   ? // ? Partial<{ [k in MeydaAudioFeature]: ReturnTypesOf<ExtractorMap>[k] }>
-    //     never
-    //   : ConcreteResultType<T, U>
-    ConcreteResultType<T, U>
-  > {
-    const features = Array.isArray(feature) ? feature : [feature];
+    T extends V extends readonly (infer K)[]
+      ? K
+      : V extends (infer K)[]
+      ? K
+      : V,
+    U extends readonly MeydaSignal[] | MeydaSignal,
+    V extends
+      | MeydaAudioFeature[]
+      | readonly MeydaAudioFeature[]
+      | MeydaAudioFeature
+  >(feature: V, signal: U): MaybePartialResult<T, U, V> {
+    // const features: readonly T[] = isReadonlyArray<T>(feature as readonly T[] | T)
+    //   ? feature
+    //   : [feature];
+    const features = (Array.isArray(feature)
+      ? feature
+      : [feature]) as unknown as readonly T[];
 
     const signals = Array.isArray(signal[0])
-      ? (signal as unknown as MeydaSignal[])
+      ? (signal as unknown as readonly MeydaSignal[])
       : [signal];
 
     type SingleCorrectReturnType = {
       [ExtractorName in T]: ReturnTypesOf<ExtractorMap>[ExtractorName];
-    };
-
-    // type ExtractorParameterUnion = Parameters<ExtractorMap[T]>[0];
-    type ExtractorParameterUnion = Parameters<
-      ExtractorMap[MeydaAudioFeature]
-    >[0];
-    type ExtractorParametersIntersection =
-      Union.IntersectOf<ExtractorParameterUnion>;
-    type ExtractorParameters = {
-      [k in keyof ExtractorParametersIntersection]: ExtractorParametersIntersection[k];
     };
 
     const results: SingleCorrectReturnType[] = signals.map((signal) => {
@@ -169,11 +205,12 @@ export function configureMeyda(options?: Partial<MeydaConfigurationOptions>) {
       // cache previous (+?) signal, amp spectrum and complex spectrum per channel
       // run extractors with all deps
       // collect to MeydaExtractionResult
-      const preparedExtractorDependencies: ExtractorParameters =
+      const preparedExtractorDependencies: ExtractorParameters<MeydaAudioFeature> =
         prepareExtractorDependencies(features, signal, configuration);
 
       const channelExtractionResult = Object.fromEntries(
         features.map((feature) => {
+          const extractor = extractors[feature];
           return [feature, extractors[feature](preparedExtractorDependencies)];
         })
       ) as unknown as SingleCorrectReturnType;
@@ -182,9 +219,9 @@ export function configureMeyda(options?: Partial<MeydaConfigurationOptions>) {
     });
 
     if (!Array.isArray(signal)) {
-      return results[0] as unknown as A.Compute<ConcreteResultType<T, U>>;
+      return results[0] as unknown as MaybePartialResult<T, U, V>;
     }
-    return results as unknown as A.Compute<ConcreteResultType<T, U>>;
+    return results as unknown as MaybePartialResult<T, U, V>;
   }
   return extract;
 }
@@ -196,19 +233,18 @@ export function configureMeyda(options?: Partial<MeydaConfigurationOptions>) {
  * @param extractor
  * @returns
  */
-export function curryMeyda<T extends MeydaAudioFeature>(
-  features: T | readonly T[],
-  extractor: <U extends MeydaSignal[] | MeydaSignal>(
-    features: T | readonly T[],
-    signal: U
-  ) => A.Compute<ConcreteResultType<T, U>>
-): <U extends MeydaSignal | MeydaSignal[]>(
-  signal: U
-) => A.Compute<ConcreteResultType<T, U>> {
-  // return extractor.bind(null, features);
-  return function extract<U extends MeydaSignal | MeydaSignal[]>(
-    signal: U
-  ): A.Compute<ConcreteResultType<T, U>> {
+export function curryMeyda<
+  T extends V extends readonly (infer K)[] ? K : V extends (infer K)[] ? K : V,
+  U extends readonly MeydaSignal[] | MeydaSignal,
+  V extends
+    | MeydaAudioFeature[]
+    | readonly MeydaAudioFeature[]
+    | MeydaAudioFeature
+>(
+  features: V,
+  extractor: (feature: V, signal: U) => MaybePartialResult<T, U, V>
+): (signal: U) => MaybePartialResult<T, U, V> {
+  return function extract(signal: U): MaybePartialResult<T, U, V> {
     const result = extractor(features, signal);
     return result;
   };
@@ -223,15 +259,29 @@ export function curryMeyda<T extends MeydaAudioFeature>(
  * @param options
  * @returns
  */
-export function configureMeydaWithExtractors<T extends MeydaAudioFeature>(
-  features: T | readonly T[],
+export function configureMeydaWithExtractors<
+  T extends V extends readonly (infer K)[] ? K : V extends (infer K)[] ? K : V,
+  U extends readonly MeydaSignal[] | MeydaSignal,
+  V extends
+    | MeydaAudioFeature[]
+    | readonly MeydaAudioFeature[]
+    | MeydaAudioFeature
+>(
+  features: V,
   options?: Partial<MeydaConfigurationOptions>
-): <U extends MeydaSignal | MeydaSignal[]>(
-  signal: U
-) => A.Compute<ConcreteResultType<T, U>> {
-  return function extract<U extends MeydaSignal | MeydaSignal[]>(
-    signal: U
-  ): A.Compute<ConcreteResultType<T, U>> {
-    return curryMeyda(features, configureMeyda(options))(signal);
+): (signal: U) => MaybePartialResult<T, U, V> {
+  return function extract(signal: U): MaybePartialResult<T, U, V> {
+    const extractor: (feature: V, signal: U) => MaybePartialResult<T, U, V> =
+      configureMeyda(options);
+    return curryMeyda<T, U, V>(features, extractor)(signal);
   };
 }
+
+// type FType<
+//   T extends V extends readonly (infer K)[] ? K : V extends (infer K)[] ? K : V,
+//   U extends readonly MeydaSignal[] | MeydaSignal,
+//   V extends
+//     | MeydaAudioFeature[]
+//     | readonly MeydaAudioFeature[]
+//     | MeydaAudioFeature
+// > = (feature: V, signal: U) => MaybePartialResult<T, U, V>;

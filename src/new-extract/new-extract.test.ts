@@ -85,6 +85,24 @@ describe("the dynamically generated result map type", () => {
     expect(r[0].mfcc[0]).not.toBeUndefined();
     expect(r[1].mfcc[0]).not.toBeUndefined();
   });
+  test("", () => {
+    const extract = configureMeyda();
+    let r = extract("loudness", [DUMMY_SIGNAL, DUMMY_SIGNAL]);
+    //
+  });
+  test("", () => {
+    const extract = configureMeyda();
+    let r = extract(["loudness", "buffer"] as const, [
+      DUMMY_SIGNAL,
+      DUMMY_SIGNAL,
+    ]);
+    //
+  });
+  test("", () => {
+    const extract = configureMeyda();
+    let r = extract(["loudness", "buffer"], [DUMMY_SIGNAL, DUMMY_SIGNAL]);
+    //
+  });
 });
 
 describe("multichannel-support", () => {
@@ -232,5 +250,11 @@ describe.skip("When the features are not readonly", () => {
     extract(testFeatures, DUMMY_SIGNAL);
     extract(testFeatures, DUMMY_SIGNAL);
     extract(testFeatures, DUMMY_SIGNAL);
+  });
+
+  test("", () => {
+    const features: MeydaAudioFeature[] = ["zcr", "rms"];
+    const extract = configureMeyda();
+    const r = extract(features, [DUMMY_SIGNAL, DUMMY_SIGNAL] as const);
   });
 });
