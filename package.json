@@ -130,6 +130,11 @@
         "name": "v6",
         "channel": "v6",
         "prerelease": "beta"
+      },
+      {
+        "name": "new-extract",
+        "channel": "new-extract",
+        "prerelease": "alpha"
       }
     ]
   },
