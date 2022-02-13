@@ -1,15 +1,15 @@
 import * as extractors from "../featureExtractors";
-import { MeydaSignal } from "../main";
+import { MeydaSignal, MeydaWindowingFunction } from "../main";
 import {
   createBarkScale,
   createChromaFilterBank,
   createMelFilterBank,
 } from "../utilities";
-import * as windowingFunctions from "../windowing";
-import { A, U, Union } from "ts-toolbelt";
+import { A, Union } from "ts-toolbelt";
 import { MatchTupleLength } from "./match-tuple-length";
+import { ComplexSpectrum, fft } from "fftjs";
 
-export type WindowingFunction = keyof typeof windowingFunctions | "rectangle";
+// export type WindowingFunction = keyof typeof windowingFunctions | "rectangle";
 export type MeydaAudioFeature = keyof typeof extractors;
 
 type ExtractorMap = typeof extractors;
@@ -27,14 +27,19 @@ type ChromaFilterBank = ReturnType<typeof createChromaFilterBank>;
 interface MeydaConfigurationOptions {
   sampleRate: number;
   bufferSize: number;
-  windowingFunction: WindowingFunction;
+  windowingFunction: MeydaWindowingFunction | "rect";
   mfccCoefficients: number;
   chromaBands: number;
   melBands: number;
   barkBands: number;
 }
 
-interface MeydaConfiguration {
+// type MeydaConfiguration = {
+//   barkScale: Float32Array;
+//   melFilterBank: MelFilterBank;
+//   chromaFilterBank: ChromaFilterBank;
+// } & MeydaConfigurationOptions;
+interface MeydaConfiguration extends MeydaConfigurationOptions {
   barkScale: Float32Array;
   melFilterBank: MelFilterBank;
   chromaFilterBank: ChromaFilterBank;
@@ -45,6 +50,7 @@ function configure(options: MeydaConfigurationOptions): MeydaConfiguration {
     ...options,
   };
   return {
+    ...options,
     barkScale: createBarkScale(bufferSize, sampleRate, bufferSize),
     melFilterBank: createMelFilterBank(
       Math.max(melBands || 0, mfccCoefficients),
@@ -94,24 +100,65 @@ type ExtractorParameters<T extends MeydaAudioFeature> = {
   [k in keyof ExtractorParametersIntersection<T>]: ExtractorParametersIntersection<T>[k];
 };
 
-function isArray<T>(thing: T | T[] | readonly T[]): thing is readonly T[] {
-  return Array.isArray(thing);
+function prepareAmpSpectrum(
+  complexSpectrum: ComplexSpectrum,
+  bufferSize: number
+): Float32Array {
+  const ampSpectrum = new Float32Array(bufferSize / 2);
+  for (var i = 0; i < bufferSize / 2; i++) {
+    ampSpectrum[i] = Math.sqrt(
+      Math.pow(complexSpectrum.real[i], 2) +
+        Math.pow(complexSpectrum.imag[i], 2)
+    );
+  }
+  return ampSpectrum;
 }
 
-function isNotArray<T>(thing: T | T[] | readonly T[]): thing is T {
-  return !Array.isArray(thing);
-}
-
-function isReadonlyArray<T>(thing: T | readonly T[]): thing is readonly T[] {
-  return Array.isArray(thing);
+function prepareSpectra(signal: MeydaSignal) {
+  const complexSpectrum = fft(signal);
+  const ampSpectrum = prepareAmpSpectrum(complexSpectrum, signal.length);
+  return {
+    complexSpectrum,
+    ampSpectrum,
+  };
 }
 
 function prepareExtractorDependencies<T extends MeydaAudioFeature>(
   features: readonly T[],
   signal: MeydaSignal,
   configuration: MeydaConfiguration
-): ExtractorParameters<T> {
-  return {};
+  // ): ExtractorParameters<T> {
+): ExtractorParameters<MeydaAudioFeature> {
+  const {
+    bufferSize,
+    sampleRate,
+    melFilterBank,
+    chromaFilterBank,
+    barkBands,
+    barkScale,
+    mfccCoefficients,
+  } = configuration;
+
+  const { complexSpectrum, ampSpectrum } = prepareSpectra(signal);
+  const previousSignal = undefined;
+
+  return {
+    signal: !(signal instanceof Float32Array)
+      ? Float32Array.from(signal)
+      : signal,
+    complexSpectrum,
+    ampSpectrum,
+    bufferSize,
+    sampleRate,
+    chromaFilterBank,
+    melFilterBank,
+    numberOfMFCCCoefficients: mfccCoefficients,
+    numberOfBarkBands: barkBands,
+    barkScale,
+    previousSignal,
+    // previousAmpSpectrum,
+    // previousComplexSpectrum,
+  };
 }
 
 /**

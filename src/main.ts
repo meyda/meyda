@@ -478,3 +478,5 @@ function windowing(
 
 // @ts-ignore
 if (typeof window !== "undefined") window.Meyda = Meyda;
+
+export * from "./new-extract";

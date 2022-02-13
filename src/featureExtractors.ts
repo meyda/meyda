@@ -27,7 +27,7 @@ let complexSpectrum = function (args: {
   return args.complexSpectrum;
 };
 
-let amplitudeSpectrum = function (args: { ampSpectrum: number[] }) {
+let amplitudeSpectrum = function (args: { ampSpectrum: Float32Array }) {
   return args.ampSpectrum;
 };
 
