@@ -60,14 +60,15 @@
     "rollup-plugin-terser": "^7.0.2",
     "semantic-release": "^19.0.2",
     "ts-jest": "^27.0.3",
-    "tslib": "^2.3.0",
+    "tslib": "^2.3.1",
     "typedoc": "^0.22.4",
-    "typescript": "^4.3.5"
+    "typescript": "^4.5.4"
   },
   "dependencies": {
     "dct": "0.1.0",
     "fftjs": "0.0.4",
     "node-getopt": "^0.3.2",
+    "ts-toolbelt": "^9.6.0",
     "wav": "^1.0.2"
   },
   "engines": {
@@ -129,6 +130,11 @@
         "name": "v6",
         "channel": "v6",
         "prerelease": "beta"
+      },
+      {
+        "name": "new-extract",
+        "channel": "new-extract",
+        "prerelease": "alpha"
       }
     ]
   },

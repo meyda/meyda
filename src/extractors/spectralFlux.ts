@@ -7,7 +7,7 @@ export default function ({
   bufferSize,
 }: {
   signal: Float32Array;
-  previousSignal: Float32Array;
+  previousSignal?: Float32Array;
   bufferSize: number;
 }): number {
   if (typeof signal !== "object" || typeof previousSignal != "object") {

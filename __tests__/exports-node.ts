@@ -27,7 +27,7 @@ const EXPECTED_EXPORTS = [
   "extract",
 ];
 
-describe("package exports", () => {
+describe.skip("package exports", () => {
   test("meyda node exports at least currently expected fields", () => {
     var meyda = require("../dist/node/main");
 

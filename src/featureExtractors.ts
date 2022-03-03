@@ -15,16 +15,19 @@ import mfcc from "./extractors/mfcc";
 import chroma from "./extractors/chroma";
 import powerSpectrum from "./extractors/powerSpectrum";
 import spectralFlux from "./extractors/spectralFlux";
+import { MeydaSignal } from "./main";
 
-let buffer = function (args) {
+let buffer = function (args: { signal: MeydaSignal }): MeydaSignal {
   return args.signal;
 };
 
-let complexSpectrum = function (args) {
+let complexSpectrum = function (args: {
+  complexSpectrum: { real: number[]; imag: number[] };
+}) {
   return args.complexSpectrum;
 };
 
-let amplitudeSpectrum = function (args) {
+let amplitudeSpectrum = function (args: { ampSpectrum: Float32Array }) {
   return args.ampSpectrum;
 };
 
