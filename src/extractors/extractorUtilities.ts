@@ -5,6 +5,5 @@ export function mu(i: number, amplitudeSpect: Float32Array): number {
     numerator += Math.pow(k, i) * Math.abs(amplitudeSpect[k]);
     denominator += amplitudeSpect[k];
   }
-
   return numerator / denominator;
 }
