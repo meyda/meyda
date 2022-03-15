@@ -124,6 +124,14 @@ To use RMS in applications where you expect a ceiling on each audio feature, we 
 - _What Is It Used For_: Often used to indicate "pitchiness / tonality" of a sound.
 - _Range_: `0.0 - 1.0`, where `0.0` is not tonal, and `1.0` is very tonal.
 
+### Spectral Crest
+
+`spectralCrest`
+
+- _Description_: This is the ratio of the loudest magnitude over the RMS of the whole frame. A high number is an indication of a loud peak compared out to the overall curve of the spectrum.
+- _What Is It Used For_: If the spectrum you are analysing has peaks in it, it can help discern _how peaky_ it is.
+- _Range_: The range is arbitrary, with higher values indicating more extreme peaks in the spectrum.
+
 ### Chroma
 
 `chroma`
