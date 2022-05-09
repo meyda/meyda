@@ -52,7 +52,7 @@
     "commitizen": "^4.2.4",
     "eslint": "^8.1.0",
     "glob": "^8.0.1",
-    "husky": "^7.0.0",
+    "husky": "^8.0.1",
     "jest": "^27.0.3",
     "lint-staged": "^12.1.2",
     "prettier": "2.6.2",
