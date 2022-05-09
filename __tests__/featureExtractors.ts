@@ -1,11 +1,11 @@
-var fs = require("fs");
+import fs from "fs";
 
 // Setup
-var featureExtractors = require("../dist/node/featureExtractors");
+import * as featureExtractors from "../dist/node/featureExtractors";
 
 describe("featureExtractors", () => {
   test("should provide all of the feature extractors", () => {
-    var featureExtractorsProvided = fs.readdirSync("./dist/node/extractors");
+    let featureExtractorsProvided = fs.readdirSync("./dist/node/extractors");
     featureExtractorsProvided = featureExtractorsProvided.map(function (value) {
       return value.substr(0, value.lastIndexOf(".")) || value;
     });

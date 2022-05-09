@@ -14,13 +14,13 @@ export default function ({
   //linear regression
   let ampSum = 0;
   let freqSum = 0;
-  let freqs = new Float32Array(ampSpectrum.length);
+  const freqs = new Float32Array(ampSpectrum.length);
   let powFreqSum = 0;
   let ampFreqSum = 0;
 
-  for (var i = 0; i < ampSpectrum.length; i++) {
+  for (let i = 0; i < ampSpectrum.length; i++) {
     ampSum += ampSpectrum[i];
-    let curFreq = (i * sampleRate) / bufferSize;
+    const curFreq = (i * sampleRate) / bufferSize;
     freqs[i] = curFreq;
     powFreqSum += curFreq * curFreq;
     freqSum += curFreq;

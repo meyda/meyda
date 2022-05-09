@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /**
  * This is required to trick typescript into thinking this file is a module
  * rather than a script. If this file is a script, it won't get its own scope
@@ -29,7 +30,7 @@ const EXPECTED_EXPORTS = [
 
 describe("package exports", () => {
   test("meyda node exports at least currently expected fields", () => {
-    var meyda = require("../dist/node/main");
+    const meyda = require("../dist/node/main");
 
     expect(Object.keys(meyda)).toEqual(EXPECTED_EXPORTS);
   });

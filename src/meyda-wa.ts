@@ -5,6 +5,7 @@ import type {
   MeydaWindowingFunction,
   MeydaFeaturesObject,
 } from "./main";
+import Meyda from "./main";
 
 /**
  * MeydaAnalyzerOptions
@@ -93,10 +94,11 @@ export interface MeydaAnalyzerOptions {
  */
 export class MeydaAnalyzer {
   /** @hidden */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _m: any;
 
   /** @hidden */
-  constructor(options: MeydaAnalyzerOptions, _this) {
+  constructor(options: MeydaAnalyzerOptions, _this: typeof Meyda) {
     this._m = _this;
     if (!options.audioContext) {
       throw this._m.errors.noAC;
@@ -161,7 +163,7 @@ export class MeydaAnalyzer {
     this.setSource(options.source);
 
     this._m.spn.onaudioprocess = (e) => {
-      var buffer;
+      let buffer;
       if (this._m.inputData !== null) {
         this._m.previousInputData = this._m.inputData;
       }
@@ -183,12 +185,16 @@ export class MeydaAnalyzer {
         );
       }
 
-      var frames = utilities.frame(buffer, this._m.bufferSize, this._m.hopSize);
+      const frames = utilities.frame(
+        buffer,
+        this._m.bufferSize,
+        this._m.hopSize
+      );
 
       frames.forEach((f) => {
         this._m.frame = f;
 
-        var features = this._m.extract(
+        const features = this._m.extract(
           this._m._featuresToExtract,
           this._m.frame,
           this._m.previousFrame
@@ -259,7 +265,7 @@ export class MeydaAnalyzer {
    * analyzer.setChannel(0);
    * ```
    */
-  setChannel(channel: number) {
+  setChannel(channel: number): void {
     if (channel <= this._m.inputs) {
       this._m.channel = channel;
     } else {

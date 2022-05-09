@@ -1,6 +1,7 @@
 /**
  * @jest-environment jsdom
  */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 /**
  * This is required to trick typescript into thinking this file is a module
@@ -34,7 +35,7 @@ const EXPECTED_EXPORTS = [
 describe("package exports", () => {
   test("meyda web exports at least currently expected fields", () => {
     expect(window["Meyda"]).not.toBeDefined();
-    var meyda = require("../dist/web/meyda");
+    const meyda = require("../dist/web/meyda");
 
     expect(Object.keys(meyda)).toEqual(EXPECTED_EXPORTS);
     expect(Object.keys(window["Meyda"])).toEqual(EXPECTED_EXPORTS);
@@ -44,7 +45,7 @@ describe("package exports", () => {
 
   test("meyda web min exports at least currently expected fields", () => {
     expect(global["Meyda"]).not.toBeDefined();
-    var meyda = require("../dist/web/meyda.min");
+    const meyda = require("../dist/web/meyda.min");
 
     expect(Object.keys(meyda)).toEqual(EXPECTED_EXPORTS);
     expect(Object.keys(global["Meyda"])).toEqual(EXPECTED_EXPORTS);
@@ -55,7 +56,7 @@ describe("package exports", () => {
 
 describe("package exports", () => {
   test("meyda node exports at least currently expected fields", () => {
-    var meyda = require("../dist/node/main");
+    const meyda = require("../dist/node/main");
 
     expect(Object.keys(meyda)).toEqual(EXPECTED_EXPORTS);
     expect(Object.keys(global["Meyda"])).toEqual(EXPECTED_EXPORTS);

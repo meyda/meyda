@@ -1,8 +1,8 @@
-var util = require("../dist/node/utilities");
+import * as util from "../dist/node/utilities";
 
 describe("isPowerOfTwo", () => {
   test("should validate all powers of two", (done) => {
-    for (var i = 0; i < 1000; i++) {
+    for (let i = 0; i < 1000; i++) {
       const result = util.isPowerOfTwo(Math.pow(2, i));
       if (result !== true) {
         done(new Error("isPowerOfTwo failed for " + i));
@@ -23,7 +23,7 @@ describe("isPowerOfTwo", () => {
 
 describe("error", () => {
   test("throws an error with the correct message", (done) => {
-    var message = "Test Error Message";
+    const message = "Test Error Message";
     expect(function () {
       util.error(message);
     }).toThrow();

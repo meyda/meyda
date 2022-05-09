@@ -1,6 +1,4 @@
-var meyda = require("../dist/node/main");
-// trick ts into treating this file as a module
-export {};
+import meyda from "../dist/node/main";
 
 describe("main", () => {
   test("should call an extractor when asked to", (done) => {

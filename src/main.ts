@@ -41,7 +41,8 @@ export type MeydaWindowingFunction =
   | "blackman"
   | "sine"
   | "hanning"
-  | "hamming";
+  | "hamming"
+  | "rect";
 
 export type MeydaAudioFeature =
   | "amplitudeSpectrum"
@@ -74,6 +75,16 @@ export type MeydaSignal = SliceableArrayLike<number> | Float32Array;
 
 export interface SliceableArrayLike<T> extends ArrayLike<T> {
   slice(start: number, end: number): SliceableArrayLike<T>;
+}
+
+/**
+ * Apply a windowing function to a signal
+ */
+function windowing(
+  signal: MeydaSignal,
+  windowname?: MeydaWindowingFunction
+): MeydaSignal {
+  return utilities.applyWindow(signal, windowname);
 }
 
 /**
@@ -151,7 +162,7 @@ interface Meyda {
    * The default windowing function is the hanning window.
    */
   windowingFunction: string;
-  featureExtractors: any;
+  featureExtractors: typeof extractors;
   /** @hidden */
   EXTRACTION_STARTED: boolean;
   /**
@@ -245,7 +256,7 @@ const Meyda: Meyda = {
   numberOfMFCCCoefficients: 13,
   numberOfBarkBands: 24,
   _featuresToExtract: [],
-  windowing: utilities.applyWindow,
+  windowing,
   /** @hidden */
   _errors: {
     notPow2: new Error(
@@ -345,7 +356,7 @@ const Meyda: Meyda = {
       this.signal = signal;
     }
 
-    let preparedSignal = prepareSignalWithSpectrum(
+    const preparedSignal = prepareSignalWithSpectrum(
       signal,
       this.windowingFunction,
       this.bufferSize
@@ -356,7 +367,7 @@ const Meyda: Meyda = {
     this.ampSpectrum = preparedSignal.ampSpectrum;
 
     if (previousSignal) {
-      let preparedSignal = prepareSignalWithSpectrum(
+      const preparedSignal = prepareSignalWithSpectrum(
         previousSignal,
         this.windowingFunction,
         this.bufferSize
@@ -401,35 +412,36 @@ const Meyda: Meyda = {
   },
 };
 
-var prepareSignalWithSpectrum = function (
-  signal,
-  windowingFunction,
+const prepareSignalWithSpectrum = function (
+  inputSignal: MeydaSignal,
+  windowingFunction: MeydaWindowingFunction,
   bufferSize
 ) {
-  var preparedSignal: any = {};
+  const signal =
+    // typeof inputSignal.buffer == "undefined"
+    !(inputSignal instanceof Float32Array)
+      ? // signal is a normal array, convert to F32A
+        utilities.arrayToTyped(inputSignal)
+      : inputSignal;
 
-  if (typeof signal.buffer == "undefined") {
-    //signal is a normal array, convert to F32A
-    preparedSignal.signal = utilities.arrayToTyped(signal);
-  } else {
-    preparedSignal.signal = signal;
-  }
+  const windowedSignal = windowing(signal, windowingFunction);
 
-  preparedSignal.windowedSignal = utilities.applyWindow(
-    preparedSignal.signal,
-    windowingFunction
-  );
+  const complexSpectrum = fft(windowedSignal);
+  const ampSpectrum = new Float32Array(bufferSize / 2);
 
-  preparedSignal.complexSpectrum = fft(preparedSignal.windowedSignal);
-  preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
-  for (var i = 0; i < bufferSize / 2; i++) {
-    preparedSignal.ampSpectrum[i] = Math.sqrt(
-      Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
-        Math.pow(preparedSignal.complexSpectrum.imag[i], 2)
+  for (let i = 0; i < bufferSize / 2; i++) {
+    ampSpectrum[i] = Math.sqrt(
+      Math.pow(complexSpectrum.real[i], 2) +
+        Math.pow(complexSpectrum.imag[i], 2)
     );
   }
 
-  return preparedSignal;
+  return {
+    signal,
+    windowedSignal,
+    complexSpectrum,
+    ampSpectrum,
+  };
 };
 
 export default Meyda;
@@ -461,18 +473,8 @@ function listAvailableFeatureExtractors(): MeydaAudioFeature[] {
  * });
  * ```
  */
-function createMeydaAnalyzer(options) {
+function createMeydaAnalyzer(options: MeydaAnalyzerOptions): MeydaAnalyzer {
   return new MeydaAnalyzer(options, Object.assign({}, Meyda));
-}
-
-/**
- * Apply a windowing function to a signal
- */
-function windowing(
-  signal: MeydaSignal,
-  windowname: MeydaWindowingFunction
-): MeydaSignal {
-  return utilities.applyWindow(signal, windowname);
 }
 
 // @ts-ignore

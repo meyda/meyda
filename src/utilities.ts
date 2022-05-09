@@ -1,8 +1,13 @@
+import {
+  MeydaSignal,
+  MeydaWindowingFunction,
+  SliceableArrayLike,
+} from "./main";
 import * as windowing from "./windowing";
 
-let windows = {};
+const windows = {};
 
-export function isPowerOfTwo(num) {
+export function isPowerOfTwo(num: number): boolean {
   while (num % 2 === 0 && num > 1) {
     num /= 2;
   }
@@ -10,12 +15,15 @@ export function isPowerOfTwo(num) {
   return num === 1;
 }
 
-export function error(message) {
+export function error(message: string): Error {
   throw new Error("Meyda: " + message);
 }
 
-export function pointwiseBufferMult(a, b) {
-  let c: number[] = [];
+export function pointwiseBufferMult(
+  a: MeydaSignal,
+  b: MeydaSignal
+): MeydaSignal {
+  const c: number[] = [];
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
     c[i] = a[i] * b[i];
   }
@@ -23,9 +31,12 @@ export function pointwiseBufferMult(a, b) {
   return c;
 }
 
-export function applyWindow(signal, windowname) {
+export function applyWindow(
+  signal: MeydaSignal,
+  windowname?: MeydaWindowingFunction
+): MeydaSignal {
   if (windowname !== "rect") {
-    if (windowname === "" || !windowname) windowname = "hanning";
+    if (!windowname) windowname = "hanning";
     if (!windows[windowname]) windows[windowname] = {};
 
     if (!windows[windowname][signal.length]) {
@@ -44,10 +55,14 @@ export function applyWindow(signal, windowname) {
   return signal;
 }
 
-export function createBarkScale(length, sampleRate, bufferSize): Float32Array {
-  let barkScale = new Float32Array(length);
+export function createBarkScale(
+  length: number,
+  sampleRate: number,
+  bufferSize: number
+): Float32Array {
+  const barkScale = new Float32Array(length);
 
-  for (var i = 0; i < barkScale.length; i++) {
+  for (let i = 0; i < barkScale.length; i++) {
     barkScale[i] = (i * sampleRate) / bufferSize;
     barkScale[i] =
       13 * Math.atan(barkScale[i] / 1315.8) +
@@ -57,35 +72,35 @@ export function createBarkScale(length, sampleRate, bufferSize): Float32Array {
   return barkScale;
 }
 
-export function typedToArray(t) {
+export function typedToArray(t: Float32Array): number[] {
   // utility to convert typed arrays to normal arrays
   return Array.prototype.slice.call(t);
 }
 
-export function arrayToTyped(t) {
+export function arrayToTyped(t: SliceableArrayLike<number>): Float32Array {
   // utility to convert arrays to typed F32 arrays
   return Float32Array.from(t);
 }
 
-export function _normalize(num, range) {
+export function _normalize(num: number, range: number): number {
   return num / range;
 }
 
-export function normalize(a, range) {
+export function normalize(a: number[], range: number): number[] {
   return a.map(function (n) {
     return _normalize(n, range);
   });
 }
 
-export function normalizeToOne(a) {
-  var max = Math.max.apply(null, a);
+export function normalizeToOne(a: number[]): number[] {
+  const max = Math.max.apply(null, a);
 
   return a.map(function (n) {
     return n / max;
   });
 }
 
-export function mean(a) {
+export function mean(a: number[]): number {
   return (
     a.reduce(function (prev, cur) {
       return prev + cur;
@@ -93,21 +108,21 @@ export function mean(a) {
   );
 }
 
-function _melToFreq(melValue) {
-  var freqValue = 700 * (Math.exp(melValue / 1125) - 1);
+function _melToFreq(melValue: number): number {
+  const freqValue = 700 * (Math.exp(melValue / 1125) - 1);
   return freqValue;
 }
 
-function _freqToMel(freqValue) {
-  var melValue = 1125 * Math.log(1 + freqValue / 700);
+function _freqToMel(freqValue: number): number {
+  const melValue = 1125 * Math.log(1 + freqValue / 700);
   return melValue;
 }
 
-export function melToFreq(mV) {
+export function melToFreq(mV: number): number {
   return _melToFreq(mV);
 }
 
-export function freqToMel(fV) {
+export function freqToMel(fV: number): number {
   return _freqToMel(fV);
 }
 
@@ -116,25 +131,25 @@ export function createMelFilterBank(
   sampleRate: number,
   bufferSize: number
 ): number[][] {
-  //the +2 is the upper and lower limits
-  let melValues = new Float32Array(numFilters + 2);
-  let melValuesInFreq = new Float32Array(numFilters + 2);
+  // the +2 is the upper and lower limits
+  const melValues = new Float32Array(numFilters + 2);
+  const melValuesInFreq = new Float32Array(numFilters + 2);
 
-  //Generate limits in Hz - from 0 to the nyquist.
-  let lowerLimitFreq = 0;
-  let upperLimitFreq = sampleRate / 2;
+  // Generate limits in Hz - from 0 to the nyquist.
+  const lowerLimitFreq = 0;
+  const upperLimitFreq = sampleRate / 2;
 
-  //Convert the limits to Mel
-  let lowerLimitMel = _freqToMel(lowerLimitFreq);
-  let upperLimitMel = _freqToMel(upperLimitFreq);
+  // Convert the limits to Mel
+  const lowerLimitMel = _freqToMel(lowerLimitFreq);
+  const upperLimitMel = _freqToMel(upperLimitFreq);
 
-  //Find the range
-  let range = upperLimitMel - lowerLimitMel;
+  // Find the range
+  const range = upperLimitMel - lowerLimitMel;
 
-  //Find the range as part of the linear interpolation
-  let valueToAdd = range / (numFilters + 1);
+  // Find the range as part of the linear interpolation
+  const valueToAdd = range / (numFilters + 1);
 
-  let fftBinsOfFreq: number[] = new Array(numFilters + 2);
+  const fftBinsOfFreq: number[] = new Array(numFilters + 2);
 
   for (let i = 0; i < melValues.length; i++) {
     // Initialising the mel frequencies
@@ -150,7 +165,7 @@ export function createMelFilterBank(
     );
   }
 
-  var filterBank: number[][] = new Array(numFilters);
+  const filterBank: number[][] = new Array(numFilters);
   for (let j = 0; j < filterBank.length; j++) {
     // Create a two dimensional array of size numFilters * (buffersize/2)+1
     // pre-populating the arrays with 0s.
@@ -172,13 +187,13 @@ export function createMelFilterBank(
   return filterBank;
 }
 
-export function hzToOctaves(freq, A440) {
+export function hzToOctaves(freq: number, A440: number): number {
   return Math.log2((16 * freq) / A440);
 }
 
-export function normalizeByColumn(a) {
-  var emptyRow = a[0].map(() => 0);
-  var colDenominators = a
+export function normalizeByColumn(a: number[][]): number[][] {
+  const emptyRow = a[0].map(() => 0);
+  const colDenominators = a
     .reduce((acc, row) => {
       row.forEach((cell, j) => {
         acc[j] += Math.pow(cell, 2);
@@ -186,21 +201,21 @@ export function normalizeByColumn(a) {
       return acc;
     }, emptyRow)
     .map(Math.sqrt);
-  return a.map((row, i) => row.map((v, j) => v / (colDenominators[j] || 1)));
+  return a.map((row) => row.map((v, j) => v / (colDenominators[j] || 1)));
 }
 
 export function createChromaFilterBank(
-  numFilters,
-  sampleRate,
-  bufferSize,
+  numFilters: number,
+  sampleRate: number,
+  bufferSize: number,
   centerOctave = 5,
   octaveWidth = 2,
   baseC = true,
   A440 = 440
-) {
-  var numOutputBins = Math.floor(bufferSize / 2) + 1;
+): number[][] {
+  const numOutputBins = Math.floor(bufferSize / 2) + 1;
 
-  var frequencyBins = new Array(bufferSize)
+  const frequencyBins = new Array(bufferSize)
     .fill(0)
     .map(
       (_, i) => numFilters * hzToOctaves((sampleRate * i) / bufferSize, A440)
@@ -210,14 +225,14 @@ export function createChromaFilterBank(
   // (so chroma is 50% rotated from bin 1, and bin width is broad)
   frequencyBins[0] = frequencyBins[1] - 1.5 * numFilters;
 
-  var binWidthBins = frequencyBins
+  const binWidthBins = frequencyBins
     .slice(1)
     .map((v, i) => Math.max(v - frequencyBins[i]), 1)
     .concat([1]);
 
-  var halfNumFilters = Math.round(numFilters / 2);
+  const halfNumFilters = Math.round(numFilters / 2);
 
-  var filterPeaks = new Array(numFilters)
+  const filterPeaks = new Array(numFilters)
     .fill(0)
     .map((_, i) =>
       frequencyBins.map(
@@ -227,7 +242,7 @@ export function createChromaFilterBank(
       )
     );
 
-  var weights = filterPeaks.map((row, i) =>
+  let weights = filterPeaks.map((row, i) =>
     row.map((_, j) =>
       Math.exp(-0.5 * Math.pow((2 * filterPeaks[i][j]) / binWidthBins[j], 2))
     )
@@ -236,7 +251,7 @@ export function createChromaFilterBank(
   weights = normalizeByColumn(weights);
 
   if (octaveWidth) {
-    var octaveWeights = frequencyBins.map((v) =>
+    const octaveWeights = frequencyBins.map((v) =>
       Math.exp(
         -0.5 * Math.pow((v / numFilters - centerOctave) / octaveWidth, 2)
       )
@@ -253,7 +268,11 @@ export function createChromaFilterBank(
   return weights.map((row) => row.slice(0, numOutputBins));
 }
 
-export function frame(buffer, frameLength, hopLength) {
+export function frame(
+  buffer: MeydaSignal,
+  frameLength: number,
+  hopLength: number
+): SliceableArrayLike<number>[] {
   if (buffer.length < frameLength) {
     throw new Error("Buffer is too short for frame length");
   }

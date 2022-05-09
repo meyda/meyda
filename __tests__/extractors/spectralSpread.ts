@@ -1,11 +1,11 @@
 import TestData from "../TestData";
 
 // Setup
-var spectralSpread = require("../../dist/node/extractors/spectralSpread");
+import spectralSpread from "../../dist/node/extractors/spectralSpread";
 
 describe("spectralSpread", () => {
   test("should return correct Spectral Spread value", (done) => {
-    var en = spectralSpread({
+    const en = spectralSpread({
       ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
@@ -16,7 +16,8 @@ describe("spectralSpread", () => {
 
   test("should throw an error when passed an empty object", (done) => {
     try {
-      var en = spectralSpread({});
+      const en = spectralSpread({});
+      en;
     } catch (e) {
       done();
     }
@@ -24,7 +25,8 @@ describe("spectralSpread", () => {
 
   test("should throw an error when not passed anything", (done) => {
     try {
-      var en = spectralSpread();
+      const en = spectralSpread();
+      en;
     } catch (e) {
       done();
     }
@@ -32,7 +34,8 @@ describe("spectralSpread", () => {
 
   test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = spectralSpread({ signal: "not a signal" });
+      const en = spectralSpread({ signal: "not a signal" });
+      en;
     } catch (e) {
       done();
     }

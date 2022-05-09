@@ -1,12 +1,12 @@
 import TestData from "../TestData";
-var utilities = require("../../dist/node/utilities");
+import * as utilities from "../../dist/node/utilities";
 
 // Setup
-var mfcc = require("../../dist/node/extractors/mfcc");
+import mfcc from "../../dist/node/extractors/mfcc";
 
 describe("mfcc", () => {
   test("should return correct mfcc value given a valid signal", (done) => {
-    var en = mfcc({
+    const en = mfcc({
       sampleRate: 44100,
       bufferSize: 512,
       ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
@@ -23,7 +23,7 @@ describe("mfcc", () => {
 
     expect(expectedValues.length).toEqual(en.length);
 
-    for (var index in en) {
+    for (const index in en) {
       expect(Math.abs(en[index] - expectedValues[index])).toBeLessThanOrEqual(
         1e-15
       );
@@ -33,7 +33,7 @@ describe("mfcc", () => {
   });
 
   test("should return only 3 correct mfcc values given a valid signal", (done) => {
-    var en = mfcc({
+    const en = mfcc({
       sampleRate: 44100,
       bufferSize: 512,
       ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
@@ -47,7 +47,7 @@ describe("mfcc", () => {
 
     expect(expectedValues.length).toEqual(en.length);
 
-    for (var index in en) {
+    for (const index in en) {
       expect(Math.abs(en[index] - expectedValues[index])).toBeLessThanOrEqual(
         1e-15
       );
@@ -57,7 +57,7 @@ describe("mfcc", () => {
   });
 
   test("should return only 40 correct mfcc values given a valid signal", (done) => {
-    var en = mfcc({
+    const en = mfcc({
       sampleRate: 44100,
       bufferSize: 512,
       ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
@@ -84,7 +84,7 @@ describe("mfcc", () => {
 
     expect(expectedValues.length).toEqual(en.length);
 
-    for (var index in en) {
+    for (const index in en) {
       expect(Math.abs(en[index] - expectedValues[index])).toBeLessThanOrEqual(
         1e-15
       );
@@ -95,7 +95,8 @@ describe("mfcc", () => {
 
   test("should throw an error when passed an empty object", (done) => {
     try {
-      var en = mfcc({});
+      const en = mfcc({});
+      en;
     } catch (e) {
       done();
     }
@@ -103,7 +104,8 @@ describe("mfcc", () => {
 
   test("should throw an error when not passed anything", (done) => {
     try {
-      var en = mfcc();
+      const en = mfcc();
+      en;
     } catch (e) {
       done();
     }
@@ -111,7 +113,8 @@ describe("mfcc", () => {
 
   test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = mfcc({ signal: "not a signal" });
+      const en = mfcc({ signal: "not a signal" });
+      en;
     } catch (e) {
       done();
     }

@@ -1,11 +1,11 @@
 import TestData from "../TestData";
 
 // Setup
-var rms = require("../../dist/node/extractors/rms");
+import rms from "../../dist/node/extractors/rms";
 
 describe("rms", () => {
   test("should return correct rms value given a valid signal", (done) => {
-    var en = rms({
+    const en = rms({
       signal: TestData.VALID_SIGNAL,
     });
 
@@ -16,7 +16,8 @@ describe("rms", () => {
 
   test("should throw an error when passed an empty object", (done) => {
     try {
-      var en = rms({});
+      const en = rms({});
+      en;
     } catch (e) {
       done();
     }
@@ -24,7 +25,8 @@ describe("rms", () => {
 
   test("should throw an error when not passed anything", (done) => {
     try {
-      var en = rms();
+      const en = rms();
+      en;
     } catch (e) {
       done();
     }
@@ -32,7 +34,8 @@ describe("rms", () => {
 
   test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = rms({ signal: "not a signal" });
+      const en = rms({ signal: "not a signal" });
+      en;
     } catch (e) {
       done();
     }

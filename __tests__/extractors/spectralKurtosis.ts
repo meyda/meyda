@@ -1,11 +1,11 @@
 import TestData from "../TestData";
 
 // Setup
-var spectralKurtosis = require("../../dist/node/extractors/spectralKurtosis");
+import spectralKurtosis from "../../dist/node/extractors/spectralKurtosis";
 
 describe("spectralKurtosis", () => {
   test("should return correct Spectral Kurtosis value", (done) => {
-    var en = spectralKurtosis({
+    const en = spectralKurtosis({
       ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
@@ -16,7 +16,8 @@ describe("spectralKurtosis", () => {
 
   test("should throw an error when passed an empty object", (done) => {
     try {
-      var en = spectralKurtosis({});
+      const en = spectralKurtosis({});
+      en;
     } catch (e) {
       done();
     }
@@ -24,7 +25,8 @@ describe("spectralKurtosis", () => {
 
   test("should throw an error when not passed anything", (done) => {
     try {
-      var en = spectralKurtosis();
+      const en = spectralKurtosis();
+      en;
     } catch (e) {
       done();
     }
@@ -32,7 +34,8 @@ describe("spectralKurtosis", () => {
 
   test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = spectralKurtosis({ signal: "not a signal" });
+      const en = spectralKurtosis({ signal: "not a signal" });
+      en;
     } catch (e) {
       done();
     }

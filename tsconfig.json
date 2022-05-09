@@ -17,7 +17,8 @@
     "noImplicitAny": false,
     "noImplicitThis": false,
     "rootDir": "./src",
-    "module": "esnext"
+    "module": "esnext",
+    "resolveJsonModule": true
   },
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recommended"

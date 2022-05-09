@@ -47,6 +47,7 @@
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-typescript": "^8.2.3",
     "@types/jest": "^27.0.0",
+    "@types/node-getopt": "^0.2.32",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.2.0",
     "commitizen": "^4.2.4",
@@ -102,20 +103,17 @@
       "@typescript-eslint"
     ],
     "rules": {
-      "@typescript-eslint/explicit-module-boundary-types": 0,
-      "@typescript-eslint/ban-ts-comment": 0,
-      "@typescript-eslint/no-unused-vars": 0,
-      "@typescript-eslint/no-var-requires": 0,
-      "@typescript-eslint/no-explicit-any": 0,
-      "@typescript-eslint/no-non-null-assertion": 0,
-      "no-undef": 0,
-      "no-var": 0,
-      "prefer-const": 0
+      "@typescript-eslint/ban-ts-comment": 0
     },
     "extends": [
       "eslint:recommended",
       "plugin:@typescript-eslint/recommended"
-    ]
+    ],
+    "env": {
+      "es6": true,
+      "browser": true,
+      "jest": true
+    }
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

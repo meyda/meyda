@@ -7,11 +7,11 @@ export default function ({
   ampSpectrum: Float32Array;
   barkScale: Float32Array;
 }): number {
-  var loudnessValue = loudness({ ampSpectrum, barkScale });
-  var spec = loudnessValue.specific;
-  var output = 0;
+  const loudnessValue = loudness({ ampSpectrum, barkScale });
+  const spec = loudnessValue.specific;
+  let output = 0;
 
-  for (var i = 0; i < spec.length; i++) {
+  for (let i = 0; i < spec.length; i++) {
     if (i < 15) {
       output += (i + 1) * spec[i + 1];
     } else {

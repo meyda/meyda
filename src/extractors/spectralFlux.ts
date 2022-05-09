@@ -16,7 +16,7 @@ export default function ({
 
   let sf = 0;
   for (let i = -(bufferSize / 2); i < signal.length / 2 - 1; i++) {
-    x = Math.abs(signal[i]) - Math.abs(previousSignal[i]);
+    const x = Math.abs(signal[i]) - Math.abs(previousSignal[i]);
     sf += (x + Math.abs(x)) / 2;
   }
 

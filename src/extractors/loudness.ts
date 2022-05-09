@@ -14,16 +14,16 @@ export default function ({
     throw new TypeError();
   }
 
-  var NUM_BARK_BANDS = numberOfBarkBands;
-  var specific = new Float32Array(NUM_BARK_BANDS);
-  var total = 0;
-  var normalisedSpectrum = ampSpectrum;
-  var bbLimits = new Int32Array(NUM_BARK_BANDS + 1);
+  const NUM_BARK_BANDS = numberOfBarkBands;
+  const specific = new Float32Array(NUM_BARK_BANDS);
+  let total = 0;
+  const normalisedSpectrum = ampSpectrum;
+  const bbLimits = new Int32Array(NUM_BARK_BANDS + 1);
 
   bbLimits[0] = 0;
-  var currentBandEnd =
+  let currentBandEnd =
     barkScale[normalisedSpectrum.length - 1] / NUM_BARK_BANDS;
-  var currentBand = 1;
+  let currentBand = 1;
   for (let i = 0; i < normalisedSpectrum.length; i++) {
     while (barkScale[i] > currentBandEnd) {
       bbLimits[currentBand++] = i;

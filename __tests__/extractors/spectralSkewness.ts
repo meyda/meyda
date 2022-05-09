@@ -1,11 +1,11 @@
 import TestData from "../TestData";
 
 // Setup
-var spectralSkewness = require("../../dist/node/extractors/spectralSkewness");
+import spectralSkewness from "../../dist/node/extractors/spectralSkewness";
 
 describe("spectralSkewness", () => {
   test("should return correct Spectral Skewness value", (done) => {
-    var en = spectralSkewness({
+    const en = spectralSkewness({
       ampSpectrum: TestData.VALID_AMPLITUDE_SPECTRUM,
     });
 
@@ -16,7 +16,8 @@ describe("spectralSkewness", () => {
 
   test("should throw an error when passed an empty object", (done) => {
     try {
-      var en = spectralSkewness({});
+      const en = spectralSkewness({});
+      en;
     } catch (e) {
       done();
     }
@@ -24,7 +25,8 @@ describe("spectralSkewness", () => {
 
   test("should throw an error when not passed anything", (done) => {
     try {
-      var en = spectralSkewness();
+      const en = spectralSkewness();
+      en;
     } catch (e) {
       done();
     }
@@ -32,7 +34,8 @@ describe("spectralSkewness", () => {
 
   test("should throw an error when passed something invalid", (done) => {
     try {
-      var en = spectralSkewness({ signal: "not a signal" });
+      const en = spectralSkewness({ signal: "not a signal" });
+      en;
     } catch (e) {
       done();
     }
