@@ -16,19 +16,27 @@ import chroma from "./extractors/chroma";
 import powerSpectrum from "./extractors/powerSpectrum";
 import spectralFlux from "./extractors/spectralFlux";
 
-let buffer = function (args) {
-  return args.signal;
+let buffer = function ({ signal }: { signal: Float32Array }) {
+  return signal;
 };
 
-let complexSpectrum = function (args) {
-  return args.complexSpectrum;
+let complexSpectrum = function ({
+  complexSpectrum,
+}: {
+  complexSpectrum: number[][];
+}) {
+  return complexSpectrum;
 };
 
-let amplitudeSpectrum = function (args) {
-  return args.ampSpectrum;
+let amplitudeSpectrum = function ({
+  ampSpectrum,
+}: {
+  ampSpectrum: Float32Array;
+}) {
+  return ampSpectrum;
 };
 
-export {
+const extractors = {
   buffer,
   rms,
   energy,
@@ -49,4 +57,18 @@ export {
   mfcc,
   chroma,
   spectralFlux,
-};
+} as const;
+
+export type ExtractorMap = typeof extractors;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I
+) => void
+  ? I
+  : never;
+
+type ExtractorFunctions = ExtractorMap[keyof ExtractorMap];
+type AllParameterTypes = Parameters<ExtractorFunctions>[0];
+export type MeydaExtractors = keyof ExtractorMap;
+export type UnionExtractorParams = UnionToIntersection<AllParameterTypes>;
+
+export default extractors;
