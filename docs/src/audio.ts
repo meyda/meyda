@@ -39,6 +39,7 @@ const Audio = function (bufferSize) {
     bufferSize: bufferSize,
     windowingFunction: "blackman",
   });
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   _this = this;
   this.initializeMicrophoneSampling();
 };
