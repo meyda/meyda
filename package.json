@@ -47,7 +47,7 @@
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-typescript": "^8.2.3",
     "@types/jest": "^27.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.2.0",
     "commitizen": "^4.2.4",
     "eslint": "^8.1.0",
