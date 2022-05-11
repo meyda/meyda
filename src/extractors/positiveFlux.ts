@@ -19,9 +19,9 @@ export default function ({
   let sf = 0;
   for (let i = 0; i < normalizedRealComponent.length; i++) {
     let x =
-      Math.abs(normalizedRealComponent[i]) -
-      Math.abs(previousNormalizedRealComponent[i]);
-    sf += Math.pow(x, 2);
+      Math.abs(previousNormalizedRealComponent[i]) -
+      Math.abs(normalizedRealComponent[i]);
+    sf += Math.pow(Math.max(x, 0), 2);
   }
 
   return Math.sqrt(sf);
