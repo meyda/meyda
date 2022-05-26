@@ -10,10 +10,10 @@ export default function ({
   bufferSize: number;
 }): number[] {
   if (typeof ampSpectrum !== "object") {
-    throw new TypeError("Valid ampSpectrum is required to generate MFCC");
+    throw new TypeError("Valid ampSpectrum is required to generate melBands");
   }
   if (typeof melFilterBank !== "object") {
-    throw new TypeError("Valid melFilterBank is required to generate MFCC");
+    throw new TypeError("Valid melFilterBank is required to generate melBands");
   }
 
   let powSpec = extractPowerSpectrum({ ampSpectrum });
