@@ -15,6 +15,7 @@ import mfcc from "./extractors/mfcc";
 import chroma from "./extractors/chroma";
 import powerSpectrum from "./extractors/powerSpectrum";
 import spectralFlux from "./extractors/spectralFlux";
+import spectralCrest from "./extractors/spectralCrest";
 import melBands from "./extractors/melBands";
 
 let buffer = function (args) {
@@ -50,5 +51,6 @@ export {
   mfcc,
   chroma,
   spectralFlux,
-  melBands,
+  spectralCrest,
+  melBands
 };

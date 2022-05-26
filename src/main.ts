@@ -34,6 +34,7 @@ export interface MeydaFeaturesObject {
   spectralSkewness: number;
   spectralSlope: number;
   spectralSpread: number;
+  spectralCrest: number;
   zcr: number;
 }
 
@@ -62,6 +63,7 @@ export type MeydaAudioFeature =
   | "spectralSkewness"
   | "spectralSlope"
   | "spectralSpread"
+  | "spectralCrest"
   | "zcr"
   | "buffer"
   | "melBands";
