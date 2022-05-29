@@ -13,7 +13,6 @@ describe("melBands", () => {
       melFilterBank: utilities.createMelFilterBank(26, 44100, 512),
     });
 
-    console.log(en);
     const expectedValues = [
       0.05362230911850929, 0.5754691362380981, 0.18804392218589783,
       0.25777846574783325, 0.14160922169685364, 0.09012959152460098,
