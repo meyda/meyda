@@ -65,7 +65,8 @@ export type MeydaAudioFeature =
   | "spectralSpread"
   | "spectralCrest"
   | "zcr"
-  | "buffer";
+  | "buffer"
+  | "melBands";
 
 /**
  * A type representing an audio signal. In general it should be an array of
