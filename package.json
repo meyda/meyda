@@ -54,7 +54,7 @@
     "glob": "^8.0.1",
     "husky": "^8.0.1",
     "jest": "^27.0.3",
-    "lint-staged": "^12.1.2",
+    "lint-staged": "^13.0.0",
     "prettier": "2.6.2",
     "rollup": "^2.50.5",
     "rollup-plugin-terser": "^7.0.2",
