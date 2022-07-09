@@ -17,7 +17,7 @@ Want to ask questions, or chat about Meyda? Check out our [slack channel] on the
 
 ---
 
-[paper]: http://doc.gold.ac.uk/%7Emu202hr/publications/RawlinsonSegalFiala_WAC2015.pdf
+[paper]: https://wac.ircam.fr/pdf/wac15_submission_17.pdf
 [webaudioapi]: https://github.com/WebAudio/web-audio-api
 [wiki]: https://github.com/hughrawlinson/meyda/wiki/getting-started
 [slack channel]: https://web-audio.slack.com/messages/C51A03LBS/

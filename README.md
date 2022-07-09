@@ -20,7 +20,7 @@ Please see [our contributor guidelines][contributing] for guidelines about contr
 
 [build-status-image]: https://img.shields.io/github/checks-status/meyda/meyda/main
 [web-audio-api]: https://github.com/WebAudio/web-audio-api
-[meyda-paper]: http://doc.gold.ac.uk/~mu202hr/publications/RawlinsonSegalFiala_WAC2015.pdf
+[meyda-paper]: https://wac.ircam.fr/pdf/wac15_submission_17.pdf
 [hugh-github]: https://github.com/hughrawlinson
 [nevo-github]: https://github.com/nevosegal
 [jakub-github]: https://github.com/jakubfiala
