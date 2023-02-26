@@ -44,7 +44,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.0.1",
     "@commitlint/config-conventional": "^17.0.2",
-    "@rollup/plugin-commonjs": "^23.0.2",
+    "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-typescript": "^8.2.3",
     "@types/jest": "^27.0.0",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
