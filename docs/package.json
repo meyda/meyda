@@ -23,10 +23,10 @@
   "private": "true",
   "devDependencies": {
     "@types/meyda": "^4.3.2",
-    "@types/three": "^0.141.0"
+    "@types/three": "^0.143.0"
   },
   "dependencies": {
     "meyda": "^5.2.1",
-    "three": "^0.141.0"
+    "three": "^0.150.0"
   }
 }
