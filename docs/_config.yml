@@ -18,7 +18,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   Meyda is a Javascript audio feature extraction library. Meyda supports both offline
   feature extraction as well as real-time feature extraction using the Web Audio API.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://meyda.js.org" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Build settings
 markdown: kramdown
@@ -39,3 +39,6 @@ exclude:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+sass:
+  quiet_deps: true

@@ -12,3 +12,6 @@ debug_data
 _site
 .DS_Store
 .jekyll-cache
+.bundle
+.jekyll-metadata
+.tool-versions
