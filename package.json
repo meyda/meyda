@@ -71,9 +71,6 @@
     "node-getopt": "^0.3.2",
     "wav": "^1.0.2"
   },
-  "engines": {
-    "node": "^10 || ^12 || ^13 || ^14 || ^15 || ^16 || ^17 || ^18 || ^19"
-  },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
