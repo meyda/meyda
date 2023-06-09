@@ -1,8 +1,8 @@
 /* eslint-env es2021 */
-import { terser } from "rollup-plugin-terser";
+import terser from "@rollup/plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
-import glob from "glob";
 import typescript from "@rollup/plugin-typescript";
+import { glob } from "glob";
 
 const plugins = [commonjs(), typescript()];
 

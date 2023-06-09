@@ -1,5 +1,5 @@
 {
-  "exclude": ["./dist", "./docs", "./__tests__", "./rollup.config.js", "./bin"],
+  "exclude": ["./dist", "./docs", "./__tests__", "rollup.config.mjs", "./bin"],
   "compilerOptions": {
     "outDir": "./dist/esm",
     "declaration": true,
