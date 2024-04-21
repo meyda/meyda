@@ -66,6 +66,7 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "dct": "0.1.0",
     "fftjs": "0.0.4",
     "node-getopt": "^0.3.2",

@@ -2,9 +2,10 @@
 import terser from "@rollup/plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
+import nodeResolve from "@rollup/plugin-node-resolve";
 import { glob } from "glob";
 
-const plugins = [commonjs(), typescript()];
+const plugins = [nodeResolve(), commonjs(), typescript()];
 
 const SOURCE_FILES = glob
   .sync("src/**/*.ts")

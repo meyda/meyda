@@ -17,14 +17,9 @@ jobs:
             #
             # https://github.com/meyda/meyda/pull/908/checks?check_run_id=3090204396
             # 10.x,
-            12.x,
-            13.x,
-            14.x,
-            15.x,
-            16.x,
-            17.x,
             18.x,
-            19.x
+            20.x,
+            21.x
           ]
 
     steps:
