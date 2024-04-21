@@ -58,7 +58,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^13.3.0",
     "prettier": "^2.8.8",
-    "rollup": "^3.29.4",
+    "rollup": "^4.16.0",
     "semantic-release": "^21.1.2",
     "ts-jest": "^29.1.2",
     "tslib": "^2.6.2",
