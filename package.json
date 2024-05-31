@@ -59,7 +59,7 @@
     "lint-staged": "^13.3.0",
     "prettier": "^2.8.8",
     "rollup": "^4.16.0",
-    "semantic-release": "^21.1.2",
+    "semantic-release": "^24.0.0",
     "ts-jest": "^29.1.2",
     "tslib": "^2.6.2",
     "typedoc": "^0.25.13",
