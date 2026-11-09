@@ -89,6 +89,21 @@
     return Float32Array.from(t);
   }
 
+  // expands one feature value into [columnName, value] pairs. Nested objects
+  // and arrays (mfcc, amplitudeSpectrum, complexSpectrum.real, loudness.specific)
+  // become name_key_key columns, so every value gets its own column.
+  function flattenFeature(name, value, out) {
+    if (value !== null && typeof value === "object") {
+      var keys = Object.keys(value);
+      for (let k = 0; k < keys.length; k++) {
+        flattenFeature(name + "_" + keys[k], value[keys[k]], out);
+      }
+    } else {
+      out.push([name, value]);
+    }
+    return out;
+  }
+
   function output(val) {
     if (!opt.options.o || opt.options.p) {
       process.stdout.write(val);
@@ -180,25 +195,35 @@
           output(JSON.stringify(features, null, 4));
         } else if (outputFormat == "csv") {
           process.stdout.write("Writing to " + opt.options.o + "...\n");
-          for (let i = 0; i < featuresToExtract.length; i++) {
-            output(featuresToExtract[i].toString());
-            output(i == featuresToExtract.length - 1 ? "" : ",");
+          // One column per value. The header is built from the first frame and
+          // each row from its own frame, using the same flattenFeature so the
+          // column names and the values always line up.
+          var csvHeaders = [];
+          for (let j = 0; j < featuresToExtract.length; j++) {
+            var headerCells = flattenFeature(
+              featuresToExtract[j],
+              features[featuresToExtract[j]][0],
+              []
+            );
+            for (let c = 0; c < headerCells.length; c++) {
+              csvHeaders.push(headerCells[c][0]);
+            }
           }
+          output(csvHeaders.join(",") + "\n");
 
-          output("\n");
           for (let i = 0; i < frameCount; i++) {
+            var rowValues = [];
             for (let j = 0; j < featuresToExtract.length; j++) {
-              const feature = features[featuresToExtract[j]];
-              if (typeof feature[i] === "object") {
-                for (let f = 0; f < Object.keys(feature[i]).length; f++)
-                  output(feature[i][f] + ",");
-                output(j == featuresToExtract.length - 1 ? "" : ",");
-              } else {
-                output(feature[i].toString());
-                output(j == featuresToExtract.length - 1 ? "" : ",");
+              var rowCells = flattenFeature(
+                featuresToExtract[j],
+                features[featuresToExtract[j]][i],
+                []
+              );
+              for (let c = 0; c < rowCells.length; c++) {
+                rowValues.push(rowCells[c][1]);
               }
             }
-            output("\n");
+            output(rowValues.join(",") + "\n");
           }
         }
         console.log("Done.");
